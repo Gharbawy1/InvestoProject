@@ -1,0 +1,42 @@
+<!-- Backdrop -->
+<div class="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm backdrop-animation"></div>
+
+<!-- Auth Modal -->
+<div class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-[400px] sm:max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border border-gray-200 shadow-xl rounded-xl bg-white overflow-hidden p-6 animate-modal-entrance">
+  
+  <!-- Tabs -->
+  <div>
+    <div class="grid w-full grid-cols-2 bg-gray-50 rounded-full p-2 gap-1">
+      <button
+        (click)="showTab('login')"
+        [class]="activeTab === 'login' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:bg-gray-100'"
+        class="px-6 py-3 font-semibold rounded-full transition-all duration-200 focus:outline-none"
+        aria-label="Login tab"
+        [attr.aria-selected]="activeTab === 'login'"
+      >
+        Login
+      </button>
+      <button
+        (click)="showTab('register')"
+        [class]="activeTab === 'register' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:bg-gray-100'"
+        class="px-6 py-3 font-semibold rounded-full transition-all duration-200 focus:outline-none"
+        aria-label="Register tab"
+        [attr.aria-selected]="activeTab === 'register'"
+      >
+        Register
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="relative h-[400px]">
+    <app-login-form 
+      *ngIf="activeTab === 'login'" 
+      class="tab-transition"
+    ></app-login-form>
+    <app-register-form 
+      *ngIf="activeTab === 'register'" 
+      class="tab-transition"
+    ></app-register-form>
+  </div>
+</div>

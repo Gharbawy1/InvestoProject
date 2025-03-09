@@ -5,13 +5,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { AutoFocusDirective } from '../../Directives/auto-focus/auto-focus.directive';
 import { AuthService } from '../../Services/auth/auth.service';
 import { NavigationService } from '../../Services/navigation/navigation.service';
+import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 
 /**
  * Component for handling user login functionality.
  */
 @Component({
   selector: 'app-login-form',
-  imports: [FormsModule, CommonModule, AutoFocusDirective, HttpClientModule],
+  imports: [FormsModule, CommonModule, AutoFocusDirective, HttpClientModule, ForgotPasswordComponent],
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css'],
   providers: [AuthService]
@@ -34,9 +35,6 @@ export class LoginFormComponent implements OnInit {
 
   /** Forgot Password Modal State */
   isForgotPasswordOpen: boolean = false;
-  forgotPasswordEmail: string = '';
-  forgotPasswordError: string = '';
-  forgotPasswordSuccess: boolean = false;
 
   /**
    * Initializes the component with necessary services.
@@ -51,42 +49,13 @@ export class LoginFormComponent implements OnInit {
   /**
    * Opens the forgot password modal and resets its state.
    */
-  openForgotPasswordModal(): void {
+  openForgotPassword(): void {
     this.isForgotPasswordOpen = true;
-    this.forgotPasswordEmail = '';
-    this.forgotPasswordError = '';
-    this.forgotPasswordSuccess = false;
   }
 
-  /**
-   * Closes the forgot password modal.
-   */
-  closeForgotPasswordModal(): void {
-    this.isForgotPasswordOpen = false;
-  }
-
-  /**
-   * Sends a password reset link if the email is valid.
-   */
-  sendResetLink(): void {
-    if (!this.forgotPasswordEmail || !this.forgotPasswordEmail.includes('@')) {
-      this.forgotPasswordError = 'Please enter a valid email address.';
-      return;
-    }
-
-    this.isLoading = true;
-    this.authService.sendResetLink(this.forgotPasswordEmail).subscribe({
-      next: () => {
-        this.forgotPasswordSuccess = true;
-        this.isLoading = false;
-        setTimeout(() => this.closeForgotPasswordModal(), 3000);
-      },
-      error: () => {
-        this.forgotPasswordError = 'Failed to send reset link. Please try again.';
-        this.isLoading = false;
-      }
-    });
-  }
+  handleCloseModal() {
+    this.isForgotPasswordOpen = false; 
+  }  
 
   /**
    * Toggles the visibility of the password field.
