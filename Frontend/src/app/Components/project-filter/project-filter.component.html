@@ -1,0 +1,33 @@
+<section class="bg-gray-50 p-4 rounded-lg shadow-md">
+    <!-- Search & Filter Row -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <!-- Search Bar -->
+        <div class="relative w-full md:w-96">
+            <input-component type="text" placeholder="Search projects..." class="pl-10 w-full" [ngModel]="searchTerm()"
+                (ngModelChange)="onSearchChange($event)" />
+        </div>
+
+        <!-- Sorting & More Filters -->
+        <div class="flex gap-2 items-center">
+            <button-component variant="outline" size="sm" (click)="changeSortOrder()">
+                <span class="text-sm font-medium">
+                    <i class="fas fa-sort"></i> {{ sortOrder() === 'default' ? 'Default' : sortOrder() === 'funding' ?
+                    'Funding %' : 'Recent' }}
+                </span>
+            </button-component>
+
+            <button-component variant="outline" size="sm">
+                <i class="fas fa-filter"></i> More Filters
+            </button-component>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="flex flex-wrap gap-2 mt-4 p-2 bg-gray-100 rounded-lg">
+        <button *ngFor="let category of ['All Projects'].concat(categories)" class="px-4 py-1 text-sm rounded-full"
+            [ngClass]="{ 'bg-white shadow-md font-semibold': activeCategory() === category, 'text-gray-600': activeCategory() !== category }"
+            (click)="setCategory(category)">
+            {{ category }}
+        </button>
+    </div>
+</section>
