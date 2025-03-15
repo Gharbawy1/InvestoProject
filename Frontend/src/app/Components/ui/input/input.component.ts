@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `<input [type]="type" [placeholder]="placeholder" [disabled]="disabled" />`,
-  styles: './input.component.css',
+   styleUrl: './input.component.css'
 })
 export class InputComponent {
   @Input() type: string = 'text';

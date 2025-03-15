@@ -1,0 +1,26 @@
+.card-container {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.group-hover\:scale-110 {
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hover\:shadow-gray-300\/30:hover {
+  box-shadow: 0 10px 15px -3px rgba(209, 213, 219, 0.3);
+}
+
+/* Focus States */
+button:focus {
+  outline: 2px solid black;
+  outline-offset: 2px;
+}
+
+/* Staggered Animations */
+.transition-delay-100 {
+  transition-delay: 100ms;
+}
+
+.transition-delay-200 {
+  transition-delay: 200ms;
+}
