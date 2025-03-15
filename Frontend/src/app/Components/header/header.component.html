@@ -38,19 +38,22 @@
         <!-- Auth Buttons / User Menu -->
         <div class="hidden md:flex items-center space-x-4">
             <button class="text-gray-700 hover:text-primary transition-colors">
-                🔍
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
             </button>
 
             <ng-container *ngIf="isLoggedIn; else loggedOut">
                 <div class="relative group">
-                    <button class="flex items-center gap-2">
+                    <button class="flex items-center gap-2" (click)="toggleDropDown()">
                         <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                            👤
+                            <img [src]="userImageURL" class="h-8 w-8 rounded-full">
                         </div>
                         <span class="font-medium">{{ userName }}</span>
                         <span class="ml-1">&#9662;</span>
                     </button>
-                    <div class="absolute hidden group-hover:block bg-white shadow-md rounded-md mt-2 w-48">
+                    <div class="absolute bg-white shadow-md rounded-md mt-2 w-48"
+                        [ngClass]="{ 'block': isDropDownOpen, 'hidden': !isDropDownOpen }">
                         <a routerLink="/dashboard" class="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
                         <a routerLink="/profile" class="block px-4 py-2 hover:bg-gray-100">My Profile</a>
                         <a routerLink="/investments" class="block px-4 py-2 hover:bg-gray-100">My Investments</a>
@@ -68,7 +71,7 @@
                     <button (click)="loginClick.emit()" class="text-gray-700 hover:text-primary">
                         Log In
                     </button>
-                    <button (click)="registerClick.emit()" class="bg-primary text-white px-4 py-2 rounded">
+                    <button (click)="registerClick.emit()" class="bg-primary text-gray-700 px-4 py-2 rounded">
                         Register
                     </button>
                 </div>
