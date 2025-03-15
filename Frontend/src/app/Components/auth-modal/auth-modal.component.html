@@ -1,0 +1,94 @@
+<!-- Backdrop -->
+<div
+  class="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm backdrop-animation"
+></div>
+
+<!-- Auth Modal -->
+<div
+  class="fixed left-[50%] top-[50%] z-50 grid w-[90%] max-w-[400px] sm:max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border border-gray-200 shadow-xl rounded-xl bg-white overflow-hidden p-4 sm:p-6 animate-modal-entrance"
+>
+  <!-- Tabs -->
+  <div>
+    <div class="grid w-full grid-cols-2 bg-gray-50 rounded-full p-1 gap-1">
+      <button
+        (click)="showTab('login')"
+        [class]="
+          activeTab === 'login'
+            ? 'bg-white text-primary shadow-sm'
+            : 'text-gray-500 hover:bg-gray-100'
+        "
+        class="px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-full transition-all duration-200 focus:outline-none btn-animate"
+        aria-label="Login tab"
+        [attr.aria-selected]="activeTab === 'login'"
+      >
+        Login
+      </button>
+      <button
+        (click)="showTab('register')"
+        [class]="
+          activeTab === 'register'
+            ? 'bg-white text-primary shadow-sm'
+            : 'text-gray-500 hover:bg-gray-100'
+        "
+        class="px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-full transition-all duration-200 focus:outline-none btn-animate"
+        aria-label="Register tab"
+        [attr.aria-selected]="activeTab === 'register'"
+      >
+        Register
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="relative h-[300px] sm:h-[400px]">
+    <app-login-form
+      *ngIf="activeTab === 'login'"
+      class="tab-transition"
+    ></app-login-form>
+    <!--<app-register-form
+      *ngIf="activeTab === 'register'"
+      class="tab-transition"
+    ></app-register-form>-->
+  </div>
+
+  <!-- Continue with -->
+  <div>
+    <div class="relative">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-gray-300"></div>
+      </div>
+      <div class="relative flex justify-center text-sm">
+        <span class="px-2 bg-white text-gray-500">Or continue with</span>
+      </div>
+    </div>
+    <div class="mt-4 sm:mt-6 grid grid-cols-2 gap-2 sm:gap-3">
+      <!-- Facebook Button -->
+      <button
+        type="button"
+        title="Continue with Facebook"
+        aria-label="Continue with Facebook"
+        (click)="loginWithFacebook()"
+        [disabled]="!isButtonReady"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 shadow-sm hover:bg-gray-50 h-9 sm:h-10 px-3 sm:px-4 py-2 w-full bg-white border border-gray-300 text-gray-700 btn-animate"
+      >
+        <fa-icon [icon]="faFacebook" class="text-blue-600 mr-2"></fa-icon>
+        <span>Facebook</span>
+      </button>
+
+      <!-- Google Button -->
+      <div id="googleSignInButton">
+        <button
+          type="button"
+          title="Continue with Google"
+          aria-label="Continue with Google"
+          (click)="loginWithGoogle()"
+          [disabled]="!isButtonReady"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-500 disabled:pointer-events-none disabled:opacity-50 shadow-sm hover:bg-gray-50 h-9 sm:h-10 px-3 sm:px-4 py-2 w-full bg-white border border-gray-300 text-gray-700 btn-animate"
+        >
+          <fa-icon [icon]="faGoogle" class="text-red-500 mr-2"></fa-icon>
+          <span>Google</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
