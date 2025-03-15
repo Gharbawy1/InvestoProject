@@ -1,0 +1,65 @@
+<div class="rounded-xl border-none text-card-foreground shadow-lg w-[350px] h-[500px] overflow-hidden flex flex-col bg-white hover:shadow-2xl transition-all duration-300 card-container hover:-translate-y-2 group">
+  <!-- Thumbnail Image -->
+  <div class="relative h-64 overflow-hidden">
+    <img 
+      [src]="thumbnailUrl"
+      alt="{{ title }}"
+      [title]="title"
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+    />
+    <div class="absolute top-3 right-3 bg-black/90 text-white px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm transition-all hover:scale-105 hover:bg-black">
+      {{ progressPercentage }}% Funded
+    </div>
+  </div>
+
+  <!-- Card Content -->
+  <div class="flex flex-col p-5 flex-grow">
+    <div class="mb-4">
+      <h3 class="text-xl font-bold text-gray-900 mb-1.5 line-clamp-2 group-hover:text-black transition-colors duration-300">
+        {{ title }}
+      </h3>
+      <p class="text-sm text-gray-600 font-medium">{{ businessName }}</p>
+    </div>
+
+    <div class="mb-4">
+      <div class="flex justify-between text-sm mb-2 text-gray-600">
+        <span>${{ fundingProgress | number:'1.0-0' }} raised</span>
+        <span>${{ fundingGoal | number:'1.0-0' }} goal</span>
+      </div>
+      <div
+        role="progressbar"
+        [attr.aria-valuenow]="progressPercentage"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-label="Funding progress"
+        class="relative w-full overflow-hidden rounded-full bg-gray-200 h-2.5">
+        <div 
+          class="absolute bg-black h-full w-1/2 rounded-full transition-all duration-1000 delay-150"
+          [style.width.%]="progressPercentage"
+        ></div>
+      </div>
+    </div>
+
+    <p class="text-sm text-gray-600 line-clamp-3 mb-4 leading-relaxed transition-colors group-hover:text-gray-700 duration-300">
+      {{ description }}
+    </p>
+
+    <div class="flex flex-wrap gap-2 mt-auto">
+      <span 
+        *ngFor="let category of categories"
+        class="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full border border-gray-200 transition-all hover:-translate-y-0.5 hover:shadow-sm hover:bg-gray-200 hover:border-gray-300">
+        {{ category }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Card Footer -->
+  <div class="px-5 pb-5">
+    <a [routerLink]="['/', id]">
+      <button 
+        class="w-full bg-black hover:bg-gray-900 text-white py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg hover:shadow-gray-300/30 active:scale-95 focus:outline-none">
+        View Project
+      </button>
+    </a>
+  </div>
+</div>
