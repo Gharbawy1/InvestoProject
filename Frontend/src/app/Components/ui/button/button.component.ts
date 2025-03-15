@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `<ng-content></ng-content>`,
-  styles: './button.component.css',
+  styleUrl: './button.component.css',
 })
 export class ButtonComponent {
   @Input() variant: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' = 'default';
