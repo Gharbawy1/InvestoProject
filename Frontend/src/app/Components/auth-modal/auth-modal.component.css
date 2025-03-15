@@ -32,13 +32,46 @@
   width: 100%;
 }
 
-/* Better Mobile Spacing */
+/* Button Hover Animation */
+.btn-animate {
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.btn-animate:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive Design */
 @media (max-width: 640px) {
   .auth-modal {
-    padding: 16px;
+    position: fixed;
+    /* Move modal higher on the screen */
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* Make the modal taller */
+    height: 85vh; /* Adjust height for better usability */
+    min-height: 500px; /* Ensure enough space for forms */
+    width: 95%; /* Full width on small screens */
+    
+    /* Enable scrolling if content is too much */
+    overflow-y: auto;
+    
+    /* Adjust padding */
+    padding: 1.2rem;
   }
+
+  /* Increase tab content height */
+  .auth-modal .tab-content {
+    height: auto;
+    min-height: 400px;
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+
+  /* Make buttons more touch-friendly */
   .auth-modal button {
-    padding: 12px 16px;
-    font-size: 16px;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
   }
 }
