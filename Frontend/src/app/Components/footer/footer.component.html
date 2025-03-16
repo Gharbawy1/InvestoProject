@@ -11,43 +11,42 @@
                     <a *ngIf="socialLinks?.facebook" [href]="socialLinks.facebook" target="_blank"
                         rel="noopener noreferrer"
                         class="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors">
-                        <!-- <fa-icon [icon]="['fab', 'facebook']"></fa-icon> -->
+                        <fa-icon [icon]="faFacebook"></fa-icon>
                     </a>
                     <a *ngIf="socialLinks?.twitter" [href]="socialLinks.twitter" target="_blank"
                         rel="noopener noreferrer"
                         class="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors">
-                        <!-- <fa-icon [icon]="['fab', 'twitter']"></fa-icon> -->
+                        <fa-icon [icon]="faTwitter"></fa-icon>
                     </a>
                     <a *ngIf="socialLinks?.instagram" [href]="socialLinks.instagram" target="_blank"
                         rel="noopener noreferrer"
                         class="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors">
-                        <!-- <fa-icon [icon]="['fab', 'instagram']"></fa-icon> -->
+                        <fa-icon [icon]="faInstagram"></fa-icon>
                     </a>
                     <a *ngIf="socialLinks?.linkedin" [href]="socialLinks.linkedin" target="_blank"
                         rel="noopener noreferrer"
                         class="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors">
-                        <!-- <fa-icon [icon]="['fab', 'linkedin']"></fa-icon> -->
+                        <fa-icon [icon]="faLinkedin"></fa-icon>
                     </a>
                 </div>
 
                 <!-- Contact Information -->
                 <div class="space-y-2">
                     <div class="flex items-center">
-                        <!-- <fa-icon [icon]="['fas', 'envelope']" class="mr-2 text-gray-400"></fa-icon> -->
-                        <a [href]="'mailto:' + contactEmail" class="text-gray-400 hover:text-white transition-colors">
+                        <fa-icon [icon]="faEnvelope"></fa-icon>
+                        <a [href]="'mailto:' + contactEmail" class="text-gray-400 hover:text-white transition-colors px-2">
                             {{ contactEmail }}
                         </a>
                     </div>
                     <div class="flex items-center">
-                        <!-- <fa-icon [icon]="['fas', 'phone']" class="mr-2 text-gray-400"></fa-icon> -->
-                        <!-- <a [href]="'tel:' + contactPhone.replace(/\s+/g, '')"
-                            class="text-gray-400 hover:text-white transition-colors">
+                        <fa-icon [icon]="faPhone"></fa-icon>
+                        <a class="text-gray-400 hover:text-white transition-colors px-2">
                             {{ contactPhone }}
-                        </a> -->
+                        </a>
                     </div>
                     <div class="flex items-start">
-                        <!-- <fa-icon [icon]="['fas', 'map-marker-alt']" class="mr-2 mt-1 text-gray-400"></fa-icon> -->
-                        <span class="text-gray-400">{{ contactAddress }}</span>
+                        <fa-icon [icon]="faMapMarker"></fa-icon>
+                        <span class="text-gray-400 px-2">{{ contactAddress }}</span>
                     </div>
                 </div>
             </div>
@@ -60,6 +59,7 @@
                         <a [href]="link.href" class="text-gray-400 hover:text-white transition-colors">
                             {{ link.label }}
                         </a>
+                        
                     </li>
                 </ul>
             </div>

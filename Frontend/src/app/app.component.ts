@@ -7,7 +7,7 @@ import { ProjectFilterComponent } from './Components/project-filter/project-filt
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, LoginFormComponent, FooterComponent, ProjectFilterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
