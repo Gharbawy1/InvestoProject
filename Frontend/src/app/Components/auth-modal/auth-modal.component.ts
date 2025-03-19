@@ -1,14 +1,14 @@
 import { Component, Inject, PLATFORM_ID, AfterViewInit } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { LoginFormComponent } from '../login-form/login-form.component';
-//import { RegisterFormComponent } from '../register-form/register-form.component';
+import { RegistrationFormComponent } from '../registration-form/registration-form.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { AuthService } from '../../Services/auth/auth.service';
 
 @Component({
   selector: 'app-auth-modal',
-  imports: [CommonModule, FontAwesomeModule, LoginFormComponent, /*RegisterFormComponent*/],
+  imports: [CommonModule, FontAwesomeModule, LoginFormComponent, RegistrationFormComponent],
   templateUrl: './auth-modal.component.html',
   styleUrl: './auth-modal.component.css',
 })
