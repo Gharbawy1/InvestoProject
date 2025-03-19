@@ -9,10 +9,10 @@ import { AuthService } from '../../Services/auth/auth.service';
 @Component({
   selector: 'app-auth-modal',
   imports: [CommonModule, FontAwesomeModule, LoginFormComponent, RegistrationFormComponent],
-  templateUrl: './auth-modal.component.html',
-  styleUrl: './auth-modal.component.css',
+  templateUrl: './auth-model.component.html',
+  styleUrl: './auth-model.component.css',
 })
-export class AuthModalComponent implements AfterViewInit {
+export class AuthModelComponent implements AfterViewInit {
  // Active tab state determines which form (login or register) is displayed.
   activeTab: 'login' | 'register' = 'login';
    // FontAwesome icons for Facebook and Google buttons.
