@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output, NgModule } from '@angular/core';
 import { NgForm, FormsModule, NgModel } from '@angular/forms';
-import { AuthService } from '../../Services/auth/auth.service';
+import { AuthService } from '../../../../core/services/auth/auth.service';
 import { CommonModule } from '@angular/common';
-import { AutoFocusDirective } from '../../Directives/auto-focus/auto-focus.directive';
+import { AutoFocusDirective } from '../../../../shared/directives/auto-focus/auto-focus.directive';
 
 @Component({
   selector: 'app-forgot-password',

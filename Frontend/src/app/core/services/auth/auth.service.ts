@@ -4,7 +4,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { FacebookAuthService } from '../FacebookSignIn/facebook-auth.service';
 import { GoogleAuthService } from '../googleSignIn/google-signin.service';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../../environments/environment.development';
 
 // Define the shape of the authentication response from the server.
 interface AuthResponse {
