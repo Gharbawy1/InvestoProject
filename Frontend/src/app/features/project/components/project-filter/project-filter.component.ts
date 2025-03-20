@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ButtonComponent } from '../ui/button/button.component';
-import { InputComponent } from '../ui//input/input.component';
+import { ButtonComponent } from '../../../../shared/componentes/button/button.component';
+import { InputComponent } from '../../../../shared/componentes/input/input.component';
 
 @Component({
   selector: 'app-project-filter',
