@@ -2,9 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { AutoFocusDirective } from '../../Directives/auto-focus/auto-focus.directive';
-import { AuthService } from '../../Services/auth/auth.service';
-import { NavigationService } from '../../Services/navigation/navigation.service';
+import { AutoFocusDirective } from '../../../../shared/directives/auto-focus/auto-focus.directive';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { NavigationService } from '../../../../core/services/navigation/navigation.service';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 
 /**
