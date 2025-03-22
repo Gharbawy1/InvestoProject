@@ -1,77 +1,80 @@
-/* Modal Entrance Animation */
-@keyframes modal-fade-in {
-  0% {
-    opacity: 0;
+/* Animation for modal entrance */
+@keyframes modalEntrance {
+  from {
     transform: scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.animate-modal-entrance {
-  animation: modal-fade-in 0.4s ease-out;
-}
-
-/* Tab Content Transition */
-@keyframes tab-fade {
-  0% {
     opacity: 0;
-    transform: translateY(8px);
   }
-  100% {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Animation for form fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.tab-transition {
-  animation: tab-fade 0.3s ease-out;
-  position: absolute;
-  width: 100%;
+/* Animation for tab content slide */
+@keyframes slideRight {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
-/* Button Hover Animation */
+@keyframes slideLeft {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Animation classes */
+.animate-modal-entrance {
+  animation: modalEntrance 0.3s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.slide-right {
+  animation: slideRight 0.3s ease-out forwards;
+}
+
+.slide-left {
+  animation: slideLeft 0.3s ease-out forwards;
+}
+
+/* Hover animations */
 .btn-animate {
-  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  transition: all 0.2s ease;
 }
+
 .btn-animate:hover {
-  transform: scale(1.05);
+  transform: translateY(-1px);
 }
 
-/* Responsive Design */
-@media (max-width: 640px) {
-  .auth-modal {
-    position: fixed;
-    /* Move modal higher on the screen */
-    top: 5%;
-    left: 50%;
-    transform: translateX(-50%);
-    
-    /* Make the modal taller */
-    height: 85vh; /* Adjust height for better usability */
-    min-height: 500px; /* Ensure enough space for forms */
-    width: 95%; /* Full width on small screens */
-    
-    /* Enable scrolling if content is too much */
-    overflow-y: auto;
-    
-    /* Adjust padding */
-    padding: 1.2rem;
-  }
+.hover-scale {
+  transition: transform 0.2s ease;
+}
 
-  /* Increase tab content height */
-  .auth-modal .tab-content {
-    height: auto;
-    min-height: 400px;
-    max-height: 65vh;
-    overflow-y: auto;
-  }
-
-  /* Make buttons more touch-friendly */
-  .auth-modal button {
-    padding: 0.8rem 1.2rem;
-    font-size: 1rem;
-  }
+.hover-scale:hover {
+  transform: scale(1.02);
 }

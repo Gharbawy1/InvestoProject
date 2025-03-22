@@ -1,0 +1,9 @@
+<div class="mb-8">
+  <div class="flex justify-between items-center">
+    <div *ngFor="let s of steps; let last = last" class="flex-1 flex items-center">
+      <div [class]="'h-2 w-full rounded-full ' + (currentStep >= s ? 'bg-gray-900' : 'bg-gray-200')"></div>
+      <div *ngIf="!last" class="w-4"></div>
+    </div>
+  </div>
+  <p class="text-xs text-gray-500 mt-2 text-right">Step {{currentStep}} of {{totalSteps}}</p>
+</div>
