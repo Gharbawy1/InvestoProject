@@ -2,10 +2,11 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { EyePasswordComponent } from '../../../../shared/componentes/eye-password/eye-password.component';
+import { AutoFocusDirective } from '../../../../shared/directives/auto-focus/auto-focus.directive';
 
 @Component({
   selector: 'app-account-creation',
-  imports: [CommonModule, ReactiveFormsModule, EyePasswordComponent],
+  imports: [CommonModule, ReactiveFormsModule, EyePasswordComponent, AutoFocusDirective],
   templateUrl: './account-creation.component.html',
   styleUrls: ['./account-creation.component.css']
 })

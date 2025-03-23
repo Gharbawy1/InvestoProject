@@ -59,7 +59,7 @@
   </div>
 
   <div class="space-y-4">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="animate-stagger">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="animate-stagger" novalidate>
       <!-- Email -->
       <div class="flex flex-col gap-0.5 form-group">
         <label for="email" class="text-sm font-medium">Email</label>
@@ -68,6 +68,7 @@
           formControlName="email"
           type="email"
           placeholder="example@domain.com"
+          [appAutoFocus]="true"
           class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
         />
         <div class="min-h-[20px]">
