@@ -1,14 +1,30 @@
 <!-- Full Page Container -->
 <div class="min-h-screen bg-gray-50">
   <div class="grid lg:grid-cols-2 min-h-screen">
-    <!-- Left Side - Decorative Image Section -->
+    <!-- Left Side - Dynamic Content -->
     <div class="hidden lg:block relative bg-gradient-to-br from-blue-600 to-purple-500">
-      <div class="absolute inset-0 flex items-center justify-center p-12 text-white">
+      <!-- Login Content -->
+      <div *ngIf="activeTab === 'login'" class="absolute inset-0 flex items-center justify-center p-12 text-white animate-slide-in">
         <div class="max-w-2xl space-y-6">
           <h2 class="text-5xl font-bold">Welcome Back</h2>
           <p class="text-xl leading-relaxed opacity-90">
             Join our community of passionate developers and designers. 
             Create amazing projects and collaborate with like-minded people.
+          </p>
+          <div class="flex space-x-4">
+            <div class="h-1 w-12 bg-white"></div>
+            <div class="h-1 w-12 bg-white/30"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Register Content -->
+      <div *ngIf="activeTab === 'register'" class="absolute inset-0 flex items-center justify-center p-12 text-white animate-slide-in">
+        <div class="max-w-2xl space-y-6">
+          <h2 class="text-5xl font-bold">Start Your Journey</h2>
+          <p class="text-xl leading-relaxed opacity-90">
+            Create an account to get access to exclusive resources, tools, 
+            and collaborate with our growing community of innovators.
           </p>
           <div class="flex space-x-4">
             <div class="h-1 w-12 bg-white/30"></div>
@@ -20,7 +36,7 @@
 
     <!-- Right Side - Auth Content -->
     <div class="flex items-center justify-center p-6 sm:p-12 auth-container animate-modal-entrance">
-      <div class="w-full max-w-md">
+      <div class="w-full relative max-w-[400px] mx-auto">
         <!-- Logo -->
         <div class="mb-12 text-center">
           <svg class="mx-auto h-12 w-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,7 +72,7 @@
         </div>
 
         <!-- Tab Content -->
-        <div class="relative">
+        <div class="relative transition-all duration-300 ease-out w-full max-w-[500px] mx-auto">
           <app-login-form
             *ngIf="activeTab === 'login'"
             class="slide-right"
