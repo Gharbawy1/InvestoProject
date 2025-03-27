@@ -1,0 +1,176 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Top Bar -->
+      <div class="flex items-center justify-between h-16">
+        <!-- Branding -->
+        <div class="flex items-center space-x-3">
+          <svg class="w-8 h-8 text-blue-600"
+            fill="currentColor"
+            viewBox="0 0 24 24">
+            <path
+              d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5">
+            </path>
+          </svg>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800">{{ businessName }}</h1>
+            <p class="text-xs text-gray-500 hidden md:block">
+              ID: {{ businessId }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Right Controls -->
+        <div class="flex items-center space-x-4">
+          <!-- Notifications -->
+          <div class="relative">
+            <button class="p-2 text-gray-500 hover:text-blue-600 rounded-full hover:bg-gray-100 transition-colors duration-200"
+              title="Notifications">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+              <span class="absolute top-1 right-1 inline-block w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white">
+              </span>
+            </button>
+          </div>
+
+          <!-- Profile Dropdown -->
+          <div class="relative group">
+            <button class="flex items-center space-x-3 focus:outline-none">
+              <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center shadow-sm transition-all duration-200 hover:shadow-md">
+                <span class="text-blue-700 font-medium text-lg">GC</span>
+              </div>
+            </button>
+
+            <!-- Dropdown -->
+            <div class="hidden group-hover:block absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 animate-fade-in">
+              <a
+                href="#"
+                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                <svg class="w-5 h-5 mr-3 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 00-1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 001.066 2.573c-.94 1.543.826 3.31 2.37 2.37.996.608 2.296.07 2.572-1.065z"/>
+                </svg>
+                Settings
+              </a>
+              <div class="border-t border-gray-100 my-2"></div>
+              <a
+                href="#"
+                class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
+                <svg class="w-5 h-5 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                Logout
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-end py-3 border-t border-gray-100 space-x-4">
+        <button class="flex items-center px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg border border-blue-200 transition-all duration-200 hover:scale-[1.02] hover:shadow-sm">
+          <svg class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"/>
+          </svg>
+          New Project
+        </button>
+        <button class="flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 rounded-lg shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md">
+          <svg class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+          Withdraw Funds
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <!-- Stats Grid -->
+    <app-stats-cards class="animate-content-fade"></app-stats-cards>
+
+    <!-- Analytics -->
+    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mt-5 ">
+      <app-daily-funding-chart class="animate-content-fade"></app-daily-funding-chart>
+      
+      <!-- Analytics & Visualizations (New Section) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Monthly Funding Chart -->
+        <app-performance-chart class="animate-content-fade"></app-performance-chart>
+
+        <!-- Investor Demographics -->
+        <app-demographic-card class="animate-content-fade"></app-demographic-card>
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="mt-8 relative">
+      <nav class="flex border-b border-gray-200">
+        <button
+          *ngFor="let tab of tabs; let i = index"
+          (click)="activeTab = i"
+          class="relative py-3 px-6 font-medium text-gray-500 transition-colors duration-300 hover:text-blue-500 focus:outline-none"
+          [class.text-blue-600]="activeTab === i">
+          {{ tab.label }}
+          <span *ngIf="activeTab === i" class="tab-indicator"></span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Tabs Content -->
+    <section class="mt-6 p-6 bg-white shadow rounded-lg transition-all duration-300 hover:shadow-md">
+      <div class="animate-content-fade" [class.hidden]="activeTab !== 0">
+        <app-overview-tab></app-overview-tab>
+      </div>
+      <div class="animate-content-fade" [class.hidden]="activeTab !== 1">
+        <app-projects-tab></app-projects-tab>
+      </div>
+      <div class="animate-content-fade" [class.hidden]="activeTab !== 2">
+        <app-messages-tab></app-messages-tab>
+      </div>
+      <div class="animate-content-fade" [class.hidden]="activeTab !== 3">
+        <app-notifications-tab></app-notifications-tab>
+      </div>
+      <div class="animate-content-fade" [class.hidden]="activeTab !== 4">
+        <app-calender-tab></app-calender-tab>
+      </div>
+    </section>
+  </main>
+</div>
