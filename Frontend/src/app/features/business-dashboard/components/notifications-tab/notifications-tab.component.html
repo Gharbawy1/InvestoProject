@@ -1,0 +1,51 @@
+<!-- Notifications Tab Content -->
+<div class="space-y-6 animate-content-fade">
+  <!-- Card Container -->
+  <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-gray-100">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+      <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+        </svg>
+        Notifications
+      </h2>
+      <button class="mt-4 md:mt-0 flex items-center bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium py-2 px-4 rounded-md shadow-md transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+        <svg class="w-4 h-4 mr-2 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Mark All as Read
+      </button>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="space-y-2">
+      <div *ngFor="let notification of notifications" 
+           class="group border border-transparent rounded-lg p-4 hover:border-blue-200 hover:bg-blue-50 transition-all duration-300 cursor-pointer">
+        <div class="flex items-start">
+          <!-- Icon Container -->
+          <div class="bg-blue-100 p-2 rounded-lg mr-4">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+          </div>
+
+          <!-- Notification Details -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <p class="text-base font-medium text-gray-900">{{ notification.title }}</p>
+              <span *ngIf="notification.unread" class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+            </div>
+            <p class="text-sm text-gray-600 mt-1">{{ notification.message }}</p>
+            <div class="flex items-center mt-2 text-xs text-gray-400">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              {{ notification.time }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

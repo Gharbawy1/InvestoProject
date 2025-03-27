@@ -1,0 +1,137 @@
+<!-- Overview Tab Content -->
+<div class="space-y-6 animate-content-fade">
+  <!-- Project Funding Progress -->
+  <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-gray-100">
+    <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+      <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+      </svg>
+      Project Funding Progress
+    </h3>
+    <div class="space-y-8">
+      <div *ngFor="let project of projects" class="group relative hover:bg-gray-50 rounded-lg p-4 transition-all duration-300">
+        <div class="flex justify-between items-start">
+          <div class="flex-1 min-w-0">
+            <a [routerLink]="['/project', project.id]" 
+               class="text-base font-semibold text-gray-900 hover:text-blue-600 transition-colors flex items-center">
+              {{ project.title }}
+              <svg class="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+            <div class="flex items-center mt-3 space-x-4">
+              <span [class]="project.status === 'active' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'" 
+                    class="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide">
+                {{ project.status === 'active' ? 'Active' : 'Funded' }}
+              </span>
+              <div class="flex items-center text-sm text-gray-500">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                {{ project.investors }} investors
+              </div>
+            </div>
+          </div>
+          <div class="text-right pl-4">
+            <div class="text-lg font-semibold text-gray-900">
+              {{ project.fundingProgress | currency:'USD':'symbol':'1.0-0' }}
+              <span class="text-sm font-medium text-gray-500">of {{ project.fundingGoal | currency:'USD':'symbol':'1.0-0' }}</span>
+            </div>
+            <div class="text-sm font-medium mt-1" 
+                 [ngClass]="project.status === 'active' ? 'text-blue-600' : 'text-purple-600'">
+              {{ (project.fundingProgress / project.fundingGoal) * 100 | number:'1.0-0' }}% funded
+            </div>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div [style.width.%]="(project.fundingProgress / project.fundingGoal) * 100" 
+                 class="h-2.5 rounded-full transition-all duration-500 ease-out"
+                 [ngClass]="project.status === 'active' ? 'bg-blue-600' : 'bg-purple-600'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Messages & Notifications -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Messages Card -->
+    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-gray-100">
+      <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+        Recent Messages
+      </h3>
+      <div class="space-y-4">
+        <div *ngFor="let message of messages.slice(0, 2)" 
+             class="flex items-start p-4 rounded-lg border border-transparent hover:border-blue-100 hover:bg-blue-50 transition-all duration-300 cursor-pointer">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center mb-2">
+              <p class="font-medium text-gray-900 truncate">{{ message.from }}</p>
+              <span *ngIf="message.unread" class="ml-2 w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+            </div>
+            <p class="text-sm font-medium text-gray-800 truncate">{{ message.subject }}</p>
+            <p class="text-sm text-gray-500 truncate mt-1">{{ message.preview }}</p>
+          </div>
+          <div class="ml-4 flex-shrink-0">
+            <p class="text-xs text-gray-500">{{ message.date }}</p>
+            <button class="mt-2 text-gray-400 hover:text-blue-600 transition-colors" title="More options">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <button class="mt-6 w-full text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center justify-end transition-colors"
+              routerLink="/messages">
+        View All Messages
+        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Notifications Card -->
+    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-gray-100">
+      <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+        </svg>
+        Recent Notifications
+      </h3>
+      <div class="space-y-4">
+        <div *ngFor="let notification of notifications.slice(0, 2)" 
+             class="p-4 rounded-lg border border-transparent hover:border-blue-100 hover:bg-blue-50 transition-all duration-300 cursor-pointer">
+          <div class="flex items-start">
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-gray-900">{{ notification.title }}</p>
+              <p class="text-sm text-gray-600 mt-1">{{ notification.message }}</p>
+              <p class="text-xs text-gray-400 mt-2 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {{ notification.time }}
+              </p>
+            </div>
+            <button class="text-gray-400 hover:text-blue-600 transition-colors ml-4" title="More options">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <button class="mt-6 w-full text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center justify-end transition-colors"
+              routerLink="/notifications">
+        View All Notifications
+        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
