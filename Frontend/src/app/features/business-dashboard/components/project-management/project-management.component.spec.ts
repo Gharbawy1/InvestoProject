@@ -3,21 +3,21 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { CalenderTabComponent } from './calender-tab.component';
+import { ProjectManagementComponent } from './project-management.component';
 
-describe('CalenderTabComponent', () => {
-  let component: CalenderTabComponent;
-  let fixture: ComponentFixture<CalenderTabComponent>;
+describe('ProjectManagementComponent', () => {
+  let component: ProjectManagementComponent;
+  let fixture: ComponentFixture<ProjectManagementComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CalenderTabComponent ]
+      declarations: [ ProjectManagementComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CalenderTabComponent);
+    fixture = TestBed.createComponent(ProjectManagementComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

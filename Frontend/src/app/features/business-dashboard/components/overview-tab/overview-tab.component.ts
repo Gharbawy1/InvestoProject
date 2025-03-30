@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
 })
 export class OverviewTabComponent {
 
-  // Example data; replace with real data source as needed
+  // Example projects data; replace with real data source as needed.
   projects = [
     {
       id: '1',
@@ -25,8 +25,8 @@ export class OverviewTabComponent {
       id: '2',
       title: 'Community Garden Expansion',
       fundingProgress: 75000,
-      fundingGoal: 100000,
-      status: 'active',
+      fundingGoal: 75000,
+      status: 'funded',
       investors: 28,
       createdAt: '2023-11-15',
     },
@@ -41,6 +41,7 @@ export class OverviewTabComponent {
     },
   ];
 
+  // Example messages data for the overview tab.
   messages = [
     {
       id: '1',
@@ -60,6 +61,7 @@ export class OverviewTabComponent {
     },
   ];
 
+  // Example notifications data for the overview tab.
   notifications = [
     {
       id: '1',
@@ -74,7 +76,6 @@ export class OverviewTabComponent {
       time: '1 day ago',
     },
   ];
-
 
   constructor() { }
 }

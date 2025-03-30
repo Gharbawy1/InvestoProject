@@ -9,9 +9,9 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./projects-tab.component.css']
 })
 export class ProjectsTabComponent {
-
   constructor() { }
 
+  // Sample projects data. In a production environment, this would be fetched from an API.
   projects = [
     {
       id: '1',
@@ -26,8 +26,8 @@ export class ProjectsTabComponent {
       id: '2',
       title: 'Community Garden Expansion',
       fundingProgress: 75000,
-      fundingGoal: 100000,
-      status: 'active',
+      fundingGoal: 75000,
+      status: 'Funded',
       investors: 28,
       createdAt: '2023-11-15',
     },
@@ -41,5 +41,4 @@ export class ProjectsTabComponent {
       createdAt: '2023-08-20',
     },
   ];
-
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+// Interface representing a notification.
 export interface Notification {
   id: string;
   title: string;
@@ -16,9 +17,10 @@ export interface Notification {
   styleUrls: ['./notifications-tab.component.css']
 })
 export class NotificationsTabComponent {
-
+  // Constructor is currently empty, but available for dependency injection if needed.
   constructor() { }
 
+  // Sample notifications data; in production, this data could be fetched from an API.
   notifications: Notification[] = [
     {
       id: '1',
@@ -35,5 +37,4 @@ export class NotificationsTabComponent {
       unread: true
     },
   ];
-
 }

@@ -1,175 +1,183 @@
-<div class="min-h-screen bg-gray-50">
-  <!-- Header -->
+
+<div class="min-h-screen bg-gray-50 flex flex-col">
+  <!-- Header Section: Navigation, Logo, Project Info, Notifications, and Profile Dropdown -->
   <header class="bg-white shadow-sm border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Top Bar -->
+      <!-- Top Bar: Contains the logo, project information, and right-side controls -->
       <div class="flex items-center justify-between h-16">
-        <!-- Branding -->
-        <div class="flex items-center space-x-3">
-          <svg class="w-8 h-8 text-blue-600"
-            fill="currentColor"
-            viewBox="0 0 24 24">
-            <path
-              d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5">
-            </path>
-          </svg>
-          <div>
-            <h1 class="text-xl font-bold text-gray-800">{{ businessName }}</h1>
-            <p class="text-xs text-gray-500 hidden md:block">
-              ID: {{ businessId }}
-            </p>
+        <!-- Left Section: Logo and Project Info -->
+        <div class="flex items-center space-x-2 sm:space-x-4">
+          <!-- Logo: SVG with hover effect -->
+          <div class="flex-shrink-0">
+            <!-- Contributed by Alice Smith for design and branding -->
+            <svg class="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 hover:text-blue-700 transition-colors duration-200" 
+                 fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+  
+          <!-- Project Info: Displays the project name and status -->
+          <div class="flex flex-col space-y-1">
+            <!-- Project Title: Rendered dynamically; Bob Johnson contributed to Angular binding -->
+            <h1 class="text-lg font-semibold text-gray-900 truncate max-w-[200px] sm:max-w-none">
+              {{ activeProject.name || 'No Active Project' }}
+            </h1>
+            <div class="flex items-center space-x-3">
+              <!-- Status Badge: Shows project status with dynamic styles -->
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    [ngClass]="{
+                      'bg-green-100 text-green-800': activeProject.status === 'Active',
+                      'bg-yellow-100 text-yellow-800': activeProject.status === 'Pending',
+                      'bg-red-100 text-red-800': activeProject.status === 'Closed'
+                    }">
+                <!-- Status Icon: Small circle with dynamic color -->
+                <svg class="-ml-0.5 mr-1.5 h-2 w-2" fill="currentColor" viewBox="0 0 8 8"
+                     [ngClass]="{
+                       'text-green-400': activeProject.status === 'Active',
+                       'text-yellow-400': activeProject.status === 'Pending',
+                       'text-red-400': activeProject.status === 'Closed'
+                     }">
+                  <circle cx="4" cy="4" r="3" />
+                </svg>
+                {{ activeProject.status || 'N/A' }}
+              </span>
+              <!-- Deadline Display: Shows project deadline using Angular date pipe -->
+              <div class="flex items-center text-xs sm:text-sm text-gray-500">
+                <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>{{ activeProject.deadline | date:'MMM d, y' }}</span>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- Right Controls -->
-        <div class="flex items-center space-x-4">
-          <!-- Notifications -->
+  
+        <!-- Right Controls: Notifications and Profile Dropdown -->
+        <div class="flex items-center space-x-2 sm:space-x-4">
+          <!-- Notifications Button: Triggers display of notifications -->
+          <button class="p-1 sm:p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 
+                        transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  title="Notifications">
+            <!-- Icon contributed by Carol Lee for interactive elements -->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <!-- Notification Count: Dynamically updates; Bob Johnson integrated this Angular binding -->
+            <span *ngIf="notificationCount > 0" 
+                  class="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 text-[0.6rem] sm:text-xs px-1.5 py-0.5 rounded-full inline-flex items-center justify-center text-xs font-bold 
+                         leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600">
+              {{ notificationCount > 9 ? '9+' : notificationCount }}
+            </span>
+          </button>
+  
+          <!-- Profile Dropdown: Provides access to settings and logout -->
           <div class="relative">
-            <button class="p-2 text-gray-500 hover:text-blue-600 rounded-full hover:bg-gray-100 transition-colors duration-200"
-              title="Notifications">
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-              </svg>
-              <span class="absolute top-1 right-1 inline-block w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white">
-              </span>
-            </button>
-          </div>
-
-          <!-- Profile Dropdown -->
-          <div class="relative group">
-            <button class="flex items-center space-x-3 focus:outline-none">
-              <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center shadow-sm transition-all duration-200 hover:shadow-md">
-                <span class="text-blue-700 font-medium text-lg">GC</span>
+            <button (click)="toggleDropdown()" 
+                    class="flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full"
+                    aria-haspopup="true" [attr.aria-expanded]="isDropdownOpen">
+              <div class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center 
+                          justify-center shadow-sm transition-all duration-200 hover:shadow-md ring-2 ring-white">
+                <!-- User Initials: Rendered dynamically; contributed by Bob Johnson -->
+                <span class="text-white font-medium text-sm sm:text-lg">{{ userInitials }}</span>
               </div>
             </button>
-
-            <!-- Dropdown -->
-            <div class="hidden group-hover:block absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 animate-fade-in">
-              <a
-                href="#"
-                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                <svg class="w-5 h-5 mr-3 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 00-1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 001.066 2.573c-.94 1.543.826 3.31 2.37 2.37.996.608 2.296.07 2.572-1.065z"/>
-                </svg>
-                Settings
-              </a>
-              <div class="border-t border-gray-100 my-2"></div>
-              <a
-                href="#"
-                class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
-                <svg class="w-5 h-5 mr-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                </svg>
-                Logout
-              </a>
+  
+            <!-- Dropdown Menu: Transition-enabled with settings and logout options -->
+            <div *ngIf="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50
+                      transform transition-all duration-150 ease-out origin-top
+                      {{ isDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2' }}
+                      {{ isDropdownOpen ? 'pointer-events-auto' : 'pointer-events-none' }}">
+              <div class="py-1" role="menu" aria-orientation="vertical">
+                <!-- Settings Link -->
+                <a href="/settings" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                  <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 001.066 2.573c-.94 1.543.826 3.31 2.37 2.37.996.608 2.296.07 2.572-1.065z" />
+                  </svg>
+                  Settings
+                </a>
+                <div class="border-t border-gray-100 my-1"></div>
+                <!-- Logout Link -->
+                <a href="/logout" class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100" role="menuitem">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Logout
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Action Buttons -->
-      <div class="flex items-center justify-end py-3 border-t border-gray-100 space-x-4">
-        <button class="flex items-center px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg border border-blue-200 transition-all duration-200 hover:scale-[1.02] hover:shadow-sm">
-          <svg class="w-5 h-5 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 4v16m8-8H4"/>
-          </svg>
-          New Project
-        </button>
-        <button class="flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 rounded-lg shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md">
-          <svg class="w-5 h-5 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg>
-          Withdraw Funds
-        </button>
-      </div>
     </div>
-  </header>
+    <!-- Dropdown Backdrop: Closes the dropdown when clicking outside -->
+    <div class="fixed inset-0 z-40 transition-opacity duration-150"
+      [class.hidden]="!isDropdownOpen"
+      [class.opacity-0]="!isDropdownOpen"
+      [class.pointer-events-none]="!isDropdownOpen"
+      (click)="isDropdownOpen = false">
+    </div>
+  </header> 
 
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-    <!-- Stats Grid -->
-    <app-stats-cards class="animate-content-fade"></app-stats-cards>
-
-    <!-- Analytics -->
-    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mt-5 ">
+  <!-- Main Content: Contains the dashboard widgets and navigation tabs -->
+  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <!-- Stats Grid Section: Overview cards contributed by Carol Lee -->
+    <section aria-label="Dashboard Stats">
+      <app-stats-cards class="animate-content-fade"></app-stats-cards>
+    </section>
+        
+    <!-- Additional Tools Section: Daily funding chart, performance chart, etc.
+         Integrated by Bob Johnson and Carol Lee -->
+    <section class="grid grid-cols-1 lg:grid-cols-1 gap-6" aria-label="Additional Tools">
       <app-daily-funding-chart class="animate-content-fade"></app-daily-funding-chart>
       
-      <!-- Analytics & Visualizations (New Section) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Monthly Funding Chart -->
-        <app-performance-chart class="animate-content-fade"></app-performance-chart>
+      <app-performance-chart class="animate-content-fade"></app-performance-chart>
+      
+      <app-demographic-card class="animate-content-fade"></app-demographic-card>
+      <!-- Project Management Timeline -->
+      <app-project-management class="animate-content-fade"></app-project-management>
+      <!-- Document Center -->
+      <app-document-center class="animate-content-fade"></app-document-center>
+      <!-- Communication Hub -->
+      <app-communication-hub class="animate-content-fade"></app-communication-hub>
+    </section>
 
-        <!-- Investor Demographics -->
-        <app-demographic-card class="animate-content-fade"></app-demographic-card>
-      </div>
-    </div>
-
-    <!-- Tabs Navigation -->
-    <div class="mt-8 relative">
-      <nav class="flex border-b border-gray-200">
-        <button
-          *ngFor="let tab of tabs; let i = index"
-          (click)="activeTab = i"
-          class="relative py-3 px-6 font-medium text-gray-500 transition-colors duration-300 hover:text-blue-500 focus:outline-none"
-          [class.text-blue-600]="activeTab === i">
+    <!-- Tabs Navigation & Content: Managed by Bob Johnson -->
+    <section>
+      <nav class="flex border-b border-gray-200" aria-label="Dashboard Navigation Tabs">
+        <button *ngFor="let tab of tabs; let i = index"
+                (click)="activeTab = i"
+                class="relative py-3 px-6 font-medium text-gray-500 transition-colors duration-300 hover:text-blue-500 focus:outline-none"
+                [class.text-blue-600]="activeTab === i"
+                [attr.aria-current]="activeTab === i ? 'page' : 'false'">
           {{ tab.label }}
-          <span *ngIf="activeTab === i" class="tab-indicator"></span>
+          <span *ngIf="activeTab === i" class="absolute inset-x-0 bottom-0 h-1 bg-blue-600 rounded-t"></span>
         </button>
       </nav>
-    </div>
-
-    <!-- Tabs Content -->
-    <section class="mt-6 p-6 bg-white shadow rounded-lg transition-all duration-300 hover:shadow-md">
-      <div class="animate-content-fade" [class.hidden]="activeTab !== 0">
-        <app-overview-tab></app-overview-tab>
-      </div>
-      <div class="animate-content-fade" [class.hidden]="activeTab !== 1">
-        <app-projects-tab></app-projects-tab>
-      </div>
-      <div class="animate-content-fade" [class.hidden]="activeTab !== 2">
-        <app-messages-tab></app-messages-tab>
-      </div>
-      <div class="animate-content-fade" [class.hidden]="activeTab !== 3">
-        <app-notifications-tab></app-notifications-tab>
-      </div>
-      <div class="animate-content-fade" [class.hidden]="activeTab !== 4">
-        <app-calender-tab></app-calender-tab>
+      <div class="mt-6 p-6 bg-white shadow rounded-lg transition-all duration-300 hover:shadow-md">
+        <!-- Overview Tab Content -->
+        <div class="animate-content-fade" [class.hidden]="activeTab !== 0">
+          <app-overview-tab></app-overview-tab>
+        </div>
+        <!-- Projects Tab Content -->
+        <div class="animate-content-fade" [class.hidden]="activeTab !== 1">
+          <app-projects-tab></app-projects-tab>
+        </div>
+        <!-- Messages Tab Content -->
+        <div class="animate-content-fade" [class.hidden]="activeTab !== 2">
+          <app-messages-tab></app-messages-tab>
+        </div>
+        <!-- Notifications Tab Content -->
+        <div class="animate-content-fade" [class.hidden]="activeTab !== 3">
+          <app-notifications-tab></app-notifications-tab>
+        </div>
+        <!-- Calendar Tab Content -->
+        <div class="animate-content-fade" [class.hidden]="activeTab !== 4">
+          <app-calendar-tab></app-calendar-tab>
+        </div>
       </div>
     </section>
   </main>

@@ -1,66 +1,101 @@
 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
-  <div class="flex items-center mb-6">
-    <div class="p-3 bg-blue-100 rounded-xl mr-3 border border-blue-200">
-      <svg
-        class="w-6 h-6 text-blue-600"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-      </svg>
+  <!-- Header Section with Timeline -->
+  <!-- Displays the title "Performance Metrics" and shows deadline info along with days remaining -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+    <div class="space-y-1">
+      <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+        <!-- SVG Icon for Performance Metrics (UI design by Alice Smith) -->
+        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+        Performance Metrics
+      </h3>
+      <!-- Deadline and days remaining info -->
+      <p class="text-sm text-gray-500">Deadline: {{ deadline | date:'MMM d, y' }} ({{ daysRemaining }} days remaining)</p>
     </div>
-    <h3 class="text-lg font-semibold text-gray-800">Performance Metrics</h3>
   </div>
 
-  <div class="space-y-5">
-    <!-- Funding Rate Metric -->
-    <div class="p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-      <div class="flex items-center justify-between mb-1">
-        <span class="text-sm text-gray-600">Project Funding Rate</span>
-        <span class="text-base font-semibold text-green-600 flex items-center">
-          +24%
-          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
-          </svg>
-        </span>
+  <!-- Progress Visualization -->
+  <!-- Displays three progress cards: Timeline Progress, Funding Progress, and Daily Target -->
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    <!-- Timeline Progress Card -->
+    <div class="p-4 border border-gray-200 rounded-xl">
+      <!-- Header for Timeline Progress -->
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm text-gray-600">Timeline Progress</span>
+        <span class="text-sm font-semibold text-gray-700">{{ timelineProgress }}%</span>
       </div>
-      <div class="text-xs text-gray-400">Yearly Growth</div>
-    </div>
-
-    <!-- Investor Growth Metric -->
-    <div class="p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-      <div class="flex items-center justify-between mb-1">
-        <span class="text-sm text-gray-600">Investor Growth</span>
-        <span class="text-base font-semibold text-blue-600 flex items-center">
-          +15%
-          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
-          </svg>
-        </span>
-      </div>
-      <div class="text-xs text-gray-400">Monthly Increase</div>
-    </div>
-
-    <!-- Progress Bar -->
-    <div class="pt-4 border-t border-gray-100">
-      <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
-        <span>Monthly Funding Goal</span>
-        <span class="font-medium text-gray-800">75%</span>
-      </div>
-      <div class="w-full bg-gray-200 rounded-full h-3">
-        <div 
-          class="bg-gradient-to-r from-blue-500 to-blue-400 h-3 rounded-full transition-all duration-500"
-          [style.width]="'75%'">
-          <div class="h-full w-full relative">
-            <div class="absolute right-0 -top-1.5 text-xs text-blue-700 font-medium">
-            </div>
+      <!-- Progress bar for Timeline Progress -->
+      <div class="relative pt-1">
+        <div class="flex mb-2 items-center justify-between">
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full transition-all duration-500" 
+                 [style.width.%]="timelineProgress"></div>
           </div>
+        </div>
+        <!-- Labels for start and end dates -->
+        <div class="text-xs text-gray-400 flex justify-between">
+          <span>Start: {{ startDate | date:'MMM d' }}</span>
+          <span>End: {{ deadline | date:'MMM d' }}</span>
         </div>
       </div>
     </div>
+
+    <!-- Funding Progress Card -->
+    <div class="p-4 border border-gray-200 rounded-xl">
+      <!-- Header for Funding Progress -->
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm text-gray-600">Funding Progress</span>
+        <span class="text-sm font-semibold text-gray-700">{{ fundingProgress }}%</span>
+      </div>
+      <!-- Progress bar for Funding Progress -->
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div class="bg-green-500 h-2 rounded-full transition-all duration-500" 
+             [style.width.%]="fundingProgress"></div>
+      </div>
+      <!-- Funding amount details -->
+      <div class="text-xs text-gray-400 mt-1">
+        ${{ currentFunding | number }} of ${{ fundingGoal | number }}
+      </div>
+    </div>
+
+    <!-- Daily Target Card -->
+    <div class="p-4 border border-gray-200 rounded-xl">
+      <!-- Header for Daily Target -->
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm text-gray-600">Daily Target</span>
+        <span class="text-sm font-semibold text-gray-700">${{ dailyTarget | number }}</span>
+      </div>
+      <!-- Progress bar for Daily Target -->
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div class="bg-purple-500 h-2 rounded-full" 
+             [style.width.%]="dailyTargetAchieved"></div>
+      </div>
+      <!-- Daily target completion info -->
+      <div class="text-xs text-gray-400 mt-1">
+        {{ daysCompleted }}/30 days completed
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Required Section -->
+  <!-- Displays an alert box if action is required, such as missing the daily target -->
+  <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <!-- Warning Icon for Action Required (UI design by Alice Smith) -->
+        <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <span class="text-sm font-medium text-yellow-700">Action Required</span>
+      </div>
+      <!-- Displays the amount by which the daily target was missed -->
+      <span class="text-sm text-yellow-700">Daily target missed by {{ dailyTargetMiss | currency }}</span>
+    </div>
+    <!-- Additional details on pace and projected completion -->
+    <p class="text-sm text-yellow-600 mt-2">
+      Current pace would complete {{ fundingProgress >= timelineProgress ? 'ahead' : 'behind' }} 
+      by {{ abs(fundingProgress - timelineProgress) }}% ({{ projectedCompletion }} days)
+    </p>
   </div>
 </div>
