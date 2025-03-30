@@ -1,0 +1,117 @@
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+  <!-- Header Section -->
+  <!-- Displays the title "Project Timeline" along with deadline information and the current stage indicator. -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+    <div class="space-y-1">
+      <!-- Title with Icon -->
+      <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+        <!-- SVG Icon for Timeline (designed with input from Alice Smith) -->
+        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+        </svg>
+        Project Timeline
+      </h2>
+      <!-- Deadline Information -->
+      <div class="flex items-center gap-2 text-sm text-gray-500">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        <span>Deadline: {{ projectDeadline | date:'MMM d, y' }}</span>
+      </div>
+    </div>
+    <!-- Current Stage Indicator -->
+    <!-- Shows the current project stage; defaults to "Planning" if none is provided -->
+    <div class="flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full border border-blue-200">
+      <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+      <span class="text-sm text-blue-700">{{ currentStage?.title || 'Planning' }}</span>
+    </div>
+  </div>
+
+  <!-- Timeline Visualization -->
+  <div class="relative pl-8">
+    <!-- Vertical Line -->
+    <!-- Serves as the backbone of the timeline -->
+    <div class="absolute left-5 top-4 w-0.5 h-full bg-gray-200 rounded-full"></div>
+
+    <!-- Milestones -->
+    <!-- Loops over each milestone to render its timeline dot and corresponding card -->
+    <div class="space-y-6">
+      <div *ngFor="let milestone of milestones" class="relative group">
+        <!-- Timeline Dot -->
+        <div class="absolute -left-7 top-1.5">
+          <div class="h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all"
+               [ngClass]="{
+                 'border-green-500 bg-green-100': milestone.status === 'completed',
+                 'border-blue-500 bg-blue-100': milestone.status === 'in-progress',
+                 'border-gray-300 bg-gray-50': milestone.status === 'pending'
+               }">
+            <!-- Checkmark for completed milestones -->
+            <svg *ngIf="milestone.status === 'completed'" class="w-3 h-3 text-green-600" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <!-- Display remaining days for in-progress milestones -->
+            <span *ngIf="milestone.status === 'in-progress'" class="text-xs font-medium text-blue-600">
+              {{ milestone.daysRemaining }}d
+            </span>
+          </div>
+        </div>
+
+        <!-- Milestone Card -->
+        <!-- Displays milestone details including title, description, date, and days left -->
+        <div class="p-4 rounded-lg border transition-all hover:border-blue-200 bg-white"
+             [ngClass]="{
+               'border-green-200': milestone.status === 'completed',
+               'border-blue-200': milestone.status === 'in-progress',
+               'border-gray-200': milestone.status === 'pending'
+             }">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1">
+              <!-- Milestone Title and Status Badge -->
+              <div class="flex items-center gap-2 mb-2">
+                <h3 class="font-semibold text-gray-800">{{ milestone.title }}</h3>
+                <span *ngIf="milestone.status === 'in-progress'" 
+                      class="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">
+                  Active
+                </span>
+              </div>
+              
+              <!-- Milestone Description -->
+              <p class="text-sm text-gray-600 mb-3">{{ milestone.description }}</p>
+              
+              <!-- Milestone Details -->
+              <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                <!-- Milestone Date -->
+                <div class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  <span>{{ milestone.date | date:'MMM d' }}</span>
+                </div>
+                <!-- Days Remaining (only for milestones not completed) -->
+                <div *ngIf="milestone.status !== 'completed'" class="flex items-center gap-1.5"
+                     [ngClass]="{'text-blue-600': milestone.status === 'in-progress'}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-9a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span>{{ milestone.daysRemaining }} days left</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Button for In-Progress Milestones -->
+            <!-- Allows users to perform an action related to the milestone -->
+            <button *ngIf="milestone.status === 'in-progress'"
+                    class="p-1.5 text-gray-400 hover:text-blue-600 rounded-md hover:bg-blue-50 transition-colors"
+                    [matTooltip]="milestone.actionTooltip"
+                    title="Perform action for {{ milestone.title }}"
+                    (click)="handleStageAction(milestone)">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

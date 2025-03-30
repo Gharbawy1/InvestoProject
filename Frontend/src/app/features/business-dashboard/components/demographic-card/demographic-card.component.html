@@ -1,65 +1,121 @@
 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
-  <h3 class="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-    </svg>
-    Investor Demographics
-  </h3>
+  <!-- Header with Filter -->
+  <!-- Contains the section title and a dropdown to filter the displayed time period. -->
+  <div class="flex items-center justify-between mb-6">
+    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+      <!-- SVG icon for Investor Demographics (UI design input by Alice Smith) -->
+      <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+      Investor Demographics
+    </h3>
+    <!-- Time period filter dropdown -->
+    <label for="timePeriodSelect" class="sr-only">Select Time Period</label>
+    <select id="timePeriodSelect" class="text-sm border border-gray-200 rounded-lg px-3 py-1 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+            [(ngModel)]="selectedPeriod" 
+            (change)="onTimePeriodChange(selectedPeriod)">
+      <!-- Generate dropdown options dynamically from timePeriods array -->
+      <option *ngFor="let period of timePeriods" [value]="period">{{ period }}</option>
+    </select>
+  </div>
 
-  <!-- Gender Breakdown -->
-  <div class="flex justify-between gap-4 mb-8">
-    <div class="flex-1 p-4 rounded-lg bg-blue-50 border border-blue-200">
-      <div class="flex items-center">
-        <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center mr-4">
-          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <!-- Gender Breakdown Section -->
+  <!-- Displays the percentage breakdown of male and female investors. -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+    <!-- Male Investors Card -->
+    <div class="p-4 rounded-lg border border-gray-200 hover:border-blue-200 transition-colors">
+      <div class="flex items-center gap-4">
+        <!-- Icon container for Male Investors -->
+        <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
           </svg>
         </div>
+        <!-- Text details for Male Investors -->
         <div>
           <p class="text-sm text-gray-600 mb-1">Male Investors</p>
           <p class="text-2xl font-bold text-gray-800">{{ demographics.male }}%</p>
         </div>
       </div>
-      <div class="mt-3 h-2 bg-blue-100 rounded-full">
-        <div class="h-2 bg-blue-600 rounded-full" [style.width]="demographics.male + '%'"></div>
+      <!-- Progress bar for Male Investors -->
+      <div class="mt-3 h-2 bg-gray-100 rounded-full">
+        <div class="h-2 bg-blue-600 rounded-full transition-all duration-500" 
+             [style.width.%]="demographics.male"></div>
       </div>
     </div>
 
-    <div class="flex-1 p-4 rounded-lg bg-pink-50 border border-pink-200">
-      <div class="flex items-center">
-        <div class="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center mr-4">
-          <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <!-- Female Investors Card -->
+    <div class="p-4 rounded-lg border border-gray-200 hover:border-pink-200 transition-colors">
+      <div class="flex items-center gap-4">
+        <!-- Icon container for Female Investors -->
+        <div class="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center">
+          <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
           </svg>
         </div>
+        <!-- Text details for Female Investors -->
         <div>
           <p class="text-sm text-gray-600 mb-1">Female Investors</p>
           <p class="text-2xl font-bold text-gray-800">{{ demographics.female }}%</p>
         </div>
       </div>
-      <div class="mt-3 h-2 bg-pink-100 rounded-full">
-        <div class="h-2 bg-pink-600 rounded-full" [style.width]="demographics.female + '%'"></div>
+      <!-- Progress bar for Female Investors -->
+      <div class="mt-3 h-2 bg-gray-100 rounded-full">
+        <div class="h-2 bg-pink-600 rounded-full transition-all duration-500" 
+             [style.width.%]="demographics.female"></div>
       </div>
     </div>
   </div>
 
-  <!-- Age Groups Breakdown -->
-  <div class="border-t border-gray-100 pt-6">
+  <!-- Age Groups Breakdown Section -->
+  <!-- Displays age distribution of investors with a progress bar for each age group. -->
+  <div class="border-t border-gray-100 pt-6 mb-6">
     <h4 class="text-sm font-semibold text-gray-700 mb-4">Age Distribution</h4>
-    <div class="space-y-4">
+    <div class="space-y-3">
+      <!-- Loop over each age group from demographics.ageGroups -->
       <div *ngFor="let group of demographics.ageGroups" class="flex items-center">
-        <span class="text-sm text-gray-600 w-24">{{ group.label }}</span>
-        <div class="flex-1 mx-4 h-3 bg-gray-100 rounded-full">
-          <div class="h-3 rounded-full transition-all duration-500" 
-               [style.width]="group.percentage + '%'"
+        <!-- Age group label -->
+        <span class="text-sm text-gray-600 w-20">{{ group.label }}</span>
+        <!-- Progress bar for the age group -->
+        <div class="flex-1 mx-3 h-2 bg-gray-100 rounded-full">
+          <div class="h-2 rounded-full transition-all duration-500" 
+               [style.width.%]="group.percentage"
                [ngClass]="{
-                 'bg-blue-600': group.label === '18-30',
-                 'bg-green-600': group.label === '31-45',
-                 'bg-purple-600': group.label === '46-60',
-                 'bg-orange-600': group.label === '61+'
+                 'bg-blue-600': group.label === '18-24',
+                 'bg-green-600': group.label === '25-34',
+                 'bg-purple-600': group.label === '35-44',
+                 'bg-orange-600': group.label === '45+'
                }"></div>
         </div>
+        <!-- Percentage text for the age group -->
         <span class="text-sm font-medium text-gray-700 w-12 text-right">{{ group.percentage }}%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Investor Locations Section -->
+  <!-- Lists the top investor locations with corresponding percentages. -->
+  <div class="border-t border-gray-100 pt-6 mb-6">
+    <h4 class="text-sm font-semibold text-gray-700 mb-4">Top Investor Locations</h4>
+    <div class="space-y-3">
+      <!-- Loop over each location from demographics.topLocations -->
+      <div *ngFor="let loc of demographics.topLocations" class="flex items-center justify-between group hover:bg-gray-50 px-2 py-1 rounded">
+        <span class="text-sm text-gray-600">{{ loc.city }}</span>
+        <span class="text-sm font-medium text-gray-700">{{ loc.percentage }}%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Investment Levels Breakdown Section -->
+  <!-- Displays investment levels with percentage breakdown and average investment values. -->
+  <div class="border-t border-gray-100 pt-6">
+    <h4 class="text-sm font-semibold text-gray-700 mb-4">Investment Levels</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <!-- Loop over each investment level from demographics.investmentLevels -->
+      <div *ngFor="let level of demographics.investmentLevels" class="p-3 rounded-lg border border-gray-200 hover:border-blue-200 transition-colors">
+        <p class="text-sm text-gray-600 mb-1">{{ level.label }}</p>
+        <p class="text-2xl font-bold text-gray-800">{{ level.percentage }}%</p>
+        <p class="text-xs text-gray-400 mt-1">Avg. ${{ level.averageInvestment | number }}</p>
       </div>
     </div>
   </div>

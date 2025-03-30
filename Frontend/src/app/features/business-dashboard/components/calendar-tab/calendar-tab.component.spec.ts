@@ -3,21 +3,21 @@ import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { OverviewTabComponent } from './overview-tab.component';
+import { CalendarTabComponent } from './calendar-tab.component';
 
-describe('OverviewTabComponent', () => {
-  let component: OverviewTabComponent;
-  let fixture: ComponentFixture<OverviewTabComponent>;
+describe('CalendarTabComponent', () => {
+  let component: CalendarTabComponent;
+  let fixture: ComponentFixture<CalendarTabComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ OverviewTabComponent ]
+      declarations: [ CalendarTabComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OverviewTabComponent);
+    fixture = TestBed.createComponent(CalendarTabComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
