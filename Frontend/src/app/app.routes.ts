@@ -3,11 +3,13 @@ import { LandingPageComponent } from './pages/landing-page/landing-page.componen
 import { AuthModelComponent } from './pages/auth-model/auth-model.component';
 import { ProjectCardComponent } from './features/project/components/project-card/project-card.component';
 import { BusinessDashboardComponent } from './pages/business-dashboard/business-dashboard.component';
+import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
 
 export const routes: Routes = [
     {path: 'LandingPage', component: LandingPageComponent},
     {path: 'auth', component: AuthModelComponent},
     {path: 'projectCard', component: ProjectCardComponent},
     {path: 'businessDashboard', component: BusinessDashboardComponent},
+    {path: 'ProjectDetails', component: ProjectDetailsComponent},
     {path: '', redirectTo: 'LandingPage', pathMatch: 'full'},
 ];

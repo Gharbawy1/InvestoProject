@@ -1,72 +1,66 @@
-<div class="relative w-screen h-[600px] bg-white overflow-hidden">
-    <!-- Background Image with Overlay -->
-    <div class="absolute inset-0 z-0">
-        <div class="absolute inset-0 bg-cover bg-center"></div>
-        <div class="absolute inset-0 bg-black/60"></div>
+<div class="relative w-full h-screen max-h-[800px] min-h-[600px] bg-white overflow-hidden">
+    <!-- Background Image with Parallax Effect -->
+    <div class="absolute inset-0 z-0 overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center bg-no-repeat transform scale-110 hover:scale-100 transition-transform duration-1000 ease-out"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/30"></div>
     </div>
 
     <!-- Content Container -->
     <div class="relative z-10 h-full w-full px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
-        <div class="max-w-3xl mx-auto text-center">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-                {{ title }}
+        <div class="max-w-4xl mx-auto text-center space-y-8">
+            <!-- Animated Title -->
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight animate-fade-in-up">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-light"></span>
+                <br class="md:hidden">
+                InvestGo
             </h1>
-            <p class="text-xl text-gray-200 mb-8">{{ subtitle }}</p>
+            
+            <!-- Subtitle with Typing Animation Effect -->
+            <p class="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto opacity-0 animate-typing">
+                {{ subtitle }}
+            </p>
 
-            <!-- CTA Buttons -->
-            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-                <button class="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-md"
+            <!-- CTA Buttons with Hover Effects -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-12 animate-fade-in-up delay-300">
+                <button class="relative bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 group overflow-hidden"
                     (click)="onInvestorSignup.emit()">
-                    Start Investing <span class="ml-2">&#8594;</span>
+                    <span class="relative z-10 flex items-center justify-center">
+                        Start Investing 
+                        <span class="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
+                    </span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-primary to-primary-light opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </button>
-                <button class="bg-transparent border border-white text-white hover:bg-white/10 font-semibold px-8 py-3 rounded-md"
+                
+                <button class="relative bg-transparent border-2 border-white text-white hover:text-gray-900 font-semibold px-8 py-4 rounded-lg transition-all duration-300 hover:bg-white/90 hover:shadow-lg group overflow-hidden"
                     (click)="onBusinessSignup.emit()">
-                    List Your Business
+                    <span class="relative z-10">List Your Business</span>
+                    <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </button>
             </div>
 
-            <!-- Feature Highlights -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="flex items-center">
-                    <div class="bg-primary/20 p-3 rounded-full mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-white font-medium">Growth Potential</h3>
-                        <p class="text-gray-300 text-sm">Access vetted opportunities</p>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <div class="bg-primary/20 p-3 rounded-full mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-white font-medium">Secure Platform</h3>
-                        <p class="text-gray-300 text-sm">Verified users and businesses</p>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <div class="bg-primary/20 p-3 rounded-full mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-white font-medium">Global Network</h3>
-                        <p class="text-gray-300 text-sm">Connect with partners worldwide</p>
+            <!-- Feature Highlights with Floating Animation -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 animate-fade-in-up delay-500">
+                <div *ngFor="let feature of features" class="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="bg-primary/20 p-4 rounded-full mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-8 text-primary">
+                                <path [attr.stroke-linecap]="feature.iconLinecap" [attr.stroke-linejoin]="feature.iconLinejoin"
+                                    [attr.d]="feature.iconPath" />
+                            </svg>
+                        </div>
+                        <h3 class="text-white font-medium text-lg mb-1">{{ feature.title }}</h3>
+                        <p class="text-gray-300 text-sm">{{ feature.description }}</p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Scrolling Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 text-white">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
     </div>
 </div>
