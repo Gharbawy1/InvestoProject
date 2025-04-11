@@ -1,0 +1,15 @@
+<div class="updates-container">
+    <h2 class="updates-title">Project Updates</h2>
+
+    <div class="updates-list">
+        <div *ngFor="let update of updates" class="update-item">
+            <div class="update-header">
+                <mat-icon class="update-icon">event</mat-icon>
+                <span class="update-date">{{ update.date | date:'longDate' }}</span>
+            </div>
+
+            <h3 class="update-title">{{ update.title }}</h3>
+            <p class="update-content">{{ update.content }}</p>
+        </div>
+    </div>
+</div>

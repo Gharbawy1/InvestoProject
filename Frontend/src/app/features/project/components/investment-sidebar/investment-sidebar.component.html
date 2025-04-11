@@ -1,0 +1,19 @@
+<div class="bg-white rounded-lg shadow-sm p-6 sticky top-24">
+    <h2 class="text-xl font-semibold mb-4">Invest in this Project</h2>
+
+    <div class="mb-6">
+        <div class="flex justify-between text-sm mb-1">
+            <span class="font-medium">
+                ${{ (fundingProgress / 1000).toFixed(1) }}K raised
+            </span>
+            <span class="text-gray-600">
+                ${{ (fundingGoal / 1000).toFixed(1) }}K goal
+            </span>
+        </div>
+        <mat-progress-bar [value]="progressPercentage"></mat-progress-bar>
+        <!-- Rest of the investment form -->
+    </div>
+
+    <button mat-flat-button color="primary" class="w-full mb-4">Invest Now</button>
+    <button mat-stroked-button class="w-full">Contact Business</button>
+</div>

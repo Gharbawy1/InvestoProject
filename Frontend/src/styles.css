@@ -11,6 +11,16 @@ for error message animtion => animate-slide-in error-message
 for btn animtion => transition-button button-hover
 */
 
+/* Remove default margins */
+body {
+  margin: 0;
+}
+
+/* Ensure router-outlet content stretches full width */
+router-outlet + * {
+  width: 100%;
+}
+
 /* ===== Reusable Animations ===== */
 @keyframes fadeIn {
   from {

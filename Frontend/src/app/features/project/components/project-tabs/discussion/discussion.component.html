@@ -1,0 +1,40 @@
+<div class="discussion-container">
+    <h2 class="discussion-title">Discussion</h2>
+
+    <form (ngSubmit)="handleCommentSubmit($event)" class="comment-form">
+        <mat-form-field appearance="outline" class="full-width">
+            <textarea matInput [(ngModel)]="newComment" name="newComment"
+                placeholder="Ask a question or leave a comment..." rows="3" required></textarea>
+        </mat-form-field>
+        <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit">
+                Post Comment
+            </button>
+        </div>
+    </form>
+
+    <div class="comments-list">
+        <div *ngFor="let comment of comments" class="comment-item">
+            <div class="comment-avatar">
+                <img [src]="comment.avatar" [alt]="comment.user" class="avatar-image">
+            </div>
+            <div class="comment-content">
+                <div class="comment-header">
+                    <span class="comment-user">{{ comment.user }}</span>
+                    <span class="comment-date">{{ comment.date | date:'mediumDate' }}</span>
+                </div>
+                <p class="comment-text">{{ comment.content }}</p>
+                <div class="comment-actions">
+                    <button mat-button color="primary" class="action-button">
+                        <mat-icon>reply</mat-icon>
+                        Reply
+                    </button>
+                    <button mat-button color="primary" class="action-button">
+                        <mat-icon>thumb_up</mat-icon>
+                        Like
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
