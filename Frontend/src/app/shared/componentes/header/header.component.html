@@ -15,7 +15,7 @@
             <div class="relative" [matMenuTriggerFor]="investorsMenu">
                 <button class="flex items-center text-gray-700 hover:text-primary transition-colors">
                     For Investors
-                    <mat-icon class="ml-1 scale-75"></mat-icon>
+                    <mat-icon class="ml-1 scale-75">expand_more</mat-icon>
                 </button>
             </div>
             <mat-menu #investorsMenu="matMenu">
@@ -70,8 +70,8 @@
 
             <ng-template #loggedOut>
                 <div class="flex items-center space-x-3">
-                    <button mat-button (click)="loginClick.emit()">Log In</button>
-                    <button mat-raised-button color="primary" (click)="registerClick.emit()">Register</button>
+                    <button mat-button routerLinkActive='active' routerLink="/auth" (click)="loginClick.emit()">Log In</button>
+                    <button mat-raised-button color="primary" routerLinkActive='active' routerLink="/auth" (click)="registerClick.emit()">Register</button>
                 </div>
             </ng-template>
         </div>
@@ -180,7 +180,7 @@
 
                 <ng-template #mobileLoggedOut>
                     <div class="flex flex-col space-y-3">
-                        <button mat-raised-button color="primary" (click)="loginClick.emit(); toggleMenu()">
+                        <button  mat-raised-button color="primary" (click)="loginClick.emit(); toggleMenu()">
                             Log In
                         </button>
                         <button mat-stroked-button (click)="registerClick.emit(); toggleMenu()">
