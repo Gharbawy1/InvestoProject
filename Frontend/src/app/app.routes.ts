@@ -1,15 +1,32 @@
 import { Routes } from '@angular/router';
-import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+import { AppLayoutComponent } from './pages/layoutes/app-layout/app-layout.component';
 import { AuthModelComponent } from './pages/auth-model/auth-model.component';
-import { ProjectCardComponent } from './features/project/components/project-card/project-card.component';
-import { BusinessDashboardComponent } from './pages/business-dashboard/business-dashboard.component';
-import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
 
 export const routes: Routes = [
-    {path: 'LandingPage', component: LandingPageComponent},
-    {path: 'auth', component: AuthModelComponent},
-    {path: 'projectCard', component: ProjectCardComponent},
-    {path: 'businessDashboard', component: BusinessDashboardComponent},
-    {path: 'ProjectDetails', component: ProjectDetailsComponent},
-    {path: '', redirectTo: 'LandingPage', pathMatch: 'full'},
+  {
+    path: '',
+    component: AppLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/landing-page/landing-page.component').then(
+            (m) => m.LandingPageComponent
+          ),
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import(
+            './pages/business-dashboard/business-dashboard.component'
+          ).then((m) => m.BusinessDashboardComponent),
+      },
+    ],
+  },
+  {
+    path: 'auth',
+    loadComponent: () =>
+      import('./pages/auth-model/auth-model.component').then((m) => m.AuthModelComponent),
+  },
+  { path: '', redirectTo: 'LandingPage', pathMatch: 'full' },
 ];
