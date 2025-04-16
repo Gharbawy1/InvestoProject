@@ -41,7 +41,7 @@
 </div>
 
 <!-- Tab Content -->
-<div class="relative transition-all duration-300 ease-out w-full max-w-[500px] mx-auto">
+<div class="relative transition-all duration-300 ease-out w-full max-w-[950px] mx-auto">
     <div *ngIf="activeTab === 'overview'" class="slide-right">
         <!-- Project Overview -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
@@ -68,6 +68,6 @@
 
     <app-updates *ngIf="activeTab === 'updates'" class="slide-left" [updates]="projectData.updates"></app-updates>
 
-    <app-discussion *ngIf="activeTab === 'discussion'" class="slide-left"
-        [comments]="projectData.comments"></app-discussion>
+    <app-discussion *ngIf="activeTab === 'discussion'" [comments]="comments" (commentSubmitted)="onCommentSubmitted($event)">
+    </app-discussion>
 </div>

@@ -9,6 +9,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TeamMembersComponent } from './team-members/team-members.component';
 import { CommonModule } from '@angular/common';
+import { Comment } from '../../interfaces/IComment';
+
 @Component({
   selector: 'app-project-tabs',
   imports: [
@@ -29,8 +31,31 @@ import { CommonModule } from '@angular/common';
 export class ProjectTabsComponent {
   @Input() activeTab = 'overview';
   @Input() projectData: any;
-
+  comments : Comment[] = [
+    {
+          user: 'John Doe',
+          avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+          date: '2023-01-15T14:30:00',
+          content: 'This is an interesting project!'
+        },
+        {
+          user: 'ALex Smith',
+          avatar: 'https://randomuser.me/api/portraits/men/2.jpg',
+          date: '2023-01-16T09:15:00',
+          content: 'I have a question about the investment terms.'
+        }
+  ];
   showTab(tab: string) {
     this.activeTab = tab;
+  }
+
+  onCommentSubmitted(comment: string) {
+    // Add to local comments array if needed
+    this.comments.unshift({
+      user: 'Current User',
+      avatar: 'path/to/avatar.jpg',
+      date: new Date().toISOString(),
+      content: comment,
+    });
   }
 }

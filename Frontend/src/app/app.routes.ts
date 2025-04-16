@@ -21,6 +21,10 @@ export const routes: Routes = [
             './pages/business-dashboard/business-dashboard.component'
           ).then((m) => m.BusinessDashboardComponent),
       },
+      {
+        path:'ProjectDetails',
+        loadComponent: () => import('./pages/project-details/project-details.component').then((m) => m.ProjectDetailsComponent)
+      }
     ],
   },
   {
