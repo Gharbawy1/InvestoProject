@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Backend/.vs/Investo
+/Backend/Investo
+/Backend/Investo.Entities
