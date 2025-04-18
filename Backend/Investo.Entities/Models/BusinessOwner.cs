@@ -12,8 +12,8 @@ namespace Investo.Entities.Models
         //[MaxLength(100)]
         //public string KYCStatus { get; set; }
         public PersonInfo PersonInfo { get; set; }
-        public byte[] PassportDocument { get; set; }
-        public byte[] NationalIDDocument { get; set; }
+        public string PassportDocumentURL { get; set; }
+        public string NationalIDDocumentURL { get; set; }
         public DateTime LastActivity { get; set; }
 
         // navigation property
