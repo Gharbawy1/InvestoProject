@@ -3,7 +3,6 @@
 ################################################################################
 
 /Backend/.vs/Investo
-/Backend/Investo
-/Backend/Investo.Entities
 /Backend/Investo.DataAccess/bin/Debug/net8.0
 /Backend/Investo.DataAccess/obj
+/Backend
