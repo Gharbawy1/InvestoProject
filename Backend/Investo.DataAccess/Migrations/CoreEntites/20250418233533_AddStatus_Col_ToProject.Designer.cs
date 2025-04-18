@@ -4,6 +4,7 @@ using Investo.DataAccess.ApplicationContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Investo.DataAccess.Migrations.CoreEntites
 {
     [DbContext(typeof(CoreEntitiesDbContext))]
-    partial class CoreEntitiesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418233533_AddStatus_Col_ToProject")]
+    partial class AddStatus_Col_ToProject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,9 +145,8 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("InvestmentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("InvestmentType")
+                        .HasColumnType("int");
 
                     b.Property<int>("InvestorId")
                         .HasColumnType("int");
@@ -169,11 +171,8 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("Pending");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

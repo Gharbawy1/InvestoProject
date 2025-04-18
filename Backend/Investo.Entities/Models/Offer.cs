@@ -59,7 +59,8 @@ namespace Investo.Entities.Models
         //SAFE,
         //Custom
     }
-
+    // offer.Status = OfferStatus.Accepted;
+    // _context.savech()
     public enum OfferStatus
     {
         Rejected,

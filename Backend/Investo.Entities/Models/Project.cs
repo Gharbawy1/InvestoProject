@@ -23,6 +23,9 @@ namespace Investo.Entities.Models
         public decimal FundingGoal { get; set; }
         public string FundingExchange { get; set; }
         //public List<string> AdditionalNeeds { get; set; } // Multiple entries
+
+        public ProjectStatus Status { get; set; } = ProjectStatus.Pending;
+        
         public string ProjectVision { get; set; }
         //public bool PackagesInvestment { get; set; }
         //public bool InvestmentNegotiation { get; set; }
@@ -38,5 +41,16 @@ namespace Investo.Entities.Models
         public string OwnerId { get; set; } // Foreign key to BusinessOwner (inherits from User)
         [ForeignKey("OwnerId")]
         public BusinessOwner Owner { get; set; }
+    }
+    public enum ProjectStatus
+    {
+        Rejected,
+        Accepted,
+        Pending,
+        //Countered,    // Owner made counter-offer
+        //Expired,
+        //Withdrawn,    // Investor canceled
+        //UnderReview,
+        //negotiated    // Legal/compliance check
     }
 }

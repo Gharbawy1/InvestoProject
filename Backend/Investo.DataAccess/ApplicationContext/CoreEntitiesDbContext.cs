@@ -21,6 +21,17 @@ namespace Investo.DataAccess.ApplicationContext
             modelBuilder.HasDefaultSchema("CoreEntities");
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Offer>()
+                    .Property(o => o.InvestmentType)
+                    .HasConversion<string>()
+                    ;
+
+            modelBuilder.Entity<Offer>()
+                .Property(o => o.Status)
+                .HasConversion<string>()
+                .HasDefaultValue(OfferStatus.Pending);
+
+
 
             modelBuilder.Entity<Investor>().OwnsOne(i => i.PersonInfo);
             modelBuilder.Entity<BusinessOwner>().OwnsOne(b => b.PersonInfo);
