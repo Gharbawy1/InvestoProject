@@ -24,13 +24,13 @@ namespace Investo
             // For CoreEntitiesDbContext
             builder.Services.AddDbContext<CoreEntitiesDbContext>(options =>
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("ProdCS"),
+                    builder.Configuration.GetConnectionString("DevCS"),
                     x => x.MigrationsHistoryTable("__EFMigrationsHistory", "CoreEntities")));
 
             // For RealTimeDbContext
             builder.Services.AddDbContext<RealTimeDbContext>(options =>
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("ProdCS"),
+                    builder.Configuration.GetConnectionString("DevCS"),
                     x => x.MigrationsHistoryTable("__EFMigrationsHistory", "RealTime")));
 
 
