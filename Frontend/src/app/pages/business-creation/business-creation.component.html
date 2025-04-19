@@ -1,0 +1,206 @@
+<div class="container mx-auto py-10 px-4 max-w-4xl bg-white">
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-bold mb-2">
+      Create Your Business Profile
+    </h1>
+    <p class="text-gray-600">
+      Complete the form below to create your business profile and start
+      attracting investors
+    </p>
+  </div>
+
+  <div class="border rounded-lg shadow-sm">
+    <div class="p-6">
+      <form [formGroup]="businessForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Business Name -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Business Name*</label>
+            <input formControlName="businessName" type="text" placeholder="Acme Corporation"
+              class="w-full px-3 py-2 border rounded-md" />
+            <div *ngIf="businessForm.get('businessName')?.invalid && businessForm.get('businessName')?.touched"
+              class="text-red-500 text-sm mt-1">
+              <div *ngIf="businessForm.get('businessName')?.errors?.['required']">Business name is required</div>
+              <div *ngIf="businessForm.get('businessName')?.errors?.['minlength']">Business name must be at least 2
+                characters</div>
+            </div>
+          </div>
+
+          <!-- Business Type -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Business Type*</label>
+            <select formControlName="businessType" class="w-full px-3 py-2 border rounded-md">
+              <option value="" disabled selected>Select business type</option>
+              <option *ngFor="let type of businessTypes" [value]="type.value">{{type.label}}</option>
+            </select>
+            <div *ngIf="businessForm.get('businessType')?.invalid && businessForm.get('businessType')?.touched"
+              class="text-red-500 text-sm mt-1">
+              Please select your business type
+            </div>
+          </div>
+
+          <!-- Registration Number -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Registration Number*</label>
+            <input formControlName="registrationNumber" type="text" placeholder="BRN12345678"
+              class="w-full px-3 py-2 border rounded-md" />
+            <div
+              *ngIf="businessForm.get('registrationNumber')?.invalid && businessForm.get('registrationNumber')?.touched"
+              class="text-red-500 text-sm mt-1">
+              Registration number is required
+            </div>
+          </div>
+
+          <!-- Founded Year -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Founded Year*</label>
+            <input formControlName="foundedYear" type="text" placeholder="2020"
+              class="w-full px-3 py-2 border rounded-md" />
+            <div *ngIf="businessForm.get('foundedYear')?.invalid && businessForm.get('foundedYear')?.touched"
+              class="text-red-500 text-sm mt-1">
+              Please enter a valid year
+            </div>
+          </div>
+
+          <!-- Website -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Website (Optional)</label>
+            <input formControlName="website" type="url" placeholder="https://www.example.com"
+              class="w-full px-3 py-2 border rounded-md" />
+            <div *ngIf="businessForm.get('website')?.invalid && businessForm.get('website')?.touched"
+              class="text-red-500 text-sm mt-1">
+              Please enter a valid URL
+            </div>
+          </div>
+
+          <!-- Industry -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Industry*</label>
+            <select formControlName="industry" class="w-full px-3 py-2 border rounded-md">
+              <option value="" disabled selected>Select industry</option>
+              <option *ngFor="let industry of industries" [value]="industry.value">{{industry.label}}</option>
+            </select>
+            <div *ngIf="businessForm.get('industry')?.invalid && businessForm.get('industry')?.touched"
+              class="text-red-500 text-sm mt-1">
+              Please select your industry
+            </div>
+          </div>
+
+          <!-- Employee Count -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Number of Employees*</label>
+            <select formControlName="employeeCount" class="w-full px-3 py-2 border rounded-md">
+              <option value="" disabled selected>Select employee count</option>
+              <option *ngFor="let count of employeeCounts" [value]="count.value">{{count.label}}</option>
+            </select>
+            <div *ngIf="businessForm.get('employeeCount')?.invalid && businessForm.get('employeeCount')?.touched"
+              class="text-red-500 text-sm mt-1">
+              Please select employee count
+            </div>
+          </div>
+
+          <!-- Contact Email -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Contact Email*</label>
+            <input formControlName="contactEmail" type="email" placeholder="contact@example.com"
+              class="w-full px-3 py-2 border rounded-md" />
+            <div *ngIf="businessForm.get('contactEmail')?.invalid && businessForm.get('contactEmail')?.touched"
+              class="text-red-500 text-sm mt-1">
+              <div *ngIf="businessForm.get('contactEmail')?.errors?.['required']">Email is required</div>
+              <div *ngIf="businessForm.get('contactEmail')?.errors?.['email']">Please enter a valid email address</div>
+            </div>
+          </div>
+
+          <!-- Contact Phone -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Contact Phone*</label>
+            <input formControlName="contactPhone" type="tel" placeholder="01012345678"
+              class="w-full px-3 py-2 border rounded-md" />
+            <div *ngIf="businessForm.get('contactPhone')?.invalid && businessForm.get('contactPhone')?.touched"
+              class="text-red-500 text-sm mt-1">
+              Please enter a valid phone number
+            </div>
+          </div>
+        </div>
+
+        <!-- Business Description -->
+        <div>
+          <label class="block text-sm font-medium mb-1">Business Description*</label>
+          <textarea formControlName="description"
+            placeholder="Provide a detailed description of your business, including your mission, vision, and what makes your business unique..."
+            class="w-full px-3 py-2 border rounded-md min-h-[120px]"></textarea>
+          <div *ngIf="businessForm.get('description')?.invalid && businessForm.get('description')?.touched"
+            class="text-red-500 text-sm mt-1">
+            <div *ngIf="businessForm.get('description')?.errors?.['required']">Description is required</div>
+            <div *ngIf="businessForm.get('description')?.errors?.['minlength']">Description must be at least 50
+              characters</div>
+            <div *ngIf="businessForm.get('description')?.errors?.['maxlength']">Description must not exceed 500
+              characters</div>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">
+            {{descriptionLength}}/500 characters
+          </p>
+        </div>
+
+        <!-- Business Documents -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-medium">Business Documents</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Business Registration -->
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <div class="flex flex-col items-center">
+                <h3 class="text-sm font-medium">Business Registration</h3>
+                <p class="text-xs text-gray-500 mt-1 mb-3">
+                  Upload business registration certificate
+                </p>
+
+                <input type="file" #businessRegistrationInput (change)="onFileSelected($event, 'registration')"
+                  hidden />
+                <button-component variant="outline" (click)="businessRegistrationInput.click()">
+                  Upload Document
+                </button-component>
+
+                <div class="text-xs mt-2 text-green-600" *ngIf="businessRegistrationFile">
+                  {{ businessRegistrationFile.name }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Financial Statements -->
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <div class="flex flex-col items-center">
+                <h3 class="text-sm font-medium">Financial Statements</h3>
+                <p class="text-xs text-gray-500 mt-1 mb-3">
+                  Upload recent financial statements
+                </p>
+
+                <input type="file" #financialStatementsInput (change)="onFileSelected($event, 'financial')" hidden />
+                <button-component variant="outline" 
+                  (click)="financialStatementsInput.click()">
+                  Upload Document
+                </button-component>
+
+                <div class="text-xs mt-2 text-green-600" *ngIf="financialStatementsFile">
+                  {{ financialStatementsFile.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="pt-4">
+          <p class="text-xs text-gray-500 mb-4">
+            By submitting this form, you confirm that all information
+            provided is accurate and you agree to our terms and
+            conditions.
+          </p>
+          <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            [disabled]="businessForm.invalid">
+            Create Business Profile
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

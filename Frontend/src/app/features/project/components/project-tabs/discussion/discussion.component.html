@@ -1,0 +1,43 @@
+<div class="bg-white rounded-lg shadow-sm p-6">
+    <h2 class="text-2xl font-semibold mb-4">Discussion</h2>
+
+    <form (ngSubmit)="handleCommentSubmit($event)" class="mb-8">
+        <div class="mb-4">
+            <textarea class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                rows="3" placeholder="Ask a question or leave a comment..." [(ngModel)]="newComment" name="newComment"
+                required></textarea>
+        </div>
+        <button-component [variant]="'default'" mat-raised-button color="primary" type="submit" class="ml-auto dark:text-white">
+            Post Comment
+        </button-component>
+    </form>
+
+    <div class="space-y-6">
+        <div *ngFor="let comment of comments; let i = index" class="flex space-x-4">
+            <div class="flex-shrink-0">
+                <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
+                    <img [src]="comment.avatar" [alt]="comment.user" class="w-full h-full object-cover" />
+                </div>
+            </div>
+            <div class="flex-grow">
+                <div class="flex items-center mb-1">
+                    <span class="font-medium mr-2">
+                        {{ comment.user }}
+                    </span>
+                    <span class="text-xs text-gray-500">
+                        {{ comment.date | date:'medium' }}
+                    </span>
+                </div>
+                <p class="text-gray-700">{{ comment.content }}</p>
+                <div class="mt-2">
+                    <button mat-button color="primary" class="!text-sm !p-0 !min-w-0 mr-4">
+                        Reply
+                    </button>
+                    <button mat-button color="primary" class="!text-sm !p-0 !min-w-0">
+                        Like
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

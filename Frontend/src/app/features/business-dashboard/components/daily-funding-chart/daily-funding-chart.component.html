@@ -1,0 +1,78 @@
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md group/chart" aria-label="Daily Funding Progress Chart">
+  <!-- Header section for the chart, including title and target/deadline details -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+    <!-- Left side: Title and funding details -->
+    <div class="space-y-1">
+      <!-- Chart Title with icon -->
+      <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+        <!-- SVG icon (designed by Alice Smith) for visual context -->
+        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+        Daily Funding Progress
+      </h3>
+      <!-- Displaying target and deadline details -->
+      <p class="text-sm text-gray-500">
+        Target: ${{ fundingGoal.toLocaleString() }} • 
+        Deadline: {{ lastDayOfMonth | date:'MMM d' }}
+      </p>
+    </div>
+    <!-- Right side: Progress indicator -->
+    <div class="flex items-center gap-3">
+      <!-- Status badge showing progress percentage and whether ahead or behind -->
+      <div class="flex items-center text-sm px-2.5 py-1 rounded-full" 
+           [ngClass]="{
+             'text-green-600 bg-green-50': isOnTrack,
+             'text-yellow-600 bg-yellow-50': !isOnTrack
+           }">
+        <!-- Icon changes based on progress (up for on-track, down for behind) -->
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path *ngIf="isOnTrack" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+          <path *ngIf="!isOnTrack" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+        <!-- Display progress percentage and status text -->
+        {{ progressPercentage }}% {{ isOnTrack ? 'Ahead' : 'Behind' }}
+      </div>
+    </div>
+  </div>
+  <!-- Chart area -->
+  <div class="h-80 relative">
+    <!-- ApexCharts component to render the area chart -->
+    <apx-chart 
+      [series]="chartOptions.series!"
+      [chart]="chartOptions.chart!"
+      [xaxis]="chartOptions.xaxis!"
+      [yaxis]="chartOptions.yaxis!"
+      [annotations]="chartOptions.annotations!"
+      [tooltip]="chartOptions.tooltip!"
+      [colors]="chartOptions.colors!"
+      [stroke]="chartOptions.stroke!"
+      [grid]="chartOptions.grid!"
+      [fill]="chartOptions.fill!"
+      [markers]="chartOptions.markers!"
+      [responsive]="responsive"
+      type="area">
+    </apx-chart>
+    <!-- Legend overlay for chart data -->
+    <div class="absolute bottom-4 right-4 flex items-center gap-2 text-sm text-gray-500 bg-white/80 backdrop-blur px-3 py-1.5 rounded-lg shadow-sm">
+      <span class="flex items-center">
+        <span class="w-3 h-3 bg-blue-500/20 rounded-sm mr-2"></span>
+        Daily Progress
+      </span>
+      <span class="flex items-center">
+        <span class="w-3 h-3 border-2 border-green-500 rounded-sm mr-2"></span>
+        Funding Goal
+      </span>
+    </div>
+  </div>
+  <!-- Footer section: Shows daily funding target and trend status -->
+  <div *ngIf="daysRemaining > 0" class="mt-4 text-sm text-gray-500">
+    <!-- Daily funding target amount, formatted as currency -->
+    <span class="font-medium">{{ dailyTarget | currency }}</span> needed daily to reach goal
+    <span class="mx-2">•</span>
+    <!-- Trend status text styled based on whether on track -->
+    <span [ngClass]="isOnTrack ? 'text-green-600' : 'text-yellow-600'">
+      {{ trendStatus }}
+    </span>
+  </div>
+</div>

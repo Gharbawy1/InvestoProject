@@ -1,0 +1,49 @@
+.ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+
+/* Error Message Fade-in Animation */
+.error-message {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Input Field Focus Effect */
+input:focus {
+  border-color: #1f2937; /* Dark gray */
+  box-shadow: 0 0 8px rgba(31, 41, 55, 0.3);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Button Hover Effect */
+button {
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* Modal Animation (Slide & Fade) */
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal {
+  animation: slideIn 0.3s ease-in-out;
+}

@@ -1,0 +1,121 @@
+<div class="p-6 space-y-8 animate-fade-in">
+  <h2 class="text-2xl font-bold text-gray-900 text-center">Identity Verification</h2>
+
+  <!-- Investor Form -->
+  <form *ngIf="selectedRole === 'investor' || selectedRole === 'business'" [formGroup]="verificationForm" (ngSubmit)="onSubmit()" class="space-y-8 animate-stagger">
+    <div class="space-y-6">
+      <!-- Upload Status Message -->
+      <div *ngIf="uploadMessage" class="p-4 rounded-lg flex items-start space-x-3 border animate-slide-in" 
+           [class.bg-green-50]="uploadSuccess"
+           [class.bg-red-50]="!uploadSuccess"
+           [class.border-green-200]="uploadSuccess"
+           [class.border-red-200]="!uploadSuccess">
+        <svg [class]="uploadSuccess ? 'text-green-600' : 'text-red-600'" class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+          <path *ngIf="uploadSuccess" fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          <path *ngIf="!uploadSuccess" fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <p class="text-sm flex-1" [class.text-green-700]="uploadSuccess" [class.text-red-700]="!uploadSuccess">
+          {{ uploadMessage }}
+        </p>
+      </div>
+
+      <!-- File Upload Sections -->
+      <div class="space-y-6">
+        <!-- Front ID Upload /-->
+        <div class="flex flex-col gap-2 transition-input">
+          <label class="text-sm font-medium text-gray-700">Government Issued ID (Front)</label>
+          <div class="relative group">
+            <input #frontFileInput title="frontID" type="file" (change)="onFileChange($event, 'idFront')" accept=".jpg,.jpeg,.png,.pdf" class="hidden"/>
+            <div (click)="frontFileInput.click()" 
+                 class="w-full min-h-[120px] rounded-lg border-2 border-dashed flex flex-col items-center justify-center p-6 transition-all cursor-pointer hover:scale-[1.005]"
+                 [class.border-gray-200]="!isFieldInvalid('idFront')"
+                 [class.border-red-300]="isFieldInvalid('idFront')"
+                 [class.bg-gray-50]="!isFieldInvalid('idFront')"
+                 [class.bg-red-50]="isFieldInvalid('idFront')"
+                 [class.group-hover:border-gray-300]="!isFieldInvalid('idFront')">
+              <svg class="w-8 h-8 text-gray-400 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+              </svg>
+              <div class="text-center">
+                <p class="text-sm text-gray-600">
+                  <span class="font-medium text-gray-900">Click to upload</span> or drag and drop
+                </p>
+                <p class="text-xs text-gray-500 mt-1">JPEG, PNG, or PDF (max 5MB)</p>
+              </div>
+              <div *ngIf="verificationForm.get('idFront')?.value" class="mt-3 animate-fade-in">
+                <span class="bg-gray-100 px-2 py-1 rounded-md text-xs font-medium text-gray-700">
+                  {{ verificationForm.get('idFront')?.value.name }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="min-h-[20px]">
+            <div *ngIf="isFieldInvalid( 'idFront')" class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in" aria-live="polite">
+              <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              <span>{{ getErrorMessage(verificationForm.get('idFront')) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back ID Upload -->
+      <div class="flex flex-col gap-2 transition-input">
+        <label class="text-sm font-medium text-gray-700">Government Issued ID (Back)</label>
+        <div class="relative group">
+          <input #backFileInput title="backID" type="file" (change)="onFileChange($event, 'idBack')" accept=".jpg,.jpeg,.png,.pdf" class="hidden"/>
+          <div (click)="backFileInput.click()" 
+              class="w-full min-h-[120px] rounded-lg border-2 border-dashed flex flex-col items-center justify-center p-6 transition-all cursor-pointer hover:scale-[1.005]"
+              [class.border-gray-200]="!isFieldInvalid('idBack')"
+              [class.border-red-300]="isFieldInvalid('idBack')"
+              [class.bg-gray-50]="!isFieldInvalid('idBack')"
+              [class.bg-red-50]="isFieldInvalid('idBack')"
+              [class.group-hover:border-gray-300]="!isFieldInvalid('idBack')">
+            <svg class="w-8 h-8 text-gray-400 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            <div class="text-center">
+              <p class="text-sm text-gray-600">
+                <span class="font-medium text-gray-900">Click to upload</span> or drag and drop
+              </p>
+              <p class="text-xs text-gray-500 mt-1">JPEG, PNG, or PDF (max 5MB)</p>
+            </div>
+            <div *ngIf="verificationForm.get('idBack')?.value" class="mt-3 animate-fade-in">
+              <span class="bg-gray-100 px-2 py-1 rounded-md text-xs font-medium text-gray-700">
+                {{ verificationForm.get('idBack')?.value.name }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="min-h-[20px]">
+          <div *ngIf="isFieldInvalid('idBack')" class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in" aria-live="polite">
+            <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            <span>{{ getErrorMessage(verificationForm.get('idBack')) }}</span>
+          </div>
+        </div>
+      </div>
+    </div> 
+
+    <button 
+      type="submit"
+      [disabled]="isLoading || verificationForm.invalid"
+      class="w-full text-sm font-medium py-2 rounded-md transition flex items-center justify-center cursor-pointer transition-button hover:scale-[1.02]"
+      [ngClass]="{
+        'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700': !isLoading && verificationForm.valid,
+        'bg-gray-300 text-gray-500 cursor-not-allowed': isLoading || verificationForm.invalid
+      }"
+    >
+      <span *ngIf="!isLoading">Submit Verification</span>
+      <span *ngIf="isLoading" class="flex items-center">
+        <svg class="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="12" cy="12" r="10" stroke-width="4"></circle>
+          <path d="M4 12a8 8 0 0 1 16 0" stroke-linecap="round"></path>
+        </svg>
+        Submitting...
+      </span>
+    </button>
+  </form>
+</div>

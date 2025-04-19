@@ -1,0 +1,61 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <!-- Upcoming Events Card -->
+  <!-- This card displays a list of upcoming events. Contributed by Alice Smith (UI/UX) and Bob Johnson (Angular Integration) -->
+  <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-gray-100/50">
+    <!-- Card Header: Title and View All button -->
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-xl font-semibold text-gray-900 flex items-center gap-3">
+        <!-- Icon Container: Provides a visual cue for the events card -->
+        <div class="p-2.5 bg-blue-50 rounded-lg">
+          <!-- SVG Icon for Calendar/Events -->
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        Upcoming Events
+      </h3>
+      <!-- "View All" button: Lets users navigate to a detailed view of all events -->
+      <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+        View All →
+      </button>
+    </div>
+
+    <!-- Card Content: List of events -->
+    <div class="space-y-4">
+      <!-- Event List Items: Uses Angular's *ngFor to iterate over events array -->
+      <div *ngFor="let event of events" 
+           class="group flex items-start p-4 rounded-lg border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all duration-300 cursor-pointer">
+        <!-- Date Display: Shows month and day of the event -->
+        <div class="flex-shrink-0 w-14 text-center bg-blue-50 rounded-lg p-2">
+          <div class="text-xs font-medium text-blue-600 uppercase">Dec</div>
+          <div class="text-2xl font-bold text-blue-700 mt-1">15</div>
+        </div>
+        <!-- Event Details: Title, time, and location -->
+        <div class="ml-4 flex-1 min-w-0">
+          <div class="text-base font-medium text-gray-900">Investor Meeting</div>
+          <div class="text-sm text-gray-600 mt-1">10:00 AM - 11:30 AM</div>
+          <!-- Location: Includes a location icon for better visual hierarchy -->
+          <div class="flex items-center mt-2 text-sm text-blue-600">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Conference Room A
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State: Displays a message if there are no upcoming events -->
+      <div *ngIf="events.length === 0" class="text-center py-8">
+        <!-- Empty State Icon -->
+        <div class="mb-4 text-blue-500">
+          <svg class="w-16 h-16 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <!-- Empty State Text: Informs the user that no events are scheduled -->
+        <p class="text-gray-500">No upcoming events scheduled</p>
+      </div>
+    </div>
+  </div>
+</div>

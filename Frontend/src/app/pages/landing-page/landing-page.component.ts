@@ -1,8 +1,9 @@
 import { Component, Input, Output, EventEmitter  } from '@angular/core';
+import { ProjectFilterComponent } from '../../features/project/components/project-filter/project-filter.component';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [],
+  imports: [ProjectFilterComponent],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css'
 })
@@ -13,5 +14,7 @@ export class LandingPageComponent {
   
   @Output() onInvestorSignup = new EventEmitter<void>();
   @Output() onBusinessSignup = new EventEmitter<void>();
+  
+  
 }
 

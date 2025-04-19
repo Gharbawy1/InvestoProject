@@ -1,88 +1,32 @@
-<div class="w-full bg-white p-6 pb-0 pt-0 rounded-lg">
-  <div class="mb-6 text-center">
-    <h2 class="text-2xl font-bold text-gray-900">
-      {{ step === 1 ? 'Create Your Account' : step === 2 ? 'Business Information' : 'Document Verification' }}
-    </h2>
-  </div>
+<div class="space-y-6 animate-fade-in w-full min-w-[400px]">
+  <app-progress-indicator-reg 
+    [currentStep]="step" 
+    [totalSteps]="4">
+  </app-progress-indicator-reg>  
+  
+  <app-account-creation 
+    *ngIf="step === 1"
+    (submitted)="handleAccountCreationSubmit($event)"
+    (stepChange)="step = $event"
+    (roleChange)="setRole($event)">
+  </app-account-creation>
 
-  <!-- Step 1: Role Selection -->
-  <div *ngIf="step === 1">
-    <p class="text-sm text-gray-500 mt-1 text-center">Select your role on the platform</p>
-    <div class="grid grid-cols-2 mb-6 gap-2">
-      <button (click)="setRole('investor')" [class.bg-gray-900]="selectedRole === 'investor'" 
-              class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm text-white transition focus:border-gray-900 focus:ring-gray-900">
-        <span [class.text-white]="selectedRole === 'investor'" [class.text-gray-900]="selectedRole !== 'investor'">Investor</span>
-      </button>
-      <button (click)="setRole('business')" [class.bg-gray-900]="selectedRole === 'business'" 
-              class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm text-white transition focus:border-gray-900 focus:ring-gray-900">
-        <span [class.text-white]="selectedRole === 'business'" [class.text-gray-900]="selectedRole !== 'business'">Business Owner</span>
-      </button>
-    </div>
-    
-    <form [formGroup]="personalInfoForm" (ngSubmit)="submitPersonalInfo()" class="space-y-5">
-      <div class="flex flex-col gap-1">
-        <input formControlName="firstName" placeholder="First Name" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition" />
-      </div>
-      <div class="flex flex-col gap-1">
-        <input formControlName="lastName" placeholder="Last Name" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition" />
-      </div>
-      <div class="flex flex-col gap-1">
-        <input formControlName="email" type="email" placeholder="Email" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition" />
-      </div>
-      <div class="flex flex-col gap-1">
-        <input formControlName="phone" placeholder="Phone Number" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition" />
-      </div>
-      <div class="flex flex-col gap-1">
-        <select formControlName="country" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition">
-          <option value="" disabled>Select your country</option>
-          <option value="us">United States</option>
-          <option value="ca">Canada</option>
-          <option value="uk">United Kingdom</option>
-        </select>
-      </div>
-      
-      <button type="submit" class="w-full text-sm font-medium py-2 rounded-md transition bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700">Continue</button>
-    </form>
-  </div>
+  <app-personal-info-reg 
+    *ngIf="step === 2"
+    [step]="step"
+    (submitted)="handlePersonalInfoSubmit($event)"
+    (stepChange)="step = $event">
+  </app-personal-info-reg>
 
-  <!-- Step 2: Business Info -->
-  <div *ngIf="step === 2 && selectedRole === 'business'">
-    <form [formGroup]="businessInfoForm" (ngSubmit)="submitBusinessInfo()" class="space-y-5">
-      <input formControlName="businessName" placeholder="Business Name" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition" />
-      <input formControlName="businessType" placeholder="Business Type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition" />
-      <input formControlName="registrationNumber" placeholder="Registration Number" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition" />
-      <input formControlName="foundedYear" placeholder="Founded Year" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition" />
-      <input formControlName="website" placeholder="Website" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition" />
-      
-      <div class="flex gap-4 pt-2">
-        <button type="button" (click)="prevStep()" class="w-full bg-gray-500 text-white py-2 rounded-md">Back</button>
-        <button type="submit" class="w-full bg-gray-900 text-white py-2 rounded-md">Continue</button>
-      </div>
-    </form>
-  </div>
+  <app-identity-verification 
+    *ngIf="step === 3"
+    [selectedRole]="selectedRole"
+    (submitted)="handleIdentityVerificationSubmit($event)">
+  </app-identity-verification>
 
-  <!-- Step 3: Document Upload -->
-  <div *ngIf="step === 3">
-    <form [formGroup]="documentUploadForm" (ngSubmit)="submitDocuments()" class="space-y-6">
-      <div class="border border-gray-300 rounded-md p-4 text-center">
-        <h3 class="text-sm font-medium">Identity Verification</h3>
-        <input type="file" formControlName="identityProof" class="mt-2" />
-      </div>
-      
-      <div *ngIf="selectedRole === 'business'" class="border border-gray-300 rounded-md p-4 text-center">
-        <h3 class="text-sm font-medium">Business Registration</h3>
-        <input type="file" formControlName="businessRegistration" class="mt-2" />
-      </div>
-      
-      <div class="border border-gray-300 rounded-md p-4 text-center">
-        <h3 class="text-sm font-medium">Additional Documents (Optional)</h3>
-        <input type="file" formControlName="additionalDocuments" class="mt-2" />
-      </div>
-      
-      <div class="flex gap-4 pt-2">
-        <button type="button" (click)="prevStep()" class="w-full bg-gray-500 text-white py-2 rounded-md">Back</button>
-        <button type="submit" class="w-full bg-gray-900 text-white py-2 rounded-md">Complete Registration</button>
-      </div>
-    </form>
-  </div>
+  <app-investment-preference 
+    *ngIf="step === 4"
+    [selectedRole]="selectedRole"
+    (submitted)="handleInvestmentPreferenceSubmit($event)">
+  </app-investment-preference>
 </div>

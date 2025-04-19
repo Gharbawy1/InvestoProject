@@ -1,0 +1,88 @@
+<div class="lg:col-span-1">
+    <div class="bg-white rounded-lg shadow-sm p-6 sticky top-24">
+        <h2 class="text-xl font-semibold mb-4">
+            Invest in this Project
+        </h2>
+
+        <div class="mb-6">
+            <div class="flex justify-between text-sm mb-1">
+                <span class="font-medium">
+                    {{ (fundingProgress / 1000).toFixed(1) }}K raised
+                </span>
+                <span class="text-gray-600">
+                    {{ (fundingGoal / 1000).toFixed(1) }}K goal
+                </span>
+            </div>
+            <mat-progress-bar mode="determinate" [value]="progressPercentage" class="h-2"></mat-progress-bar>
+            <div class="flex justify-between text-sm mt-1">
+                <span class="text-gray-600">
+                    {{ progressPercentage }}% funded
+                </span>
+                <span class="text-gray-600">42 investors</span>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-sm font-medium mb-2">
+                Investment Amount
+            </label>
+            <div class="relative">
+                <mat-icon
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 scale-75">attach_money</mat-icon>
+                <input type="number" min="1000" step="100" [(ngModel)]="investmentAmount"
+                    (ngModelChange)="onInvestmentChange()"
+                    class="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            </div>
+            <div class="flex justify-between mt-2">
+                <button class="text-xs text-primary" (click)="setInvestmentAmount(1000)">
+                    Min: $1,000
+                </button>
+                <button class="text-xs text-primary" (click)="setInvestmentAmount(10000)">
+                    Suggested: $10,000
+                </button>
+            </div>
+        </div>
+
+        <div class="space-y-3 mb-6">
+            <div class="flex justify-between text-sm">
+                <span>Equity</span>
+                <span class="font-medium">
+                    {{ calculateEquity() }}%
+                </span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span>Processing Fee</span>
+                <span class="font-medium">
+                    ${{ calculateProcessingFee() }}
+                </span>
+            </div>
+            <div class="flex justify-between text-sm font-medium pt-2 border-t">
+                <span>Total</span>
+                <span>${{ calculateTotal() }}</span>
+            </div>
+        </div>
+
+        <button-component mat-raised-button color="primary" class="w-full mb-4">Invest Now</button-component>
+        <button mat-stroked-button class="w-full">
+            Contact Business
+        </button>
+
+        <div class="mt-6 pt-6 border-t">
+            <h3 class="text-sm font-medium mb-2">Project Metrics</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Risk Level</span>
+                    <span class="font-medium">Moderate</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Time to Funding</span>
+                    <span class="font-medium">32 days left</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Minimum Investment</span>
+                    <span class="font-medium">$1,000</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,188 @@
+<!-- Overview Tab Content -->
+<div class="space-y-6 animate-content-fade">
+  <!-- Project Funding Progress Section -->
+  <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-gray-100">
+    <!-- Header: Title and status indicators for projects -->
+    <div class="flex items-center justify-between mb-6">
+      <!-- Title with Icon -->
+      <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+        <!-- SVG Icon (designed with input from Alice Smith) -->
+        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+        </svg>
+        Projects
+      </h2>
+      <!-- Status Indicators: Show Active and Funded statuses -->
+      <div class="flex items-center gap-3 text-xs">
+        <div class="flex items-center text-gray-500">
+          <div class="w-2 h-2 bg-blue-600 rounded-full mr-1"></div>
+          Active
+        </div>
+        <div class="flex items-center text-gray-500">
+          <div class="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+          Funded
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects List -->
+    <div class="space-y-4">
+      <!-- Loop over each project -->
+      <div *ngFor="let project of projects" 
+           class="group relative hover:bg-gray-50 rounded-lg p-4 transition-all duration-300 border-l-2"
+           [class.border-blue-600]="project.status === 'active'"
+           [class.border-green-600]="project.status !== 'active'">
+        <div class="flex justify-between items-start gap-4">
+          <!-- Project Information -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-2">
+              <!-- Status Badge: Dynamically shows Active or Funded -->
+              <span [class]="project.status === 'active' ? 'bg-blue-50 text-blue-700' : 'bg-green-100/80 text-green-800'" 
+                    class="px-2 py-1 rounded-md text-xs font-medium uppercase tracking-wide">
+                {{ project.status === 'active' ? 'Active' : 'Funded' }}
+              </span>
+              <!-- Project Creation Date -->
+              <span class="text-xs text-gray-500">{{ project.createdAt | date:'MMM dd' }}</span>
+            </div>
+            
+            <!-- Project Title with link (navigation handled by Angular router) -->
+            <a [routerLink]="['/project', project.id]" 
+               class="text-base font-medium text-gray-900 hover:text-blue-700 transition-colors flex items-center gap-1.5">
+              {{ project.title }}
+              <!-- Hover Icon: Appears on mouseover -->
+              <svg class="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" 
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+
+            <!-- Additional Project Details -->
+            <div class="flex items-center mt-2 gap-3">
+              <div class="flex items-center text-gray-500 text-xs">
+                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                {{ project.investors }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Funding Progress Details -->
+          <div class="text-right min-w-[120px]">
+            <!-- Current Funding Amount -->
+            <div class="text-base font-medium text-gray-900">
+              {{ project.fundingProgress | currency:'USD':'symbol':'1.0-0' }}
+              <span class="text-xs text-gray-500 block mt-0.5">of {{ project.fundingGoal | currency:'USD':'symbol':'1.0-0' }}</span>
+            </div>
+            <!-- Funding Percentage -->
+            <div class="text-sm font-medium mt-1.5" 
+                 [ngClass]="project.status === 'active' ? 'text-blue-600' : 'text-green-600'">
+              {{ (project.fundingProgress / project.fundingGoal) * 100 | number:'1.0-0' }}%
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mt-3">
+          <div class="w-full bg-gray-100 rounded-full h-1.5">
+            <div [style.width.%]="(project.fundingProgress / project.fundingGoal) * 100" 
+                 class="h-2 rounded-full transition-all duration-500 ease-out
+                         {{ project.status === 'active' ? 'bg-gradient-to-r from-blue-500 to-blue-600' : 'bg-gradient-to-r from-green-500 to-green-600' }}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity Section -->
+  <!-- Displays a grid with two cards: one for recent messages and one for recent notifications -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    <!-- Messages Card -->
+    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-4 border border-gray-100">
+      <!-- Header for Messages Card -->
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-semibold text-gray-900 flex items-center gap-2">
+          <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          Messages
+        </h3>
+        <span class="text-xs text-gray-500">2 new</span>
+      </div>
+
+      <!-- Messages List: Displays a subset of messages -->
+      <div class="space-y-3">
+        <!-- Loop through the first 2 messages -->
+        <div *ngFor="let message of messages.slice(0, 2)" 
+             class="p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer group relative">
+          <div class="flex items-start gap-3">
+            <!-- Avatar for Message Sender -->
+            <div class="flex-shrink-0">
+              <div class="w-6 h-6 bg-blue-50 rounded-md flex items-center justify-center">
+                <svg class="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+              </div>
+            </div>
+            <!-- Message Details -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-1">
+                <p class="text-sm font-medium text-gray-900 truncate">{{ message.from }}</p>
+                <!-- Unread Dot: Indicates a new message -->
+                <span *ngIf="message.unread" class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+              </div>
+              <p class="text-xs text-gray-700 font-medium truncate">{{ message.subject }}</p>
+              <p class="text-xs text-gray-500 truncate mt-0.5">{{ message.preview }}</p>
+            </div>
+          </div>
+          <!-- Message Date -->
+          <span class="text-[0.7rem] text-gray-400 block mt-1">{{ message.date | date:'MMM d' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications Card -->
+    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-4 border border-gray-100">
+      <!-- Header for Notifications Card -->
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-semibold text-gray-900 flex items-center gap-2">
+          <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          Notifications
+        </h3>
+        <span class="text-xs text-gray-500">2 new</span>
+      </div>
+
+      <!-- Notifications List: Displays a subset of notifications -->
+      <div class="space-y-3">
+        <!-- Loop through the first 2 notifications -->
+        <div *ngFor="let notification of notifications.slice(0, 2)" 
+             class="p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer">
+          <div class="flex items-start gap-3">
+            <!-- Icon Container for Notification -->
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-5 h-5 bg-blue-50 rounded-full flex items-center justify-center">
+                <svg class="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+            </div>
+            <!-- Notification Details -->
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900">{{ notification.title }}</p>
+              <p class="text-xs text-gray-600 mt-0.5">{{ notification.message }}</p>
+              <div class="flex items-center gap-1.5 mt-1 text-[0.7rem] text-gray-400">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-9a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>{{ notification.time }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
