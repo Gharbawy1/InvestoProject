@@ -1,0 +1,10 @@
+/* demographic-card.component.css */
+.chart-container {
+    min-height: 160px; /* Match your h-40 value */
+  }
+  
+  @media (min-width: 640px) {
+    .chart-container {
+      min-height: 192px; /* Match your h-48 value */
+    }
+  }
