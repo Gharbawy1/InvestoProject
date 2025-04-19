@@ -144,6 +144,35 @@ router-outlet + * {
   transform: scale(1.005);
 }
 
+/*====== Custom Scrollbar Styles ======*/
+.scrollbar-custom {
+  scrollbar-width: thin;  /* Firefox */
+  scrollbar-color: #cbd5e0 #f8fafc; /* Firefox */
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  height: 6px;  /* Horizontal scrollbar height */
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #f8fafc;  /* Track color */
+  border-radius: 3px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #cbd5e0;  /* Thumb color */
+  border-radius: 3px;
+  border: 1px solid #f8fafc;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;  /* Hover color */
+}
+
+/* Hide scrollbar arrows */
+.scrollbar-custom::-webkit-scrollbar-button {
+  display: none;
+}
 
 :root {
   --background: 0 0% 100%;

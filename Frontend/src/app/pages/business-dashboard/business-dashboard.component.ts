@@ -75,6 +75,18 @@ export class BusinessDashboardComponent implements OnInit {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
+  sections = [
+    { id: 'stats', label: 'Statistics' },
+    { id: 'funding', label: 'Funding' },
+    { id: 'performance', label: 'Performance' },
+    { id: 'demographic', label: 'Demographics' },
+    { id: 'management', label: 'Management' },
+    { id: 'documents', label: 'Documents' },
+    { id: 'communication', label: 'Communication' },
+    { id: 'tabs', label: 'Overview Tabs' }
+  ];
+  activeSection = 'stats';
+
   // Tabs for navigation, contributed by Bob Johnson
   tabs = [
     { label: 'Overview' },

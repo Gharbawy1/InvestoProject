@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Chart, ChartConfiguration } from 'chart.js/auto';
 
 // Interfaces defining the structure for age groups, location data, and investment levels.
 interface AgeGroup {
@@ -26,10 +27,6 @@ interface InvestmentLevel {
   styleUrls: ['./demographic-card.component.css'],
 })
 export class DemographicCardComponent {
-  // Available filter options for time period.
-  timePeriods: string[] = ['Last 6 Months', 'Last Year'];
-  // The currently selected time period (default to the first option).
-  selectedPeriod: string = this.timePeriods[0];
   // Tracks which gender card is being hovered (if needed for UI effects).
   hoveredGender: 'male' | 'female' | null = null;
 
@@ -79,15 +76,135 @@ export class DemographicCardComponent {
     return cityCountryMap[city] || '';
   }
 
-  /**
-   * onTimePeriodChange
-   * Called when the user selects a different time period from the filter dropdown.
-   * Updates the selected time period and can trigger data refresh.
-   * @param period - The newly selected time period.
-   */
-  onTimePeriodChange(period: string): void {
-    this.selectedPeriod = period;
-    // TODO: Fetch new demographics data based on the selected period.
-    console.log(`Selected period: ${period}`);
+  ngOnInit(): void {
+    this.renderGenderChart();
+    this.renderAgeChart();
+    this.renderLocationsChart();
+  }
+
+  private renderGenderChart() {
+    const ctx = document.getElementById('genderChart') as HTMLCanvasElement;
+    if (!ctx) return;
+  
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Male', 'Female'],
+        datasets: [{
+          data: [this.demographics.male, this.demographics.female],
+          backgroundColor: ['#3B82F6', '#EC4899'],
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              boxWidth: 12,
+              padding: 16
+            }
+          }
+        },
+        cutout: '60%'
+      }
+    });
+  }
+
+  private renderAgeChart() {
+    const ctx = document.getElementById('ageChart') as HTMLCanvasElement;
+    if (!ctx) return;
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: this.demographics.ageGroups.map(g => g.label),
+        datasets: [{
+          data: this.demographics.ageGroups.map(g => g.percentage),
+          backgroundColor: ['#3B82F6', '#10B981', '#8B5CF6', '#F97316'],
+          barThickness: 20,
+          maxBarThickness: 30,
+          categoryPercentage: 0.8,
+        }],
+      },
+      options: {
+        indexAxis: 'y',
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+          x: {
+            beginAtZero: true,
+            grid: { display: false },
+            ticks: { precision: 0 }
+          },
+          y: {
+            grid: { display: false }
+          }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  }
+
+  private renderLocationsChart() {
+    const ctx = document.getElementById('locationsChart') as HTMLCanvasElement;
+    if (!ctx) return;
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: this.demographics.topLocations.map(l => l.city),
+        datasets: [{
+          data: this.demographics.topLocations.map(l => l.percentage),
+          backgroundColor: [
+            '#3B82F6', 
+            '#10B981', 
+            '#8B5CF6', 
+            '#F97316', 
+            '#EF4444'
+          ],
+          borderWidth: 0,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+          x: {
+            beginAtZero: true,
+            grid: { display: false },
+            ticks: {
+              callback: (value) => `${value}%`,
+              precision: 0
+            }
+          },
+          y: {
+            grid: { display: false },
+            ticks: {
+              crossAlign: 'far',
+              padding: 8
+            }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const city = context.label;
+                const country = this.getCountryFromCity(city);
+                return `${city}, ${country}: ${context.parsed.x}%`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+  totalPercentage(): number {
+    return this.demographics.topLocations.reduce((sum, loc) => sum + loc.percentage, 0);
   }
 }

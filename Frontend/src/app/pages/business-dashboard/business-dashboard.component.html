@@ -1,5 +1,4 @@
-
-<div class="min-h-screen bg-gray-50 flex flex-col">
+<div class="min-h-screen bg-gray-50 flex flex-col mt-25">
   <!-- Header Section: Navigation, Logo, Project Info, Notifications, and Profile Dropdown -->
   <header class="bg-white shadow-sm border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -9,7 +8,6 @@
         <div class="flex items-center space-x-2 sm:space-x-4">
           <!-- Logo: SVG with hover effect -->
           <div class="flex-shrink-0">
-            <!-- Contributed by Alice Smith for design and branding -->
             <svg class="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 hover:text-blue-700 transition-colors duration-200" 
                  fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
@@ -18,7 +16,7 @@
   
           <!-- Project Info: Displays the project name and status -->
           <div class="flex flex-col space-y-1">
-            <!-- Project Title: Rendered dynamically; Bob Johnson contributed to Angular binding -->
+            <!-- Project Title: Rendered dynamically-->
             <h1 class="text-lg font-semibold text-gray-900 truncate max-w-[200px] sm:max-w-none">
               {{ activeProject.name || 'No Active Project' }}
             </h1>
@@ -59,12 +57,12 @@
           <button class="p-1 sm:p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 
                         transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   title="Notifications">
-            <!-- Icon contributed by Carol Lee for interactive elements -->
+            <!-- Icon-->
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            <!-- Notification Count: Dynamically updates; Bob Johnson integrated this Angular binding -->
+            <!-- Notification Count: Dynamically updates-->
             <span *ngIf="notificationCount > 0" 
                   class="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 text-[0.6rem] sm:text-xs px-1.5 py-0.5 rounded-full inline-flex items-center justify-center text-xs font-bold 
                          leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600">
@@ -79,7 +77,7 @@
                     aria-haspopup="true" [attr.aria-expanded]="isDropdownOpen">
               <div class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center 
                           justify-center shadow-sm transition-all duration-200 hover:shadow-md ring-2 ring-white">
-                <!-- User Initials: Rendered dynamically; contributed by Bob Johnson -->
+                <!-- User Initials: Rendered dynamically-->
                 <span class="text-white font-medium text-sm sm:text-lg">{{ userInitials }}</span>
               </div>
             </button>
@@ -122,63 +120,126 @@
     </div>
   </header> 
 
-  <!-- Main Content: Contains the dashboard widgets and navigation tabs -->
-  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-    <!-- Stats Grid Section: Overview cards contributed by Carol Lee -->
-    <section aria-label="Dashboard Stats">
-      <app-stats-cards class="animate-content-fade"></app-stats-cards>
-    </section>
-        
-    <!-- Additional Tools Section: Daily funding chart, performance chart, etc.
-         Integrated by Bob Johnson and Carol Lee -->
-    <section class="grid grid-cols-1 lg:grid-cols-1 gap-6" aria-label="Additional Tools">
-      <app-daily-funding-chart class="animate-content-fade"></app-daily-funding-chart>
-      
-      <app-performance-chart class="animate-content-fade"></app-performance-chart>
-      
-      <app-demographic-card class="animate-content-fade"></app-demographic-card>
-      <!-- Project Management Timeline -->
-      <app-project-management class="animate-content-fade"></app-project-management>
-      <!-- Document Center -->
-      <app-document-center class="animate-content-fade"></app-document-center>
-      <!-- Communication Hub -->
-      <app-communication-hub class="animate-content-fade"></app-communication-hub>
-    </section>
-
-    <!-- Tabs Navigation & Content: Managed by Bob Johnson -->
-    <section>
-      <nav class="flex border-b border-gray-200" aria-label="Dashboard Navigation Tabs">
-        <button *ngFor="let tab of tabs; let i = index"
-                (click)="activeTab = i"
-                class="relative py-3 px-6 font-medium text-gray-500 transition-colors duration-300 hover:text-blue-500 focus:outline-none"
-                [class.text-blue-600]="activeTab === i"
-                [attr.aria-current]="activeTab === i ? 'page' : 'false'">
-          {{ tab.label }}
-          <span *ngIf="activeTab === i" class="absolute inset-x-0 bottom-0 h-1 bg-blue-600 rounded-t"></span>
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Desktop Sidebar -->
+    <aside class="hidden lg:block w-64 bg-white border-r border-gray-200 shadow-sm overflow-y-auto transition-all duration-300">
+      <nav class="p-4 space-y-1">
+        <button 
+          *ngFor="let section of sections"
+          (click)="activeSection = section.id"
+          [class.text-blue-600]="activeSection === section.id"
+          [class.bg-gray-100]="activeSection === section.id"
+          class="w-full text-left px-4 py-2.5 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium"
+        >
+          {{ section.label }}
         </button>
       </nav>
-      <div class="mt-6 p-6 bg-white shadow rounded-lg transition-all duration-300 hover:shadow-md">
-        <!-- Overview Tab Content -->
-        <div class="animate-content-fade" [class.hidden]="activeTab !== 0">
-          <app-overview-tab></app-overview-tab>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-x-hidden overflow-y-auto">
+      <!-- Mobile Tabs -->
+      <nav class="lg:hidden relative p-5 pb-0">
+        <div class="flex overflow-x-auto scrollbar-custom pb-3">
+          <div class="flex flex-nowrap px-2 space-x-2">
+            <button 
+              *ngFor="let section of sections"
+              (click)="activeSection = section.id"
+              [class.text-blue-600]="activeSection === section.id"
+              [class.bg-blue-50]="activeSection === section.id"
+              class="flex-shrink-0 px-4 py-2.5 rounded-full text-sm font-medium 
+                    text-gray-600 hover:bg-gray-100 transition-colors border border-gray-200"
+            >
+              {{ section.label }}
+            </button>
+          </div>
         </div>
-        <!-- Projects Tab Content -->
-        <div class="animate-content-fade" [class.hidden]="activeTab !== 1">
-          <app-projects-tab></app-projects-tab>
-        </div>
-        <!-- Messages Tab Content -->
-        <div class="animate-content-fade" [class.hidden]="activeTab !== 2">
-          <app-messages-tab></app-messages-tab>
-        </div>
-        <!-- Notifications Tab Content -->
-        <div class="animate-content-fade" [class.hidden]="activeTab !== 3">
-          <app-notifications-tab></app-notifications-tab>
-        </div>
-        <!-- Calendar Tab Content -->
-        <div class="animate-content-fade" [class.hidden]="activeTab !== 4">
-          <app-calendar-tab></app-calendar-tab>
-        </div>
+        <!-- Fade-out Overlay -->
+        <div class="absolute top-0 right-0 w-8 h-full bg-gradient-to-l from-gray-50 pointer-events-none"></div>
+      </nav>
+
+      <!-- Dynamic Content Sections -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Stats Section -->
+        <section *ngIf="activeSection === 'stats'" class="animate-content-fade">
+          <app-stats-cards></app-stats-cards>
+        </section>
+
+        <!-- Funding Section -->
+        <section *ngIf="activeSection === 'funding'" class="animate-content-fade">
+          <app-daily-funding-chart></app-daily-funding-chart>
+        </section>
+
+        <!-- Performance Section -->
+        <section *ngIf="activeSection === 'performance'" class="animate-content-fade">
+          <app-performance-chart></app-performance-chart>
+        </section>
+
+        <!-- Demographic Section -->
+        <section *ngIf="activeSection === 'demographic'" class="animate-content-fade">
+          <app-demographic-card></app-demographic-card>
+        </section>
+
+        <!-- Management Section -->
+        <section *ngIf="activeSection === 'management'" class="animate-content-fade">
+          <app-project-management></app-project-management>
+        </section>
+
+        <!-- Documents Section -->
+        <section *ngIf="activeSection === 'documents'" class="animate-content-fade">
+          <app-document-center></app-document-center>
+        </section>
+
+        <!-- Communication Section -->
+        <section *ngIf="activeSection === 'communication'" class="animate-content-fade">
+          <app-communication-hub></app-communication-hub>
+        </section>
+
+        <!-- Tabs Navigation & Content-->
+        <section>
+
+
+          <!-- Main Tabs Section -->
+          <section *ngIf="activeSection === 'tabs'" class="animate-content-fade">
+            <nav class="flex overflow-x-auto scrollbar-custom border-b border-gray-200 pb-3" aria-label="Dashboard Navigation Tabs">
+              <button *ngFor="let tab of tabs; let i = index"
+                      (click)="activeTab = i"
+                      class="relative py-3 px-6 font-medium text-gray-500 transition-colors duration-300 hover:text-blue-500 focus:outline-none"
+                      [class.text-blue-600]="activeTab === i"
+                      [attr.aria-current]="activeTab === i ? 'page' : 'false'">
+                {{ tab.label }}
+                <span *ngIf="activeTab === i" class="absolute inset-x-0 bottom-0 h-1 bg-blue-600 rounded-t"></span>
+              </button>
+            </nav>
+
+            <div class="space-y-6">
+              <!-- Original Tabs Content -->
+              <div class="mt-6 p-6 bg-white shadow rounded-lg transition-all duration-300 hover:shadow-md">
+                <!-- Overview Tab Content -->
+                <div class="animate-content-fade" [class.hidden]="activeTab !== 0">
+                  <app-overview-tab></app-overview-tab>
+                </div>
+                <!-- Projects Tab Content -->
+                <div class="animate-content-fade" [class.hidden]="activeTab !== 1">
+                  <app-projects-tab></app-projects-tab>
+                </div>
+                <!-- Messages Tab Content -->
+                <div class="animate-content-fade" [class.hidden]="activeTab !== 2">
+                  <app-messages-tab></app-messages-tab>
+                </div>
+                <!-- Notifications Tab Content -->
+                <div class="animate-content-fade" [class.hidden]="activeTab !== 3">
+                  <app-notifications-tab></app-notifications-tab>
+                </div>
+                <!-- Calendar Tab Content -->
+                <div class="animate-content-fade" [class.hidden]="activeTab !== 4">
+                  <app-calendar-tab></app-calendar-tab>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
       </div>
-    </section>
-  </main>
+    </main>
+  </div>
 </div>
