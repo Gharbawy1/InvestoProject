@@ -1,5 +1,6 @@
 
 using Investo.DataAccess.ApplicationContext;
+using Investo.DataAccess.Services.Token;
 using Microsoft.EntityFrameworkCore;
 
 namespace Investo
@@ -32,6 +33,10 @@ namespace Investo
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DevCS"),
                     x => x.MigrationsHistoryTable("__EFMigrationsHistory", "RealTime")));
+
+
+            builder.Services.AddScoped<ITokenService, TokenService>();
+
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
