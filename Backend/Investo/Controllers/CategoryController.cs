@@ -7,5 +7,10 @@ namespace Investo.Presentation.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
+        [HttpGet]
+        public ActionResult get()
+        {
+            return Ok(); 
+        }
     }
 }
