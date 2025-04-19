@@ -32,7 +32,7 @@ export class IdentityVerificationComponent implements OnInit {
   @ViewChild('frontFileInput') frontFileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('backFileInput') backFileInput!: ElementRef<HTMLInputElement>;
   
-  @Input() selectedRole!: 'investor' | 'business';
+  @Input() selectedRole!: 'investor' | 'business' | 'guest';
   @Output() submitted = new EventEmitter<any>();
 
   verificationForm!: FormGroup;

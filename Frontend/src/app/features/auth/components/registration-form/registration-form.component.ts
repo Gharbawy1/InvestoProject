@@ -16,13 +16,13 @@ import { AccountCreationComponent } from "../account-creation/account-creation.c
 })
 export class RegistrationFormComponent {
   step = 1;
-  selectedRole: 'investor' | 'business' = 'investor';
+  selectedRole: 'investor' | 'business' | 'guest' = 'investor';
   formSubmitted = false;
   isLoading = false;
 
   constructor(private navigationService: NavigationService) {}
 
-  setRole(role: 'investor' | 'business') {
+  setRole(role: 'investor' | 'business' | 'guest') {
     this.selectedRole = role;
   }
 

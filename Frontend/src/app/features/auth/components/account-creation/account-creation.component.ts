@@ -12,9 +12,9 @@ import { AutoFocusDirective } from '../../../../shared/directives/auto-focus/aut
 })
 export class AccountCreationComponent {
   step: number = 1;
-  @Output() roleChange = new EventEmitter<'investor' | 'business'>();
-  selectedRole: 'investor' | 'business' = 'investor';
-  setRole(role: 'investor' | 'business') {
+  @Output() roleChange = new EventEmitter<'investor' | 'business' | 'guest'>();
+  selectedRole: 'investor' | 'business' | 'guest' = 'investor';
+  setRole(role: 'investor' | 'business' | 'guest') {
     this.selectedRole = role;
     this.roleChange.emit(role);
   }

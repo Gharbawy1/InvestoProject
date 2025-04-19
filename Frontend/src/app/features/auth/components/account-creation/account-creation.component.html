@@ -26,7 +26,7 @@
   </div>
 
   <div *ngIf="step === 1" class="space-y-6">
-    <div class="grid grid-cols-2 gap-4 mb-6">
+    <div class="grid grid-cols-3 gap-4 mb-6">
       <button 
         (click)="setRole('investor')" 
         class="p-6 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center cursor-pointer"
@@ -54,6 +54,21 @@
         </svg>
         <h3 class="font-semibold text-gray-900 mb-1">Business Owner</h3>
         <p class="text-sm text-gray-500 text-center">Looking to grow your business</p>
+      </button>
+      <!-- Guest -->
+      <button 
+        (click)="setRole('guest')" 
+        class="p-6 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center cursor-pointer"
+        [ngClass]="{
+          'border-gray-900 bg-gray-50 shadow-inner': selectedRole === 'guest',
+          'border-gray-200 hover:border-gray-300': selectedRole !== 'guest'
+        }"
+      >
+        <svg class="w-8 h-8 mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <h3 class="font-semibold text-gray-900 mb-1">Guest</h3>
+        <p class="text-sm text-gray-500 text-center">Just exploring the platform.</p>
       </button>
     </div>
   </div>

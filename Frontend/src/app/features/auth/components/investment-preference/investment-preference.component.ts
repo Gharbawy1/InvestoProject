@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./investment-preference.component.css']
 })
 export class InvestmentPreferenceComponent {
-  @Input() selectedRole!: 'investor' | 'business';
+  @Input() selectedRole!: 'investor' | 'business' | 'guest';
   @Output() submitted = new EventEmitter<any>();
   
   investorPreferenceForm: FormGroup;
