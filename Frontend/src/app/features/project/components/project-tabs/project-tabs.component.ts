@@ -10,10 +10,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { TeamMembersComponent } from './team-members/team-members.component';
 import { CommonModule } from '@angular/common';
 import { Comment } from '../../interfaces/IComment';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-project-tabs',
   imports: [
+    CommonModule,
     MarketAnalysisComponent,
     BusinessInfoComponent,
     TeamMembersComponent,
@@ -23,7 +26,8 @@ import { Comment } from '../../interfaces/IComment';
     DiscussionComponent,
     MatIconModule,
     MatTabsModule,
-    CommonModule,
+    MatButtonModule,
+    MatInputModule
   ],
   templateUrl: './project-tabs.component.html',
   styleUrl: './project-tabs.component.css',

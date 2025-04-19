@@ -5,6 +5,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ButtonComponent } from "../../../../shared/componentes/button/button.component";
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-investment-sidebar',
@@ -15,7 +16,8 @@ import { ButtonComponent } from "../../../../shared/componentes/button/button.co
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
-    ButtonComponent
+    ButtonComponent,
+    MatInputModule
 ],
   templateUrl: './investment-sidebar.component.html',
   styleUrls: ['./investment-sidebar.component.css']
