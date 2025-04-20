@@ -1,6 +1,11 @@
 
+using Investo.DataAccess;
 using Investo.DataAccess.ApplicationContext;
 using Microsoft.EntityFrameworkCore;
+using Investo.DataAccess.Services.Categories;
+using Investo.DataAccess.Services.Interfaces;
+using Investo.DataAccess.Repository;
+using Investo.Entities.IRepository;
 
 namespace Investo
 {
@@ -20,6 +25,9 @@ namespace Investo
             builder.Services.AddControllers().ConfigureApiBehaviorOptions(
                 options => options.SuppressModelStateInvalidFilter = true
             );
+
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             // For CoreEntitiesDbContext
             builder.Services.AddDbContext<CoreEntitiesDbContext>(options =>
