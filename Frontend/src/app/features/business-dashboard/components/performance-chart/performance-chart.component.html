@@ -1,0 +1,123 @@
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+  <!-- Header Section -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="space-y-2">
+      <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+        Project Performance
+      </h3>
+      <div class="flex flex-wrap items-center gap-4">
+        <div class="flex items-center text-sm text-gray-600">
+          <svg class="w-4 h-4 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          Deadline: {{ deadline | date:'MMM d, y' }}
+        </div>
+        <div class="flex items-center text-sm text-gray-600">
+          <svg class="w-4 h-4 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          {{ daysRemaining }} Days Remaining
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+    <!-- 1) Big Chart -->
+    <div>
+      <h3 class="text-lg font-semibold mb-4">Funding vs. Timeline</h3>
+      <canvas id="fundingTimelineChart" aria-label="Funding timeline comparison chart"></canvas>
+    </div>
+  
+    <!-- 2) Financial KPIs -->
+    <div>
+      <h4 class="text-md font-semibold text-gray-700 mb-2">Financial KPIs</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Total Funding -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-base text-gray-600">Total Funding</span>
+            <span class="text-2xl font-bold text-gray-900">${{ currentFunding | number }}</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full transition-all duration-500" [style.width.%]="fundingProgress"></div>
+          </div>
+          <div class="text-xs text-gray-400 mt-1">
+            {{ fundingProgress }}% of ${{ fundingGoal | number }}
+          </div>
+        </div>
+        <!-- Burn Rate -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-base text-gray-600">Burn Rate</span>
+            <span class="text-2xl font-bold text-gray-900">${{ ((fundingGoal - currentFunding) / daysCompleted) | number:'1.0-0' }}/day</span>
+          </div>
+          <p class="text-xs text-gray-400">Avg. spend rate</p>
+        </div>
+        <!-- Net Cash Balance -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-base text-gray-600">Net Cash Balance</span>
+            <span class="text-2xl font-bold text-gray-900">${{ (currentFunding - (fundingGoal - currentFunding)) | number }}</span>
+          </div>
+          <p class="text-xs text-gray-400">Funding minus spent</p>
+        </div>
+        <!-- Runway -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-base text-gray-600">Runway</span>
+            <span class="text-2xl font-bold text-gray-900">{{ daysRemaining }} days</span>
+          </div>
+          <p class="text-xs text-gray-400">Time until deadline</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- 3) Milestones -->
+    <div>
+      <h4 class="text-md font-semibold text-gray-700 mb-2">Milestones</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Completion % -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-base text-gray-600">Project Completion</span>
+            <span class="text-2xl font-bold text-gray-900">{{ projectCompletion }}%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-green-500 h-2 rounded-full transition-all duration-500" [style.width.%]="projectCompletion"></div>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">
+            {{ milestonesCompleted }} of {{ totalMilestones }} milestones
+          </p>
+        </div>
+        <!-- Upcoming Deadline -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-base text-gray-600">Upcoming Deadline</span>
+            <span class="text-2xl font-bold text-gray-900">{{ deadline | date:'MMM d' }}</span>
+          </div>
+          <p class="text-xs text-gray-400">{{ daysRemaining }} days remaining</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- 4) Action Required -->
+    <div class="p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
+      <div class="flex items-center justify-between mb-2">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs">
+          Action Required
+        </span>
+        <span class="text-sm text-yellow-700">
+          Missed by ${{ dailyTargetMiss | number }}
+        </span>
+      
+        </div>
+      <p class="text-sm text-yellow-600">
+        Current pace is {{ timelineProgress > fundingProgress ? 'behind' : 'ahead' }} by {{ getAbs(fundingProgress - timelineProgress) }}% of schedule
+      </p>
+    </div>
+  </div>
+</div>

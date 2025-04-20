@@ -1,75 +1,48 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule, NgForm } from '@angular/forms';
+import { ProgressIndicatorRegComponent } from "../progress-indicator-reg/progress-indicator-reg.component";
+import { PersonalInfoRegComponent } from "../personal-info-reg/personal-info-reg.component";
+import { IdentityVerificationComponent } from '../identity-verification/identity-verification.component';
+import { InvestmentPreferenceComponent } from "../investment-preference/investment-preference.component";
+import { NavigationService } from '../../../../core/services/navigation/navigation.service';
+import { AccountCreationComponent } from "../account-creation/account-creation.component";
 
 @Component({
   selector: 'app-registration-form',
-  standalone:true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, ProgressIndicatorRegComponent, PersonalInfoRegComponent, IdentityVerificationComponent, InvestmentPreferenceComponent, AccountCreationComponent],
   templateUrl: './registration-form.component.html',
+  styleUrls: ['./registration-form.component.css'],
 })
 export class RegistrationFormComponent {
   step = 1;
-  selectedRole: 'investor' | 'business' = 'investor';
+  selectedRole: 'investor' | 'business' | 'guest' = 'investor';
+  formSubmitted = false;
+  isLoading = false;
 
-  personalInfoForm: FormGroup;
-  businessInfoForm: FormGroup;
-  documentUploadForm: FormGroup;
+  constructor(private navigationService: NavigationService) {}
 
-  constructor(private fb: FormBuilder) {
-    this.personalInfoForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.minLength(10)]],
-      country: ['', Validators.required],
-    });
-
-    this.businessInfoForm = this.fb.group({
-      businessName: ['', [Validators.required, Validators.minLength(2)]],
-      businessType: ['', Validators.required],
-      registrationNumber: ['', Validators.required],
-      foundedYear: ['', [Validators.required, Validators.minLength(4)]],
-      website: [''],
-    });
-
-    this.documentUploadForm = this.fb.group({
-      identityProof: [null, Validators.required],
-      businessRegistration: [null],
-      additionalDocuments: [null],
-    });
-  }
-
-  setRole(role: 'investor' | 'business') {
+  setRole(role: 'investor' | 'business' | 'guest') {
     this.selectedRole = role;
   }
 
-  nextStep() {
+  handleAccountCreationSubmit(data: any) {
+    console.log('Account Creation Data:', data);
     this.step++;
   }
 
-  prevStep() {
-    this.step--;
+  handlePersonalInfoSubmit(personalData: any) {
+    console.log('Personal Data:', personalData);
+    this.step++;
   }
 
-  submitPersonalInfo() {
-    if (this.personalInfoForm.valid) {
-      console.log(this.personalInfoForm.value);
-      this.nextStep();
-    }
+  handleIdentityVerificationSubmit(data: any) { 
+    console.log('Identity Verification Data:', data);
+    this.step++;
   }
 
-  submitBusinessInfo() {
-    if (this.businessInfoForm.valid) {
-      console.log(this.businessInfoForm.value);
-      this.nextStep();
-    }
-  }
-
-  submitDocuments() {
-    if (this.documentUploadForm.valid) {
-      console.log(this.documentUploadForm.value);
-      alert('Registration Complete!');
-    }
+  handleInvestmentPreferenceSubmit(data: any) {
+    console.log('Investment Preference Data:', data);
+    this.navigationService.navigateByRole("investor")
   }
 }

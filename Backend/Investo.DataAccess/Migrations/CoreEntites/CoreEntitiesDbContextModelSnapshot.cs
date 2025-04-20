@@ -142,8 +142,9 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("InvestmentType")
-                        .HasColumnType("int");
+                    b.Property<string>("InvestmentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("InvestorId")
                         .HasColumnType("int");
@@ -168,8 +169,11 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Pending");
 
                     b.HasKey("Id");
 
@@ -233,6 +237,9 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                     b.Property<string>("ProjectVision")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Subtitle")
                         .IsRequired()
@@ -389,13 +396,13 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                     b.Property<DateTime>("LastActivity")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte[]>("NationalIDDocument")
+                    b.Property<string>("NationalIDDocumentURL")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("PassportDocument")
+                    b.Property<string>("PassportDocumentURL")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");

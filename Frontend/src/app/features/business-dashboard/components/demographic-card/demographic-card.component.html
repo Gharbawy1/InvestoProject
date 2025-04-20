@@ -1,0 +1,53 @@
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+  <!-- Header with Filter -->
+  <!-- Contains the section title and a dropdown to filter the displayed time period. -->
+  <div class="flex items-center justify-between mb-6">
+    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+      <!-- SVG icon for Investor Demographics (UI design input by Alice Smith) -->
+      <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+      Investor Demographics
+    </h3>
+  </div>
+
+  <!-- Gender Chart -->
+  <div class="mb-8">
+    <h4 class="font-semibold text-gray-700 mb-2">Gender Breakdown</h4>
+    <div class="chart-container relative h-40">
+      <canvas id="genderChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Age Chart -->
+  <div class="mb-8">
+    <h4 class="font-semibold text-gray-700 mb-2">Age Distribution</h4>
+    <div class="chart-container relative h-48">
+      <canvas id="ageChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Top Locations -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between mb-2">
+      <h4 class="font-semibold text-gray-700">Top Investor Locations</h4>
+      <span class="text-sm text-gray-500">{{ totalPercentage() }}% of total</span>
+    </div>
+    <div class="chart-container relative h-48">
+      <canvas id="locationsChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Investment Levels -->
+  <div>
+    <h4 class="font-semibold text-gray-700 mb-2">Investment Levels</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div *ngFor="let lvl of demographics.investmentLevels"
+            class="bg-gray-50 p-4 rounded">
+        <p class="text-sm text-gray-600">{{ lvl.label }}</p>
+        <p class="text-xl font-bold">{{ lvl.percentage }}%</p>
+        <p class="text-xs text-gray-500">Avg. ${{ lvl.averageInvestment | number }}</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Team</h2>
+    <div class="team-grid">
+        <div *ngFor="let member of teamMembers" class="team-member">
+            <div class="avatar-container">
+                <img [src]="member.avatar" [alt]="member.name" class="avatar-image">
+            </div>
+            <h3 class="member-name">{{ member.name }}</h3>
+            <p class="member-role">{{ member.role }}</p>
+        </div>
+    </div>
+</div>
