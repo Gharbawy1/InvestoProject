@@ -9,11 +9,8 @@ namespace Investo.Entities.Models
 {
     public class PersonInfo
     {
-        [MaxLength(150)]
-        public string FullLegalName { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public string NationalIDImageFrontURL { get; set; }
-        public string NationalIDImageBackURL { get; set; }
-        public string NationalIDL { get; set; }
+        public string? NationalIDImageFrontURL { get; set; }
+        public string? NationalIDImageBackURL { get; set; }
+        public string NationalID { get; set; }
     }
 }
