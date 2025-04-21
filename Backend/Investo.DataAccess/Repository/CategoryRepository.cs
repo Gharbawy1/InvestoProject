@@ -25,6 +25,7 @@ namespace Investo.DataAccess.Repository
         }
 
         public async Task<Category> GetById(byte id)
+
         {
             return await _context.Categories.FindAsync(id);
         }
