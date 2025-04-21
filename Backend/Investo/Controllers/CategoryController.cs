@@ -27,7 +27,7 @@ namespace Investo.Presentation.Controllers
         public async Task<IActionResult> GetById(byte id)
         {
             var category = await _categoryService.GetCategoryById(id);
-            if (category == null) return NotFound();
+            if (category == null) return NotFound($"Category With {id} Not found");
             return Ok(category);
         }
 
