@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Investo.DataAccess.Repository
 {
-    internal class ProjectRepository : IProjectRepository
+    public class ProjectRepository : IProjectRepository
     {
         public readonly CoreEntitiesDbContext _context;
         public ProjectRepository(CoreEntitiesDbContext context)

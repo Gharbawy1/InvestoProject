@@ -6,6 +6,8 @@ using Investo.DataAccess.Services.Categories;
 using Investo.DataAccess.Services.Interfaces;
 using Investo.DataAccess.Repository;
 using Investo.Entities.IRepository;
+using Investo.DataAccess.Services.Project;
+using Investo.DataAccess.Services.Image_Loading;
 
 namespace Investo
 {
@@ -28,6 +30,12 @@ namespace Investo
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+            builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+
+            builder.Services.AddScoped<IImageLoadService, CloudinaryImageLoadService>();
+
 
             // For CoreEntitiesDbContext
             builder.Services.AddDbContext<CoreEntitiesDbContext>(options =>
