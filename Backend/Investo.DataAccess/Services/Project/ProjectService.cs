@@ -97,7 +97,7 @@ namespace Investo.DataAccess.Services.Project
             });
         }
 
-        public async Task<ProjectReadDto> GetProjectById(byte id)
+        public async Task<ProjectReadDto> GetProjectById(int id)
         {
             var project = await _projectRepository.GetById(id);
             if (project == null) return null;

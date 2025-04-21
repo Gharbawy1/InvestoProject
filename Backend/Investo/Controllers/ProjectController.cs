@@ -13,7 +13,7 @@ namespace Investo.Presentation.Controllers
         private readonly IProjectService _projectService;
 
         private new List<string> _allowedExtenstions = new List<string> { ".jpg", ".png","jpeg" };
-        private long _maxAllowedPosterSize = 1048576;
+        private long _maxAllowedImageSize = 3 * 1048576;
 
         public ProjectController(IProjectService projectService)
         {
@@ -30,7 +30,7 @@ namespace Investo.Presentation.Controllers
 
         // GET: api/project/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(byte id)
+        public async Task<IActionResult> GetById(int id)
         {
             var project = await _projectService.GetProjectById(id);
             if (project == null)
@@ -50,7 +50,7 @@ namespace Investo.Presentation.Controllers
             if (!_allowedExtenstions.Contains(extension))
                 return BadRequest("Only .png, .jpg, and .jpeg images are allowed!");
 
-            if (dto.ProjectImage.Length > _maxAllowedPosterSize)
+            if (dto.ProjectImage.Length > _maxAllowedImageSize)
                 return BadRequest("Max allowed size for the image is 1MB!");
 
             await _projectService.CreateProject(dto);
@@ -68,7 +68,7 @@ namespace Investo.Presentation.Controllers
                     if (!_allowedExtenstions.Contains(extension))
                         return BadRequest("Only .png, .jpg, and .jpeg images are allowed!");
 
-                    if (dto.ProjectImage.Length > _maxAllowedPosterSize)
+                    if (dto.ProjectImage.Length > _maxAllowedImageSize)
                         return BadRequest("Max allowed size for the image is 1MB!");
                 }
 
