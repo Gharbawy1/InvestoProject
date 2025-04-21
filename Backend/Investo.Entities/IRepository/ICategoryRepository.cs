@@ -14,5 +14,6 @@ namespace Investo.Entities.IRepository
         Task Add(Category category);
         Task Update(Category category);
         Task Delete(byte id);
+        Task<bool> IsValidCategory(byte id);
     }
 }

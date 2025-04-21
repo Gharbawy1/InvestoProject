@@ -1,7 +1,9 @@
-﻿using Investo.DataAccess.Services.Project;
+﻿using Investo.DataAccess.Services.Interfaces;
+using Investo.DataAccess.Services.Project;
 using Investo.Entities.DTO.Project;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Investo.Presentation.Controllers
@@ -11,13 +13,15 @@ namespace Investo.Presentation.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
+        private readonly ICategoryService _categoryService;
 
         private new List<string> _allowedExtenstions = new List<string> { ".jpg", ".png","jpeg" };
         private long _maxAllowedImageSize = 3 * 1048576;
 
-        public ProjectController(IProjectService projectService)
+        public ProjectController(IProjectService projectService,ICategoryService categoryService)
         {
             _projectService = projectService;
+            _categoryService = categoryService;
         }
 
         // GET: api/project
@@ -30,7 +34,7 @@ namespace Investo.Presentation.Controllers
 
         // GET: api/project/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var project = await _projectService.GetProjectById(id);
             if (project == null)
@@ -53,12 +57,17 @@ namespace Investo.Presentation.Controllers
             if (dto.ProjectImage.Length > _maxAllowedImageSize)
                 return BadRequest("Max allowed size for the image is 1MB!");
 
+            var IsValidCategory = await _categoryService.IsValidCategory(dto.CategoryId);
+            if (!IsValidCategory) return BadRequest("Invalid Category Id");
+
+            // when Business owner logic,sevices and repositories are added I will add validation for them 
+
             await _projectService.CreateProject(dto);
-            return Ok("Project created successfully");
+            return Ok(dto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] ProjectCreateUpdateDto dto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromForm] ProjectCreateUpdateDto dto)
         {
             try
             {
@@ -73,7 +82,7 @@ namespace Investo.Presentation.Controllers
                 }
 
                 await _projectService.UpdateProject(id, dto);
-                return Ok("Project updated successfully");
+                return Ok(dto);
             }
             catch (Exception ex)
             {
@@ -83,10 +92,21 @@ namespace Investo.Presentation.Controllers
 
         // DELETE: api/project/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id) 
+        public async Task<IActionResult> DeleteProject ([FromRoute] int id)
         {
-            await _projectService.DeleteProject(id);
-            return Ok("Project deleted successfully");
+            try
+            {
+                var deleted = await _projectService.DeleteProject(id);
+                if (!deleted)
+                    return NotFound($"The Project with Id : {id} is not found");
+
+                return Ok("Project Deleted Successfully");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+
         }
     }
 }

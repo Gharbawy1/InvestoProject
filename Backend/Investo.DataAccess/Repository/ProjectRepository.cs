@@ -23,14 +23,10 @@ namespace Investo.DataAccess.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(Project project)
         {
-            var Project = await _context.Projects.FindAsync(id);
-            if (Project != null)
-            {
-                _context.Projects.Remove(Project);
-                _context.SaveChanges();
-            }
+            _context.Projects.Remove(project);
+            _context.SaveChanges();
         }
 
         public async Task<IEnumerable<Project>> GetAll()
@@ -49,5 +45,6 @@ namespace Investo.DataAccess.Repository
             _context.Projects.Update(project);
             _context.SaveChanges();
         }
+      
     }
 }

@@ -50,5 +50,10 @@ namespace Investo.DataAccess.Repository
                 await _context.SaveChangesAsync();
             }
         }
+
+        public Task<bool> IsValidCategory(byte id)
+        {
+            return _context.Categories.AnyAsync(c => c.Id == id);
+        }
     }
 }

@@ -14,6 +14,6 @@ namespace Investo.Entities.IRepository
         Task<Project> GetById(int id);
         Task Create(Project project);
         Task Update(Project project);
-        Task Delete(int id);
+        Task Delete(Project project);
     }
 }

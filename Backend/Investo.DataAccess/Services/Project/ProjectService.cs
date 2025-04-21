@@ -73,7 +73,14 @@ namespace Investo.DataAccess.Services.Project
             await _projectRepository.Update(project);
         }
 
-        public async Task DeleteProject(int id) => await _projectRepository.Delete(id);
+        public async Task<bool> DeleteProject(int id)
+        {
+            var existingProject = await _projectRepository.GetById(id);
+            if (existingProject == null) return false;
+
+            _projectRepository.Delete(existingProject);
+            return true;
+        }
 
         public async Task<IEnumerable<ProjectReadDto>> GetAllProjects()
         {
