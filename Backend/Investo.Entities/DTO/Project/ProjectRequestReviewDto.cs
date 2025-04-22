@@ -1,30 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Investo.Entities.Models;
-using Microsoft.AspNetCore.Http;
 
 namespace Investo.Entities.DTO.Project
 {
-    public class ProjectCreateUpdateDto
+    public class ProjectRequestReviewDto
     {
+        // Project properties
+        public int Id { get; set; }
         public string ProjectTitle { get; set; }
         public string Subtitle { get; set; }
         public string ProjectLocation { get; set; }
-        public IFormFile? ProjectImage { get; set; }
+        public string ProjectImageURL { get; set; }
         public decimal FundingGoal { get; set; }
         public string FundingExchange { get; set; }
-        //public ProjectStatus Status { get; set; } = ProjectStatus.Pending; ----> the Business owner won't give me
-                                                                                // the project status when creating or updating project
         public string ProjectVision { get; set; }
         public string ProjectStory { get; set; }
         public string CurrentVision { get; set; }
         public string Goals { get; set; }
         public byte CategoryId { get; set; }
         public string OwnerId { get; set; }
+        public ProjectStatus Status { get; set; }
+
+        // Basic BusinessOwner info
+        public string Bio { get; set; }
+        public DateTime RegistrationDate { get; set; }
+        public string FullName { get; set; } // PersonInfo.FirstName + " " + PersonInfo.LastName
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string ProfilePictureURL { get; set; }
+        public string Address { get; set; }
     }
+
 }

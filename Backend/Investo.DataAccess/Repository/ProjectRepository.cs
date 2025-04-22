@@ -45,6 +45,18 @@ namespace Investo.DataAccess.Repository
             _context.Projects.Update(project);
             _context.SaveChanges();
         }
-      
+        public async Task<Project> GetByOwnerIdAsync(string ownerId)
+        {
+            return await _context.Projects
+                .Include(p => p.Owner)       // Include Owner if you need BusinessOwner data
+                .FirstOrDefaultAsync(p => p.OwnerId == ownerId);
+        }
+        public async Task<Project> GetByCategoryIdAsync(byte CategoryId)
+        {
+            return await _context.Projects
+                .Include(p => p.Category)    // Include Category if needed
+                .FirstOrDefaultAsync(p => p.CategoryId == CategoryId);
+        }
+
     }
 }

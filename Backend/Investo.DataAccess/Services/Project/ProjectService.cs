@@ -3,6 +3,8 @@ using Investo.Entities.IRepository;
 using Investo.Entities.Models;
 using Investo.DataAccess.Services.Image_Loading;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Investo.DataAccess.Services.Project
 {
@@ -34,7 +36,7 @@ namespace Investo.DataAccess.Services.Project
                 ProjectImageURL = imageUrl,
                 FundingGoal = dto.FundingGoal,
                 FundingExchange = dto.FundingExchange,
-                Status = dto.Status,
+                //Status = dto.Status,
                 ProjectVision = dto.ProjectVision,
                 ProjectStory = dto.ProjectStory,
                 CurrentVision = dto.CurrentVision,
@@ -62,7 +64,7 @@ namespace Investo.DataAccess.Services.Project
             project.ProjectLocation = dto.ProjectLocation;
             project.FundingGoal = dto.FundingGoal;
             project.FundingExchange = dto.FundingExchange;
-            project.Status = dto.Status;
+            //project.Status = dto.Status;
             project.ProjectVision = dto.ProjectVision;
             project.ProjectStory = dto.ProjectStory;
             project.CurrentVision = dto.CurrentVision;
@@ -126,6 +128,67 @@ namespace Investo.DataAccess.Services.Project
                 CategoryId = project.CategoryId,
                 OwnerId = project.OwnerId
             };
+        }
+
+        public async Task<ProjectRequestReviewDto> GetProjectReviewDtoByIdAsync(int id)
+        {
+            var project = await _projectRepository.GetById(id);
+            if (project == null || project.Owner == null || project.Owner.PersonInfo == null)
+                return null;
+
+            var owner = project.Owner;
+
+            return new ProjectRequestReviewDto
+            {
+                // Project properties
+                Id = project.Id,
+                ProjectTitle = project.ProjectTitle,
+                Subtitle = project.Subtitle,
+                ProjectLocation = project.ProjectLocation,
+                ProjectImageURL = project.ProjectImageURL,
+                FundingGoal = project.FundingGoal,
+                FundingExchange = project.FundingExchange,
+                ProjectVision = project.ProjectVision,
+                ProjectStory = project.ProjectStory,
+                CurrentVision = project.CurrentVision,
+                Goals = project.Goals,
+                CategoryId = project.CategoryId,
+                OwnerId = project.OwnerId,
+                Status = project.Status,
+
+                // Business owner info
+                Bio = owner.Bio,
+                RegistrationDate = owner.RegistrationDate,
+                FullName = owner.PersonInfo.FullLegalName,
+                Email = owner.Email,
+                PhoneNumber = owner.PhoneNumber,
+                ProfilePictureURL = owner.ProfilePictureURL,
+                Address = owner.Address
+            };
+        }
+
+        public async Task<bool> UpdateProjectStatusAsync(int projectId, ProjectStatus newStatus)
+        {
+            var project = await _projectRepository.GetById(projectId);
+            if (project == null)
+                return false;
+
+            project.Status = newStatus;
+            await _projectRepository.Update(project);
+            return true;
+        }
+
+        public async Task<ProjectStatusUpdateDto> GetProjectStatusByOwnerIdAsync(string ownerId)
+        {
+            var project = await _projectRepository.GetByOwnerIdAsync(ownerId);
+            if (project == null) return null;
+
+            return new ProjectStatusUpdateDto
+            {
+                ProjectId = project.Id,
+                Status = project.Status
+            };
+          
         }
     }
 }

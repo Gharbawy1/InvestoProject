@@ -15,5 +15,10 @@ namespace Investo.Entities.IRepository
         Task Create(Project project);
         Task Update(Project project);
         Task Delete(Project project);
+        Task<Project> GetByOwnerIdAsync(string ownerId);
+        Task<Project> GetByCategoryIdAsync(byte CategoryId);
+
+
+
     }
 }
