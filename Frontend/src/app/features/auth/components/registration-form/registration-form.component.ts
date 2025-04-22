@@ -7,6 +7,9 @@ import { IdentityVerificationComponent } from '../identity-verification/identity
 import { InvestmentPreferenceComponent } from "../investment-preference/investment-preference.component";
 import { NavigationService } from '../../../../core/services/navigation/navigation.service';
 import { AccountCreationComponent } from "../account-creation/account-creation.component";
+import { IGuest } from '../../interfaces/iguest';
+import { IInvestor } from '../../interfaces/iinvestor';
+import { IBusiness } from '../../interfaces/ibusiness';
 
 @Component({
   selector: 'app-registration-form',
@@ -16,33 +19,57 @@ import { AccountCreationComponent } from "../account-creation/account-creation.c
 })
 export class RegistrationFormComponent {
   step = 1;
-  selectedRole: 'investor' | 'business' | 'guest' = 'investor';
+  selectedRole: 'investor' | 'business' | 'guest' = 'guest';
   formSubmitted = false;
   isLoading = false;
-
+  data : IGuest | IInvestor | IBusiness | {} = {}; 
   constructor(private navigationService: NavigationService) {}
 
   setRole(role: 'investor' | 'business' | 'guest') {
     this.selectedRole = role;
   }
-
+  
+  get totalSteps(): number {
+    switch (this.selectedRole) {
+      case 'investor':
+        return 4;
+      case 'business':
+        return 3;
+      case 'guest':
+        return 2;
+      default:
+        return 1;
+    }
+  }
+  
   handleAccountCreationSubmit(data: any) {
-    console.log('Account Creation Data:', data);
+    this.data = { ...this.data, ...data };
     this.step++;
   }
 
   handlePersonalInfoSubmit(personalData: any) {
-    console.log('Personal Data:', personalData);
-    this.step++;
+    this.data = { ...this.data, ...personalData };
+    if (this.selectedRole === 'guest') {
+      //call api
+    }else{
+      this.step++;
+    }
   }
 
   handleIdentityVerificationSubmit(data: any) { 
-    console.log('Identity Verification Data:', data);
-    this.step++;
+    this.data = { ...this.data, ...data };
+    if (this.selectedRole === 'business') {
+      //call api
+    }else{
+      this.step++;
+    }
   }
 
   handleInvestmentPreferenceSubmit(data: any) {
-    console.log('Investment Preference Data:', data);
+    this.data = { ...this.data, ...data };
     this.navigationService.navigateByRole("investor")
+    
+    // call api
+    
   }
 }

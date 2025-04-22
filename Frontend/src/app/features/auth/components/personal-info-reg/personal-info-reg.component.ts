@@ -11,10 +11,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   styleUrls: ['./personal-info-reg.component.css']
 })
 export class PersonalInfoRegComponent {
-  @Input() step!: number;
-
+  @Input() selectedRole!: string;
   @Output() submitted = new EventEmitter<any>();
-  @Output() stepChange = new EventEmitter<number>();
   
   isLoading = false;
   formSubmitted = false;

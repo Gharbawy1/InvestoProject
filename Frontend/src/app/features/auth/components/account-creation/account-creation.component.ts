@@ -13,14 +13,13 @@ import { AutoFocusDirective } from '../../../../shared/directives/auto-focus/aut
 export class AccountCreationComponent {
   step: number = 1;
   @Output() roleChange = new EventEmitter<'investor' | 'business' | 'guest'>();
-  selectedRole: 'investor' | 'business' | 'guest' = 'investor';
+  selectedRole: 'investor' | 'business' | 'guest' = 'guest';
   setRole(role: 'investor' | 'business' | 'guest') {
     this.selectedRole = role;
     this.roleChange.emit(role);
   }
 
   @Output() submitted = new EventEmitter<any>();
-  @Output() stepChange = new EventEmitter<number>();
   
   form: FormGroup;
   formSubmitted = false;
@@ -96,7 +95,6 @@ export class AccountCreationComponent {
         role: this.selectedRole
       });
       this.isLoading = false;
-      this.stepChange.emit(2); // Move to next step
     }, 1500);
 
   }
