@@ -31,7 +31,6 @@ const fileValidator = (allowedTypes: string[], maxSize: number) => {
 export class IdentityVerificationComponent implements OnInit {
   @ViewChild('frontFileInput') frontFileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('backFileInput') backFileInput!: ElementRef<HTMLInputElement>;
-  
   @Input() selectedRole!: 'investor' | 'business' | 'guest';
   @Output() submitted = new EventEmitter<any>();
 

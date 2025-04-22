@@ -1,32 +1,33 @@
 <div class="space-y-6 animate-fade-in w-full min-w-[400px]">
   <app-progress-indicator-reg 
     [currentStep]="step" 
-    [totalSteps]="4">
+    [totalSteps]="totalSteps">
   </app-progress-indicator-reg>  
   
   <app-account-creation 
     *ngIf="step === 1"
     (submitted)="handleAccountCreationSubmit($event)"
-    (stepChange)="step = $event"
     (roleChange)="setRole($event)">
   </app-account-creation>
 
   <app-personal-info-reg 
     *ngIf="step === 2"
-    [step]="step"
+    [selectedRole]="selectedRole"
     (submitted)="handlePersonalInfoSubmit($event)"
-    (stepChange)="step = $event">
+    >
+  
   </app-personal-info-reg>
 
   <app-identity-verification 
-    *ngIf="step === 3"
+    *ngIf="step === 3 && selectedRole !== 'guest'"
     [selectedRole]="selectedRole"
     (submitted)="handleIdentityVerificationSubmit($event)">
   </app-identity-verification>
 
   <app-investment-preference 
-    *ngIf="step === 4"
+    *ngIf="step === 4 && selectedRole === 'investor'"
     [selectedRole]="selectedRole"
     (submitted)="handleInvestmentPreferenceSubmit($event)">
   </app-investment-preference>
+  
 </div>

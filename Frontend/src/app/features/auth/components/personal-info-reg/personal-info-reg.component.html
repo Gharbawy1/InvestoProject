@@ -228,7 +228,8 @@
         'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700': !isLoading && personalInfoForm.valid,
         'bg-gray-300 text-gray-500 cursor-not-allowed': isLoading || personalInfoForm.invalid
       }">
-      <span *ngIf="!isLoading">Continue</span>
+      <span *ngIf="!isLoading && selectedRole !== 'guest'">Continue</span>
+      <span *ngIf="!isLoading && selectedRole === 'guest'">Submit</span>
       <span *ngIf="isLoading" class="flex items-center">
         <svg class="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
           <circle cx="12" cy="12" r="10" stroke-width="4"></circle>
