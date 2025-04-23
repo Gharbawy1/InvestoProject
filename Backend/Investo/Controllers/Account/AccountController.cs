@@ -1,4 +1,5 @@
-﻿using Investo.DataAccess.Services.Token;
+﻿using Investo.DataAccess.Services.Image_Loading;
+using Investo.DataAccess.Services.Token;
 using Investo.Entities.DTO.Account;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +19,7 @@ namespace Investo.Presentation.Controllers.Account
         private readonly ITokenService _tokenService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IImageLoadService _imageLoadService;
         public AccountController(UserManager<ApplicationUser> userManager, ITokenService tokenService, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager,IConfiguration configuration)
         {
             _userManager = userManager;
@@ -119,10 +121,10 @@ namespace Investo.Presentation.Controllers.Account
 
 
                 var InvestoUser = new Investor
-                {   
+                {
                     AccreditationStatus = investorRegisterDto.AccreditationStatus,
                     RiskTolerance = investorRegisterDto.RiskTolerance,
-                    //ProfilePictureURL = From Uploding the file
+                    ProfilePictureURL = await _imageLoadService.Upload(investorRegisterDto.ProfilePictureURL)
                     NetWorth = investorRegisterDto.NetWorth,
                     MinInvestmentAmount = investorRegisterDto.MinInvestmentAmount,
                     MaxInvestmentAmount = investorRegisterDto.MaxInvestmentAmount,
@@ -132,8 +134,8 @@ namespace Investo.Presentation.Controllers.Account
                     {
                         NationalID = investorRegisterDto.NationalID,
                         // هتحط هنا اللينكات بعد الرفع
-                        //NationalIDImageFrontURL = await SaveFile(investorRegisterDto.NationalIDImageFrontURL),
-                        //NationalIDImageBackURL = await SaveFile(investorRegisterDto.NationalIDImageBackURL),
+                        NationalIDImageFrontURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageFrontURL),
+                        NationalIDImageBackURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageBackURL),
                     },
                     FirstName = investorRegisterDto.FirstName,
                     LastName = investorRegisterDto.LastName,
@@ -203,7 +205,6 @@ namespace Investo.Presentation.Controllers.Account
 
                 var isFirstUser = !(await _userManager.Users.AnyAsync());
 
-
                 var BoUser = new BusinessOwner
                 {
                     
@@ -211,8 +212,8 @@ namespace Investo.Presentation.Controllers.Account
                     {
                         NationalID = investorRegisterDto.NationalID,
                         // هتحط هنا اللينكات بعد الرفع
-                        //NationalIDImageFrontURL = await SaveFile(investorRegisterDto.NationalIDImageFrontURL),
-                        //NationalIDImageBackURL = await SaveFile(investorRegisterDto.NationalIDImageBackURL),
+                        NationalIDImageFrontURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageFrontURL),
+                        NationalIDImageBackURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageBackURL),
                     },
                     FirstName = investorRegisterDto.FirstName,
                     LastName = investorRegisterDto.LastName,
