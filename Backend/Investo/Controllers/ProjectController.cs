@@ -120,10 +120,10 @@ namespace Investo.Presentation.Controllers
             return Ok(project);
         }
 
-        [HttpPut("review/{projectId}/status")]
-        public async Task<IActionResult> UpdateProjectStatus([FromRoute] int projectId, [FromBody] ProjectStatus status)// for admin
+        [HttpPut("review/UpdateProjectStatus")]
+        public async Task<IActionResult> UpdateProjectStatus([FromBody] ProjectStatusUpdateDto projectStatusUpdateReqDto)// for admin
         {
-            var result = await _projectService.UpdateProjectStatusAsync(projectId, status);
+            var result = await _projectService.UpdateProjectStatusAsync(projectStatusUpdateReqDto.ProjectId, projectStatusUpdateReqDto.Status);
 
             if (!result)
                 return NotFound($"Project with Project Id : {projectId} is not fiund"); // or BadRequest if invalid state
