@@ -155,11 +155,11 @@ namespace Investo.DataAccess.Services.Project
                 CategoryId = project.CategoryId,
                 OwnerId = project.OwnerId,
                 Status = project.Status,
-
+                FullName = owner.FirstName +" "+owner.LastName,
                 // Business owner info
                 Bio = owner.Bio,
                 RegistrationDate = owner.RegistrationDate,
-                FullName = owner.PersonInfo.FullLegalName,
+                
                 Email = owner.Email,
                 PhoneNumber = owner.PhoneNumber,
                 ProfilePictureURL = owner.ProfilePictureURL,
