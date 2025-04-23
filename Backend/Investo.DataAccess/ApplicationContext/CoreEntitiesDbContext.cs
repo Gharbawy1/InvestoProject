@@ -31,6 +31,11 @@ namespace Investo.DataAccess.ApplicationContext
                 .HasConversion<string>()
                 .HasDefaultValue(OfferStatus.Pending);
 
+            modelBuilder.Entity<Project>()
+                .Property(o => o.Status)
+                .HasConversion<string>()
+                .HasDefaultValue(ProjectStatus.Pending);
+
 
 
             modelBuilder.Entity<Investor>().OwnsOne(i => i.PersonInfo);

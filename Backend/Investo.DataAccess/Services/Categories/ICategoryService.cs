@@ -14,5 +14,6 @@ namespace Investo.DataAccess.Services.Interfaces
         Task CreateCategory(CreateCategoryDto dto);
         Task UpdateCategory(byte id, UpdateCategoryDTO dto);
         Task DeleteCategory(byte id);
+        Task<bool> IsValidCategory(byte id);
     }
 }

@@ -65,6 +65,11 @@ namespace Investo.DataAccess.Services.Categories
         {
             await _categoryRepository.Delete(id);
         }
+
+        public Task<bool> IsValidCategory(byte id)
+        {
+            return _categoryRepository.IsValidCategory(id);
+        }
     }
 
 }
