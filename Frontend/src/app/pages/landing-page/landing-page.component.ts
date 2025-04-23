@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter  } from '@angular/core';
 import { ProjectFilterComponent } from '../../features/project/components/project-filter/project-filter.component';
-
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-landing-page',
-  imports: [ProjectFilterComponent],
+  imports: [ProjectFilterComponent, CommonModule],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css'
 })
@@ -15,6 +15,28 @@ export class LandingPageComponent {
   @Output() onInvestorSignup = new EventEmitter<void>();
   @Output() onBusinessSignup = new EventEmitter<void>();
   
-  
+  features = [
+    {
+      title: 'Feature 1',
+      description: 'Description for feature 1',
+      iconPath: 'M12 4.5v15m7.5-7.5h-15',
+      iconLinecap: 'round',
+      iconLinejoin: 'round'
+    },
+    {
+      title: 'Feature 2',
+      description: 'Description for feature 2',
+      iconPath: 'M12 4.5v15m7.5-7.5h-15',
+      iconLinecap: 'round',
+      iconLinejoin: 'round'
+    },
+    {
+      title: 'Feature 3',
+      description: 'Description for feature 3',
+      iconPath: 'M12 4.5v15m7.5-7.5h-15',
+      iconLinecap: 'round',
+      iconLinejoin: 'round'
+    }
+  ];
 }
 
