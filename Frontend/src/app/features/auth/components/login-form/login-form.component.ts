@@ -6,14 +6,13 @@ import { AutoFocusDirective } from '../../../../shared/directives/auto-focus/aut
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { NavigationService } from '../../../../core/services/navigation/navigation.service';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
-import { EyePasswordComponent } from '../../../../shared/componentes/eye-password/eye-password.component';
 
 /**
  * Component for handling user login functionality.
  */
 @Component({
   selector: 'app-login-form',
-  imports: [FormsModule, CommonModule, AutoFocusDirective, HttpClientModule, ForgotPasswordComponent, EyePasswordComponent],
+  imports: [FormsModule, CommonModule, AutoFocusDirective, HttpClientModule, ForgotPasswordComponent],
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css'],
   providers: [AuthService]
@@ -29,7 +28,7 @@ export class LoginFormComponent implements OnInit {
   isChecked: boolean = false;
 
   /** UI State Management */
-  showPassword: boolean = false;
+  showPassword = false;
   isLoading: boolean = false;
   formSubmitted: boolean = false;
   loginError: boolean = false;
@@ -57,6 +56,13 @@ export class LoginFormComponent implements OnInit {
   handleCloseModal() {
     this.isForgotPasswordOpen = false; 
   }  
+
+  /**
+   * Toggles the visibility of the password field.
+   */
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   /**
    * Toggles the "Remember Me" option.

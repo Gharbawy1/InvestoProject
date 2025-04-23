@@ -12,13 +12,10 @@ namespace Investo.Entities.Models
         //[MaxLength(100)]
         //public string KYCStatus { get; set; }
         public PersonInfo PersonInfo { get; set; }
-        public string PassportDocumentURL { get; set; }
-        public string NationalIDDocumentURL { get; set; }
-        public DateTime LastActivity { get; set; }
 
         // navigation property
         public int ProjectId { get; set; }
-        public Project Project { get; set; }// on Delete : method// if we remove BO project will be removed 
+        public Project? Project { get; set; }// on Delete : method// if we remove BO project will be removed 
 
         public ICollection<Offer> Offers { get; set; } = new HashSet<Offer>();
         // he will receive into his dashboard

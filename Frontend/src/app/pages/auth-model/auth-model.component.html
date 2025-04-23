@@ -1,116 +1,93 @@
-<!-- Full Page Container -->
-<div class="min-h-screen bg-gray-50">
-  <div class="grid lg:grid-cols-2 min-h-screen">
-    <!-- Left Side - Dynamic Content -->
-    <div class="hidden lg:block relative bg-gradient-to-br from-blue-600 to-purple-500">
-      <!-- Login Content -->
-      <div *ngIf="activeTab === 'login'" class="absolute inset-0 flex items-center justify-center p-12 text-white animate-slide-in">
-        <div class="max-w-2xl space-y-6">
-          <h2 class="text-5xl font-bold">Welcome Back</h2>
-          <p class="text-xl leading-relaxed opacity-90">
-            Join our community of passionate developers and designers. 
-            Create amazing projects and collaborate with like-minded people.
-          </p>
-          <div class="flex space-x-4">
-            <div class="h-1 w-12 bg-white"></div>
-            <div class="h-1 w-12 bg-white/30"></div>
-          </div>
-        </div>
-      </div>
+<!-- Backdrop -->
+<div
+  class="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm backdrop-animation"
+></div>
 
-      <!-- Register Content -->
-      <div *ngIf="activeTab === 'register'" class="absolute inset-0 flex items-center justify-center p-12 text-white animate-slide-in">
-        <div class="max-w-2xl space-y-6">
-          <h2 class="text-5xl font-bold">Start Your Journey</h2>
-          <p class="text-xl leading-relaxed opacity-90">
-            Create an account to get access to exclusive resources, tools, 
-            and collaborate with our growing community of innovators.
-          </p>
-          <div class="flex space-x-4">
-            <div class="h-1 w-12 bg-white/30"></div>
-            <div class="h-1 w-12 bg-white"></div>
-          </div>
-        </div>
+<!-- Auth Modal -->
+<div
+  class="fixed left-[50%] top-[50%] z-50 grid w-[90%] max-w-[400px] sm:max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border border-gray-200 shadow-xl rounded-xl bg-white overflow-hidden p-4 sm:p-6 animate-modal-entrance"
+>
+  <!-- Tabs -->
+  <div>
+    <div class="grid w-full grid-cols-2 bg-gray-50 rounded-full p-1 gap-1">
+      <button
+        (click)="showTab('login')"
+        [class]="
+          activeTab === 'login'
+            ? 'bg-white text-primary shadow-sm'
+            : 'text-gray-500 hover:bg-gray-100'
+        "
+        class="px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-full transition-all duration-200 focus:outline-none btn-animate"
+        aria-label="Login tab"
+        [attr.aria-selected]="activeTab === 'login'"
+      >
+        Login
+      </button>
+      <button
+        (click)="showTab('register')"
+        [class]="
+          activeTab === 'register'
+            ? 'bg-white text-primary shadow-sm'
+            : 'text-gray-500 hover:bg-gray-100'
+        "
+        class="px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-full transition-all duration-200 focus:outline-none btn-animate"
+        aria-label="Register tab"
+        [attr.aria-selected]="activeTab === 'register'"
+      >
+        Register
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="relative h-[300px] sm:h-[450px]">
+    <app-login-form
+      *ngIf="activeTab === 'login'"
+      class="tab-transition"
+    ></app-login-form>
+    <app-registration-form
+      *ngIf="activeTab === 'register'"
+      class="tab-transition"
+    ></app-registration-form>
+  </div>
+
+  <!-- Continue with -->
+  <div>
+    <div class="relative">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-gray-300"></div>
+      </div>
+      <div class="relative flex justify-center text-sm">
+        <span class="px-2 bg-white text-gray-500">Or continue with</span>
       </div>
     </div>
+    <div class="mt-4 sm:mt-6 grid grid-cols-2 gap-2 sm:gap-3">
+      <!-- Facebook Button -->
+      <button
+        type="button"
+        title="Continue with Facebook"
+        aria-label="Continue with Facebook"
+        (click)="loginWithFacebook()"
+        [disabled]="!isButtonReady"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 shadow-sm hover:bg-gray-50 h-9 sm:h-10 px-3 sm:px-4 py-2 w-full bg-white border border-gray-300 text-gray-700 btn-animate"
+      >
+        <fa-icon [icon]="faFacebook" class="text-blue-600 mr-2"></fa-icon>
+        <span>Facebook</span>
+      </button>
 
-    <!-- Right Side - Auth Content -->
-    <div class="flex items-center justify-center p-6 sm:p-12 auth-container animate-modal-entrance">
-      <div class="w-full relative max-w-[400px] mx-auto">
-        <!-- Logo -->
-        <div class="mb-12 text-center">
-          <svg class="mx-auto h-12 w-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-          </svg>
-          <h2 class="mt-4 text-3xl font-bold text-gray-900">
-            {{ activeTab === 'login' ? 'Sign in to your account' : 'Create new account' }}
-          </h2>
-        </div>
-
-        <!-- Tabs -->
-        <div class="mb-8">
-          <div class="flex space-x-4 border-b border-gray-200">
-            <button
-              (click)="showTab('login')"
-              [class]="activeTab === 'login' 
-                ? 'border-blue-600 text-blue-600' 
-                : 'border-transparent text-gray-500 hover:text-gray-700'"
-              class="py-4 px-1 border-b-2 font-medium text-sm focus:outline-none transition-all duration-200 cursor-pointer btn-animate"
-            >
-              Sign In
-            </button>
-            <button
-              (click)="showTab('register')"
-              [class]="activeTab === 'register' 
-                ? 'border-blue-600 text-blue-600' 
-                : 'border-transparent text-gray-500 hover:text-gray-700'"
-              class="py-4 px-1 border-b-2 font-medium text-sm focus:outline-none transition-all duration-200 cursor-pointer btn-animate"
-            >
-              Create Account
-            </button>
-          </div>
-        </div>
-
-        <!-- Tab Content -->
-        <div class="relative transition-all duration-300 ease-out w-full max-w-[500px] mx-auto">
-          <app-login-form
-            *ngIf="activeTab === 'login'"
-            class="slide-right"
-          ></app-login-form>
-          <app-registration-form
-            *ngIf="activeTab === 'register'"
-            class="slide-left"
-          ></app-registration-form>
-        </div>
-
-        <!-- Social Auth -->
-        <div class="mt-12">
-          <div class="relative">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-gray-200"></div>
-            </div>
-            <div class="relative flex justify-center text-sm">
-              <span class="px-2 bg-gray-50 text-gray-500">Or continue with</span>
-            </div>
-          </div>
-
-          <div class="mt-6 grid grid-cols-2 gap-3">
-            <button
-              (click)="loginWithFacebook()"
-              class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 cursor-pointer btn-animate"
-            >
-              <fa-icon [icon]="faFacebook" class="h-5 w-5 text-blue-600"></fa-icon>
-              <span class="ml-2">Facebook</span>
-            </button>
-            <button
-              (click)="loginWithGoogle()"
-              class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 cursor-pointer btn-animate"
-            >
-              <fa-icon [icon]="faGoogle" class="h-5 w-5 text-red-600"></fa-icon>
-              <span class="ml-2">Google</span>
-            </button>
-          </div>
-        </div>
+      <!-- Google Button -->
+      <div id="googleSignInButton">
+        <button
+          type="button"
+          title="Continue with Google"
+          aria-label="Continue with Google"
+          (click)="loginWithGoogle()"
+          [disabled]="!isButtonReady"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-500 disabled:pointer-events-none disabled:opacity-50 shadow-sm hover:bg-gray-50 h-9 sm:h-10 px-3 sm:px-4 py-2 w-full bg-white border border-gray-300 text-gray-700 btn-animate"
+        >
+          <fa-icon [icon]="faGoogle" class="text-red-500 mr-2"></fa-icon>
+          <span>Google</span>
+        </button>
       </div>
     </div>
   </div>

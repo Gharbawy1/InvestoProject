@@ -155,11 +155,11 @@ namespace Investo.DataAccess.Services.Project
                 CategoryId = project.CategoryId,
                 OwnerId = project.OwnerId,
                 Status = project.Status,
-
+                FullName = owner.FirstName +" "+owner.LastName,
                 // Business owner info
                 Bio = owner.Bio,
                 RegistrationDate = owner.RegistrationDate,
-                FullName = owner.PersonInfo.FullLegalName,
+                
                 Email = owner.Email,
                 PhoneNumber = owner.PhoneNumber,
                 ProfilePictureURL = owner.ProfilePictureURL,
@@ -167,13 +167,13 @@ namespace Investo.DataAccess.Services.Project
             };
         }
 
-        public async Task<bool> UpdateProjectStatusAsync(int projectId, ProjectStatus newStatus)
+        public async Task<bool> UpdateProjectStatusAsync(ProjectStatusUpdateDto newProjectUpdateStateReq)
         {
-            var project = await _projectRepository.GetById(projectId);
+            var project = await _projectRepository.GetById(newProjectUpdateStateReq.ProjectId);
             if (project == null)
                 return false;
 
-            project.Status = newStatus;
+            project.Status = newProjectUpdateStateReq.Status;
             await _projectRepository.Update(project);
             return true;
         }

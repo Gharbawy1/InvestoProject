@@ -8,6 +8,13 @@ using Investo.DataAccess.Repository;
 using Investo.Entities.IRepository;
 using Investo.DataAccess.Services.Project;
 using Investo.DataAccess.Services.Image_Loading;
+using Investo.Entities.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
+using Investo.DataAccess.Services.Token;
 
 namespace Investo
 {
@@ -35,18 +42,88 @@ namespace Investo
             builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
             builder.Services.AddScoped<IImageLoadService, CloudinaryImageLoadService>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
 
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
+            {
+                opt.Password.RequireLowercase = true;
+                opt.Password.RequireUppercase = true;
+                opt.Password.RequiredLength = 12;
+                opt.Password.RequireDigit = true;
+                opt.Password.RequireNonAlphanumeric = true;
+            })
+            .AddEntityFrameworkStores<CoreEntitiesDbContext>().AddDefaultTokenProviders();
+
+            builder.Services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme =
+                opt.DefaultScheme =
+                opt.DefaultChallengeScheme =
+                opt.DefaultForbidScheme =
+                opt.DefaultSignInScheme =
+                opt.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+
+
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
+                    ValidateAudience = false,
+                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]))
+                };
+            });
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
+            builder.Services.AddSwaggerGen(option =>
+            {
+                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+            });
 
             // For CoreEntitiesDbContext
             builder.Services.AddDbContext<CoreEntitiesDbContext>(options =>
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("DevCS"),
+                    builder.Configuration.GetConnectionString("ProdCS"),
                     x => x.MigrationsHistoryTable("__EFMigrationsHistory", "CoreEntities")));
 
             // For RealTimeDbContext
             builder.Services.AddDbContext<RealTimeDbContext>(options =>
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("DevCS"),
+                    builder.Configuration.GetConnectionString("ProdCS"),
                     x => x.MigrationsHistoryTable("__EFMigrationsHistory", "RealTime")));
 
 
@@ -65,7 +142,7 @@ namespace Investo
 
             app.UseHttpsRedirection();
 
-
+            app.UseCors("AllowAllOrigins");
             app.UseAuthentication();
             app.UseAuthorization();
 

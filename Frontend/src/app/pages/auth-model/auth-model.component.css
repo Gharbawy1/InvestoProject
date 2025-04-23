@@ -1,55 +1,77 @@
-/* auth-model.component.css */
-.animate-slide-in {
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from {
+/* Modal Entrance Animation */
+@keyframes modal-fade-in {
+  0% {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: scale(0.95);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateX(0);
+    transform: scale(1);
   }
 }
 
-@keyframes slideLeft {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+.animate-modal-entrance {
+  animation: modal-fade-in 0.4s ease-out;
 }
 
-@keyframes slideRight {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+/* Tab Content Transition */
+@keyframes tab-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Smooth height transitions */
-.form-resize-animation {
-  transition: height 0.3s ease-out;
-}
-
-/* Animation adjustments */
-.slide-left {
-  animation: slideLeft 0.3s ease-out;
-}
-
-.slide-right {
-  animation: slideRight 0.3s ease-out;
-}
-
-.transition-all {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-app-login-form, app-registration-form {
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
-.auth-container {
+.tab-transition {
+  animation: tab-fade 0.3s ease-out;
+  position: absolute;
   width: 100%;
-  min-width: auto;
-  max-width: 500px;
+}
+
+/* Button Hover Animation */
+.btn-animate {
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.btn-animate:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .auth-modal {
+    position: fixed;
+    /* Move modal higher on the screen */
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* Make the modal taller */
+    height: 85vh; /* Adjust height for better usability */
+    min-height: 500px; /* Ensure enough space for forms */
+    width: 95%; /* Full width on small screens */
+    
+    /* Enable scrolling if content is too much */
+    overflow-y: auto;
+    
+    /* Adjust padding */
+    padding: 1.2rem;
+  }
+
+  /* Increase tab content height */
+  .auth-modal .tab-content {
+    height: auto;
+    min-height: 400px;
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+
+  /* Make buttons more touch-friendly */
+  .auth-modal button {
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+  }
 }

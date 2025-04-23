@@ -1,34 +1,31 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatMenuModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterLink,
-    RouterLinkActive
-  ],
+  imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
-  @Input() isLoggedIn = false;
-  @Input() userName = 'John Doe';
+  @Input() isLoggedIn: boolean = true;
+  @Input() userName: string = 'John Doe';
+  @Input() userImageURL: string = 'https://via.placeholder.com/150';
   @Output() loginClick = new EventEmitter<void>();
   @Output() registerClick = new EventEmitter<void>();
 
   isMenuOpen = false;
-
+  isDropDownOpen = false;
+  
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
+  
+  toggleDropDown() {
+    this.isDropDownOpen = !this.isDropDownOpen;
+  }
+  
 }

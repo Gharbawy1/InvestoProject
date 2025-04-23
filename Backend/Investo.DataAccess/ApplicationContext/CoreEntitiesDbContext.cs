@@ -11,7 +11,6 @@ namespace Investo.DataAccess.ApplicationContext
 {
     public class CoreEntitiesDbContext:IdentityDbContext<ApplicationUser>
     {
-        // TODO : Make a migration for this Context 
         public CoreEntitiesDbContext(DbContextOptions<CoreEntitiesDbContext> options)
              : base(options)
         {
@@ -23,8 +22,7 @@ namespace Investo.DataAccess.ApplicationContext
 
             modelBuilder.Entity<Offer>()
                     .Property(o => o.InvestmentType)
-                    .HasConversion<string>()
-                    ;
+                    .HasConversion<string>();
 
             modelBuilder.Entity<Offer>()
                 .Property(o => o.Status)
