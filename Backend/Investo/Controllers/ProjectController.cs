@@ -126,9 +126,9 @@ namespace Investo.Presentation.Controllers
             var result = await _projectService.UpdateProjectStatusAsync(projectStatusUpdateReqDto.ProjectId, projectStatusUpdateReqDto.Status);
 
             if (!result)
-                return NotFound($"Project with Project Id : {projectId} is not fiund"); // or BadRequest if invalid state
+                return NotFound($"Project with Project Id : {projectStatusUpdateReqDto.ProjectId} is not fiund"); // or BadRequest if invalid state
 
-            return Ok($"Project Status Updated Successfully to {status}");
+            return Ok($"Project Status Updated Successfully to {projectStatusUpdateReqDto.Status}");
         }
 
         [HttpGet("status/{ownerId}")]

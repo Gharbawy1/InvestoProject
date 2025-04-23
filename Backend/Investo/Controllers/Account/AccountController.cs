@@ -124,7 +124,7 @@ namespace Investo.Presentation.Controllers.Account
                 {
                     AccreditationStatus = investorRegisterDto.AccreditationStatus,
                     RiskTolerance = investorRegisterDto.RiskTolerance,
-                    ProfilePictureURL = await _imageLoadService.Upload(investorRegisterDto.ProfilePictureURL)
+                    ProfilePictureURL = await _imageLoadService.Upload(investorRegisterDto.ProfilePictureURL),
                     NetWorth = investorRegisterDto.NetWorth,
                     MinInvestmentAmount = investorRegisterDto.MinInvestmentAmount,
                     MaxInvestmentAmount = investorRegisterDto.MaxInvestmentAmount,
