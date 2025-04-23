@@ -1,117 +1,154 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  Validators
-} from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { LucideAngularModule, Building2, Upload, FileText } from 'lucide-angular';
-import { ButtonComponent } from "../../shared/componentes/button/button.component";
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { RouterModule, Router } from '@angular/router';
+import { LucideAngularModule} from 'lucide-angular';
+import { BusinessCreationService } from '../../features/project/services/business-creation/business-creation.service';
+import { IBusinessCreation } from '../../features/project/interfaces/IBusinessCreation';
+import { CategoryService, Category  } from '../../core/services/category/category.service';
+import { AutoFocusDirective } from '../../shared/directives/auto-focus/auto-focus.directive';
 
 @Component({
   selector: 'app-business-creation',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule, AutoFocusDirective],
   templateUrl: './business-creation.component.html',
   styleUrls: ['./business-creation.component.css']
 })
-export class BusinessCreationComponent {
+export class BusinessCreationComponent implements OnInit {
   private fb = inject(FormBuilder);
-  businessRegistrationFile: File | null = null;
-  financialStatementsFile: File | null = null;
-  
-  
-  businessForm = this.fb.group({
-    businessName: ['', [Validators.required, Validators.minLength(2)]],
-    businessType: ['', Validators.required],
-    registrationNumber: ['', Validators.required],
-    foundedYear: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
-    website: ['', Validators.pattern(/^(https?:\/\/)?([\w\-])+\.{1}([a-zA-Z]{2,63})([\/\w\-.~]*)*\/?$/)],
-    description: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(500)]],
-    industry: ['', Validators.required],
-    employeeCount: ['', Validators.required],
-    contactEmail: ['', [Validators.required, Validators.email]],
-    contactPhone: ['', [Validators.required, Validators.pattern(/^\d{10,}$/)]]
-  });
+  businessImageFile: File | null = null;
+  formSubmitted = false;
+  isLoading = false;
 
-  businessTypes = [
-    { value: 'startup', label: 'Startup' },
-    { value: 'small_business', label: 'Small Business' },
-    { value: 'corporation', label: 'Corporation' },
-    { value: 'partnership', label: 'Partnership' },
-    { value: 'nonprofit', label: 'Non-profit' },
-    { value: 'sole_proprietorship', label: 'Sole Proprietorship' }
-  ];
+  categories: Category[] = [];
+  isLoadingCategories = false;
+  errorMessage = '';
 
-  industries = [
-    { value: 'technology', label: 'Technology' },
-    { value: 'healthcare', label: 'Healthcare' },
-    { value: 'finance', label: 'Finance' },
-    { value: 'education', label: 'Education' },
-    { value: 'retail', label: 'Retail' },
-    { value: 'manufacturing', label: 'Manufacturing' },
-    { value: 'real_estate', label: 'Real Estate' },
-    { value: 'energy', label: 'Energy' },
-    { value: 'agriculture', label: 'Agriculture' },
-    { value: 'other', label: 'Other' }
-  ];
+  businessForm: FormGroup;
 
-  employeeCounts = [
-    { value: '1-10', label: '1-10' },
-    { value: '11-50', label: '11-50' },
-    { value: '51-200', label: '51-200' },
-    { value: '201-500', label: '201-500' },
-    { value: '501-1000', label: '501-1000' },
-    { value: '1000+', label: '1000+' }
-  ];
+  constructor(private businessCreationService: BusinessCreationService, public categoryService: CategoryService, public router: Router) {
+    this.businessForm = this.fb.group({
+      projectTitle: ['', [Validators.required, Validators.minLength(5)]],
+      subtitle: ['', [Validators.required, Validators.maxLength(150)]],
+      projectLocation: ['', Validators.required],
+      fundingGoal: [0, [Validators.required, Validators.min(10000)]],
+      projectImage: [null, [Validators.required]],
+      fundingExchange: ['', [Validators.required]],
+      projectVision: ['', [Validators.required, Validators.minLength(100)]],
+      projectStory: ['', [Validators.required, Validators.minLength(200)]],
+      currentVision: ['', Validators.required],
+      goals: ['', Validators.required],
+      categoryId: [0, [Validators.required, Validators.min(1)]]
+    });
+  }  
+
+  ngOnInit() {
+    this.loadCategories();
+  }
+
+  private loadCategories() {
+    this.isLoadingCategories = true;
+    this.errorMessage = '';
+    
+    this.categoryService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        this.isLoadingCategories = false;
+
+        this.businessForm.get('categoryId')?.enable();
+      },
+      error: (err) => {
+        this.errorMessage = 'Failed to load categories. Please try again later.';
+        this.isLoadingCategories = false;
+        console.error('Error loading categories:', err);
+      }
+    });
+  }
   
-  
-  onFileSelected(event: Event, type: 'registration' | 'financial') {
+  onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] || null;
-  
+    const file = input.files?.[0];
+    
     if (file) {
-      if (type === 'registration') {
-        this.businessRegistrationFile = file;
-      } else if (type === 'financial') {
-        this.financialStatementsFile = file;
-      }
+      this.businessForm.patchValue({ projectImage: file });
+      this.businessForm.get('projectImage')?.updateValueAndValidity();
+      this.businessImageFile = file;
     }
   }
-  
+
   onSubmit() {
-    if (this.businessForm.valid) {
-      const formData = new FormData();
-      Object.entries(this.businessForm.value).forEach(([key, value]) => {
-        if (value !== null) {
-          formData.append(key, value);
-        }
-      });
-  
-      if (this.businessRegistrationFile) {
-        formData.append('businessRegistration', this.businessRegistrationFile);
-      }
-  
-      if (this.financialStatementsFile) {
-        formData.append('financialStatements', this.financialStatementsFile);
-      }
-  
-      // Submit formData to your API
-      console.log('FormData ready to send:', formData);
-    } else {
-      this.businessForm.markAllAsTouched();
+    this.formSubmitted = true;
+    
+    Object.values(this.businessForm.controls).forEach(c => c.markAsTouched());
+    
+    if (this.businessForm.invalid || !this.businessImageFile) {
+      return;
     }
-  }
-  
+    
+    this.isLoading = true;
+    const formValues = this.businessForm.value;
+    
+    const formData = new FormData();
+    formData.append('projectImage', this.businessImageFile, this.businessImageFile.name);
+    
+    formData.append('projectTitle', formValues.projectTitle);
+    formData.append('subtitle', formValues.subtitle);
+    formData.append('projectLocation', formValues.projectLocation);
+    formData.append('fundingGoal', formValues.fundingGoal);
+    formData.append('fundingExchange', formValues.fundingExchange);
+    formData.append('projectVision', formValues.projectVision);
+    formData.append('projectStory', formValues.projectStory);
+    formData.append('currentVision', formValues.currentVision);
+    formData.append('goals', formValues.goals);
+    formData.append('categoryId', formValues.categoryId);
 
-  get descriptionLength() {
-    return this.businessForm.get('description')?.value?.length || 0;
+    // —— DEBUG: print out exactly what you’re sending ——
+    for (const [key, val] of formData.entries()) {
+      // File prints as a File object, everything else is a string
+      console.log(key, val);
+    }
+    
+    /*// for test
+    const values = this.businessForm.getRawValue();
+    // for test
+    const payload = {
+      ...formValues,
+      categoryId: Number(formValues.categoryId),
+    };*/
+
+    this.businessCreationService.postBusinessCreation(formData).subscribe({
+      next: (response) => {
+        console.log('Business profile created successfully', response);
+        this.isLoading = false;
+        this.router.navigate(['/ProjectDetails']);
+        this.businessForm.reset();
+      },
+      error: (error) => {
+        console.error('Error creating profile', error);
+        this.isLoading = false;
+      }
+    });
+    //for test
+    /*this.businessCreationService.postBusinessJSON(payload).subscribe({
+      next: () => {
+        console.log('Created successfully');
+        this.isLoading = false;
+        this.router.navigate(['/ProjectDetails']);
+        this.businessForm.reset();
+      },
+      error: err => {
+        console.error('Creation error', err);
+        this.isLoading = false;
+      }
+    });*/
   }
 
-  // Helper for cleaner template
-  hasError(controlName: string, error: string) {
-    const control = this.businessForm.get(controlName);
-    return control && control.hasError(error) && (control.dirty || control.touched);
+  // helper methods
+  get visionLength() {
+    return this.businessForm.controls['projectVision'].value.length;
+  }
+
+  get storyLength() {
+    return this.businessForm.controls['projectStory'].value.length;
   }
 }

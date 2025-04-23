@@ -18,6 +18,4 @@ export class LandingPageComponent {
   @Output() onInvestorSignup = new EventEmitter<void>();
   @Output() onBusinessSignup = new EventEmitter<void>();
   
-  
-  
 }
