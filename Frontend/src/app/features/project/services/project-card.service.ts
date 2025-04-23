@@ -6,7 +6,7 @@ import { IProjectCard } from '../interfaces/iprojectcard';
 @Injectable({
   providedIn: 'root'
 })
-export class ProjectService {
+export class ProjectCardService {
   private apiUrl = 'https://your-api-url.com/projects'; // API
 
   constructor(private http: HttpClient) {}
@@ -14,4 +14,10 @@ export class ProjectService {
   getProjects(): Observable<IProjectCard[]> {
     return this.http.get<IProjectCard[]>(this.apiUrl);
   }
+  
+  progressPercentage(fundingProgress: number, fundingGoal: number): number {
+    return Math.min(Math.round((fundingProgress / fundingGoal) * 100), 100);
+  }
+  
+  
 }
