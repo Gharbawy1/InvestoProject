@@ -35,21 +35,21 @@ namespace Investo.Presentation.Controllers
         public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
         {
             await _categoryService.CreateCategory(dto);
-            return StatusCode(201);
+            return StatusCode(201,"Category Created Succsessfully");
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(byte id, [FromBody] UpdateCategoryDTO dto)
         {
             await _categoryService.UpdateCategory(id, dto);
-            return NoContent();
+            return Ok("Category Updated Succsesfully");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(byte id)
         {
             await _categoryService.DeleteCategory(id);
-            return NoContent();
+            return Ok("Category Deleted Succsessfully");
         }
     }
 }
