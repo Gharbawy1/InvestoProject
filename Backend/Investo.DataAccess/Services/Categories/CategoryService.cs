@@ -40,6 +40,12 @@ namespace Investo.DataAccess.Services.Categories
                 Name = category.Name
             };
         }
+        public async Task<Category> GetCategoryByNameAsync(string Name)
+        {
+            var category = await _categoryRepository.GetByNameAsync(Name);
+
+            return category;
+        }
 
         public async Task CreateCategory(CreateCategoryDto dto)
         {

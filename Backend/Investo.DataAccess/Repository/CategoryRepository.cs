@@ -25,11 +25,15 @@ namespace Investo.DataAccess.Repository
         }
 
         public async Task<Category> GetById(byte id)
-
         {
             return await _context.Categories.FindAsync(id);
         }
 
+        public async Task<Category> GetByNameAsync(string Name)
+        {
+            return await _context.Categories.SingleOrDefaultAsync(c=>c.Name == Name);
+            
+        }
         public async Task Add(Category category)
         {
             await _context.Categories.AddAsync(category);

@@ -34,13 +34,26 @@ namespace Investo.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
         {
-            await _categoryService.CreateCategory(dto);
-            return StatusCode(201,"Category Created Succsessfully");
+            var IsExistedCategory = await _categoryService.GetCategoryByNameAsync(dto.Name);
+            if (IsExistedCategory!= null)
+            {
+                return BadRequest($"Category with name {dto.Name} is already taken");
+            }
+            else
+            {
+                await _categoryService.CreateCategory(dto);
+                return StatusCode(201, "Category Created Succsessfully");
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(byte id, [FromBody] UpdateCategoryDTO dto)
         {
+            var IsExistedCategory = await _categoryService.GetCategoryByNameAsync(dto.Name);
+            if (IsExistedCategory != null)
+            {
+                return BadRequest($"Category with name {dto.Name} is already taken");
+            }
             await _categoryService.UpdateCategory(id, dto);
             return Ok("Category Updated Succsesfully");
         }
@@ -48,6 +61,7 @@ namespace Investo.Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(byte id)
         {
+            
             await _categoryService.DeleteCategory(id);
             return Ok("Category Deleted Succsessfully");
         }

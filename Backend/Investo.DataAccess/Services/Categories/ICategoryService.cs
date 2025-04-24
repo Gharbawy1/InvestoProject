@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Investo.Entities.DTO.Category;
+using Investo.Entities.Models;
 
 namespace Investo.DataAccess.Services.Interfaces
 {
@@ -11,6 +12,7 @@ namespace Investo.DataAccess.Services.Interfaces
     {
         Task<IEnumerable<CategoryDTO>> GetAllCategories();
         Task<CategoryDTO> GetCategoryById(byte id);
+        Task<Category> GetCategoryByNameAsync(string Name);
         Task CreateCategory(CreateCategoryDto dto);
         Task UpdateCategory(byte id, UpdateCategoryDTO dto);
         Task DeleteCategory(byte id);
