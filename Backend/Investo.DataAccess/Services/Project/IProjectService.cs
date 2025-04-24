@@ -14,6 +14,7 @@ namespace Investo.DataAccess.Services.Project
         Task<ProjectReadDto> GetProjectById(int id);
         Task<ProjectReadDto> CreateProject(ProjectCreateUpdateDto dto);
         Task<ProjectReadDto> UpdateProject(int id, ProjectCreateUpdateDto dto);
+        Task<List<ProjectReadDto>> GetProjectsByCategoryAsync(byte CategoryId);
         Task<bool> DeleteProject(int id);
         Task<ProjectRequestReviewDto> GetProjectReviewDtoByIdAsync(int id);
         Task<bool> UpdateProjectStatusAsync(ProjectStatusUpdateDto newProjectUpdateStateReq);

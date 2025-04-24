@@ -59,11 +59,11 @@ namespace Investo.DataAccess.Repository
                 .Include(p => p.Owner)       // Include Owner if you need BusinessOwner data
                 .FirstOrDefaultAsync(p => p.OwnerId == ownerId);
         }
-        public async Task<Project> GetByCategoryIdAsync(byte CategoryId)
+        public async Task<List<Project>> GetProjectsByCategory(byte CategoryId)
         {
             return await _context.Projects
-                .Include(p => p.Category)    // Include Category if needed
-                .FirstOrDefaultAsync(p => p.CategoryId == CategoryId);
+                .Include (p => p.Category)
+                .Where(p => p.CategoryId == CategoryId).ToListAsync();
         }
 
 

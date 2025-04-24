@@ -45,6 +45,15 @@ namespace Investo.Presentation.Controllers
             return Ok(project);
         }
 
+        [HttpGet("get-projects-by-category/{CategoryId}")]
+        public async Task<IActionResult> GetProjectsByCategory([FromRoute] byte CategoryId)
+        {
+            var project = await _projectService.GetProjectsByCategoryAsync(CategoryId);
+            if (project == null)
+                return NotFound("Project not found");
+
+            return Ok(project);
+        }
         // POST: api/project
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] ProjectCreateUpdateDto dto)

@@ -16,7 +16,7 @@ namespace Investo.Entities.IRepository
         Task Update(Project project);
         Task Delete(Project project);
         Task<Project> GetByOwnerIdAsync(string ownerId);
-        Task<Project> GetByCategoryIdAsync(byte CategoryId);
+        Task<List<Project>> GetProjectsByCategory(byte CategoryId);
         Task<IEnumerable<Project>> GetPendingProjectRequestsAsync();
         Task<IEnumerable<Project>> GetAcceptedProjectRequestsAsync();
         Task<IEnumerable<Project>> GetRejectedProjectRequestsAsync();

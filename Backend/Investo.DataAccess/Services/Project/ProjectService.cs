@@ -366,5 +366,32 @@ namespace Investo.DataAccess.Services.Project
             return result;
         }
 
+        public async Task<List<ProjectReadDto>> GetProjectsByCategoryAsync(byte CategoryId)
+        {
+            var ReturnedProjects = await _projectRepository.GetProjectsByCategory(CategoryId);
+            var ProjectsReadDtos = new List<ProjectReadDto>();
+            foreach (var Project in ReturnedProjects)
+            {
+                var projectDto = new ProjectReadDto
+                {
+                    Id = Project.Id,
+                    ProjectTitle = Project.ProjectTitle,
+                    Subtitle = Project.Subtitle,
+                    ProjectLocation = Project.ProjectLocation,
+                    ProjectImageUrl = Project.ProjectImageURL,
+                    FundingGoal = Project.FundingGoal,
+                    FundingExchange = Project.FundingExchange,
+                    Status = Project.Status.ToString(),
+                    ProjectVision = Project.ProjectVision,
+                    ProjectStory = Project.ProjectStory,
+                    CurrentVision = Project.CurrentVision,
+                    Goals = Project.Goals,
+                    CategoryName = Project.Category.Name,
+                    OwnerId = Project.OwnerId
+                };
+                ProjectsReadDtos.Add(projectDto);
+            }
+            return ProjectsReadDtos;
+        }
     }
 }
