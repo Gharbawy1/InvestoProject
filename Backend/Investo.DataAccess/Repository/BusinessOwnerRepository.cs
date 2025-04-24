@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Investo.DataAccess.Services.BusinessOwners;
+using Investo.DataAccess.Services;
 using Microsoft.EntityFrameworkCore;
 using Investo.Entities.IRepository;
 using Investo.DataAccess.ApplicationContext;

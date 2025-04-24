@@ -26,7 +26,7 @@ namespace Investo.Presentation.Controllers
             _categoryService = categoryService;
         }
 
-        // GET: api/project
+        // GET api/projects
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -34,7 +34,7 @@ namespace Investo.Presentation.Controllers
             return Ok(projects);
         }
 
-        // GET: api/project/{id}
+        // GET api/project/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
