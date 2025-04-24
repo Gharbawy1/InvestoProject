@@ -20,12 +20,13 @@ namespace Investo.Presentation.Controllers.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IImageLoadService _imageLoadService;
-        public AccountController(UserManager<ApplicationUser> userManager, ITokenService tokenService, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager,IConfiguration configuration)
+        public AccountController(UserManager<ApplicationUser> userManager, ITokenService tokenService, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IImageLoadService imageLoadService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _imageLoadService = imageLoadService;
             //_authGoogleService = authGoogleService;
             // _emailSender = emailSender;
         }
@@ -57,7 +58,9 @@ namespace Investo.Presentation.Controllers.Account
                     Email = registerDto.Email,
                     PhoneNumber = registerDto.PhoneNumber,
                 };
-                appUser.UserName = registerDto.FirstName + registerDto.LastName + appUser.Id;
+
+                // Make the UserName = FirstName+LastName+ID
+                appUser.UserName = registerDto.FirstName + registerDto.LastName;
 
                 var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
                 if (!createdUser.Succeeded)
@@ -67,9 +70,7 @@ namespace Investo.Presentation.Controllers.Account
                     return StatusCode(500, errors);
                 }
 
-                // Make the UserName = FirstName+LastName+ID
-                appUser.UserName = registerDto.FirstName + registerDto.LastName + appUser.Id;
-
+                
 
 
                 await _userManager.AddToRoleAsync(appUser, "User");
@@ -103,7 +104,7 @@ namespace Investo.Presentation.Controllers.Account
         }
 
         [HttpPost("register-investor")]
-        public async Task<ActionResult<RegisterDto>> RegisterInvestor([FromForm] InvestorRegisterDto investorRegisterDto)
+        public async Task<ActionResult<InvestorRegisterResponseDto>> RegisterInvestor([FromForm] InvestorRegisterDto investorRegisterDto)
         {
             try
             {
@@ -145,6 +146,9 @@ namespace Investo.Presentation.Controllers.Account
                     PhoneNumber = investorRegisterDto.PhoneNumber,
                 };
 
+                // Make the UserName = FirstName+LastName+ID
+                InvestoUser.UserName = investorRegisterDto.FirstName + investorRegisterDto.LastName;
+
                 var createdUser = await _userManager.CreateAsync(InvestoUser, investorRegisterDto.Password);
                 if (!createdUser.Succeeded)
                 {
@@ -153,10 +157,7 @@ namespace Investo.Presentation.Controllers.Account
                     return StatusCode(500, errors);
                 }
 
-                // Make the UserName = FirstName+LastName+ID
-                InvestoUser.UserName = investorRegisterDto.FirstName + investorRegisterDto.LastName + InvestoUser.Id;
-
-
+                
 
                 await _userManager.AddToRoleAsync(InvestoUser, "Investor");
                 var userRoles = await _userManager.GetRolesAsync(InvestoUser);
@@ -189,7 +190,7 @@ namespace Investo.Presentation.Controllers.Account
         }
 
         [HttpPost("register-businessOwner")]
-        public async Task<ActionResult<RegisterDto>> RegisterBO([FromForm] InvestorRegisterDto investorRegisterDto)
+        public async Task<ActionResult<BORegisterResponseDto>> RegisterBO([FromForm] BORegisterDto boRegisterDto)
         {
             try
             {
@@ -198,32 +199,38 @@ namespace Investo.Presentation.Controllers.Account
                     return BadRequest(ModelState);
                 }
 
-                if (await _userManager.Users.AsNoTracking().AnyAsync(u => u.Email == investorRegisterDto.Email))
+                if (await _userManager.Users.AsNoTracking().AnyAsync(u => u.Email == boRegisterDto.Email))
                 {
                     return Conflict("This Email is already registered");
                 }
 
-                var isFirstUser = !(await _userManager.Users.AnyAsync());
+                if (boRegisterDto.NationalIDImageFrontURL == null || boRegisterDto.NationalIDImageBackURL == null)
+                {
+                    return BadRequest("Front and back images of the National ID are required.");
+                }
 
+                var PersonInfo = new PersonInfo
+                {
+                    NationalID = boRegisterDto.NationalID,
+                    // هتحط هنا اللينكات بعد الرفع
+                    NationalIDImageFrontURL = await _imageLoadService.Upload(boRegisterDto.NationalIDImageFrontURL),
+                    NationalIDImageBackURL = await _imageLoadService.Upload(boRegisterDto.NationalIDImageBackURL),
+                };
                 var BoUser = new BusinessOwner
                 {
-                    
-                    PersonInfo = new PersonInfo
-                    {
-                        NationalID = investorRegisterDto.NationalID,
-                        // هتحط هنا اللينكات بعد الرفع
-                        NationalIDImageFrontURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageFrontURL),
-                        NationalIDImageBackURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageBackURL),
-                    },
-                    FirstName = investorRegisterDto.FirstName,
-                    LastName = investorRegisterDto.LastName,
-                    BirthDate = investorRegisterDto.BirthDate,
-                    RegistrationDate = investorRegisterDto.RegistrationDate,
-                    Email = investorRegisterDto.Email,
-                    PhoneNumber = investorRegisterDto.PhoneNumber,
+                    PersonInfo = PersonInfo,
+                    ProfilePictureURL = await _imageLoadService.Upload(boRegisterDto.ProfilePictureURL),
+                    FirstName = boRegisterDto.FirstName,
+                    LastName = boRegisterDto.LastName,
+                    BirthDate = boRegisterDto.BirthDate,
+                    RegistrationDate = boRegisterDto.RegistrationDate,
+                    Email = boRegisterDto.Email,
+                    PhoneNumber = boRegisterDto.PhoneNumber,
                 };
+                // Make the UserName = FirstName+LastName+ID
+                BoUser.UserName = boRegisterDto.FirstName + boRegisterDto.LastName;
 
-                var createdUser = await _userManager.CreateAsync(BoUser, investorRegisterDto.Password);
+                var createdUser = await _userManager.CreateAsync(BoUser, boRegisterDto.Password);
                 if (!createdUser.Succeeded)
                 {
                     var errors = new List<IdentityError>();
@@ -231,15 +238,13 @@ namespace Investo.Presentation.Controllers.Account
                     return StatusCode(500, errors);
                 }
 
-                // Make the UserName = FirstName+LastName+ID
-                BoUser.UserName = investorRegisterDto.FirstName + investorRegisterDto.LastName + BoUser.Id;
-
+                
 
 
                 await _userManager.AddToRoleAsync(BoUser, "BusinessOwner");
                 var userRoles = await _userManager.GetRolesAsync(BoUser);
 
-                var rgDto = new InvestorRegisterResponseDto
+                var rgDto = new BORegisterResponseDto
                 {
                     UserName = BoUser.UserName,
                     Email = BoUser.Email,
