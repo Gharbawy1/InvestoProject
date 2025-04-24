@@ -7,7 +7,7 @@ import { environment } from '../../../../../environments/environment.development
 @Injectable({
   providedIn: 'root'
 })
-export class CategoriesService {
+export class CategoryService {
 
   private apiUrl = `${environment.apiBase}/categories`;
 

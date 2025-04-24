@@ -4,7 +4,7 @@ import { ProjectCardComponent } from '../project-card/project-card.component';
 import { ProjectCardService } from '../../services/project-card/project-card.service';
 import { IProjectCard } from '../../interfaces/iprojectcard';
 import { ICategory } from '../../interfaces/icategory';
-import { CategoriesService } from '../../services/category/categories.service';
+import { CategoriesService } from '../../services/category/category.service';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({

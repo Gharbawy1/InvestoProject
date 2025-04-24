@@ -6,7 +6,9 @@ import { LucideAngularModule} from 'lucide-angular';
 import { BusinessCreationService } from '../../features/project/services/business-creation/business-creation.service';
 import { AutoFocusDirective } from '../../shared/directives/auto-focus/auto-focus.directive';
 import { ICategory } from '../../features/project/interfaces/icategory';
-import { CategoriesService } from '../../features/project/services/category/categories.service';
+import { CategoryService } from '../../features/project/services/category/category.service';
+import { AuthService } from '../../core/services/auth/auth.service';
+import { IBusiness } from '../../features/project/interfaces/IBusiness';
 
 @Component({
   selector: 'app-business-creation',
@@ -25,8 +27,9 @@ export class BusinessCreationComponent implements OnInit {
   errorMessage = '';
 
   businessForm: FormGroup;
+  ownerId: string | null = null;
 
-  constructor(private businessCreationService: BusinessCreationService, public categoryService: CategoriesService, public router: Router) {
+  constructor(private businessCreationService: BusinessCreationService, public categoryService: CategoryService, public router: Router, private authService: AuthService) {
     this.businessForm = this.fb.group({
       projectTitle: ['', [Validators.required, Validators.minLength(5)]],
       subtitle: ['', [Validators.required, Validators.maxLength(150)]],
@@ -44,6 +47,7 @@ export class BusinessCreationComponent implements OnInit {
 
   ngOnInit() {
     this.loadCategories();
+    this.setOwnerId();
   }
 
   private loadCategories() {
@@ -63,6 +67,10 @@ export class BusinessCreationComponent implements OnInit {
         console.error('Error loading categories:', err);
       }
     });
+  }
+
+  private setOwnerId() {
+    this.ownerId = localStorage.getItem('ownerId');
   }
   
   onImageSelected(event: Event) {
@@ -86,22 +94,25 @@ export class BusinessCreationComponent implements OnInit {
     }
     
     this.isLoading = true;
-    const formValues = this.businessForm.value;
+    const formValues: IBusiness = this.businessForm.value;
     
     const formData = new FormData();
     formData.append('projectImage', this.businessImageFile, this.businessImageFile.name);
     formData.append('projectTitle', formValues.projectTitle);
     formData.append('subtitle', formValues.subtitle);
     formData.append('projectLocation', formValues.projectLocation);
-    formData.append('fundingGoal', formValues.fundingGoal);
+    formData.append('fundingGoal', formValues.fundingGoal.toString());
     formData.append('fundingExchange', formValues.fundingExchange);
     formData.append('projectVision', formValues.projectVision);
     formData.append('projectStory', formValues.projectStory);
     formData.append('currentVision', formValues.currentVision);
     formData.append('goals', formValues.goals);
-    formData.append('categoryId', formValues.categoryId);
     formData.append('status', 'pending');
     formData.append('submissionDate', new Date().toISOString());
+    formData.append('categoryId', formValues.categoryId.toString());
+    if (this.ownerId) {
+      formData.append('ownerId', this.ownerId.toString());
+    }
 
     // —— DEBUG: print out exactly what you’re sending ——
     for (const [key, val] of formData.entries()) {

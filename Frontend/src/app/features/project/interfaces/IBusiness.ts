@@ -12,4 +12,5 @@ export interface IBusiness{
   categoryId: number;
   status : 'approved' | 'rejected'| 'pending';
   submissionDate: string;
+  ownerId: number;
 }
