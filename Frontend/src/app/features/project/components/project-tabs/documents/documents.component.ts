@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { Document } from '../../../interfaces/IDocument';
+import { IDocument } from '../../../interfaces/IDocument';
 
 
 @Component({
@@ -19,7 +19,7 @@ import { Document } from '../../../interfaces/IDocument';
   styleUrls: ['./documents.component.css']
 })
 export class DocumentsComponent{
-  @Input() documents: Document[] = [
+  @Input() documents: IDocument[] = [
     {
       name: "Business Plan",
       type: "PDF",

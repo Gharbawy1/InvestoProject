@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TeamMembersComponent } from './team-members/team-members.component';
 import { CommonModule } from '@angular/common';
-import { Comment } from '../../interfaces/IComment';
+import { IComment } from '../../interfaces/IComment';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 
@@ -35,7 +35,7 @@ import { MatInputModule } from '@angular/material/input';
 export class ProjectTabsComponent {
   @Input() activeTab = 'overview';
   @Input() projectData: any;
-  comments : Comment[] = [
+  comments : IComment[] = [
     {
           user: 'John Doe',
           avatar: 'https://randomuser.me/api/portraits/men/1.jpg',

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from "../../../../../shared/componentes/button/button.component";
-import { Comment } from '../../../interfaces/IComment';
+import { IComment } from '../../../interfaces/IComment';
 
 @Component({
   selector: 'app-discussion',
@@ -20,7 +20,7 @@ import { Comment } from '../../../interfaces/IComment';
   styleUrls: ['./discussion.component.css']
 })
 export class DiscussionComponent {
-  @Input() comments: Comment[] = [
+  @Input() comments: IComment[] = [
     
   ];
 

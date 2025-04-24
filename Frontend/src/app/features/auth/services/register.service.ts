@@ -1,8 +1,8 @@
 // src/app/core/services/register/register.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { GuestRegister } from '../interfaces/guest-register';
-import { BusinessRegister } from '../interfaces/business-register';
+import { IGuest } from '../interfaces/iguest';
+import { IBusiness } from '../interfaces/ibusiness';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -14,11 +14,11 @@ export class RegisterService {
 
   constructor(private http: HttpClient) {}
 
-  registerGuest(guestData: GuestRegister): Observable<any> {
+  registerGuest(guestData: IGuest): Observable<any> {
     return this.http.post(this.guestUrl, guestData);
   }
 
-  registerBusiness(businessData: BusinessRegister): Observable<any> {
+  registerBusiness(businessData: IBusiness): Observable<any> {
     const formData = new FormData();
     Object.entries(businessData).forEach(([key, value]) => {
       formData.append(key, value);
