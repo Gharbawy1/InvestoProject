@@ -11,7 +11,7 @@ namespace Investo.Entities.Models
     {
         //[MaxLength(100)]
         //public string KYCStatus { get; set; }
-        public PersonInfo PersonInfo { get; set; }
+        public PersonInfo PersonInfo { get; set; } = new PersonInfo();
 
         // navigation property
         public int ProjectId { get; set; }

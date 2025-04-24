@@ -39,10 +39,13 @@ namespace Investo.DataAccess.Services.Image_Loading
 
             var result = await _cloudinary.UploadAsync(uploadParams);
 
+            if (result == null)
+                throw new Exception("Upload result was null from Cloudinary.");
+
             if (result.Error != null)
                 throw new Exception($"Cloudinary error occurred: {result.Error.Message}");
 
-            return result.SecureUrl.ToString();
+            return result.Url?.ToString() ?? throw new Exception("Cloudinary returned empty URL.");
         }
     }
 }
