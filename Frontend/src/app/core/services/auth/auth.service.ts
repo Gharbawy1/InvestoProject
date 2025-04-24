@@ -7,7 +7,7 @@ import { GoogleAuthService } from '../googleSignIn/google-signin.service';
 import { environment } from '../../../../environments/environment.development';
 
 // Define the shape of the authentication response from the server.
-interface AuthResponse {
+export interface AuthResponse {
   token: string;
   user: {
     id: number;
@@ -40,17 +40,19 @@ export class AuthService {
     // Remove extra spaces from credentials.
     const credentials = { email: email.trim(), password: password.trim() };
 
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/login`, credentials).pipe(
+    return this.http.post<AuthResponse>(`${environment.apiBase}/login`, credentials).pipe(
       tap(response => {
         // Save token and user role only in the browser.
         if (isPlatformBrowser(this.platformId)) {
           this.storeToken(response.token, rememberMe);
           this.storeUserRole(response.user.role);
+          this.storeUserId(response.user.id);
+          this.storeUserData('currentUser', response.user, rememberMe);
         }
       }),
       catchError(error => {
-        console.error('Login error:', error);
-        return throwError(error);
+        const errorMessage = error.error?.message || 'Invalid credentials';
+        return throwError(() => new Error(errorMessage));
       })
     );
   }
@@ -73,12 +75,12 @@ export class AuthService {
   /**
    * Checks if the current user session is valid by verifying the stored token.
    * 
-   *  @returns An Observable with an object containing the validity and user role.
+   *  @returns An Observable that emits an object containing the validity status and user role.
    */
   checkAuthStatus(): Observable<{ valid: boolean; user: { role: string } }> {
     // This operation is only valid in a browser environment.
     if (!isPlatformBrowser(this.platformId)) {
-      return new Observable(observer => observer.error());
+      return throwError(() => new Error('Not in browser environment'));
     }
 
     const token = this.getToken();
@@ -97,15 +99,17 @@ export class AuthService {
     );
   }
 
-   /**
-   * Logs out the user by removing the authentication token from storage.
-   */
-    logout(): void {
-      if (isPlatformBrowser(this.platformId)) {
-        localStorage.removeItem('token');
-        sessionStorage.removeItem('token');
-      }
+  /**
+ * Logs out the user by removing the authentication token from storage.
+ */
+  logout(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      // Clear all auth-related storage
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+      localStorage.removeItem('userRole');
     }
+  }
 
   /**
    * Retrieves the stored authentication token from localStorage or sessionStorage.
@@ -139,6 +143,37 @@ export class AuthService {
    */
   private storeUserRole(role: string): void {
     localStorage.setItem('userRole', role);
+  }
+
+  /**
+   * Stores user ID in localStorage.
+   * 
+   * @param id - The user's ID.
+   */
+  storeUserId(id: number) {
+    localStorage.setItem('userId', id.toString());
+  }
+
+  /**
+   * Stores user data.
+   * 
+   * @param key - The key under which to store the data.
+   * @param value - The data to store.
+   * @param rememberMe - If true, data is stored in localStorage; else in sessionStorage.
+   */
+  storeUserData(key: string, value: any, rememberMe: boolean) {
+    const storage = rememberMe ? localStorage : sessionStorage;
+    storage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+  }
+
+  getUserId(): number | null {
+    const id = localStorage.getItem('userId');
+    return id ? +id : null;
+  }
+
+  getCurrentUser(): any {
+    const user = localStorage.getItem('currentUser');
+    return user ? JSON.parse(user) : null;
   }
 
   /**
@@ -182,7 +217,7 @@ export class AuthService {
     console.log('Google Login Response:', response);
 
     // Exchange the Google authorization code for an application-specific authentication token.
-    this.http.post<AuthResponse>(environment.apiUrl, { code: response.code })
+    this.http.post<AuthResponse>(`${environment.userApiUrl}/google-auth`, { code: response.code })
       .pipe(
         tap((authResponse) => {
           if (isPlatformBrowser(this.platformId)) {

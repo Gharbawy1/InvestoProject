@@ -18,8 +18,8 @@ export class NavigationService {
    * Defines role-based routes for navigation.
    */
   private readonly roleRoutes: Record<UserRole, string> = {
-    investor: '/investor-dashboard',
-    businessOwner: '/businessOwner-dashboard',
+    investor: '/InvestorDashboard',
+    businessOwner: '/dashboard',
     admin: '/admin-dashboard'
   };
 
