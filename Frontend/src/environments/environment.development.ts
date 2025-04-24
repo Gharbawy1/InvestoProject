@@ -8,7 +8,6 @@ export const environment = {
   appId: '1142874204295756',
 
   // API URL.
-  apiUrl: 'http://localhost:5000/api/auth',
   userApiUrl: 'http://localhost:3000/users',
 
   apiBase: 'http://localhost:3000',

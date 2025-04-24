@@ -10,4 +10,5 @@ export interface IBusinessCreation {
   currentVision: string;
   goals: string;
   categoryId: number;
+  ownerId: number;
 }

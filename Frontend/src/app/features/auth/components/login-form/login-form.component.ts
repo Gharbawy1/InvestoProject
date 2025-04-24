@@ -16,7 +16,6 @@ import { EyePasswordComponent } from '../../../../shared/componentes/eye-passwor
   imports: [FormsModule, CommonModule, AutoFocusDirective, HttpClientModule, ForgotPasswordComponent, EyePasswordComponent],
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css'],
-  providers: [AuthService]
 })
 export class LoginFormComponent implements OnInit {
   
