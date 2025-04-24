@@ -4,7 +4,7 @@ import { ProjectCardComponent } from '../project-card/project-card.component';
 import { ProjectCardService } from '../../services/project-card/project-card.service';
 import { IProjectCard } from '../../interfaces/iprojectcard';
 import { ICategory } from '../../interfaces/icategory';
-import { CategoriesService } from '../../services/category/category.service';
+import { CategoryService } from '../../services/category/category.service';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
@@ -13,7 +13,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
   imports: [ProjectFilterComponent, ProjectCardComponent, MatPaginatorModule ],
   templateUrl: './project-master.component.html',
   styleUrls: ['./project-master.component.css'], 
-  providers:[ProjectCardService, CategoriesService]
+  providers:[ProjectCardService, CategoryService]
 })
 export class ProjectMasterComponent  { //implements OnInit
 
@@ -23,7 +23,7 @@ export class ProjectMasterComponent  { //implements OnInit
   currentPage: number = 1;
   pageSize: number = 20; 
   
-  constructor(private projectCardService: ProjectCardService, private categoriesService : CategoriesService) {}
+  constructor(private projectCardService: ProjectCardService, private categoriesService : CategoryService) {}
 
   // ngOnInit(): void {
     // this.projectCardService.getProjects().subscribe((prjctData) => {
