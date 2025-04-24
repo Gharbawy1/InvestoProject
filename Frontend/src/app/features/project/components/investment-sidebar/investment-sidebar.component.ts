@@ -13,11 +13,10 @@ import { MatInputModule } from '@angular/material/input';
   imports: [
     CommonModule,
     FormsModule,
+    MatIconModule,
     MatProgressBarModule,
     MatButtonModule,
-    MatIconModule,
-    ButtonComponent,
-    MatInputModule
+    ButtonComponent
 ],
   templateUrl: './investment-sidebar.component.html',
   styleUrls: ['./investment-sidebar.component.css']

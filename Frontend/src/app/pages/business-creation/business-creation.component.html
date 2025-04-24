@@ -15,15 +15,12 @@
           <!-- Business Name -->
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Business Name*</label>
-            <input 
-              formControlName="projectTitle" 
-              type="text" 
-              placeholder="Acme Corporation"
-              [appAutoFocus]="true"
+            <input formControlName="projectTitle" type="text" placeholder="Acme Corporation" [appAutoFocus]="true"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale" />
             <div class="min-h-[20px]">
-              <div *ngIf="businessForm.get('projectTitle')?.invalid && (businessForm.get('projectTitle')?.touched || formSubmitted)"
-                   class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
+              <div
+                *ngIf="businessForm.get('projectTitle')?.invalid && (businessForm.get('projectTitle')?.touched || formSubmitted)"
+                class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
                 <div *ngIf="businessForm.get('projectTitle')?.errors?.['required']">
                   * Business name is required
                 </div>
@@ -37,14 +34,12 @@
           <!-- Business Tagline -->
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Tagline*</label>
-            <input 
-              formControlName="subtitle" 
-              type="text" 
-              placeholder="Short business summary"
+            <input formControlName="subtitle" type="text" placeholder="Short business summary"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale" />
             <div class="min-h-[20px]">
-              <div *ngIf="businessForm.get('subtitle')?.invalid && (businessForm.get('subtitle')?.touched || formSubmitted)"
-                   class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
+              <div
+                *ngIf="businessForm.get('subtitle')?.invalid && (businessForm.get('subtitle')?.touched || formSubmitted)"
+                class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
                 <div *ngIf="businessForm.get('subtitle')?.errors?.['required']">
                   * Tagline is required
                 </div>
@@ -58,14 +53,12 @@
           <!-- Business Location -->
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Location*</label>
-            <input 
-              formControlName="projectLocation" 
-              type="text" 
-              placeholder="City, Governorate"
+            <input formControlName="projectLocation" type="text" placeholder="City, Governorate"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale" />
             <div class="min-h-[20px]">
-              <div *ngIf="businessForm.get('projectLocation')?.invalid && (businessForm.get('projectLocation')?.touched || formSubmitted)"
-                   class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
+              <div
+                *ngIf="businessForm.get('projectLocation')?.invalid && (businessForm.get('projectLocation')?.touched || formSubmitted)"
+                class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
                 * Business location is required
               </div>
             </div>
@@ -74,15 +67,12 @@
           <!-- Funding Goal -->
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Funding Goal (LE)*</label>
-            <input 
-              formControlName="fundingGoal" 
-              type="number" 
-              placeholder="50000"
-              min="100"
+            <input formControlName="fundingGoal" type="number" placeholder="50000" min="100"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale" />
             <div class="min-h-[20px]">
-              <div *ngIf="businessForm.get('fundingGoal')?.invalid && (businessForm.get('fundingGoal')?.touched || formSubmitted)"
-                   class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
+              <div
+                *ngIf="businessForm.get('fundingGoal')?.invalid && (businessForm.get('fundingGoal')?.touched || formSubmitted)"
+                class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
                 <div *ngIf="businessForm.get('fundingGoal')?.errors?.['required']">
                   * Funding goal is required
                 </div>
@@ -102,18 +92,17 @@
             <div *ngIf="errorMessage" class="text-red-500 text-sm mb-1">
               {{ errorMessage }}
             </div>
-            <select 
-              formControlName="categoryId"
-              title="Select a category"
+            <select formControlName="categoryId" title="Select a category"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition-input input-scale">
               <option value="" disabled selected>Select category</option>
               <option *ngFor="let category of categories" [value]="category.id">
-                {{ category.name }}
+                {{ category.categoryName }}
               </option>
             </select>
             <div class="min-h-[20px]">
-              <div *ngIf="businessForm.get('categoryId')?.invalid && (businessForm.get('categoryId')?.touched || formSubmitted)"
-                   class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
+              <div
+                *ngIf="businessForm.get('categoryId')?.invalid && (businessForm.get('categoryId')?.touched || formSubmitted)"
+                class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
                 * Category is required
               </div>
             </div>
@@ -123,21 +112,19 @@
         <!-- Business Image -->
         <div class="flex flex-col gap-0.5 form-group">
           <label class="text-sm font-medium">Business Image*</label>
-          <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors hover:border-gray-400">
-            <input type="file" 
-                   accept="image/*"
-                   (change)="onImageSelected($event)" hidden 
-                   #businessImageInput 
-                   hidden
-                   required />
-            <button type="button" 
-                    class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
-                    (click)="businessImageInput.click()">
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors hover:border-gray-400">
+            <input type="file" accept="image/*" (change)="onImageSelected($event)" hidden #businessImageInput hidden
+              required />
+            <button type="button"
+              class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
+              (click)="businessImageInput.click()">
               Upload Business image
             </button>
             <div class="min-h-[20px]">
-              <div *ngIf="businessForm.get('projectImage')?.invalid && (businessForm.get('projectImage')?.touched || formSubmitted)"
-                   class="text-red-500 text-sm mt-1">
+              <div
+                *ngIf="businessForm.get('projectImage')?.invalid && (businessForm.get('projectImage')?.touched || formSubmitted)"
+                class="text-red-500 text-sm mt-1">
                 * Please upload a business image
               </div>
             </div>
@@ -155,14 +142,13 @@
           <!-- funding terms -->
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Funding Terms*</label>
-            <textarea 
-              formControlName="fundingExchange"
-              type="text"
+            <textarea formControlName="fundingExchange" type="text"
               placeholder="Describe funding terms (e.g., '15% Equity')"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale min-h-[120px]"></textarea>
             <div class="min-h-[20px]">
-              <div *ngIf="businessForm.get('fundingExchange')?.invalid && (businessForm.get('fundingExchange')?.touched || formSubmitted)"
-                   class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
+              <div
+                *ngIf="businessForm.get('fundingExchange')?.invalid && (businessForm.get('fundingExchange')?.touched || formSubmitted)"
+                class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
                 * Funding terms description is required
               </div>
             </div>
@@ -171,13 +157,12 @@
           <!-- Business Vision -->
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Business Vision*</label>
-            <textarea 
-              formControlName="projectVision" 
-              placeholder="Describe your long-term business vision..."
+            <textarea formControlName="projectVision" placeholder="Describe your long-term business vision..."
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale min-h-[120px]"></textarea>
             <div class="min-h-[20px]">
-              <div *ngIf="businessForm.get('projectVision')?.invalid && (businessForm.get('projectVision')?.touched || formSubmitted)"
-                   class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
+              <div
+                *ngIf="businessForm.get('projectVision')?.invalid && (businessForm.get('projectVision')?.touched || formSubmitted)"
+                class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
                 <div *ngIf="businessForm.get('projectVision')?.errors?.['required']">
                   * Vision statement is required
                 </div>
@@ -191,13 +176,12 @@
           <!-- Business Story -->
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Business Story*</label>
-            <textarea 
-              formControlName="projectStory" 
-              placeholder="Share your business story and journey..."
+            <textarea formControlName="projectStory" placeholder="Share your business story and journey..."
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale min-h-[120px]"></textarea>
             <div class="min-h-[20px]">
-              <div *ngIf="businessForm.get('projectStory')?.invalid && (businessForm.get('projectStory')?.touched || formSubmitted)"
-                   class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
+              <div
+                *ngIf="businessForm.get('projectStory')?.invalid && (businessForm.get('projectStory')?.touched || formSubmitted)"
+                class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
                 <div *ngIf="businessForm.get('projectStory')?.errors?.['required']">
                   * Business story is required
                 </div>
@@ -211,13 +195,12 @@
           <!-- Current Status -->
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Current Status*</label>
-            <textarea 
-              formControlName="currentVision" 
-              placeholder="Describe the current status of your business..."
+            <textarea formControlName="currentVision" placeholder="Describe the current status of your business..."
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale min-h-[120px]"></textarea>
             <div class="min-h-[20px]">
-              <div *ngIf="businessForm.get('currentVision')?.invalid && (businessForm.get('currentVision')?.touched || formSubmitted)"
-                   class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
+              <div
+                *ngIf="businessForm.get('currentVision')?.invalid && (businessForm.get('currentVision')?.touched || formSubmitted)"
+                class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
                 * Current status is required
               </div>
             </div>
@@ -226,13 +209,11 @@
           <!-- Business Goals -->
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Business Goals*</label>
-            <textarea 
-              formControlName="goals" 
-              placeholder="Outline your business goals..."
+            <textarea formControlName="goals" placeholder="Outline your business goals..."
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale min-h-[120px]"></textarea>
             <div class="min-h-[20px]">
               <div *ngIf="businessForm.get('goals')?.invalid && (businessForm.get('goals')?.touched || formSubmitted)"
-                   class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
+                class="animate-slide-in error-message text-red-500 text-sm" aria-live="polite">
                 * Business goals are required
               </div>
             </div>
@@ -248,10 +229,8 @@
             'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700': !isLoading && !businessForm.invalid,
             'bg-gray-300 text-gray-500 cursor-not-allowed': isLoading || businessForm.invalid || !businessImageFile
           }">-->
-          <!-- for test -->
-          <button 
-          type="submit" 
-          [disabled]="isLoading || businessForm.invalid" 
+        <!-- for test -->
+        <button type="submit" [disabled]="isLoading || businessForm.invalid"
           class="w-full text-sm font-medium py-2.5 rounded-md transition flex items-center justify-center cursor-pointer transition-button button-hover"
           [ngClass]="{
             'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700': !isLoading && !businessForm.invalid,
@@ -259,7 +238,8 @@
           }">
           <span *ngIf="!isLoading">Publish Business Profile</span>
           <span *ngIf="isLoading" class="flex items-center">
-            <svg class="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <svg class="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              xmlns="http://www.w3.org/2000/svg">
               <circle cx="12" cy="12" r="10" stroke-width="4"></circle>
               <path d="M4 12a8 8 0 0 1 16 0" stroke-linecap="round"></path>
             </svg>

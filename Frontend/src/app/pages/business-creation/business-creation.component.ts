@@ -4,10 +4,11 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { RouterModule, Router } from '@angular/router';
 import { LucideAngularModule} from 'lucide-angular';
 import { BusinessCreationService } from '../../features/project/services/business-creation/business-creation.service';
-import { IBusinessCreation } from '../../features/project/interfaces/IBusinessCreation';
-import { CategoryService, Category  } from '../../core/services/category/category.service';
 import { AutoFocusDirective } from '../../shared/directives/auto-focus/auto-focus.directive';
+import { ICategory } from '../../features/project/interfaces/icategory';
+import { CategoryService } from '../../features/project/services/category/category.service';
 import { AuthService } from '../../core/services/auth/auth.service';
+import { IBusiness } from '../../features/project/interfaces/IBusiness';
 
 @Component({
   selector: 'app-business-creation',
@@ -21,7 +22,7 @@ export class BusinessCreationComponent implements OnInit {
   formSubmitted = false;
   isLoading = false;
 
-  categories: Category[] = [];
+  categories: ICategory[] = [];
   isLoadingCategories = false;
   errorMessage = '';
 
@@ -93,11 +94,10 @@ export class BusinessCreationComponent implements OnInit {
     }
     
     this.isLoading = true;
-    const formValues: IBusinessCreation = this.businessForm.value;
+    const formValues: IBusiness = this.businessForm.value;
     
     const formData = new FormData();
     formData.append('projectImage', this.businessImageFile, this.businessImageFile.name);
-    
     formData.append('projectTitle', formValues.projectTitle);
     formData.append('subtitle', formValues.subtitle);
     formData.append('projectLocation', formValues.projectLocation);
@@ -107,6 +107,8 @@ export class BusinessCreationComponent implements OnInit {
     formData.append('projectStory', formValues.projectStory);
     formData.append('currentVision', formValues.currentVision);
     formData.append('goals', formValues.goals);
+    formData.append('status', 'pending');
+    formData.append('submissionDate', new Date().toISOString());
     formData.append('categoryId', formValues.categoryId.toString());
     if (this.ownerId) {
       formData.append('ownerId', this.ownerId.toString());
