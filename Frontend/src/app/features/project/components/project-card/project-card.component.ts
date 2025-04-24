@@ -2,7 +2,7 @@ import { Component, Input, input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { IProjectCard } from '../../interfaces/iprojectcard';
-import { ProjectCardService } from '../../services/project-card.service';
+import { ProjectCardService } from '../../services/project-card/project-card.service';
 
 @Component({
   selector: 'app-project-card',

@@ -4,9 +4,9 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { RouterModule, Router } from '@angular/router';
 import { LucideAngularModule} from 'lucide-angular';
 import { BusinessCreationService } from '../../features/project/services/business-creation/business-creation.service';
-import { IBusinessCreation } from '../../features/project/interfaces/IBusinessCreation';
-import { CategoryService, Category  } from '../../core/services/category/category.service';
 import { AutoFocusDirective } from '../../shared/directives/auto-focus/auto-focus.directive';
+import { ICategory } from '../../features/project/interfaces/icategory';
+import { CategoriesService } from '../../features/project/services/category/categories.service';
 
 @Component({
   selector: 'app-business-creation',
@@ -20,13 +20,13 @@ export class BusinessCreationComponent implements OnInit {
   formSubmitted = false;
   isLoading = false;
 
-  categories: Category[] = [];
+  categories: ICategory[] = [];
   isLoadingCategories = false;
   errorMessage = '';
 
   businessForm: FormGroup;
 
-  constructor(private businessCreationService: BusinessCreationService, public categoryService: CategoryService, public router: Router) {
+  constructor(private businessCreationService: BusinessCreationService, public categoryService: CategoriesService, public router: Router) {
     this.businessForm = this.fb.group({
       projectTitle: ['', [Validators.required, Validators.minLength(5)]],
       subtitle: ['', [Validators.required, Validators.maxLength(150)]],
@@ -90,7 +90,6 @@ export class BusinessCreationComponent implements OnInit {
     
     const formData = new FormData();
     formData.append('projectImage', this.businessImageFile, this.businessImageFile.name);
-    
     formData.append('projectTitle', formValues.projectTitle);
     formData.append('subtitle', formValues.subtitle);
     formData.append('projectLocation', formValues.projectLocation);
@@ -101,6 +100,8 @@ export class BusinessCreationComponent implements OnInit {
     formData.append('currentVision', formValues.currentVision);
     formData.append('goals', formValues.goals);
     formData.append('categoryId', formValues.categoryId);
+    formData.append('status', 'pending');
+    formData.append('submissionDate', new Date().toISOString());
 
     // —— DEBUG: print out exactly what you’re sending ——
     for (const [key, val] of formData.entries()) {
