@@ -17,8 +17,10 @@ namespace Investo.Entities.IRepository
         Task Delete(Project project);
         Task<Project> GetByOwnerIdAsync(string ownerId);
         Task<Project> GetByCategoryIdAsync(byte CategoryId);
-
-
+        Task<IEnumerable<Project>> GetPendingProjectRequestsAsync();
+        Task<IEnumerable<Project>> GetAcceptedProjectRequestsAsync();
+        Task<IEnumerable<Project>> GetRejectedProjectRequestsAsync();
+        Task<bool> HasProjectForOwner(string ownerId);
 
     }
 }

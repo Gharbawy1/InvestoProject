@@ -10,6 +10,6 @@ namespace Investo.Entities.DTO.Project
     public class ProjectStatusUpdateDto
     {
         public int ProjectId { get; set; }
-        public ProjectStatus Status { get; set; }
+        public string Status { get; set; }
     }
 }

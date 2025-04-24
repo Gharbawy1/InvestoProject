@@ -5,6 +5,9 @@ using Investo.DataAccess.Services.Image_Loading;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis;
+using Investo.DataAccess.Repository;
 
 namespace Investo.DataAccess.Services.Project
 {
@@ -12,14 +15,16 @@ namespace Investo.DataAccess.Services.Project
     {
         private readonly IProjectRepository _projectRepository;
         private readonly IImageLoadService _imageLoadService;
+        private readonly IBusinessOwnerRepository _businessOwnerRepository;
 
-        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService)
+        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService,IBusinessOwnerRepository businessOwnerRepository)
         {
             _projectRepository = projectRepository;
             _imageLoadService = imageLoadService;
+            _businessOwnerRepository = businessOwnerRepository;
         }
 
-        public async Task CreateProject(ProjectCreateUpdateDto dto)
+        public async Task<ProjectReadDto> CreateProject(ProjectCreateUpdateDto dto)
         {
             string imageUrl = null;
 
@@ -27,6 +32,16 @@ namespace Investo.DataAccess.Services.Project
             {
                 imageUrl = await _imageLoadService.Upload(dto.ProjectImage);
             }
+
+            var hasProject = await _projectRepository.HasProjectForOwner(dto.OwnerId);
+            if (hasProject)
+                throw new InvalidOperationException("A business owner can only have one project.");
+
+            var ownerExists = await _businessOwnerRepository.ExistsAsync(dto.OwnerId);
+            if (!ownerExists)
+                throw new KeyNotFoundException("Business owner with given ID does not exist.");
+
+
 
             var project = new Entities.Models.Project
             {
@@ -46,13 +61,34 @@ namespace Investo.DataAccess.Services.Project
             };
 
             await _projectRepository.Create(project);
+            return new ProjectReadDto
+            {
+                Id = project.Id,
+                ProjectTitle = project.ProjectTitle,
+                Subtitle = project.Subtitle,
+                ProjectLocation = project.ProjectLocation,
+                ProjectImageUrl = project.ProjectImageURL,
+                FundingGoal = project.FundingGoal,
+                FundingExchange = project.FundingExchange,
+                Status = project.Status.ToString(),
+                ProjectVision = project.ProjectVision,
+                ProjectStory = project.ProjectStory,
+                CurrentVision = project.CurrentVision,
+                Goals = project.Goals,
+                OwnerId = project.OwnerId,
+                CategoryName = project.Category.Name
+            };
         }
 
-        public async Task UpdateProject(int id, ProjectCreateUpdateDto dto)
+        public async Task<ProjectReadDto> UpdateProject(int id, ProjectCreateUpdateDto dto)
         {
             var project = await _projectRepository.GetById(id);
             if (project == null)
                 throw new Exception("Project not found");
+
+            var ownerExists = await _businessOwnerRepository.ExistsAsync(dto.OwnerId);
+            if (!ownerExists)
+                throw new KeyNotFoundException("Business owner with given ID does not exist.");
 
             if (dto.ProjectImage != null && dto.ProjectImage.Length > 0)
             {
@@ -73,6 +109,24 @@ namespace Investo.DataAccess.Services.Project
             project.OwnerId = dto.OwnerId;
 
             await _projectRepository.Update(project);
+            return new ProjectReadDto
+            {
+                Id = project.Id,
+                ProjectTitle = project.ProjectTitle,
+                Subtitle = project.Subtitle,
+                ProjectLocation = project.ProjectLocation,
+                ProjectImageUrl = project.ProjectImageURL,
+                FundingGoal = project.FundingGoal,
+                FundingExchange = project.FundingExchange,
+                Status = project.Status.ToString(),
+                ProjectVision = project.ProjectVision,
+                ProjectStory = project.ProjectStory,
+                CurrentVision = project.CurrentVision,
+                Goals = project.Goals,
+                OwnerId = project.OwnerId,
+                CategoryName = project.Category.Name
+            };
+
         }
 
         public async Task<bool> DeleteProject(int id)
@@ -96,12 +150,12 @@ namespace Investo.DataAccess.Services.Project
                 ProjectImageUrl = p.ProjectImageURL,
                 FundingGoal = p.FundingGoal,
                 FundingExchange = p.FundingExchange,
-                Status = p.Status,
+                Status = p.Status.ToString(),
                 ProjectVision = p.ProjectVision,
                 ProjectStory = p.ProjectStory,
                 CurrentVision = p.CurrentVision,
                 Goals = p.Goals,
-                CategoryId = p.CategoryId,
+                CategoryName = p.Category.Name,
                 OwnerId = p.OwnerId
             });
         }
@@ -120,12 +174,12 @@ namespace Investo.DataAccess.Services.Project
                 ProjectImageUrl = project.ProjectImageURL,
                 FundingGoal = project.FundingGoal,
                 FundingExchange = project.FundingExchange,
-                Status = project.Status,
+                Status = (project.Status).ToString(),
                 ProjectVision = project.ProjectVision,
                 ProjectStory = project.ProjectStory,
                 CurrentVision = project.CurrentVision,
                 Goals = project.Goals,
-                CategoryId = project.CategoryId,
+                CategoryName = project.Category.Name,
                 OwnerId = project.OwnerId
             };
         }
@@ -153,17 +207,22 @@ namespace Investo.DataAccess.Services.Project
                 CurrentVision = project.CurrentVision,
                 Goals = project.Goals,
                 CategoryId = project.CategoryId,
+                CategoryName = project.Category.Name,
                 OwnerId = project.OwnerId,
-                Status = project.Status,
-                FullName = owner.FirstName +" "+owner.LastName,
-                // Business owner info
+                Status = (project.Status).ToString(),
+
+                // Owner info
+                FirstName = owner.FirstName,
+                LastName = owner.LastName,
                 Bio = owner.Bio,
                 RegistrationDate = owner.RegistrationDate,
-                
                 Email = owner.Email,
                 PhoneNumber = owner.PhoneNumber,
                 ProfilePictureURL = owner.ProfilePictureURL,
-                Address = owner.Address
+                Address = owner.Address,
+                NationalID = owner?.PersonInfo?.NationalID,
+                NationalIDImageFrontURL = owner?.PersonInfo?.NationalIDImageFrontURL,
+                NationalIDImageBackURL = owner?.PersonInfo?.NationalIDImageBackURL
             };
         }
 
@@ -173,7 +232,10 @@ namespace Investo.DataAccess.Services.Project
             if (project == null)
                 return false;
 
-            project.Status = newProjectUpdateStateReq.Status;
+            if (!Enum.TryParse<ProjectStatus>(newProjectUpdateStateReq.Status, true, out var parsedStatus))
+                throw new InvalidOperationException("Invalid project status value.");
+
+            project.Status = parsedStatus;
             await _projectRepository.Update(project);
             return true;
         }
@@ -186,9 +248,123 @@ namespace Investo.DataAccess.Services.Project
             return new ProjectStatusUpdateDto
             {
                 ProjectId = project.Id,
-                Status = project.Status
+                Status = project.Status.ToString()
             };
-          
         }
+
+        public async Task<IEnumerable<ProjectRequestReviewDto>> GetAllPendingProjectRequestsForReviewAsync()
+        {
+            var requests = await _projectRepository.GetPendingProjectRequestsAsync();
+            
+            var result = requests.Select(p => new ProjectRequestReviewDto
+            {
+                // Project
+                Id = p.Id,
+                ProjectTitle = p.ProjectTitle,
+                Subtitle = p.Subtitle,
+                ProjectLocation = p.ProjectLocation,
+                ProjectImageURL = p.ProjectImageURL,
+                FundingGoal = p.FundingGoal,
+                FundingExchange = p.FundingExchange,
+                ProjectVision = p.ProjectVision,
+                ProjectStory = p.ProjectStory,
+                CurrentVision = p.CurrentVision,
+                Goals = p.Goals,
+                CategoryId = p.CategoryId,
+                CategoryName = p.Category.Name,
+                OwnerId = p.OwnerId, 
+                // Owner
+                FirstName = p.Owner?.FirstName,
+                LastName = p.Owner?.LastName,
+                Bio = p.Owner?.Bio,
+                RegistrationDate = p.Owner?.RegistrationDate ?? DateTime.MinValue,
+                Email = p.Owner?.Email,
+                PhoneNumber = p.Owner?.PhoneNumber,
+                ProfilePictureURL = p.Owner?.ProfilePictureURL,
+                Address = p.Owner?.Address,
+                NationalID = p.Owner?.PersonInfo?.NationalID,
+                NationalIDImageFrontURL = p.Owner?.PersonInfo?.NationalIDImageFrontURL,
+                NationalIDImageBackURL = p.Owner?.PersonInfo?.NationalIDImageBackURL
+            });
+
+            return result;
+        }
+
+        public async Task<IEnumerable<ProjectRequestReviewDto>> GetAllAcceptedProjectRequestsAsync()
+        {
+            var requests = await _projectRepository.GetAcceptedProjectRequestsAsync();
+
+            var result = requests.Select(p => new ProjectRequestReviewDto
+            {
+                // Project
+                Id = p.Id,
+                ProjectTitle = p.ProjectTitle,
+                Subtitle = p.Subtitle,
+                ProjectLocation = p.ProjectLocation,
+                ProjectImageURL = p.ProjectImageURL,
+                FundingGoal = p.FundingGoal,
+                FundingExchange = p.FundingExchange,
+                ProjectVision = p.ProjectVision,
+                ProjectStory = p.ProjectStory,
+                CurrentVision = p.CurrentVision,
+                Goals = p.Goals,
+                CategoryId = p.CategoryId,
+                CategoryName = p.Category.Name,
+                OwnerId = p.OwnerId,
+                // Owner
+                FirstName = p.Owner?.FirstName,
+                LastName = p.Owner?.LastName,
+                Bio = p.Owner?.Bio,
+                RegistrationDate = p.Owner?.RegistrationDate ?? DateTime.MinValue,
+                Email = p.Owner?.Email,
+                PhoneNumber = p.Owner?.PhoneNumber,
+                ProfilePictureURL = p.Owner?.ProfilePictureURL,
+                Address = p.Owner?.Address,
+                NationalID = p.Owner?.PersonInfo?.NationalID,
+                NationalIDImageFrontURL = p.Owner?.PersonInfo?.NationalIDImageFrontURL,
+                NationalIDImageBackURL = p.Owner?.PersonInfo?.NationalIDImageBackURL
+            });
+
+            return result;
+        }
+
+        public async Task<IEnumerable<ProjectRequestReviewDto>> GetAllRejectedProjectRequestsAsync()
+        {
+            var requests = await _projectRepository.GetRejectedProjectRequestsAsync();
+
+            var result = requests.Select(p => new ProjectRequestReviewDto
+            {
+                // Project
+                Id = p.Id,
+                ProjectTitle = p.ProjectTitle,
+                Subtitle = p.Subtitle,
+                ProjectLocation = p.ProjectLocation,
+                ProjectImageURL = p.ProjectImageURL,
+                FundingGoal = p.FundingGoal,
+                FundingExchange = p.FundingExchange,
+                ProjectVision = p.ProjectVision,
+                ProjectStory = p.ProjectStory,
+                CurrentVision = p.CurrentVision,
+                Goals = p.Goals,
+                CategoryId = p.CategoryId,
+                CategoryName = p.Category.Name,
+                OwnerId = p.OwnerId,
+                // Owner
+                FirstName = p.Owner?.FirstName,
+                LastName = p.Owner?.LastName,
+                Bio = p.Owner?.Bio,
+                RegistrationDate = p.Owner?.RegistrationDate ?? DateTime.MinValue,
+                Email = p.Owner?.Email,
+                PhoneNumber = p.Owner?.PhoneNumber,
+                ProfilePictureURL = p.Owner?.ProfilePictureURL,
+                Address = p.Owner?.Address,
+                NationalID = p.Owner?.PersonInfo?.NationalID,
+                NationalIDImageFrontURL = p.Owner?.PersonInfo?.NationalIDImageFrontURL,
+                NationalIDImageBackURL = p.Owner?.PersonInfo?.NationalIDImageBackURL
+            });
+
+            return result;
+        }
+
     }
 }

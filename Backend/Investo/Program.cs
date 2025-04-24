@@ -44,6 +44,8 @@ namespace Investo
             builder.Services.AddScoped<IImageLoadService, CloudinaryImageLoadService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
 
+            builder.Services.AddScoped<IBusinessOwnerRepository, BusinessOwnerRepository>();
+
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
             {
                 opt.Password.RequireLowercase = true;
@@ -79,7 +81,7 @@ namespace Investo
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAllOrigins", builder =>
+                options.AddPolicy("AllowAllOrigins", builder => 
                 {
                     builder.AllowAnyOrigin()
                            .AllowAnyMethod()

@@ -11,7 +11,7 @@ namespace Investo.Entities.IRepository
     {
         Task<IEnumerable<Category>> GetAll();
         Task<Category> GetById(byte id);
-        Task<Category> GetByNameAsync(string id);
+        Task<Category> GetByNameAsync(string Name);
         Task Add(Category category);
         Task Update(Category category);
         Task Delete(byte id);
