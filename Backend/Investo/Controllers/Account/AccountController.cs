@@ -434,11 +434,11 @@ namespace Investo.Presentation.Controllers.Account
 
         [HttpPost("upload-profile-picture")]
         [Authorize] 
-        public async Task<IActionResult> UploadProfilePicture([FromForm] IFormFile profilePicture)
+        public async Task<IActionResult> UploadProfilePicture([FromForm] UpdateProfileImageDto profilePicture)
         {
             try
             {
-                if (profilePicture == null || profilePicture.Length == 0)
+                if (profilePicture == null || profilePicture.profilePicture.Length == 0)
                 {
                     return BadRequest("لازم ترفع صورة!");
                 }
@@ -450,7 +450,7 @@ namespace Investo.Presentation.Controllers.Account
                 }
 
                 // نرفع الصورة وناخد الـ URL
-                var pictureUrl = await _imageLoadService.Upload(profilePicture);
+                var pictureUrl = await _imageLoadService.Upload(profilePicture.profilePicture);
                 user.ProfilePictureURL = pictureUrl;
 
                 // نحدّث اليوزر في الداتابيز
