@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Investo.Entities.DTO.Account
+namespace Investo.Entities.DTO.Account.UserDto
 {
-    public class BORegisterDto
+    // This DTO For the Usual regestration if the user regisetr as a user 
+    public class RegisterDto
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -22,6 +22,7 @@ namespace Investo.Entities.DTO.Account
         [Required]
         public string? PhoneNumber { get; set; }
 
+
         [Required]
         [PasswordPropertyText]
         public string? Password { get; set; }
@@ -29,12 +30,6 @@ namespace Investo.Entities.DTO.Account
         [Compare("Password", ErrorMessage = "The Password and confirmation password do not match.")]
         public string? ConfirmPassword { get; set; }
 
-        // Person Data and we will map it
-        public string NationalID { get; set; }
-
-        public IFormFile NationalIDImageFrontURL { get; set; }
-        public IFormFile NationalIDImageBackURL { get; set; }
-        public IFormFile ProfilePictureURL { get; set; }
-
+        // NOTE : Bio , address, Profile Pic will be in the profile not in regestration process
     }
 }

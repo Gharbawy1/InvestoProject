@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Investo.Entities.DTO.Account
+namespace Investo.Entities.DTO.Account.InvestorDto
 {
     public class InvestorRegisterResponseDto
     {
@@ -19,7 +19,7 @@ namespace Investo.Entities.DTO.Account
     }
     // TODO : Complete the Business Owner DTO for regiestration 
     // TODO : Separate the registration for BO,Investor endpoints => /api/account/register-investor , /api/account/register-bo
-    
+
     // TODO : Profile endpoint ! and add bio,address,..........
     // What I Complete , the Usual User regestration and DTO and the login
 }

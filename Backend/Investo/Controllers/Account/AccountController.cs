@@ -1,7 +1,12 @@
 ﻿using Investo.DataAccess.Services.Image_Loading;
 using Investo.DataAccess.Services.Token;
 using Investo.Entities.DTO.Account;
+using Investo.Entities.DTO.Account.BO;
+using Investo.Entities.DTO.Account.InvestorDto;
+using Investo.Entities.DTO.Account.Profile;
+using Investo.Entities.DTO.Account.UserDto;
 using Investo.Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -271,8 +276,6 @@ namespace Investo.Presentation.Controllers.Account
             }
         }
 
-
-
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
@@ -333,6 +336,197 @@ namespace Investo.Presentation.Controllers.Account
             }
         }
 
+        [HttpPost("upgrade-to-investor")]
+        [Authorize]
+        public async Task<ActionResult<InvestorRegisterResponseDto>> UpgradeToInvestor([FromForm] InvestorRegisterDto investorRegisterDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
+                // نلاقي اليوزر الحالي
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized("اليوزر مش موجود");
+                }
+
+                // نتأكد إنه مش Investor أصلاً
+                if (await _userManager.IsInRoleAsync(user, "Investor"))
+                {
+                    return BadRequest("إنت Investor أصلاً!");
+                }
+
+                // ننشئ Investor جديد
+                var investor = new Investor
+                {
+                    Id = user.Id, // لازم نفس الـ ID
+                    AccreditationStatus = investorRegisterDto.AccreditationStatus,
+                    RiskTolerance = investorRegisterDto.RiskTolerance,
+                    ProfilePictureURL = await _imageLoadService.Upload(investorRegisterDto.ProfilePictureURL),
+                    NetWorth = investorRegisterDto.NetWorth,
+                    MinInvestmentAmount = investorRegisterDto.MinInvestmentAmount,
+                    MaxInvestmentAmount = investorRegisterDto.MaxInvestmentAmount,
+                    InvestmentGoals = investorRegisterDto.InvestmentGoals,
+                    AnnualIncome = investorRegisterDto.AnnualIncome,
+                    PersonInfo = new PersonInfo
+                    {
+                        NationalID = investorRegisterDto.NationalID,
+                        NationalIDImageFrontURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageFrontURL),
+                        NationalIDImageBackURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageBackURL),
+                    },
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    BirthDate = user.BirthDate,
+                    RegistrationDate = user.RegistrationDate,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    UserName = user.UserName
+                };
+
+                // نحذف اليوزر القديم من الداتابيز
+                var deleteResult = await _userManager.DeleteAsync(user);
+                if (!deleteResult.Succeeded)
+                {
+                    return StatusCode(500, deleteResult.Errors);
+                }
+
+                // نضيف الـ Investor الجديد
+                var createResult = await _userManager.CreateAsync(investor, investorRegisterDto.Password);
+                if (!createResult.Succeeded)
+                {
+                    return StatusCode(500, createResult.Errors);
+                }
+
+                // نضيف الـ Role الجديد
+                await _userManager.AddToRoleAsync(investor, "Investor");
+                var userRoles = await _userManager.GetRolesAsync(investor);
+
+                var response = new InvestorRegisterResponseDto
+                {
+                    UserName = investor.UserName,
+                    Email = investor.Email,
+                    FirstName = investor.FirstName,
+                    LastName = investor.LastName,
+                    Token = await _tokenService.CreateToken(investor),
+                    Roles = userRoles,
+                    UserId = investor.Id,
+                    PhoneNumber = investor.PhoneNumber
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                var errorMessages = new List<string>
+        {
+            "فيه مشكلة وإحنا بنعمل upgrade لليوزر",
+            $"الرسالة: {errorDetails}"
+        };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
+        }
+
+
+        [HttpPost("upload-profile-picture")]
+        [Authorize] 
+        public async Task<IActionResult> UploadProfilePicture([FromForm] IFormFile profilePicture)
+        {
+            try
+            {
+                if (profilePicture == null || profilePicture.Length == 0)
+                {
+                    return BadRequest("لازم ترفع صورة!");
+                }
+
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized("اليوزر مش موجود");
+                }
+
+                // نرفع الصورة وناخد الـ URL
+                var pictureUrl = await _imageLoadService.Upload(profilePicture);
+                user.ProfilePictureURL = pictureUrl;
+
+                // نحدّث اليوزر في الداتابيز
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    return StatusCode(500, updateResult.Errors);
+                }
+
+                return Ok(new { Message = "الصورة اترفعت بنجاح!", ProfilePictureURL = pictureUrl });
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                var errorMessages = new List<string>
+        {
+            "فيه مشكلة وإحنا بنرفع الصورة",
+            $"الرسالة: {errorDetails}"
+        };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
+        }
+
+        [HttpPut("update-profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto updateProfileDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized("اليوزر مش موجود");
+                }
+
+                // نحدّث البيانات اللي جات
+                if (!string.IsNullOrEmpty(updateProfileDto.FirstName))
+                    user.FirstName = updateProfileDto.FirstName;
+                if (!string.IsNullOrEmpty(updateProfileDto.LastName))
+                    user.LastName = updateProfileDto.LastName;
+                if (!string.IsNullOrEmpty(updateProfileDto.PhoneNumber))
+                    user.PhoneNumber = updateProfileDto.PhoneNumber;
+                if (updateProfileDto.BirthDate.HasValue)
+                    user.BirthDate = updateProfileDto.BirthDate.Value;
+
+                // نحدّث اليوزر في الداتابيز
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    return StatusCode(500, updateResult.Errors);
+                }
+
+                return Ok(new
+                {
+                    Message = "البيانات اتحدّثت بنجاح!",
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    BirthDate = user.BirthDate
+                });
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                var errorMessages = new List<string>
+        {
+            "فيه مشكلة وإحنا بنحدّث البيانات",
+            $"الرسالة: {errorDetails}"
+        };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
+        }
     }
 }

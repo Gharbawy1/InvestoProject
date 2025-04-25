@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Investo.Entities.DTO.Account
+namespace Investo.Entities.DTO.Account.UserDto
 {
     public class RegisterResponseDTO
     {
