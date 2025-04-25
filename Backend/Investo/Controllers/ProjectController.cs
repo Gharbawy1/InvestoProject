@@ -26,7 +26,7 @@ namespace Investo.Presentation.Controllers
             _categoryService = categoryService;
         }
 
-        // GET: api/project
+        // GET api/projects
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -34,7 +34,7 @@ namespace Investo.Presentation.Controllers
             return Ok(projects);
         }
 
-        // GET: api/project/{id}
+        // GET api/project/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -45,6 +45,15 @@ namespace Investo.Presentation.Controllers
             return Ok(project);
         }
 
+        [HttpGet("get-projects-by-category/{CategoryId}")]
+        public async Task<IActionResult> GetProjectsByCategory([FromRoute] byte CategoryId)
+        {
+            var project = await _projectService.GetProjectsByCategoryAsync(CategoryId);
+            if (project == null)
+                return NotFound("Project not found");
+
+            return Ok(project);
+        }
         // POST: api/project
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] ProjectCreateUpdateDto dto)
@@ -62,12 +71,23 @@ namespace Investo.Presentation.Controllers
             var IsValidCategory = await _categoryService.IsValidCategory(dto.CategoryId);
             if (!IsValidCategory) return BadRequest("Invalid Category Id");
 
-            // when Business owner logic,sevices and repositories are added I will add validation for them 
+            try
+            {
+                var createdProject = await _projectService.CreateProject(dto);
+                return Ok(createdProject);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
-            await _projectService.CreateProject(dto);
-            return Ok(dto);
         }
 
+        // PUT: api/project/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromForm] ProjectCreateUpdateDto dto)
         {
@@ -76,15 +96,19 @@ namespace Investo.Presentation.Controllers
                 if (dto.ProjectImage != null)
                 {
                     var extension = Path.GetExtension(dto.ProjectImage.FileName).ToLower();
+                   
                     if (!_allowedExtenstions.Contains(extension))
                         return BadRequest("Only .png, .jpg, and .jpeg images are allowed!");
 
                     if (dto.ProjectImage.Length > _maxAllowedImageSize)
                         return BadRequest("Max allowed size for the image is 1MB!");
                 }
+                var IsValidCategory = await _categoryService.IsValidCategory(dto.CategoryId);
+                if (!IsValidCategory) return BadRequest("Invalid Category Id");
 
-                await _projectService.UpdateProject(id, dto);
-                return Ok(dto);
+
+                var UpdatedProject = await _projectService.UpdateProject(id,dto);
+                return Ok(UpdatedProject);
             }
             catch (Exception ex)
             {
@@ -110,37 +134,72 @@ namespace Investo.Presentation.Controllers
             }
         }
 
+        // GET: api/project/review/{projectId}
         [HttpGet("review/{projectId}")]
         public async Task<IActionResult> GetProjectRequestForReview([FromRoute]int projectId) // for admin
         {
             var project = await _projectService.GetProjectReviewDtoByIdAsync(projectId);
             if (project == null)
-                return NotFound($"Project with Project Id : {projectId} is not fiund");
+                return NotFound($"Project with Project Id : {projectId} is not found");
 
             return Ok(project);
         }
 
-        [HttpPut("review/UpdateProjectStatus")]
+        // PUT: api/project/review/status
+        [HttpPut("review/status")]
         public async Task<IActionResult> UpdateProjectStatus([FromBody] ProjectStatusUpdateDto projectStatusUpdateReqDto)// for admin
         {
             var result = await _projectService.UpdateProjectStatusAsync(projectStatusUpdateReqDto);
 
             if (!result)
-                return NotFound($"Project with Project Id : {projectStatusUpdateReqDto.ProjectId} is not fiund"); // or BadRequest if invalid state
+                return NotFound($"Project with Project Id : {projectStatusUpdateReqDto.ProjectId} is not found"); // or BadRequest if invalid state
 
             return Ok($"Project Status Updated Successfully to {projectStatusUpdateReqDto.Status}");
         }
 
-        [HttpGet("status/{ownerId}")]
+        // GET: api/project/status/owner/{ownerId}
+        [HttpGet("status/owner/{ownerId}")]
         public async Task<IActionResult> GetProjectStatus([FromRoute]string ownerId)// for both admin and BO
         {
             var statusDto = await _projectService.GetProjectStatusByOwnerIdAsync(ownerId);
             if (statusDto == null)
-                return NotFound($"Project with Owner Id : {ownerId} is not fiund");
+                return NotFound($"Project with Owner Id : {ownerId} is not found");
 
             return Ok(statusDto);
         }
 
+        // GET: api/project/review/pending
+        [HttpGet("review/pending")]
+        public async Task<IActionResult> GetAllPendingProjectRequestsAsync() // for admin
+        {
+            var requests = await _projectService.GetAllPendingProjectRequestsForReviewAsync();
+            if (requests == null || !requests.Any())
+                return NotFound("No pending project requests found for review.");
+
+            return Ok(requests);
+        }
+
+        // GET: api/project/review/accepted
+        [HttpGet("review/accepted")]
+        public async Task<IActionResult> GetAllAcceptedProjectRequestsAsync() // for admin
+        {
+            var requests = await _projectService.GetAllAcceptedProjectRequestsAsync();
+            if (requests == null || !requests.Any())
+                return NotFound("No accepted project requests found.");
+
+            return Ok(requests);
+        }
+
+        // GET: api/project/review/rejected
+        [HttpGet("review/rejected")]
+        public async Task<IActionResult> GetAllRejectedProjectRequestsAsync() // for admin
+        {
+            var requests = await _projectService.GetAllRejectedProjectRequestsAsync();
+            if (requests == null || !requests.Any())
+                return NotFound("No rejected project requests found.");
+
+            return Ok(requests);
+        }
 
     }
 }

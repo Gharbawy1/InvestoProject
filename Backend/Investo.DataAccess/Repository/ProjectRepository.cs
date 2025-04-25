@@ -31,14 +31,22 @@ namespace Investo.DataAccess.Repository
 
         public async Task<IEnumerable<Project>> GetAll()
         {
-            return await _context.Projects.ToListAsync();
+            return await _context.Projects
+                .Include(p => p.Owner)
+                .Include(p => p.Category)
+                .ToListAsync();
         }
 
         public async Task<Project> GetById(int id)
         {
-            var Project = await _context.Projects.FindAsync(id);
-            return Project;
+            var project = await _context.Projects
+                .Include(p => p.Owner)
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            return project;
         }
+
 
         public async Task Update(Project project)
         {
@@ -51,11 +59,48 @@ namespace Investo.DataAccess.Repository
                 .Include(p => p.Owner)       // Include Owner if you need BusinessOwner data
                 .FirstOrDefaultAsync(p => p.OwnerId == ownerId);
         }
-        public async Task<Project> GetByCategoryIdAsync(byte CategoryId)
+        public async Task<List<Project>> GetProjectsByCategory(byte CategoryId)
         {
             return await _context.Projects
-                .Include(p => p.Category)    // Include Category if needed
-                .FirstOrDefaultAsync(p => p.CategoryId == CategoryId);
+                .Include (p => p.Category)
+                .Where(p => p.CategoryId == CategoryId).ToListAsync();
+        }
+
+
+        // it will only get the pending projects for admin
+        public async Task<IEnumerable<Project>> GetPendingProjectRequestsAsync()
+        {
+            return await _context.Projects
+                .Where(p=> p.Status == ProjectStatus.Pending)
+                .Include(p => p.Owner)
+                .ThenInclude(owner => owner.PersonInfo)
+                .Include(p => p.Category)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Project>> GetAcceptedProjectRequestsAsync()
+        {
+            return await _context.Projects
+               .Where(p => p.Status == ProjectStatus.Accepted)
+               .Include(p => p.Owner) // Owner is a BusinessOwner, which inherits from ApplicationUser
+               .ThenInclude(owner => owner.PersonInfo)
+               .Include(p => p.Category)
+               .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Project>> GetRejectedProjectRequestsAsync()
+        {
+            return await _context.Projects
+              .Where(p => p.Status == ProjectStatus.Rejected)
+              .Include(p => p.Owner) // Owner is a BusinessOwner, which inherits from ApplicationUser
+              .ThenInclude(owner => owner.PersonInfo)
+              .Include(p => p.Category)
+              .ToListAsync();
+        }
+
+        public async Task<bool> HasProjectForOwner(string ownerId)
+        {
+            return await _context.Projects.AnyAsync(p => p.OwnerId == ownerId);
         }
 
     }

@@ -18,12 +18,12 @@ namespace Investo.Entities.DTO.Project
         public string ProjectImageUrl { get; set; }
         public decimal FundingGoal { get; set; }
         public string FundingExchange { get; set; }
-        public ProjectStatus Status { get; set; } = ProjectStatus.Pending;
+        public string Status { get; set; } 
         public string ProjectVision { get; set; }
         public string ProjectStory { get; set; }
         public string CurrentVision { get; set; }
         public string Goals { get; set; }
-        public byte CategoryId { get; set; }
+        public string CategoryName { get; set; }
         public string OwnerId { get; set; }
     }
 
