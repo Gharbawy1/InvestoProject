@@ -2,6 +2,7 @@
 using Investo.DataAccess.Services.Token;
 using Investo.Entities.DTO.Account;
 using Investo.Entities.DTO.Account.BO;
+using Investo.Entities.DTO.Account.BODto;
 using Investo.Entities.DTO.Account.InvestorDto;
 using Investo.Entities.DTO.Account.Profile;
 using Investo.Entities.DTO.Account.UserDto;
@@ -338,7 +339,7 @@ namespace Investo.Presentation.Controllers.Account
 
         [HttpPost("upgrade-to-investor")]
         [Authorize]
-        public async Task<ActionResult<InvestorRegisterResponseDto>> UpgradeToInvestor([FromForm] InvestorRegisterDto investorRegisterDto)
+        public async Task<ActionResult<InvestorRegisterResponseDto>> UpgradeToInvestor([FromForm] UpgradeToInvestorDto investorRegisterDto)
         {
             try
             {
@@ -384,7 +385,9 @@ namespace Investo.Presentation.Controllers.Account
                     RegistrationDate = user.RegistrationDate,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
-                    UserName = user.UserName
+                    UserName = user.UserName,
+                    PasswordHash = user.PasswordHash,
+                    
                 };
 
                 // نحذف اليوزر القديم من الداتابيز
@@ -395,7 +398,7 @@ namespace Investo.Presentation.Controllers.Account
                 }
 
                 // نضيف الـ Investor الجديد
-                var createResult = await _userManager.CreateAsync(investor, investorRegisterDto.Password);
+                var createResult = await _userManager.CreateAsync(investor);
                 if (!createResult.Succeeded)
                 {
                     return StatusCode(500, createResult.Errors);
@@ -431,6 +434,91 @@ namespace Investo.Presentation.Controllers.Account
             }
         }
 
+        [HttpPost("upgrade-to-businessowner")]
+        [Authorize]
+        public async Task<ActionResult<InvestorRegisterResponseDto>> UpgradeToBusinessOwner([FromForm] UpgradeToBoDto BusinessOwnerRegiesterDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                // نلاقي اليوزر الحالي
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized("اليوزر مش موجود");
+                }
+
+                if (await _userManager.IsInRoleAsync(user, "BusinessOwner"))
+                {
+                    return BadRequest("إنت BusinessOwner أصلاً!");
+                }
+
+                var BusinessOwner = new BusinessOwner
+                {
+                    Id = user.Id, // لازم نفس الـ ID
+                    PersonInfo = new PersonInfo
+                    {
+                        NationalID = BusinessOwnerRegiesterDto.NationalID,
+                        NationalIDImageFrontURL = await _imageLoadService.Upload(BusinessOwnerRegiesterDto.NationalIDImageFrontURL),
+                        NationalIDImageBackURL = await _imageLoadService.Upload(BusinessOwnerRegiesterDto.NationalIDImageBackURL),
+                    },
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    BirthDate = user.BirthDate,
+                    RegistrationDate = user.RegistrationDate,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    UserName = user.UserName,
+                    PasswordHash = user.PasswordHash,
+                };
+
+                // نحذف اليوزر القديم من الداتابيز
+                var deleteResult = await _userManager.DeleteAsync(user);
+                if (!deleteResult.Succeeded)
+                {
+                    return StatusCode(500, deleteResult.Errors);
+                }
+
+                // نضيف الـ Investor الجديد
+                var createResult = await _userManager.CreateAsync(BusinessOwner);
+                if (!createResult.Succeeded)
+                {
+                    return StatusCode(500, createResult.Errors);
+                }
+
+                // نضيف الـ Role الجديد
+                await _userManager.AddToRoleAsync(BusinessOwner, "BusinessOwner");
+                var userRoles = await _userManager.GetRolesAsync(BusinessOwner);
+
+                var response = new InvestorRegisterResponseDto
+                {
+                    UserName = BusinessOwner.UserName,
+                    Email = BusinessOwner.Email,
+                    FirstName = BusinessOwner.FirstName,
+                    LastName = BusinessOwner.LastName,
+                    Token = await _tokenService.CreateToken(BusinessOwner),
+                    Roles = userRoles,
+                    UserId = BusinessOwner.Id,
+                    PhoneNumber = BusinessOwner.PhoneNumber
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                var errorMessages = new List<string>
+        {
+            "فيه مشكلة وإحنا بنعمل upgrade لليوزر",
+            $"الرسالة: {errorDetails}"
+        };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
+        }
 
         [HttpPost("upload-profile-picture")]
         [Authorize] 

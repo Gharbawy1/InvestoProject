@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Investo.Entities.DTO.Account.InvestorDto
 {
+    // TODO : when upgrade receive id for registerd user and extra data
     public class InvestorRegisterDto
     {
         public string FirstName { get; set; }

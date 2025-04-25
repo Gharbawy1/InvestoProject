@@ -43,6 +43,7 @@ namespace Investo.Entities.Models
         //public string? Notes { get; set; }
 
         // ========== RELATIONSHIPS ==========
+        // Who Send Request
         public int InvestorId { get; set; }
         public Investor Investor { get; set; }
 
