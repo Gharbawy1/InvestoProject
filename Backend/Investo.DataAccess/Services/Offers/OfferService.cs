@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Investo.DataAccess.Services.Offers
 {
-    internal class OfferService
+    public class OfferService : IOfferService
     {
+
     }
 }

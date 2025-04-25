@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Investo.DataAccess.Services.Offers
 {
-    internal interface IOfferService
+    public interface IOfferService
     {
+        // project name
+
     }
 }

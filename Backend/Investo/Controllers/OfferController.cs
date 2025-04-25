@@ -7,5 +7,6 @@ namespace Investo.Presentation.Controllers
     [ApiController]
     public class OfferController : ControllerBase
     {
+
     }
 }

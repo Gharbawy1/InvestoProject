@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Investo.Entities.IRepository;
+
 
 namespace Investo.DataAccess.Repository
 {
-    internal class OfferRepository
+    public class OfferRepository : IOfferRepository
     {
     }
 }

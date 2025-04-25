@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Investo.DataAccess.Services.Token;
+using Investo.DataAccess.Services.Offers;
 
 namespace Investo
 {
@@ -40,6 +41,9 @@ namespace Investo
 
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+
+            builder.Services.AddScoped<IOfferService, OfferService>();
+            builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 
             builder.Services.AddScoped<IImageLoadService, CloudinaryImageLoadService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
