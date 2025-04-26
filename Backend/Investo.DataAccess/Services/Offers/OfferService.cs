@@ -48,6 +48,17 @@ namespace Investo.DataAccess.Services.Offers
                 };
             }
 
+            var isOfferAlreadyExists = await _offerRepository.IsThereAnyOffersForInvestor(dto.InvestorId);
+
+            if (isOfferAlreadyExists)
+            {
+                return new ValidationResult<ReadOfferDto>
+                {
+                    Data = new ReadOfferDto(),
+                    ErrorMessage = $"Investor with Id : {dto.InvestorId} has already made an offer.",
+                    IsValid = false
+                };
+            }
             // تجهيز الكيان الجديد بناءً على الداتا اللي جت من الـ DTO
             var offerEntity = new Entities.Models.Offer
             {

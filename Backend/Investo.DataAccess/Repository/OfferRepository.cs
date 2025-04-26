@@ -48,7 +48,12 @@ namespace Investo.DataAccess.Repository
             return offer;
         }
 
-      
+        public async Task<bool> IsThereAnyOffersForInvestor(string InvestorId)
+        {
+            return await _context.Offers.AnyAsync(p => p.InvestorId == InvestorId);
+        }
+
+
         //public async Task Update(Offer offer)
         //{
         //    _context.Offers.Update(offer);
