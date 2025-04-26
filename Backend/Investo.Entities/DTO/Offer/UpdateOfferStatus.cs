@@ -9,6 +9,6 @@ namespace Investo.Entities.DTO.Offer
     public class UpdateOfferStatus
     {
         public int OfferId { get; set; }
-        string Status { get; set; } = string.Empty;// witll handle conversion from OfferSatus(int) to string
+        string Status { get; set; } = string.Empty;// will handle conversion from OfferSatus(int) to string
     }
 }

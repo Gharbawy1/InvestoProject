@@ -17,10 +17,10 @@ namespace Investo.Entities.Models
         public decimal OfferAmount { get; set; }
 
         [Range(0, 100, ErrorMessage = "Equity must be 0-100%")]
-        public decimal EquityPercentage { get; set; }
+        public decimal? EquityPercentage { get; set; }
 
         [Range(0, 100, ErrorMessage = "Profit share must be 0-100%")]
-        public decimal ProfitShare { get; set; }// certaimn profit to include 
+        public decimal? ProfitShare { get; set; }// certaimn profit to include 
 
         // ========== OFFER DETAILS ==========
         public InvestmentType InvestmentType { get; set; }
@@ -44,7 +44,7 @@ namespace Investo.Entities.Models
 
         // ========== RELATIONSHIPS ==========
         // Who Send Request
-        public int InvestorId { get; set; }
+        public string InvestorId { get; set; }
         public Investor Investor { get; set; }
 
         public int ProjectId { get; set; }

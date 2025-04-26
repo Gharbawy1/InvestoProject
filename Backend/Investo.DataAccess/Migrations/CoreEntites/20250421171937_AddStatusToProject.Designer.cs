@@ -4,6 +4,7 @@ using Investo.DataAccess.ApplicationContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Investo.DataAccess.Migrations.CoreEntites
 {
     [DbContext(typeof(CoreEntitiesDbContext))]
-    partial class CoreEntitiesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250421171937_AddStatusToProject")]
+    partial class AddStatusToProject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,9 +41,6 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -51,14 +51,6 @@ namespace Investo.DataAccess.Migrations.CoreEntites
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -147,7 +139,7 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                     b.Property<string>("BusinessOwnerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal?>("EquityPercentage")
+                    b.Property<decimal>("EquityPercentage")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("ExpirationDate")
@@ -157,8 +149,10 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("InvestorId")
-                        .IsRequired()
+                    b.Property<int>("InvestorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InvestorId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("OfferAmount")
@@ -172,7 +166,7 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<decimal?>("ProfitShare")
+                    b.Property<decimal>("ProfitShare")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProjectId")
@@ -188,7 +182,7 @@ namespace Investo.DataAccess.Migrations.CoreEntites
 
                     b.HasIndex("BusinessOwnerId");
 
-                    b.HasIndex("InvestorId");
+                    b.HasIndex("InvestorId1");
 
                     b.HasIndex("ProjectId");
 
@@ -247,11 +241,8 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("Pending");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Subtitle")
                         .IsRequired()
@@ -405,6 +396,17 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                 {
                     b.HasBaseType("Investo.Entities.Models.ApplicationUser");
 
+                    b.Property<DateTime>("LastActivity")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NationalIDDocumentURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PassportDocumentURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
@@ -451,9 +453,7 @@ namespace Investo.DataAccess.Migrations.CoreEntites
 
                     b.HasOne("Investo.Entities.Models.Investor", "Investor")
                         .WithMany("Offers")
-                        .HasForeignKey("InvestorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("InvestorId1");
 
                     b.HasOne("Investo.Entities.Models.Project", "Project")
                         .WithMany()
@@ -549,14 +549,24 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                             b1.Property<string>("BusinessOwnerId")
                                 .HasColumnType("nvarchar(450)");
 
-                            b1.Property<string>("NationalID")
+                            b1.Property<DateTime>("DateOfBirth")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("FullLegalName")
+                                .IsRequired()
+                                .HasMaxLength(150)
+                                .HasColumnType("nvarchar(150)");
+
+                            b1.Property<string>("NationalIDImageBackURL")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("NationalIDImageBackURL")
+                            b1.Property<string>("NationalIDImageFrontURL")
+                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("NationalIDImageFrontURL")
+                            b1.Property<string>("NationalIDL")
+                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("BusinessOwnerId");
@@ -584,14 +594,24 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                             b1.Property<string>("InvestorId")
                                 .HasColumnType("nvarchar(450)");
 
-                            b1.Property<string>("NationalID")
+                            b1.Property<DateTime>("DateOfBirth")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("FullLegalName")
+                                .IsRequired()
+                                .HasMaxLength(150)
+                                .HasColumnType("nvarchar(150)");
+
+                            b1.Property<string>("NationalIDImageBackURL")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("NationalIDImageBackURL")
+                            b1.Property<string>("NationalIDImageFrontURL")
+                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("NationalIDImageFrontURL")
+                            b1.Property<string>("NationalIDL")
+                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("InvestorId");
@@ -610,7 +630,8 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                 {
                     b.Navigation("Offers");
 
-                    b.Navigation("Project");
+                    b.Navigation("Project")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Investo.Entities.Models.Investor", b =>
