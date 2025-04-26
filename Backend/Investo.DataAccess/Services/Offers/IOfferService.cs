@@ -14,5 +14,9 @@ namespace Investo.DataAccess.Services.Offers
         Task<IEnumerable<ReadOfferDto>> GetAllOffers();
         Task<InvestorBasicInfoDto> GetInvestorByOfferId(int OfferId);
         Task<ReadOfferDto> GetOfferById(int OfferId);
+        Task<IEnumerable<ReadOfferDto>> GetOffersByProjectId(int projectId);
+        Task<ValidationResult<ReadOfferDto>> RespondToOfferAsync(int offerId, string responseStatus);
+
+
     }
 }

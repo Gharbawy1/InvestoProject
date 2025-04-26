@@ -153,5 +153,89 @@ namespace Investo.DataAccess.Services.Offers
                 Investor = await GetInvestorByOfferId(offer.Id)
             };
         }
+
+        public async Task<IEnumerable<ReadOfferDto>> GetOffersByProjectId(int projectId)
+        {
+            var offers = await _offerRepository.GetOffersByProjectId(projectId);
+            if (offers == null || !offers.Any())
+                return new List<ReadOfferDto>();
+
+            var result = new List<ReadOfferDto>();
+            foreach (var offer in offers)
+            {
+                result.Add(new ReadOfferDto
+                {
+                    OfferId = offer.Id,
+                    OfferDate = offer.OfferDate,
+                    ExpirationDate = offer.ExpirationDate,
+                    Status = offer.Status.ToString(),
+                    InvestmentType = offer.InvestmentType.ToString(),
+                    ProjectId = offer.ProjectId,
+                    InvestorId = offer.InvestorId,
+                    Investor = await GetInvestorByOfferId(offer.Id)
+                });
+            }
+
+            return result;
+        }
+        public async Task<ValidationResult<ReadOfferDto>> RespondToOfferAsync(int offerId, string responseStatus)
+        {
+            var offer = await _offerRepository.GetById(offerId);
+            if (offer == null)
+            {
+                return new ValidationResult<ReadOfferDto>
+                {
+                    Data = new ReadOfferDto(),
+                    ErrorMessage = $"Offer with Id: {offerId} not found.",
+                    IsValid = false
+                };
+            }
+
+            if (!Enum.TryParse<OfferStatus>(responseStatus, true, out var status) || !Enum.IsDefined(typeof(OfferStatus), status) ||  status== OfferStatus.Pending )
+            {
+                return new ValidationResult<ReadOfferDto>
+                {
+                    Data = new ReadOfferDto(),
+                    ErrorMessage = $"Invalid status value: '{responseStatus}'. Allowed values are 'Accepted' or 'Rejected'.",
+                    IsValid = false
+                };
+            }
+          
+
+            if (offer.Status == status)
+            {
+                return new ValidationResult<ReadOfferDto>
+                {
+                    Data = new ReadOfferDto(),
+                    ErrorMessage = $"The offer is already in the {offer.Status} status.",
+                    IsValid = false
+                };
+            }
+
+            offer.Status = status;
+
+            var updateSuccess = await _offerRepository.UpdateOfferAsync(offer);
+
+            var updatedOffer = new ReadOfferDto
+            {
+                OfferId = offer.Id,
+                OfferDate = offer.OfferDate,
+                ExpirationDate = offer.ExpirationDate,
+                Status = offer.Status.ToString(),
+                InvestmentType = offer.InvestmentType.ToString(),
+                ProjectId = offer.ProjectId,
+                InvestorId = offer.InvestorId,
+                Investor = await GetInvestorByOfferId(offer.Id)
+            };
+
+            return new ValidationResult<ReadOfferDto>
+            {
+                Data = updatedOffer,
+                ErrorMessage = null,
+                IsValid = true
+            };
+        }
+
+
     }
 }

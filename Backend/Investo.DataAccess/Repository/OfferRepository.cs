@@ -48,11 +48,37 @@ namespace Investo.DataAccess.Repository
             return offer;
         }
 
-      
+
         //public async Task Update(Offer offer)
         //{
         //    _context.Offers.Update(offer);
         //    _context.SaveChanges();
         //}
+
+
+        public async Task<IEnumerable<Offer>> GetOffersByProjectId(int projectId)
+        {
+            return await _context.Offers
+                .Include(o=>o.Investor)
+                .Include(o=>o.Project)
+                .Where(o => o.ProjectId == projectId)
+                .ToListAsync();
+        }
+
+        public async Task<Offer> UpdateOfferAsync(Offer offer)
+        {
+            var existingOffer = await _context.Offers.FindAsync(offer.Id);
+            if (existingOffer == null)
+            {
+                return null; 
+            }
+
+            _context.Entry(existingOffer).CurrentValues.SetValues(offer);
+            await _context.SaveChangesAsync();
+
+            return existingOffer;
+        }
     }
+
+
 }
