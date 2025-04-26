@@ -14,14 +14,15 @@ namespace Investo.Entities.DTO.Offer
         public decimal OfferAmount { get; set; }
 
         [Required]
-        public InvestmentType InvestmentType { get; set; }
+        public string InvestmentType { get; set; }
 
         // Optional - based on InvestmentType
-        [Range(0, 100, ErrorMessage = "Equity percentage must be between 0 and 100.")]
+
+        [Range(0, 100, ErrorMessage = "Equity must be 0-100%")]
         public decimal? EquityPercentage { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Profit share must be between 0 and 100.")]
-        public decimal? ProfitShare { get; set; }
+        [Range(0, 100, ErrorMessage = "Profit share must be 0-100%")]
+        public decimal? ProfitShare { get; set; }// certaimn profit to include 
 
         [Required]
         [StringLength(2000, ErrorMessage = "Offer terms must not exceed 2000 characters.")]
@@ -29,6 +30,7 @@ namespace Investo.Entities.DTO.Offer
 
         [Required]
         public int ProjectId { get; set; }
+        public string InvestorId { get; set; }
     }
 
 }

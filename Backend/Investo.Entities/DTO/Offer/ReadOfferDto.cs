@@ -12,11 +12,12 @@ namespace Investo.Entities.DTO.Offer
         public int OfferId { get; set; }
         public DateTime OfferDate { get; set; }
         public DateTime ExpirationDate { get; set; }
-        public OfferStatus Status { get; set; } = OfferStatus.Pending;
+        public string Status { get; set; } = string.Empty;
+        public string InvestmentType {  get; set; } = string.Empty;
 
         public int ProjectId { get; set; }
 
-        public int InvestorId { get; set; }
+        public string InvestorId { get; set; }
 
         public InvestorBasicInfoDto Investor { get; set; }
     }
