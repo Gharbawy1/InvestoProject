@@ -20,23 +20,23 @@ namespace Investo.Entities.Models
         public decimal EquityPercentage { get; set; }
 
         [Range(0, 100, ErrorMessage = "Profit share must be 0-100%")]
-        public decimal ProfitShare { get; set; }
+        public decimal ProfitShare { get; set; }// certaimn profit to include 
 
         // ========== OFFER DETAILS ==========
         public InvestmentType InvestmentType { get; set; }
 
         [Required]
         [StringLength(2000)]
-        public string OfferTerms { get; set; }
+        public string OfferTerms { get; set; } 
 
         [StringLength(1000)]
-        public string? AdditionalServices { get; set; }
+        public string? AdditionalServices { get; set; } 
 
         // ========== STATUS & TIMING ==========
         public OfferStatus Status { get; set; } = OfferStatus.Pending;
         public DateTime OfferDate { get; set; } = DateTime.UtcNow;
 
-        public DateTime ExpirationDate { get; set; }
+        public DateTime ExpirationDate { get; set; } 
 
         // ========== NOTES & TRACKING ==========
         //[StringLength(4000)]
