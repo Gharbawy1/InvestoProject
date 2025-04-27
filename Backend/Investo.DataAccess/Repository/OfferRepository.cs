@@ -35,7 +35,7 @@ namespace Investo.DataAccess.Repository
         {
             return await _context.Offers
                 .Include(p => p.Investor)
-                .Include(p => p.Project)
+                .Include(p => p.ProjectName)
                 .ToListAsync();
         }
 
@@ -43,7 +43,7 @@ namespace Investo.DataAccess.Repository
         {
             var offer = await _context.Offers
                 .Include(p => p.Investor)
-                .Include(p => p.Project)
+                .Include(p => p.ProjectName)
                 .FirstOrDefaultAsync(p=> p.Id == id);
             return offer;
         }
@@ -60,7 +60,7 @@ namespace Investo.DataAccess.Repository
         {
             return await _context.Offers
                 .Include(o=>o.Investor)
-                .Include(o=>o.Project)
+                .Include(o=>o.ProjectName)
                 .Where(o => o.ProjectId == projectId)
                 .ToListAsync();
         }
@@ -77,6 +77,25 @@ namespace Investo.DataAccess.Repository
             await _context.SaveChangesAsync();
 
             return existingOffer;
+        }
+
+
+        public async Task<IEnumerable<Offer>> GetOffersForBusinessOwnerAsync(string ownerId)
+        {
+            return await _context.Offers
+                .Where(o => o.ProjectName.OwnerId == ownerId)
+                .Include(o => o.Investor)
+                .Include(o=>o.ProjectName)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Offer>> GetOffersForInvestorAsync(string investorId)
+        {
+            return await _context.Offers
+                .Where(o => o.InvestorId == investorId)
+                .Include(o => o.Investor)
+                .Include(o => o.ProjectName)
+                .ToListAsync();
         }
     }
 

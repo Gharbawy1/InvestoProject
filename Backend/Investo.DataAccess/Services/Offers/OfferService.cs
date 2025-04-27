@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using CloudinaryDotNet.Core;
 using Investo.Entities.DTO.Offer;
 using Investo.Entities.IRepository;
 using Investo.Entities.Models;
@@ -234,6 +235,49 @@ namespace Investo.DataAccess.Services.Offers
                 ErrorMessage = null,
                 IsValid = true
             };
+        }
+
+        public async Task<IEnumerable<ReadOfferDto>> GetOffersForCurrentUser(string userId, string userRole)
+        {
+            IEnumerable<Offer> offers;
+
+            if (userRole == "Investor")
+            {
+                offers = await _offerRepository.GetOffersForInvestorAsync(userId);
+                   
+            }
+            else if (userRole == "BusinessOwner")
+            {
+                offers = await _offerRepository.GetOffersForBusinessOwnerAsync(userId);
+                      
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("Invalid User Role");
+            }
+
+            var readOfferDtos = new List<ReadOfferDto>();
+
+            foreach (var offer in offers)
+            {
+                var investorInfo = await GetInvestorByOfferId(offer.Id);
+               
+                var readOfferDto = new ReadOfferDto
+                {
+                    OfferId = offer.Id,
+                    OfferDate = offer.OfferDate,
+                    ExpirationDate = offer.ExpirationDate,
+                    Status = offer.Status.ToString(),
+                    InvestmentType = offer.InvestmentType.ToString(),
+                    ProjectId = offer.ProjectId,
+                    InvestorId = offer.InvestorId,
+                    Investor = investorInfo
+                };
+
+                readOfferDtos.Add(readOfferDto);
+            }
+
+            return readOfferDtos;
         }
 
 
