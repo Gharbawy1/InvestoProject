@@ -3,6 +3,7 @@ import { AppLayoutComponent } from './pages/layoutes/app-layout/app-layout.compo
 import { AuthModelComponent } from './pages/auth-model/auth-model.component';
 import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+import { ErrorPageComponent } from './pages/error-page/error-page.component';
 
 export const routes: Routes = [
   {
@@ -41,7 +42,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'LandingPage', pathMatch: 'full' },
   {
     path: 'Payment',
-    loadComponent: () => import('./features/project/components/payment-page/payment-page.component').then((m) => m.PaymentPageComponent)
+    loadComponent: () => import('./features/project/components/payment-page/payment-page.component').then(m => m.PaymentPageComponent)
   },
   {
     path:'ProjectDetails',
@@ -51,5 +52,9 @@ export const routes: Routes = [
     path : 'BusinessCreation',
     loadComponent: () => import('./pages/business-creation/business-creation.component').then((m) => m.BusinessCreationComponent)
   },
+  {
+    path: 'error',
+    component: ErrorPageComponent
+  }
   
 ];

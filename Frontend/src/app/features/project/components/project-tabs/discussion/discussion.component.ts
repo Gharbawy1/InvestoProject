@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from "../../../../../shared/componentes/button/button.component";
 import { IComment } from '../../../interfaces/IComment';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-discussion',
@@ -12,6 +13,7 @@ import { IComment } from '../../../interfaces/IComment';
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     MatButtonModule,
     MatInputModule,
     ButtonComponent

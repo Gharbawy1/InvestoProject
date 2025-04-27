@@ -1,0 +1,18 @@
+{
+    "users":[
+        {
+            "id": "06aca056-9768-49bf-95f2-277f1ce17d37",
+            "firstName": "BO",
+            "lastName": "BO",
+            "email": "ahmed@gmail.com",
+            "phoneNumber": "01224309198",
+            "profilePictureURL": "http://res.cloudinary.com/dhnlpsrf4/image/upload/v1745461727/jz7jze1pmlm4jfhhqo6s.jpg"
+        },
+        {
+            "id": "d9f1e7c2-1234-4abc-8def-0123456789ab",
+            "firstName": "Bob",
+            "lastName": "Jones",
+            "profilePicture": "https://i.pravatar.cc/150?img=2"
+        }
+    ]
+}

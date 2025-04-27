@@ -1,31 +1,67 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { FacebookAuthService } from '../FacebookSignIn/facebook-auth.service';
 import { GoogleAuthService } from '../googleSignIn/google-signin.service';
 import { environment } from '../../../../environments/environment.development';
+import { Router } from '@angular/router';
+import { tap, catchError } from 'rxjs/operators';
+import { UserDetails } from '../../../features/project/services/business-details/business-details.service';
 
 // Define the shape of the authentication response from the server.
 export interface AuthResponse {
   token: string;
-  user: {
-    id: number;
-    email: string;
-    role: string;
-  };
+  roles: string[];
+  userId: string;
+  firstName: string;
+  lastName: string;
+  profilePictureURL: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  role: string;
+  avatarUrl: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  // BehaviorSubject holding current user; initialized from storage if exists
+  private userSubject = new BehaviorSubject<User | null>(null)
+
+  /**
+   * Observable stream of the current authenticated user (or null if not logged in)
+   */
+  public user$: Observable<User | null> = this.userSubject.asObservable();
+
   constructor(
     private http: HttpClient,
+    private router: Router,
     @Inject(PLATFORM_ID) private platformId: object,
     private fbAuthService: FacebookAuthService,
     private googleAuthService: GoogleAuthService
-  ) {}
+  ) {
+    // Seed the current user from storage on service initialization
+    if (isPlatformBrowser(this.platformId)) {
+      const storedUser = this.getStoredUser();
+      if (storedUser) {
+        this.userSubject.next(storedUser);
+      }
+    }
+  }
+
+  private createUserFromAuthResponse(response: AuthResponse): User {
+    return {
+      id: response.userId,
+      name: `${response.firstName} ${response.lastName}`,
+      role: response.roles[0] || 'user',
+      avatarUrl: response.profilePictureURL
+    };
+  }
 
   /**
    * Logs in the user using email and password.
@@ -40,147 +76,160 @@ export class AuthService {
     // Remove extra spaces from credentials.
     const credentials = { email: email.trim(), password: password.trim() };
 
-    return this.http.post<AuthResponse>(`${environment.apiBase}/login`, credentials).pipe(
-      tap(response => {
-        // Save token and user role only in the browser.
-        if (isPlatformBrowser(this.platformId)) {
-          this.storeToken(response.token, rememberMe);
-          this.storeUserRole(response.user.role);
-          this.storeUserId(response.user.id);
-          this.storeUserData('currentUser', response.user, rememberMe);
-        }
-      }),
-      catchError(error => {
-        const errorMessage = error.error?.message || 'Invalid credentials';
-        return throwError(() => new Error(errorMessage));
-      })
+    return this.http
+      .post<AuthResponse>(`${environment.accountUrl}/Login`, credentials)
+      .pipe(
+        tap(response => {
+          if (isPlatformBrowser(this.platformId)) {
+            // Store JWT token
+            this.storeToken(response.token, rememberMe);
+            const user = this.createUserFromAuthResponse(response);
+            // Store serialized user object
+            this.storeUserData('currentUser', user, rememberMe);
+            // Emit new user value to all subscribers
+            this.userSubject.next(user);
+          }
+        }),
+        catchError(error => {
+          const errorMessage = error.error?.message || 'Invalid credentials';
+          return throwError(() => new Error(errorMessage));
+        })
     );
   }
 
   /**
    * Sends password reset link to user email.
-   * 
    * @param email - User email.
    * @returns An Observable with the server's response.
    */
-  sendResetLink(email: string): Observable<any> {
+  /*sendResetLink(email: string): Observable<any> {
     return this.http.post(environment.userApiUrl, { email: email.trim() }).pipe(
       catchError(error => {
         console.error('Error sending reset link:', error);
-        return throwError(error);
+        return throwError(() => error);
       })
     );
-  }
+  }*/
 
   /**
-   * Checks if the current user session is valid by verifying the stored token.
-   * 
+   *  Verifies stored token by calling the server.
    *  @returns An Observable that emits an object containing the validity status and user role.
    */
   checkAuthStatus(): Observable<{ valid: boolean; user: { role: string } }> {
-    // This operation is only valid in a browser environment.
     if (!isPlatformBrowser(this.platformId)) {
       return throwError(() => new Error('Not in browser environment'));
     }
 
     const token = this.getToken();
     if (!token) {
-      return throwError('No authentication token found');
+      return throwError(() => new Error('No authentication token found'));
     }
 
     // Attach the token in the Authorization header.
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<{ valid: boolean; user: { role: string } }>(environment.userApiUrl, { headers }).pipe(
+    return this.http.get<{ valid: boolean; user: { role: string } }>(environment.accountUrl, { headers }).pipe(
       catchError(error => {
         console.error('Error checking authentication status:', error);
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
 
   /**
- * Logs out the user by removing the authentication token from storage.
- */
+   * Logs out the user: clears storage, resets subject, and redirects to login.
+   */
   logout(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Clear all auth-related storage
+      // Remove token & user data from both storages
       localStorage.removeItem('token');
       sessionStorage.removeItem('token');
-      localStorage.removeItem('userRole');
+      localStorage.removeItem('currentUser');
+      sessionStorage.removeItem('currentUser');
+      // Emit null to indicate no user is logged in
+      this.userSubject.next(null);
+      // Navigate to login screen
+      this.router.navigate(['/auth']);
     }
   }
 
   /**
-   * Retrieves the stored authentication token from localStorage or sessionStorage.
-   * 
-   * @returns The token string if available; otherwise, null.
+   * Returns the user ID from Storage
    */
-  private getToken(): string | null {
-    return isPlatformBrowser(this.platformId)
-      ? localStorage.getItem('token') || sessionStorage.getItem('token')
-      : null;
+  getUserId(): string | null {
+    const currentUser = this.getStoredUser();
+    return currentUser ? currentUser.id : null;
   }
 
   /**
-   * Stores the authentication token in either localStorage or sessionStorage.
-   * 
-   * @param token - The authentication token.
+   * Returns the currentUser object
+   */
+  getCurrentUser(): User | null {
+    return this.getStoredUser();
+  }
+
+  /**
+   * Retrieves stored user object from storage.
+   * @returns parsed user object or null.
+   */
+  private getStoredUser(): User | null {
+    if (!isPlatformBrowser(this.platformId)) return null;
+    const raw = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+    return raw ? JSON.parse(raw) as User : null;
+  }
+
+  /**
+   * Retrieves JWT token from storage.
+   * @returns The token string if available; otherwise, null.
+   */
+  private getToken(): string | null {
+    if (!isPlatformBrowser(this.platformId)) return null;
+    return localStorage.getItem('token') || sessionStorage.getItem('token');
+  }
+
+  /**
+   * Stores the JWT token in localStorage or sessionStorage.
+   * @param token - JWT token string.
    * @param rememberMe - If true, token is stored in localStorage; else in sessionStorage.
    */
   private storeToken(token: string, rememberMe: boolean): void {
     if (rememberMe) {
       localStorage.setItem('token', token);
+      sessionStorage.removeItem('token');
     } else {
       sessionStorage.setItem('token', token);
+      localStorage.removeItem('token');
     }
   }
 
   /**
-   * Stores user role in localStorage.
-   * 
-   * @param role - The user's role.
+   * Stores user data under a given key in the chosen storage.
+   * @param key - storage key name.
+   * @param value - data to serialize and store.
+   * @param rememberMe - if true, use localStorage; else sessionStorage.
    */
-  private storeUserRole(role: string): void {
-    localStorage.setItem('userRole', role);
-  }
-
-  /**
-   * Stores user ID in localStorage.
-   * 
-   * @param id - The user's ID.
-   */
-  storeUserId(id: number) {
-    localStorage.setItem('userId', id.toString());
-  }
-
-  /**
-   * Stores user data.
-   * 
-   * @param key - The key under which to store the data.
-   * @param value - The data to store.
-   * @param rememberMe - If true, data is stored in localStorage; else in sessionStorage.
-   */
-  storeUserData(key: string, value: any, rememberMe: boolean) {
+  storeUserData(key: string, value: any, rememberMe: boolean): void {
     const storage = rememberMe ? localStorage : sessionStorage;
-    storage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+    storage.setItem(key, JSON.stringify(value));
+    (rememberMe ? sessionStorage : localStorage).removeItem(key);
   }
 
-  getUserId(): number | null {
-    const id = localStorage.getItem('userId');
-    return id ? +id : null;
-  }
-
-  getCurrentUser(): any {
-    const user = localStorage.getItem('currentUser');
-    return user ? JSON.parse(user) : null;
+  //get user by ID
+  getUserById(id: string): Observable<UserDetails> {
+    return this.http.get<UserDetails>(`${environment.userApiUrl}/${id}`)
+      .pipe(
+        catchError(error => {
+          console.error('Error fetching user:', error);
+          return throwError(() => new Error('Failed to fetch user details'));
+        })
+      );
   }
 
   /**
    * Initializes third-party authentication services (Facebook and Google).
    * This method should be called during application initialization.
    */
-  initializeAuth() {
+  /*initializeAuth() {
     // Initialize Facebook authentication.
     this.fbAuthService.initializeFacebook().catch(error => {
       console.error('Error initializing Facebook SDK:', error);
@@ -189,11 +238,10 @@ export class AuthService {
     // Initialize Google authentication.
     // The callback 'handleGoogleLogin' will handle the response after Google sign-in.
     this.googleAuthService.initializeGoogleSignIn(this.handleGoogleLogin.bind(this));
-  }
+  }*/
 
   /**
    * Initiates the Facebook login process.
-   *
    * @returns A Promise that resolves with the Facebook user information upon a successful login.
    */
   loginWithFacebook() {
@@ -208,38 +256,29 @@ export class AuthService {
   }
   
   /**
-   * Callback to handle the Google sign-in response.
-   * It exchanges the Google authorization code for an authentication token.
-   *
-   * @param response - The response object from Google containing the authorization code.
+   * Callback for Google sign-in: exchanges code for AuthResponse, stores token & user.
+   * @param response - Google callback containing auth code.
    */
-  private handleGoogleLogin(response: any) {
+  /*private handleGoogleLogin(response: any): void {
     console.log('Google Login Response:', response);
-
-    // Exchange the Google authorization code for an application-specific authentication token.
     this.http.post<AuthResponse>(`${environment.userApiUrl}/google-auth`, { code: response.code })
       .pipe(
-        tap((authResponse) => {
+        tap(authResponse => {
           if (isPlatformBrowser(this.platformId)) {
-             // By default, store token in localStorage (rememberMe set to true).
             this.storeToken(authResponse.token, true);
-            this.storeUserRole(authResponse.user.role);
+            const user = this.createUserFromAuthResponse(authResponse);
+            this.storeUserData('currentUser', user, true);
+            this.userSubject.next(user);
           }
         }),
         catchError(error => {
           console.error('Google login failed:', error);
-          return throwError(error);
+          return throwError(() => error);
         })
       )
       .subscribe({
-        next: () => {
-          // Perform any additional actions after successful login (e.g., redirecting the user).
-          console.log('Google login successful.');
-
-        },
-        error: (err) => {
-          console.error('Error during Google login process:', err);
-        }
+        next: () => console.log('Google login successful.'),
+        error: err => console.error('Error during Google login process:', err)
       });
-  }
+  }*/
 }

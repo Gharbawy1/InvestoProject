@@ -77,10 +77,18 @@ export class LoginFormComponent implements OnInit {
 
     this.authService.login(this.email, this.password, this.isChecked).subscribe({
       next: response => {
-        this.navigationService.navigateByRole(response.user.role);
+        const role = response.roles?.[0];
+        console.log('login response:', response);
+        if (role) {
+          this.navigationService.navigateByRole(role);
+        } else {
+          console.error('No roles in login response', response);
+          this.loginError = true;
+        }
         this.isLoading = false;
       },
-      error: () => {
+      error: err => {
+        console.error('Login failed:', err);
         this.isLoading = false;
         this.loginError = true;
       }

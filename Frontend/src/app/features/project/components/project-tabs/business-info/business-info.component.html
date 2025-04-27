@@ -1,16 +1,28 @@
-<div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-    <div class="flex items-center mb-6">
-        <div class="w-16 h-16 rounded-full overflow-hidden mr-4 bg-white">
-            <img [src]="businessData.businessLogo" title="businessLogo" [alt]="businessData.businessName" class="w-full h-full object-cover">
-        </div>
-        <div>
-            <h2 class="text-2xl font-semibold">{{ businessData.businessName }}</h2>
-            <p class="text-gray-600">{{ businessData.businessLocation }}</p>
-        </div>
-    </div>
+<!-- business-info.component.html -->
+<div *ngIf="project" class="space-y-8 max-w-[950px] mx-auto">
 
-    <h3 class="text-lg font-medium mb-3">About the Company</h3>
-    <p class="text-gray-700 mb-6">{{ businessData.businessDescription }}</p>
+  <!-- Company Vision -->
+  <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4">
+    <h2 class="text-2xl font-semibold text-gray-900">Company Vision</h2>
+    <p class="text-gray-700 leading-relaxed">{{ project.projectVision }}</p>
+  </div>
 
-    <!-- Rest of the business info content -->
+  <!-- Current Vision -->
+  <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4">
+    <h2 class="text-2xl font-semibold text-gray-900">Current Vision</h2>
+    <p class="text-gray-700 leading-relaxed">{{ project.currentVision }}</p>
+  </div>
+
+  <!-- Our Story -->
+  <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4">
+    <h2 class="text-2xl font-semibold text-gray-900">Our Story</h2>
+    <p class="text-gray-700 leading-relaxed">{{ project.projectStory }}</p>
+  </div>
+
+  <!-- Goals -->
+  <div class="bg-white rounded-2xl shadow-lg p-6 space-y-4">
+    <h2 class="text-2xl font-semibold text-gray-900">Goals</h2>
+    <p class="text-gray-700 leading-relaxed">{{ project.goals }}</p>
+  </div>
+
 </div>
