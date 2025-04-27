@@ -56,7 +56,10 @@ namespace Investo.DataAccess.Repository
         //    _context.SaveChanges();
         //}
 
-
+        public async Task<bool> HasInvestorMadeOfferForProject(string investorId, int projectId)
+        {
+            return await _context.Offers.AnyAsync(o => o.InvestorId == investorId && o.ProjectId == projectId);
+        }
         public async Task<IEnumerable<Offer>> GetOffersByProjectId(int projectId)
         {
             return await _context.Offers

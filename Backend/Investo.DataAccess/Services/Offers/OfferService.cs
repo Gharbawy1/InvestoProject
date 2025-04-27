@@ -33,7 +33,7 @@ namespace Investo.DataAccess.Services.Offers
                 {
                     Data = new ReadOfferDto(),
                     ErrorMessage = $"Investor associated with the given Offer with Id :  {dto.InvestorId} not found",
-                    IsValid = false 
+                    IsValid = false
                 };
 
             }
@@ -49,6 +49,18 @@ namespace Investo.DataAccess.Services.Offers
                 };
             }
 
+            var isOfferAlreadyExists = await _offerRepository.HasInvestorMadeOfferForProject(dto.InvestorId, dto.ProjectId);
+
+
+            if (isOfferAlreadyExists)
+            {
+                return new ValidationResult<ReadOfferDto>
+                {
+                    Data = new ReadOfferDto(),
+                    ErrorMessage = $"Investor with Name : {IsInvestorFound.FirstName} has already made an offer for this project.",
+                    IsValid = false
+                };
+            }
             // تجهيز الكيان الجديد بناءً على الداتا اللي جت من الـ DTO
             var offerEntity = new Entities.Models.Offer
             {
@@ -66,19 +78,17 @@ namespace Investo.DataAccess.Services.Offers
 
             // إنشاء العرض في الداتابيز
             await _offerRepository.Create(offerEntity);
-
             // تجهيز الداتا اللي هرجعها للفرونت بعد الإنشاء
             var result = new ReadOfferDto
             {
                 OfferId = offerEntity.Id,
                 OfferDate = offerEntity.OfferDate,
-                OfferAmount = offerEntity.OfferAmount,
                 ExpirationDate = offerEntity.ExpirationDate,
                 Status = offerEntity.Status.ToString(),
                 InvestmentType = offerEntity.InvestmentType.ToString(),
                 ProjectId = offerEntity.ProjectId,
                 InvestorId = offerEntity.InvestorId,
-                Investor = await GetInvestorByOfferId(offerEntity.Id) 
+                Investor = await GetInvestorByOfferId(offerEntity.Id)
             };
 
             var SuccessCreationValidationResult = new ValidationResult<ReadOfferDto>

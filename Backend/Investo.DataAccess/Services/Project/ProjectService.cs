@@ -36,15 +36,14 @@ namespace Investo.DataAccess.Services.Project
                 imageUrl = await _imageLoadService.Upload(dto.ProjectImage);
             }
 
-            var hasProject = await _projectRepository.HasProjectForOwner(dto.OwnerId);
-            if (hasProject)
-                throw new InvalidOperationException("A business owner can only have one project.");
-
+       
             var ownerExists = await _businessOwnerRepository.ExistsAsync(dto.OwnerId);
             if (!ownerExists)
                 throw new KeyNotFoundException("Business owner with given ID does not exist.");
 
-
+            var hasProject = await _projectRepository.HasProjectForOwner(dto.OwnerId);
+            if (hasProject)
+                throw new InvalidOperationException("A business owner can only have one project.");
 
             var project = new Entities.Models.Project
             {
@@ -62,25 +61,27 @@ namespace Investo.DataAccess.Services.Project
                 CategoryId = dto.CategoryId,
                 OwnerId = dto.OwnerId
             };
-
             await _projectRepository.Create(project);
+            var createdProject = await _projectRepository.GetById(project.Id);
+
             return new ProjectReadDto
             {
-                Id = project.Id,
-                ProjectTitle = project.ProjectTitle,
-                Subtitle = project.Subtitle,
-                ProjectLocation = project.ProjectLocation,
-                ProjectImageUrl = project.ProjectImageURL,
-                FundingGoal = project.FundingGoal,
-                FundingExchange = project.FundingExchange,
-                Status = project.Status.ToString(),
-                ProjectVision = project.ProjectVision,
-                ProjectStory = project.ProjectStory,
-                CurrentVision = project.CurrentVision,
-                Goals = project.Goals,
-                OwnerName = project.Owner.FirstName + " " + project.Owner.LastName,
-                CategoryName = project.Category.Name
+                Id = createdProject.Id,
+                ProjectTitle = createdProject.ProjectTitle,
+                Subtitle = createdProject.Subtitle,
+                ProjectLocation = createdProject.ProjectLocation,
+                ProjectImageUrl = createdProject.ProjectImageURL,
+                FundingGoal = createdProject.FundingGoal,
+                FundingExchange = createdProject.FundingExchange,
+                Status = createdProject.Status.ToString(),
+                ProjectVision = createdProject.ProjectVision,
+                ProjectStory = createdProject.ProjectStory,
+                CurrentVision = createdProject.CurrentVision,
+                Goals = createdProject.Goals,
+                OwnerName = createdProject.Owner?.FirstName+ " " + createdProject.Owner?.LastName,
+                CategoryName = createdProject.Category?.Name // مهم نحط ? عشان نتفادى لو الكاتيجوري مش موجودة لأي سبب
             };
+        
         }
 
         public async Task<ProjectReadDto> UpdateProject(int id, ProjectCreateUpdateDto dto)

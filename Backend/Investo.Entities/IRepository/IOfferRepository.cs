@@ -17,6 +17,7 @@ namespace Investo.Entities.IRepository
         Task<IEnumerable<Offer>> GetOffersByProjectId(int projectId);
         Task<Offer> UpdateOfferAsync(Offer offer);
         Task<IEnumerable<ProjectRaisedFundDto>> GetOffersAmountForProjectAsync();
+        Task<bool> HasInvestorMadeOfferForProject(string investorId, int projectId);
 
     }
 }
