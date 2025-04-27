@@ -2,7 +2,8 @@ export const environment = {
   production: false,
 
   // Google OAuth client ID.
-  googleClientId: '293381514367-2i0mvhps154ba496rqcffs3d6mo8ckkf.apps.googleusercontent.com',
+  googleClientId:
+    '293381514367-2i0mvhps154ba496rqcffs3d6mo8ckkf.apps.googleusercontent.com',
 
   // Facebook App ID.
   appId: '1142874204295756',
@@ -12,7 +13,7 @@ export const environment = {
   //fakeapiBase: 'http://localhost:3000',
 
   // API URL.
-  apiBase:    'https://investo.runasp.net/api',
+  apiBase: 'https://investo.runasp.net/api',
 
   accountUrl: 'https://investo.runasp.net/api/Account',
 

@@ -1,6 +1,10 @@
 <div class="project-tabs">
-   <!-- Tab List -->
-   <div role="tablist" aria-label="Project Sections" class="mb-8 flex space-x-4 border-b border-gray-200">
+  <!-- Tab List -->
+  <div
+    role="tablist"
+    aria-label="Project Sections"
+    class="mb-8 flex space-x-4 border-b border-gray-200"
+  >
     <ng-container *ngFor="let tab of tabs">
       <button
         role="tab"
@@ -24,6 +28,6 @@
 
   <!-- Tab Panels -->
   <div class="tab-content w-full transition-all duration-300 ease-out">
-    <router-outlet ></router-outlet>
+    <router-outlet></router-outlet>
   </div>
 </div>

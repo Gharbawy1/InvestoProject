@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { BusinessDetailsService, Project, UserDetails } from '../../features/project/services/business-details/business-details.service';
+import {
+  BusinessDetailsService,
+  Project,
+  UserDetails,
+} from '../../features/project/services/business-details/business-details.service';
 import { ProjectTabsComponent } from '../../features/project/components/project-tabs/project-tabs.component';
 import { InvestmentSidebarComponent } from '../../features/project/components/investment-sidebar/investment-sidebar.component';
 import { BusinessCreationComponent } from '../business-creation/business-creation.component';
@@ -16,10 +20,10 @@ import { tap } from 'rxjs';
   imports: [
     CommonModule,
     RouterModule,
-    ProjectTabsComponent,
     InvestmentSidebarComponent,
     MatIconModule,
     MatProgressSpinnerModule,
+    ProjectTabsComponent,
   ],
   templateUrl: './project-details.component.html',
   styleUrls: ['./project-details.component.css'],
@@ -33,58 +37,59 @@ export class ProjectDetailsComponent implements OnInit {
   activeTab: string = 'overview';
 
   isOwnerRejected = false;
-  isProjectOwner = false; 
+  isProjectOwner = false;
 
   constructor(
     private businessDetailsService: BusinessDetailsService,
     private projectContext: ProjectContextService,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
-    this.route.data.pipe(
-      tap(() => console.log('Auth state:', this.authService.getUserId()))
-    ).subscribe({
-      next: ({ projectData }) => {
-        if (!projectData) return;
+    this.route.data
+      .pipe(tap(() => console.log('Auth state:', this.authService.getUserId())))
+      .subscribe({
+        next: ({ projectData }) => {
+          if (!projectData) return;
 
-        console.log('Received project data:', projectData);
-        
-        this.project = projectData.project;
-        this.owner = projectData.owner;
-        
-        this.isProjectOwner = this.authService.getUserId() === this.owner?.id;
-        this.isOwnerRejected = this.project?.status.toLowerCase() === 'rejected';
+          console.log('Received project data:', projectData);
 
-        console.log('Component Check:', {
-          isProjectOwner: this.isProjectOwner,
-          isOwnerRejected: this.isOwnerRejected
-        });
+          this.project = projectData.project;
+          this.owner = projectData.owner;
 
-        if (this.isOwnerRejected && !this.isProjectOwner) {
-          console.log('Redirecting non-owner from rejected project');
-          this.router.navigate(['/']);
-          return;
-        }
+          this.isProjectOwner = this.authService.getUserId() === this.owner?.id;
+          this.isOwnerRejected =
+            this.project?.status.toLowerCase() === 'rejected';
 
-        if (this.project) {
-          this.projectContext.setProject(this.project);
-        }
-        this.isLoading = false;
-      },
-      error: err => {
-        this.error = err.message;
-        this.isLoading = false;
-        this.router.navigate(['/error']);
-      }
-    });
+          console.log('Component Check:', {
+            isProjectOwner: this.isProjectOwner,
+            isOwnerRejected: this.isOwnerRejected,
+          });
 
-      this.route.queryParamMap.subscribe(params => {
-        const tab = params.get('tab');
-        if (tab) this.activeTab = tab;
+          if (this.isOwnerRejected && !this.isProjectOwner) {
+            console.log('Redirecting non-owner from rejected project');
+            this.router.navigate(['/']);
+            return;
+          }
+
+          if (this.project) {
+            this.projectContext.setProject(this.project);
+          }
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.error = err.message;
+          this.isLoading = false;
+          this.router.navigate(['/error']);
+        },
       });
+
+    this.route.queryParamMap.subscribe((params) => {
+      const tab = params.get('tab');
+      if (tab) this.activeTab = tab;
+    });
   }
 
   // Add to component methods
@@ -94,7 +99,7 @@ export class ProjectDetailsComponent implements OnInit {
 
   onTabSelected(tabId: string) {
     this.activeTab = tabId;
-  
+
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab: tabId },
@@ -161,7 +166,7 @@ export class ProjectDetailsComponent implements OnInit {
 
   /** Owner Full Name */
   get ownerName(): string {
-    return this.owner 
+    return this.owner
       ? `${this.owner.firstName} ${this.owner.lastName}`
       : 'Unknown Owner';
   }
@@ -173,7 +178,7 @@ export class ProjectDetailsComponent implements OnInit {
 
   /** current funding */
   get currentFunding(): number {
-    return 5000; 
+    return 5000;
   }
 
   /** number of investor */

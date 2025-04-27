@@ -2,11 +2,12 @@ import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ButtonComponent } from '../../../../shared/componentes/button/button.component';
 
 @Component({
   selector: 'app-payment-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonComponent],
   templateUrl: './payment-page.component.html',
 })
 export class PaymentPageComponent {
