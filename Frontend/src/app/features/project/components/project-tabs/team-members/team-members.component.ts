@@ -13,14 +13,14 @@ interface TeamMember {
   standalone: true,
   imports: [CommonModule, MatCardModule],
   templateUrl: './team-members.component.html',
-  styleUrls: ['./team-members.component.css']
+  styleUrls: ['./team-members.component.css'],
 })
 export class TeamMembersComponent {
   @Input() teamMembers: TeamMember[] = [
     {
-      name: "Sarah Johnson",
-      role: "Founder & CEO",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+      name: 'Sarah Johnson',
+      role: 'Founder & CEO',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
     },
     // ... other team members
   ];

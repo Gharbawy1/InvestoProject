@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-investment-sidebar',
@@ -22,7 +22,7 @@ import { RouterModule, Router, ActivatedRoute } from '@angular/router';
     MatButtonModule,
   ],
   templateUrl: './investment-sidebar.component.html',
-  styleUrls: ['./investment-sidebar.component.css']
+  styleUrls: ['./investment-sidebar.component.css'],
 })
 export class InvestmentSidebarComponent {
   @Input() fundingGoal = 0;
@@ -40,7 +40,7 @@ export class InvestmentSidebarComponent {
   investmentAmount = this.MIN_INVESTMENT;
   isLoading = false;
 
-  constructor(public router: Router, private route: ActivatedRoute,) {}
+  constructor(public router: Router, private route: ActivatedRoute) {}
 
   get progressPercentage(): number {
     if (!this.fundingGoal || this.fundingGoal <= 0) {
@@ -105,14 +105,13 @@ export class InvestmentSidebarComponent {
     if (projectId) {
       // navigate into the nested child
       this.router
-      .navigate(['/Payment'])
-      .then(() => this.isLoading = false)
-      .catch(() => this.isLoading = false);
+        .navigate(['/Payment'])
+        .then(() => (this.isLoading = false))
+        .catch(() => (this.isLoading = false));
     }
   }
 
   onContact() {
     this.router.navigate(['discussion'], { relativeTo: this.route });
   }
-  
 }

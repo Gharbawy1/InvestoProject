@@ -22,7 +22,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
     MatIconModule,
     MatTabsModule,
     MatButtonModule,
-    MatInputModule
+    MatInputModule,
   ],
   templateUrl: './project-tabs.component.html',
   styleUrl: './project-tabs.component.css',
@@ -44,30 +44,35 @@ export class ProjectTabsComponent {
   ];
 
   ngOnInit() {
-    this.route.firstChild?.url.subscribe(url => {
+    this.route.firstChild?.url.subscribe((url) => {
       if (url.length) {
         this.activeTab = url[0].path;
       }
     });
   }
-  
-  comments : IComment[] = [
+
+  comments: IComment[] = [
     {
       user: 'John Doe',
       avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
       date: new Date('2023-01-15T14:30:00'),
-      content: 'This is an interesting project!'
+      content: 'This is an interesting project!',
     },
     {
       user: 'ALex Smith',
       avatar: 'https://randomuser.me/api/portraits/men/2.jpg',
       date: new Date('2023-01-16'),
-      content: 'I have a question about the investment terms.'
-    }
+      content: 'I have a question about the investment terms.',
+    },
   ];
 
   addComment(comment: string): void {
-    const newComment: IComment = {user: '', avatar: '', content: comment, date: new Date() }; 
+    const newComment: IComment = {
+      user: '',
+      avatar: '',
+      content: comment,
+      date: new Date(),
+    };
     this.comments.unshift(newComment);
   }
 

@@ -1,5 +1,5 @@
 export interface IOffer {
-  id: number;
+  id: string;
   offerAmount: number;
   equityPercentage: number;
   profitShare: number;
@@ -8,7 +8,7 @@ export interface IOffer {
   status: string;
   additionalServices: string;
   offerDate: Date;
-  expirationDate: Date; 
+  expirationDate: Date;
   investorId: number;
   investor: {
     firstName: string;

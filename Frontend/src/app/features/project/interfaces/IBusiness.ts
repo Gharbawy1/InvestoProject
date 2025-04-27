@@ -1,4 +1,4 @@
-export interface IBusiness{
+export interface IBusiness {
   projectTitle: string;
   subtitle: string;
   projectLocation: string;
@@ -10,7 +10,7 @@ export interface IBusiness{
   currentVision: string;
   goals: string;
   categoryId: number;
-  status : 'approved' | 'rejected'| 'pending';
+  status: 'approved' | 'rejected' | 'pending';
   submissionDate: string;
-  ownerId: number;
+  ownerId: string;
 }
