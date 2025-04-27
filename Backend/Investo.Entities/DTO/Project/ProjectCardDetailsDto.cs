@@ -15,6 +15,7 @@ namespace Investo.Entities.DTO.Project
         public decimal FundingGoal { get; set; }
         public string CategoryName { get; set; }
         public string OwnerName { get; set; }
+        public string OwnerId { get; set; }
         public decimal raisedFunds { get; set; } // all accepted offers prices - funding goal
     }
 }

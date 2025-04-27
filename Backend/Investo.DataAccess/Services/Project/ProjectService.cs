@@ -78,6 +78,7 @@ namespace Investo.DataAccess.Services.Project
                 ProjectStory = createdProject.ProjectStory,
                 CurrentVision = createdProject.CurrentVision,
                 Goals = createdProject.Goals,
+                OwnerId = createdProject.OwnerId,
                 OwnerName = createdProject.Owner?.FirstName+ " " + createdProject.Owner?.LastName,
                 CategoryName = createdProject.Category?.Name // مهم نحط ? عشان نتفادى لو الكاتيجوري مش موجودة لأي سبب
             };
@@ -131,6 +132,7 @@ namespace Investo.DataAccess.Services.Project
                 ProjectStory = project.ProjectStory,
                 CurrentVision = project.CurrentVision,
                 Goals = project.Goals,
+                OwnerId = project.OwnerId,
                 OwnerName = project.Owner.FirstName + " " + project.Owner.LastName,
                 RaisedFund = raisedFund,
                 CategoryName = project.Category.Name
@@ -165,6 +167,7 @@ namespace Investo.DataAccess.Services.Project
                     ProjectImageUrl = p.ProjectImageURL,
                     FundingGoal = p.FundingGoal,
                     CategoryName = p.Category.Name,
+                    OwnerId = p.Owner.Id,
                     OwnerName = p.Owner.FirstName + " " + p.Owner.LastName,
                     raisedFunds = raisedFund
                 };
@@ -196,6 +199,7 @@ namespace Investo.DataAccess.Services.Project
                 CurrentVision = project.CurrentVision,
                 Goals = project.Goals,
                 CategoryName = project.Category.Name,
+                OwnerId = project.Owner.Id,
                 OwnerName = project.Owner.FirstName+" "+project.Owner.LastName,
                 RaisedFund = raisedFund,
             };
@@ -410,6 +414,7 @@ namespace Investo.DataAccess.Services.Project
                     CurrentVision = Project.CurrentVision,
                     Goals = Project.Goals,
                     CategoryName = Project.Category.Name,
+                    OwnerId = Project.OwnerId,
                     OwnerName = Project.Owner.FirstName + " " + Project.Owner.LastName,
                     RaisedFund = raisedFund,
                 };
