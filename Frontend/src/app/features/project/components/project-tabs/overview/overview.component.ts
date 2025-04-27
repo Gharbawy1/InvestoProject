@@ -1,19 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { TeamMembersComponent } from '../team-members/team-members.component';
-import { MarketAnalysisComponent } from '../market-analysis/market-analysis.component';
 import { ProjectContextService } from '../../../services/project-context.service';
 import { IBusinessDetails } from '../../../interfaces/IBusinessDetails';
 
 @Component({
   selector: 'app-overview',
-  imports: [
-    CommonModule,
-    MatIconModule,
-    TeamMembersComponent,
-    MarketAnalysisComponent,
-  ],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.css'],
 })

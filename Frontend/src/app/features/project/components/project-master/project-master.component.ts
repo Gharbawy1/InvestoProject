@@ -6,22 +6,28 @@ import { IProjectCard } from '../../interfaces/iprojectcard';
 import { ICategory } from '../../interfaces/icategory';
 import { CategoryService } from '../../services/category/category.service';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'project-master',
   standalone: true,
-  imports: [ProjectFilterComponent, ProjectCardComponent, MatPaginatorModule],
+  imports: [
+    CommonModule,
+    ProjectFilterComponent,
+    ProjectCardComponent,
+    MatPaginatorModule,
+  ],
   templateUrl: './project-master.component.html',
   styleUrls: ['./project-master.component.css'],
   providers: [ProjectCardService, CategoryService],
 })
-export class ProjectMasterComponent {
+export class ProjectMasterComponent implements OnInit {
   //implements OnInit
 
   allProjects: IProjectCard[] = [];
   filteredProjects: IProjectCard[] = [];
   categoriesList: ICategory[] = [];
-  currentPage: number = 1;
+  currentPage: number = 0;
   pageSize: number = 20;
 
   constructor(
@@ -34,7 +40,7 @@ export class ProjectMasterComponent {
       this.allProjects = prjctData;
       this.filteredProjects = [...prjctData];
     });
-
+    console.log(this.filteredProjects);
     this.categoriesService.getCategories().subscribe((categories) => {
       this.categoriesList = categories;
     });
@@ -45,7 +51,7 @@ export class ProjectMasterComponent {
       return filters.category ? p.category === filters.category : true;
     });
 
-    this.currentPage = 1;
+    this.currentPage = 0;
   }
 
   getPaginatedProjects(): IProjectCard[] {

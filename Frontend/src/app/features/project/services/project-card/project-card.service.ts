@@ -10,7 +10,7 @@ import { IBusinessDetails } from '../../interfaces/IBusinessDetails';
   providedIn: 'root',
 })
 export class ProjectCardService {
-  private apiUrl = `${environment.apiBase}/api/Project`;
+  private apiUrl = `${environment.apiBase}/Project`;
 
   constructor(private http: HttpClient) {}
 

@@ -37,6 +37,13 @@ export const routes: Routes = [
             (m) => m.AdminDashboardComponent
           ),
       },
+      {
+        path: 'ProjectDetails',
+        loadChildren: () =>
+          import('./features/project/routes').then(
+            (m) => m.PROJECT_DETAILS_ROUTES
+          ),
+      },
     ],
   },
   {
@@ -56,13 +63,6 @@ export const routes: Routes = [
           import(
             './features/project/components/payment-page/payment-page.component'
           ).then((m) => m.PaymentPageComponent),
-      },
-      {
-        path: 'ProjectDetails',
-        loadChildren: () =>
-          import('./features/project/routes').then(
-            (m) => m.PROJECT_DETAILS_ROUTES
-          ),
       },
     ],
   },
