@@ -38,7 +38,7 @@ namespace Investo.Presentation.Controllers
             {
                 offer = await _offerService.CreateOfferAsync(dto);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return BadRequest(ex.Message);
             }
