@@ -16,8 +16,15 @@ namespace Investo.Entities.IRepository
         Task Create(Offer offer);
         Task<IEnumerable<Offer>> GetOffersByProjectId(int projectId);
         Task<Offer> UpdateOfferAsync(Offer offer);
+
+        Task<IEnumerable<Offer>> GetOffersForBusinessOwnerAsync(string ownerId);
+        Task<IEnumerable<Offer>> GetOffersForInvestorAsync(string investorId);
+
+
+
         Task<IEnumerable<ProjectRaisedFundDto>> GetOffersAmountForProjectAsync();
         Task<bool> HasInvestorMadeOfferForProject(string investorId, int projectId);
+
 
     }
 }

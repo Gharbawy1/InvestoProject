@@ -1,4 +1,5 @@
-﻿using Investo.DataAccess.Services.Offers;
+﻿using System.Security.Claims;
+using Investo.DataAccess.Services.Offers;
 using Investo.DataAccess.Services.Project;
 using Investo.Entities.DTO.Offer;
 using Investo.Entities.Models;
@@ -80,7 +81,7 @@ namespace Investo.Presentation.Controllers
             if (string.IsNullOrWhiteSpace(status))
                 return BadRequest("Status is required. Allowed values are 'Accepted' or 'Rejected'.");
 
-           
+
             var response = await _offerService.RespondToOfferAsync(offerId, status);
 
             if (!response.IsValid)
@@ -88,7 +89,30 @@ namespace Investo.Presentation.Controllers
 
             return Ok(response.Data);
         }
+        [HttpGet("offers/current-user")]
+        public async Task<IActionResult> GetOffersForCurrentUser()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(userRole))
+                return Unauthorized();
+
+            try
+            {
+                var offers = await _offerService.GetOffersForCurrentUser(userId, userRole);
+
+                return Ok(offers);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
 
     }
 }

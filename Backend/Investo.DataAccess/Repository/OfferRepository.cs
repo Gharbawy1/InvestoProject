@@ -83,6 +83,25 @@ namespace Investo.DataAccess.Repository
             return existingOffer;
         }
 
+
+
+        public async Task<IEnumerable<Offer>> GetOffersForBusinessOwnerAsync(string ownerId)
+        {
+            return await _context.Offers
+                .Where(o => o.Project.OwnerId == ownerId)
+                .Include(o => o.Investor)
+                .Include(o=>o.Project)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Offer>> GetOffersForInvestorAsync(string investorId)
+        {
+            return await _context.Offers
+                .Where(o => o.InvestorId == investorId)
+                .Include(o => o.Investor)
+                .Include(o => o.Project)
+                .ToListAsync();
+
         public async Task<IEnumerable<ProjectRaisedFundDto>> GetOffersAmountForProjectAsync()
         {
             return await _context.Offers
@@ -94,6 +113,7 @@ namespace Investo.DataAccess.Repository
             RaisedFund = g.Sum(o => o.OfferAmount)
         })
         .ToListAsync();
+
         }
     }
 
