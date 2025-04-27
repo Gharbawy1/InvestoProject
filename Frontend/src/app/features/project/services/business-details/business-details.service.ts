@@ -22,7 +22,7 @@ export interface FullProjectPayload {
   providedIn: 'root',
 })
 export class BusinessDetailsService {
-  private projectUrl = `${environment.projectUrl}`;
+  private projectUrl = `${environment.baseApi}${environment.project.getAll}`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

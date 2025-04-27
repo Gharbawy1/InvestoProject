@@ -3,13 +3,18 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LucideAngularModule, Users, FileText, Settings } from 'lucide-angular';
 import { ProjectApprovalCardComponent } from '../../features/admin-dashboard/components/project-approval-card/project-approval-card.component';
-
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [CommonModule, RouterModule, LucideAngularModule, ProjectApprovalCardComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatIconModule,
+    ProjectApprovalCardComponent,
+  ],
   templateUrl: './admin-dashboard.component.html',
-  styleUrl: './admin-dashboard.component.css'
+  styleUrl: './admin-dashboard.component.css',
 })
 export class AdminDashboardComponent {
   activeTab = signal<'projects' | 'users' | 'settings'>('projects');
@@ -18,4 +23,3 @@ export class AdminDashboardComponent {
     this.activeTab.set(tab);
   }
 }
-

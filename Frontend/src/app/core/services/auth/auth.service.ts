@@ -27,11 +27,11 @@ export interface User {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   // BehaviorSubject holding current user; initialized from storage if exists
-  private userSubject = new BehaviorSubject<User | null>(null)
+  private userSubject = new BehaviorSubject<User | null>(null);
 
   /**
    * Observable stream of the current authenticated user (or null if not logged in)
@@ -59,7 +59,7 @@ export class AuthService {
       id: response.userId,
       name: `${response.firstName} ${response.lastName}`,
       role: response.roles[0] || 'user',
-      avatarUrl: response.profilePictureURL
+      avatarUrl: response.profilePictureURL,
     };
   }
 
@@ -72,14 +72,21 @@ export class AuthService {
    * @param rememberMe - If true, token is stored in localStorage; otherwise, sessionStorage.
    * @returns An Observable that emits the authentication response.
    */
-  login(email: string, password: string, rememberMe: boolean): Observable<AuthResponse> {
+  login(
+    email: string,
+    password: string,
+    rememberMe: boolean
+  ): Observable<AuthResponse> {
     // Remove extra spaces from credentials.
     const credentials = { email: email.trim(), password: password.trim() };
 
     return this.http
-      .post<AuthResponse>(`${environment.accountUrl}/Login`, credentials)
+      .post<AuthResponse>(
+        `${environment.baseApi}${environment.account.login}`,
+        credentials
+      )
       .pipe(
-        tap(response => {
+        tap((response) => {
           if (isPlatformBrowser(this.platformId)) {
             // Store JWT token
             this.storeToken(response.token, rememberMe);
@@ -90,11 +97,11 @@ export class AuthService {
             this.userSubject.next(user);
           }
         }),
-        catchError(error => {
+        catchError((error) => {
           const errorMessage = error.error?.message || 'Invalid credentials';
           return throwError(() => new Error(errorMessage));
         })
-    );
+      );
   }
 
   /**
@@ -128,12 +135,16 @@ export class AuthService {
     // Attach the token in the Authorization header.
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<{ valid: boolean; user: { role: string } }>(environment.accountUrl, { headers }).pipe(
-      catchError(error => {
-        console.error('Error checking authentication status:', error);
-        return throwError(() => error);
+    return this.http
+      .get<{ valid: boolean; user: { role: string } }>(environment.accountUrl, {
+        headers,
       })
-    );
+      .pipe(
+        catchError((error) => {
+          console.error('Error checking authentication status:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   /**
@@ -174,8 +185,10 @@ export class AuthService {
    */
   private getStoredUser(): User | null {
     if (!isPlatformBrowser(this.platformId)) return null;
-    const raw = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
-    return raw ? JSON.parse(raw) as User : null;
+    const raw =
+      localStorage.getItem('currentUser') ||
+      sessionStorage.getItem('currentUser');
+    return raw ? (JSON.parse(raw) as User) : null;
   }
 
   /**
@@ -216,13 +229,12 @@ export class AuthService {
 
   //get user by ID
   getUserById(id: string): Observable<UserDetails> {
-    return this.http.get<UserDetails>(`${environment.userApiUrl}/${id}`)
-      .pipe(
-        catchError(error => {
-          console.error('Error fetching user:', error);
-          return throwError(() => new Error('Failed to fetch user details'));
-        })
-      );
+    return this.http.get<UserDetails>(`${environment.userApiUrl}/${id}`).pipe(
+      catchError((error) => {
+        console.error('Error fetching user:', error);
+        return throwError(() => new Error('Failed to fetch user details'));
+      })
+    );
   }
 
   /**
@@ -247,14 +259,14 @@ export class AuthService {
   loginWithFacebook() {
     return this.fbAuthService.fbLogin();
   }
-  
+
   /**
    * Initiates the Google login process.
    */
   loginWithGoogle() {
     this.googleAuthService.triggerGoogleLogin();
   }
-  
+
   /**
    * Callback for Google sign-in: exchanges code for AuthResponse, stores token & user.
    * @param response - Google callback containing auth code.

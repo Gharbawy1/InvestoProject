@@ -1,9 +1,19 @@
 import { IBusiness } from '../../project/interfaces/IBusiness';
 
-export interface IBusinessProfile
-  extends Omit<IBusiness, 'categoryId' | 'ownerId'> {
+export interface IBusinessProfile extends Omit<IBusiness, 'projectImage'> {
   id: string;
+  projectImageURL: string;
   categoryName: string;
-  status: 'Approved' | 'Rejected' | 'Pending';
-  owner: string;
+  status: string | null;
+  bio: string | null;
+  registrationDate: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  profilePictureURL: string;
+  address: string | null;
+  nationalIDImageFrontURL: string;
+  nationalIDImageBackURL: string;
+  nationalID: string;
 }
