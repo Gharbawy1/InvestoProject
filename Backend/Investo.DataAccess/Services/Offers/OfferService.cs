@@ -282,6 +282,7 @@ namespace Investo.DataAccess.Services.Offers
                 var readOfferDto = new ReadOfferDto
                 {
                     OfferId = offer.Id,
+                    OfferAmount = offer.OfferAmount,
                     OfferDate = offer.OfferDate,
                     ExpirationDate = offer.ExpirationDate,
                     Status = offer.Status.ToString(),

@@ -101,7 +101,7 @@ namespace Investo.DataAccess.Repository
                 .Include(o => o.Investor)
                 .Include(o => o.Project)
                 .ToListAsync();
-
+        }
         public async Task<IEnumerable<ProjectRaisedFundDto>> GetOffersAmountForProjectAsync()
         {
             return await _context.Offers
