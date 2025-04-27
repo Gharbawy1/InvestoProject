@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Investo.DataAccess.ApplicationContext;
+using Investo.Entities.DTO.Project;
 using Investo.Entities.IRepository;
 using Investo.Entities.Models;
 using Microsoft.CodeAnalysis;
@@ -77,6 +78,19 @@ namespace Investo.DataAccess.Repository
             await _context.SaveChangesAsync();
 
             return existingOffer;
+        }
+
+        public async Task<IEnumerable<ProjectRaisedFundDto>> GetOffersAmountForProjectAsync()
+        {
+            return await _context.Offers
+        .Where(o => o.Status == OfferStatus.Accepted)
+        .GroupBy(o => o.ProjectId)
+        .Select(g => new ProjectRaisedFundDto
+        {
+            ProjectId = g.Key,
+            RaisedFund = g.Sum(o => o.OfferAmount)
+        })
+        .ToListAsync();
         }
     }
 

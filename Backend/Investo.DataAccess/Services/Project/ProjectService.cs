@@ -8,6 +8,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis;
 using Investo.DataAccess.Repository;
+using Investo.DataAccess.Services.Offers;
 
 namespace Investo.DataAccess.Services.Project
 {
@@ -16,12 +17,14 @@ namespace Investo.DataAccess.Services.Project
         private readonly IProjectRepository _projectRepository;
         private readonly IImageLoadService _imageLoadService;
         private readonly IBusinessOwnerRepository _businessOwnerRepository;
+        private readonly IOfferService _offerService;
 
-        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService,IBusinessOwnerRepository businessOwnerRepository)
+        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService, IBusinessOwnerRepository businessOwnerRepository, IOfferService offerService)
         {
             _projectRepository = projectRepository;
             _imageLoadService = imageLoadService;
             _businessOwnerRepository = businessOwnerRepository;
+            _offerService = offerService;
         }
 
         public async Task<ProjectReadDto> CreateProject(ProjectCreateUpdateDto dto)
@@ -138,26 +141,29 @@ namespace Investo.DataAccess.Services.Project
             return true;
         }
 
-        public async Task<IEnumerable<ProjectReadDto>> GetAllProjects()
+        public async Task<IEnumerable<ProjectCardDetailsDto>> GetAllProjects()
         {
             var projects = await _projectRepository.GetAll();
-            return projects.Select(p => new ProjectReadDto
+            var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
+
+
+            return projects.Select(p =>
             {
-                Id = p.Id,
-                ProjectTitle = p.ProjectTitle,
-                Subtitle = p.Subtitle,
-                ProjectLocation = p.ProjectLocation,
-                ProjectImageUrl = p.ProjectImageURL,
-                FundingGoal = p.FundingGoal,
-                FundingExchange = p.FundingExchange,
-                Status = p.Status.ToString(),
-                ProjectVision = p.ProjectVision,
-                ProjectStory = p.ProjectStory,
-                CurrentVision = p.CurrentVision,
-                Goals = p.Goals,
-                CategoryName = p.Category.Name,
-                OwnerId = p.OwnerId
+                var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == p.Id)?.RaisedFund ?? 0;
+
+                return new ProjectCardDetailsDto
+                {
+                    Id = p.Id,
+                    ProjectTitle = p.ProjectTitle,
+                    Subtitle = p.Subtitle,
+                    ProjectImageUrl = p.ProjectImageURL,
+                    FundingGoal = p.FundingGoal,
+                    CategoryName = p.Category.Name,
+                    OwnerName = p.Owner.FirstName + " " + p.Owner.LastName,
+                    raisedFunds = raisedFund
+                };
             });
+            
         }
 
         public async Task<ProjectReadDto> GetProjectById(int id)

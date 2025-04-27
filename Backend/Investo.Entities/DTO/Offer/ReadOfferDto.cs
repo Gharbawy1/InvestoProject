@@ -11,6 +11,8 @@ namespace Investo.Entities.DTO.Offer
     {
         public int OfferId { get; set; }
         public DateTime OfferDate { get; set; }
+        public decimal OfferAmount { get; set; }
+
         public DateTime ExpirationDate { get; set; }
         public string Status { get; set; } = string.Empty;
         public string InvestmentType {  get; set; } = string.Empty;

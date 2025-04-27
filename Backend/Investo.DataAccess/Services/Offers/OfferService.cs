@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Investo.Entities.DTO.Offer;
+using Investo.Entities.DTO.Project;
 using Investo.Entities.IRepository;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Identity;
@@ -71,6 +72,7 @@ namespace Investo.DataAccess.Services.Offers
             {
                 OfferId = offerEntity.Id,
                 OfferDate = offerEntity.OfferDate,
+                OfferAmount = offerEntity.OfferAmount,
                 ExpirationDate = offerEntity.ExpirationDate,
                 Status = offerEntity.Status.ToString(),
                 InvestmentType = offerEntity.InvestmentType.ToString(),
@@ -98,6 +100,7 @@ namespace Investo.DataAccess.Services.Offers
                 {
                     OfferId = offer.Id,
                     OfferDate = offer.OfferDate,
+                    OfferAmount = offer.OfferAmount,
                     ExpirationDate = offer.ExpirationDate,
                     Status = offer.Status.ToString(),
                     InvestmentType = offer.InvestmentType.ToString(),
@@ -145,6 +148,7 @@ namespace Investo.DataAccess.Services.Offers
             {
                 OfferId = offer.Id,
                 OfferDate = offer.OfferDate,
+                OfferAmount = offer.OfferAmount,
                 ExpirationDate = offer.ExpirationDate,
                 Status = offer.Status.ToString(),
                 InvestmentType = offer.InvestmentType.ToString(),
@@ -167,6 +171,7 @@ namespace Investo.DataAccess.Services.Offers
                 {
                     OfferId = offer.Id,
                     OfferDate = offer.OfferDate,
+                    OfferAmount = offer.OfferAmount,
                     ExpirationDate = offer.ExpirationDate,
                     Status = offer.Status.ToString(),
                     InvestmentType = offer.InvestmentType.ToString(),
@@ -220,6 +225,7 @@ namespace Investo.DataAccess.Services.Offers
             {
                 OfferId = offer.Id,
                 OfferDate = offer.OfferDate,
+                OfferAmount = offer.OfferAmount,
                 ExpirationDate = offer.ExpirationDate,
                 Status = offer.Status.ToString(),
                 InvestmentType = offer.InvestmentType.ToString(),
@@ -236,6 +242,9 @@ namespace Investo.DataAccess.Services.Offers
             };
         }
 
-
+        public async Task<IEnumerable<ProjectRaisedFundDto>> GetProjectsRaisedFundsAsync()
+        {
+            return await _offerRepository.GetOffersAmountForProjectAsync();
+        }
     }
 }
