@@ -9,14 +9,15 @@ import { IBusinessProfile } from '../interfaces/IBusinessProfile';
 })
 export class BusinessApprovalService {
   private apiUrl = `${environment.apiBase}/businessProfiles`;
-  constructor(private http : HttpClient) { }
-  
-  getProjects():Observable<IBusinessProfile[]>{
+
+  constructor(private http: HttpClient) {}
+
+  getProjects(): Observable<IBusinessProfile[]> {
     return this.http.get<IBusinessProfile[]>(this.apiUrl);
   }
-  
-  updateProjectStatus(projectId: string, status: 'approved' | 'rejected'|'pending'): Observable<any> {
-    return this.http.patch(this.apiUrl, { projectId, status });
+
+  updateProjectStatus(projectId: string, status: 'approved' | 'rejected' | 'pending'): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${projectId}`, { status });
   }
   
 }
