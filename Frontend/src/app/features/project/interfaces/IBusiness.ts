@@ -10,7 +10,5 @@ export interface IBusiness {
   currentVision: string;
   goals: string;
   categoryId: number;
-  status: 'approved' | 'rejected' | 'pending';
-  submissionDate: string;
   ownerId: string;
 }

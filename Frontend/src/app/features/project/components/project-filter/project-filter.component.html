@@ -33,9 +33,7 @@
   <div class="flex flex-wrap gap-2 mt-4 p-2 bg-gray-100 rounded-lg">
     <button
       *ngFor="
-        let category of [{ id: '0', categoryName: 'All Projects' }].concat(
-          this.categories
-        )
+        let category of [{ id: '0', name: 'All Projects' }].concat(categories)
       "
       class="px-4 py-1 text-sm rounded-full"
       [ngClass]="{
@@ -44,7 +42,7 @@
       }"
       (click)="setCategory(+category.id)"
     >
-      {{ category.categoryName }}
+      {{ category.name }}
     </button>
   </div>
 </section>

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Project } from './business-details/business-details.service';
+import { IBusinessDetails } from '../interfaces/IBusinessDetails';
 
-@Injectable({ 
-  providedIn: 'root'
+@Injectable({
+  providedIn: 'root',
 })
 export class ProjectContextService {
-  private project$$ = new BehaviorSubject<Project | null>(null);
+  private project$$ = new BehaviorSubject<IBusinessDetails | null>(null);
   readonly project$ = this.project$$.asObservable();
 
-  setProject(p: Project) {
+  setProject(p: IBusinessDetails) {
     this.project$$.next(p);
   }
 }

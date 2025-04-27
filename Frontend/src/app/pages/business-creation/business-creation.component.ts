@@ -1,8 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  FormGroup,
+} from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { LucideAngularModule} from 'lucide-angular';
+import { LucideAngularModule } from 'lucide-angular';
 import { BusinessCreationService } from '../../features/project/services/business-creation/business-creation.service';
 import { AutoFocusDirective } from '../../shared/directives/auto-focus/auto-focus.directive';
 import { AuthService, User } from '../../core/services/auth/auth.service';
@@ -12,9 +17,15 @@ import { IBusiness } from '../../features/project/interfaces/IBusiness';
 
 @Component({
   selector: 'app-business-creation',
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule, AutoFocusDirective],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    LucideAngularModule,
+    AutoFocusDirective,
+  ],
   templateUrl: './business-creation.component.html',
-  styleUrls: ['./business-creation.component.css']
+  styleUrls: ['./business-creation.component.css'],
 })
 export class BusinessCreationComponent implements OnInit {
   // FormBuilder to construct reactive form controls
@@ -39,7 +50,11 @@ export class BusinessCreationComponent implements OnInit {
   // Owner ID of the project, set to the currently logged-in user's ID
   ownerId: string | null = null;
 
-  constructor(private businessCreationService: BusinessCreationService, public categoryService: CategoryService, public router: Router) {
+  constructor(
+    private businessCreationService: BusinessCreationService,
+    public categoryService: CategoryService,
+    public router: Router
+  ) {
     // Initialize form with validators
     this.businessForm = this.fb.group({
       projectTitle: ['', [Validators.required, Validators.minLength(5)]],
@@ -52,9 +67,10 @@ export class BusinessCreationComponent implements OnInit {
       projectStory: ['', [Validators.required, Validators.minLength(200)]],
       currentVision: ['', Validators.required],
       goals: ['', Validators.required],
-      categoryId: [0, [Validators.required, Validators.min(1)]]
+      categoryId: [0, [Validators.required, Validators.min(1)]],
+      ownerId: [0, [Validators.required, Validators.min(1)]],
     });
-  }  
+  }
 
   ngOnInit() {
     // Load categories for selection
@@ -71,7 +87,7 @@ export class BusinessCreationComponent implements OnInit {
   private loadCategories() {
     this.isLoadingCategories = true;
     this.errorMessage = '';
-    
+
     this.categoryService.getCategories().subscribe({
       next: (categories) => {
         this.categories = categories;
@@ -79,20 +95,21 @@ export class BusinessCreationComponent implements OnInit {
         this.businessForm.get('categoryId')?.enable();
       },
       error: (err) => {
-        this.errorMessage = 'Failed to load categories. Please try again later.';
+        this.errorMessage =
+          'Failed to load categories. Please try again later.';
         this.isLoadingCategories = false;
         console.error('Error loading categories:', err);
-      }
+      },
     });
   }
-  
+
   /**
    * Handles file input change event to capture the selected image
    */
   onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    
+
     if (file) {
       this.businessForm.patchValue({ projectImage: file });
       this.businessForm.get('projectImage')?.updateValueAndValidity();
@@ -105,17 +122,21 @@ export class BusinessCreationComponent implements OnInit {
    */
   onSubmit() {
     this.formSubmitted = true;
-    Object.values(this.businessForm.controls).forEach(c => c.markAsTouched());
-    
+    Object.values(this.businessForm.controls).forEach((c) => c.markAsTouched());
+
     if (this.businessForm.invalid || !this.businessImageFile) {
       return;
     }
-    
+
     this.isLoading = true;
     const formValues: IBusiness = this.businessForm.value;
-    
+
     const formData = new FormData();
-    formData.append('projectImage', this.businessImageFile, this.businessImageFile.name);
+    formData.append(
+      'projectImage',
+      this.businessImageFile,
+      this.businessImageFile.name
+    );
     formData.append('projectTitle', formValues.projectTitle);
     formData.append('subtitle', formValues.subtitle);
     formData.append('projectLocation', formValues.projectLocation);
@@ -125,9 +146,9 @@ export class BusinessCreationComponent implements OnInit {
     formData.append('projectStory', formValues.projectStory);
     formData.append('currentVision', formValues.currentVision);
     formData.append('goals', formValues.goals);
-    formData.append('status', 'pending');
-    formData.append('submissionDate', new Date().toISOString());
     formData.append('categoryId', formValues.categoryId.toString());
+    formData.append('ownerId', formValues.ownerId.toString());
+
     // Append the ID of the current user as the project owner
     if (this.ownerId !== null) {
       formData.append('ownerId', this.ownerId.toString());
@@ -137,7 +158,7 @@ export class BusinessCreationComponent implements OnInit {
     for (const [key, val] of formData.entries()) {
       console.log(key, val);
     }
-    
+
     /*// for test
     const values = this.businessForm.getRawValue();
     // for test
@@ -157,7 +178,7 @@ export class BusinessCreationComponent implements OnInit {
       error: (error) => {
         console.error('Error creating profile', error);
         this.isLoading = false;
-      }
+      },
     });
     //for test
     /*this.businessCreationService.postBusinessJSON(payload).subscribe({

@@ -4,7 +4,6 @@ import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import {
   BusinessDetailsService,
-  Project,
   UserDetails,
 } from '../../features/project/services/business-details/business-details.service';
 import { ProjectTabsComponent } from '../../features/project/components/project-tabs/project-tabs.component';
@@ -14,6 +13,7 @@ import { ProjectContextService } from '../../features/project/services/project-c
 import { AuthService } from '../../core/services/auth/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { tap } from 'rxjs';
+import { IBusinessDetails } from '../../features/project/interfaces/IBusinessDetails';
 
 @Component({
   selector: 'app-project-details',
@@ -29,7 +29,7 @@ import { tap } from 'rxjs';
   styleUrls: ['./project-details.component.css'],
 })
 export class ProjectDetailsComponent implements OnInit {
-  project?: Project;
+  project?: IBusinessDetails;
   owner?: UserDetails;
   isLoading = true;
   error?: string;

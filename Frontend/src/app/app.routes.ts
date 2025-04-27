@@ -67,10 +67,6 @@ export const routes: Routes = [
     ],
   },
   {
-    path: '**',
-    redirectTo: 'LandingPage',
-  },
-  {
     path: 'BusinessCreation',
     loadComponent: () =>
       import('./pages/business-creation/business-creation.component').then(
@@ -80,5 +76,9 @@ export const routes: Routes = [
   {
     path: 'error',
     component: ErrorPageComponent,
+  },
+  {
+    path: '**',
+    redirectTo: 'LandingPage',
   },
 ];

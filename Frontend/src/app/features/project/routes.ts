@@ -19,7 +19,6 @@ export const PROJECT_DETAILS_ROUTES: Routes = [
     resolve: { projectData: ProjectResolver },
     children: [
       { path: 'investment-sidebar', component: InvestmentSidebarComponent },
-
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
       { path: 'overview', component: OverviewComponent },
       { path: 'business-info', component: BusinessInfoComponent },
