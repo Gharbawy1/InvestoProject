@@ -16,6 +16,7 @@ export const environment = {
   baseApi: 'https://investo.runasp.net/api',
 
   account: {
+    accountUrl: '/Account',
     registerUser: '/Account/register-User',
     registerInvestor: '/Account/register-investor',
     registerBusinessOwner: '/Account/register-businessOwner',

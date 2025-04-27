@@ -136,9 +136,12 @@ export class AuthService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     return this.http
-      .get<{ valid: boolean; user: { role: string } }>(environment.accountUrl, {
-        headers,
-      })
+      .get<{ valid: boolean; user: { role: string } }>(
+        environment.account.accountUrl,
+        {
+          headers,
+        }
+      )
       .pipe(
         catchError((error) => {
           console.error('Error checking authentication status:', error);
