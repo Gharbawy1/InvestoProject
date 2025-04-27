@@ -24,7 +24,8 @@ namespace Investo.Entities.DTO.Project
         public string CurrentVision { get; set; }
         public string Goals { get; set; }
         public string CategoryName { get; set; }
-        public string OwnerId { get; set; }
+        public string OwnerName { get; set; }
+        public decimal RaisedFund {  get; set; }
     }
 
 }
