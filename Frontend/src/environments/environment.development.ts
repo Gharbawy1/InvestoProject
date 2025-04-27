@@ -13,11 +13,41 @@ export const environment = {
   //fakeapiBase: 'http://localhost:3000',
 
   // API URL.
-  apiBase: 'https://investo.runasp.net/api',
+  baseApi: 'https://investo.runasp.net/api',
 
-  accountUrl: 'https://investo.runasp.net/api/Account',
+  account: {
+    registerUser: '/Account/register-User',
+    registerInvestor: '/Account/register-investor',
+    registerBusinessOwner: '/Account/register-businessOwner',
+    login: '/Account/Login',
+    addRole: '/Account/AddRole',
+    upgradeToInvestor: '/Account/upgrade-to-investor',
+    upgradeToBusinessOwner: '/Account/upgrade-to-businessowner',
+    uploadProfilePicture: '/Account/upload-profile-picture',
+    updateProfile: '/Account/update-profile',
+  },
 
-  projectUrl: 'https://investo.runasp.net/api/Project',
+  category: {
+    getAll: '/Category',
+    create: '/Category',
+    getById: (id: string) => `/Category/${id}`,
+    updateById: (id: string) => `/Category/${id}`,
+    deleteById: (id: string) => `/Category/${id}`,
+  },
 
-  categoryUrl: 'https://investo.runasp.net/api/Category',
+  project: {
+    getAll: '/Project',
+    create: '/Project',
+    getById: (id: string) => `/Project/${id}`,
+    updateById: (id: string) => `/Project/${id}`,
+    deleteById: (id: string) => `/Project/${id}`,
+    getProjectsByCategory: (categoryId: number) =>
+      `/Project/get-projects-by-category/${categoryId}`,
+    reviewProject: (projectId: number) => `/Project/review/${projectId}`,
+    updateReviewStatus: '/Project/review/status',
+    getStatusByOwner: (ownerId: string) => `/Project/status/owner/${ownerId}`,
+    getPendingProjects: '/Project/review/pending',
+    getAcceptedProjects: '/Project/review/accepted',
+    getRejectedProjects: '/Project/review/rejected',
+  },
 };
