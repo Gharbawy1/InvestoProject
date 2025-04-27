@@ -7,9 +7,16 @@ export const environment = {
   // Facebook App ID.
   appId: '1142874204295756',
 
-  // API URL.
+  // API URL for test.
   userApiUrl: 'http://localhost:3000/users',
+  //fakeapiBase: 'http://localhost:3000',
 
-  apiBase: 'http://localhost:3000',
+  // API URL.
+  apiBase:    'https://investo.runasp.net/api',
 
+  accountUrl: 'https://investo.runasp.net/api/Account',
+
+  projectUrl: 'https://investo.runasp.net/api/Project',
+
+  categoryUrl: 'https://investo.runasp.net/api/Category',
 };

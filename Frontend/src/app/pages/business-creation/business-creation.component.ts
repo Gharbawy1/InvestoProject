@@ -7,7 +7,7 @@ import { BusinessCreationService } from '../../features/project/services/busines
 import { IBusinessCreation } from '../../features/project/interfaces/IBusinessCreation';
 import { CategoryService, Category  } from '../../core/services/category/category.service';
 import { AutoFocusDirective } from '../../shared/directives/auto-focus/auto-focus.directive';
-import { AuthService } from '../../core/services/auth/auth.service';
+import { AuthService, User } from '../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-business-creation',
@@ -16,19 +16,30 @@ import { AuthService } from '../../core/services/auth/auth.service';
   styleUrls: ['./business-creation.component.css']
 })
 export class BusinessCreationComponent implements OnInit {
+  // FormBuilder to construct reactive form controls
   private fb = inject(FormBuilder);
+  // AuthService to retrieve current logged-in user data
+  private authService = inject(AuthService);
+
+  // File object for the selected project image
   businessImageFile: File | null = null;
+  // Flag to detect if form has been submitted (for displaying validation messages)
   formSubmitted = false;
+  // Loading state for form submission
   isLoading = false;
 
+  // Categories for dropdown selection
   categories: Category[] = [];
   isLoadingCategories = false;
   errorMessage = '';
 
+  // Reactive form group for business profile fields
   businessForm: FormGroup;
+  // Owner ID of the project, set to the currently logged-in user's ID
   ownerId: string | null = null;
 
-  constructor(private businessCreationService: BusinessCreationService, public categoryService: CategoryService, public router: Router, private authService: AuthService) {
+  constructor(private businessCreationService: BusinessCreationService, public categoryService: CategoryService, public router: Router) {
+    // Initialize form with validators
     this.businessForm = this.fb.group({
       projectTitle: ['', [Validators.required, Validators.minLength(5)]],
       subtitle: ['', [Validators.required, Validators.maxLength(150)]],
@@ -45,10 +56,17 @@ export class BusinessCreationComponent implements OnInit {
   }  
 
   ngOnInit() {
+    // Load categories for selection
     this.loadCategories();
-    this.setOwnerId();
+    // Subscribe to AuthService to get and keep track of the logged-in user's ID
+    this.authService.user$.subscribe((user: User | null) => {
+      this.ownerId = user ? user.id : null;
+    });
   }
 
+  /**
+   * Fetches project categories from server and enables the category dropdown
+   */
   private loadCategories() {
     this.isLoadingCategories = true;
     this.errorMessage = '';
@@ -57,7 +75,6 @@ export class BusinessCreationComponent implements OnInit {
       next: (categories) => {
         this.categories = categories;
         this.isLoadingCategories = false;
-
         this.businessForm.get('categoryId')?.enable();
       },
       error: (err) => {
@@ -67,11 +84,10 @@ export class BusinessCreationComponent implements OnInit {
       }
     });
   }
-
-  private setOwnerId() {
-    this.ownerId = localStorage.getItem('ownerId');
-  }
   
+  /**
+   * Handles file input change event to capture the selected image
+   */
   onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -83,9 +99,11 @@ export class BusinessCreationComponent implements OnInit {
     }
   }
 
+  /**
+   * Validates form, constructs FormData payload (including ownerId), and posts to API
+   */
   onSubmit() {
     this.formSubmitted = true;
-    
     Object.values(this.businessForm.controls).forEach(c => c.markAsTouched());
     
     if (this.businessForm.invalid || !this.businessImageFile) {
@@ -97,7 +115,6 @@ export class BusinessCreationComponent implements OnInit {
     
     const formData = new FormData();
     formData.append('projectImage', this.businessImageFile, this.businessImageFile.name);
-    
     formData.append('projectTitle', formValues.projectTitle);
     formData.append('subtitle', formValues.subtitle);
     formData.append('projectLocation', formValues.projectLocation);
@@ -108,13 +125,13 @@ export class BusinessCreationComponent implements OnInit {
     formData.append('currentVision', formValues.currentVision);
     formData.append('goals', formValues.goals);
     formData.append('categoryId', formValues.categoryId.toString());
-    if (this.ownerId) {
+    // Append the ID of the current user as the project owner
+    if (this.ownerId !== null) {
       formData.append('ownerId', this.ownerId.toString());
     }
 
-    // —— DEBUG: print out exactly what you’re sending ——
+    // Debug: log all key/value pairs
     for (const [key, val] of formData.entries()) {
-      // File prints as a File object, everything else is a string
       console.log(key, val);
     }
     
@@ -126,6 +143,7 @@ export class BusinessCreationComponent implements OnInit {
       categoryId: Number(formValues.categoryId),
     };*/
 
+    // Send creation request
     this.businessCreationService.postBusinessCreation(formData).subscribe({
       next: (response) => {
         console.log('Business profile created successfully', response);
@@ -153,11 +171,16 @@ export class BusinessCreationComponent implements OnInit {
     });*/
   }
 
-  // helper methods
+  /**
+   * Returns current length of project vision text for UI feedback
+   */
   get visionLength() {
     return this.businessForm.controls['projectVision'].value.length;
   }
 
+  /**
+   * Returns current length of project story text for UI feedback
+   */
   get storyLength() {
     return this.businessForm.controls['projectStory'].value.length;
   }

@@ -1,0 +1,56 @@
+/* Tab underline animation */
+@keyframes underline {
+    from {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+    to {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+  
+  .animate-underline {
+    animation: underline 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Content fade-in animation */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fade-in-up 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Hover effects */
+  button[role="tab"]:hover {
+    transform: translateY(-1px);
+  }
+  
+  /* Card hover effects */
+  .bg-white {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .bg-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Smooth transitions for metrics */
+  .grid div {
+    transition: all 0.3s ease;
+  }
+  
+  .grid div:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+  }

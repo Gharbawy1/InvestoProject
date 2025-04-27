@@ -56,7 +56,7 @@ export class ForgotPasswordComponent {
     this.forgotPasswordError = '';
     this.forgotPasswordSuccess = false;
 
-    this.authService.sendResetLink(this.forgotPasswordEmail).subscribe({
+    /*this.authService.sendResetLink(this.forgotPasswordEmail).subscribe({
       next: () => {
         this.forgotPasswordSuccess = true;
         this.isLoading = false;
@@ -68,6 +68,6 @@ export class ForgotPasswordComponent {
         this.isLoading = false;
         this.forgotPasswordSuccess = false; // Ensure success message is hidden
       }
-    });
+    });*/
   }
 }
