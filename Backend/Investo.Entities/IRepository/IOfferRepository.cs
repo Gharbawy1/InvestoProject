@@ -12,7 +12,8 @@ namespace Investo.Entities.IRepository
         Task<IEnumerable<Offer>> GetAll();
         Task<Offer> GetById(int id);
         Task Create(Offer offer);
-        Task<bool> IsThereAnyOffersForInvestor(string InvestorId);
-       
+        Task<bool> HasInvestorMadeOfferForProject(string investorId, int projectId);
+
+
     }
 }

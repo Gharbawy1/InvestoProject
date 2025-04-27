@@ -48,7 +48,8 @@ namespace Investo.DataAccess.Services.Offers
                 };
             }
 
-            var isOfferAlreadyExists = await _offerRepository.IsThereAnyOffersForInvestor(dto.InvestorId);
+            var isOfferAlreadyExists = await _offerRepository.HasInvestorMadeOfferForProject(dto.InvestorId, dto.ProjectId);
+
 
             if (isOfferAlreadyExists)
             {
