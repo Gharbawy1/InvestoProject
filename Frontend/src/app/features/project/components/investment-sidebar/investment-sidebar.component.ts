@@ -17,7 +17,10 @@ import { RouterModule, Router, ActivatedRoute } from '@angular/router';
     MatIconModule,
     MatInputModule,
     MatButtonModule,
-],
+    MatIconModule,
+    MatProgressBarModule,
+    MatButtonModule,
+  ],
   templateUrl: './investment-sidebar.component.html',
   styleUrls: ['./investment-sidebar.component.css']
 })

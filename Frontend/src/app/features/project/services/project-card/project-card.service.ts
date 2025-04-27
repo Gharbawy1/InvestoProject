@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { IProjectCard } from '../interfaces/iprojectcard';
+import { IProjectCard } from '../../interfaces/iprojectcard';
+
 
 @Injectable({
   providedIn: 'root'

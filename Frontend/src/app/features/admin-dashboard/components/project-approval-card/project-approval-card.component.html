@@ -1,0 +1,107 @@
+@if (loading) {
+<div class="space-y-4">
+  @for (i of [1, 2, 3]; track i) {
+  <div class="border rounded-lg overflow-hidden">
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-4">
+        <div class="space-y-2">
+          <div class="h-6 w-48 bg-gray-200 rounded animate-pulse"></div>
+          <div class="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div class="h-6 w-20 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <div class="h-4 w-20 bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div class="h-5 w-24 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div>
+          <div class="h-4 w-20 bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div class="h-5 w-24 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+      <div class="flex justify-between items-center">
+        <div class="flex gap-2">
+          <div class="h-9 w-24 bg-gray-200 rounded animate-pulse"></div>
+          <div class="h-9 w-24 bg-gray-200 rounded animate-pulse"></div>
+          <div class="h-9 w-24 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div class="h-9 w-28 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
+} @else if (error) {
+<div class="bg-red-50 border border-red-200 rounded-lg">
+  <div class="p-6">
+    <p class="text-red-800">{{ error }}</p>
+    <button (click)="reloadPage()" class="mt-4 px-4 py-2 border rounded-md hover:bg-gray-50">
+      Retry
+    </button>
+  </div>
+</div>
+} @else {
+<div class="space-y-4">
+  @if (projects.length === 0) {
+  <div class="border rounded-lg">
+    <div class="p-6 text-center">
+      <p class="text-gray-500 py-8">No projects awaiting approval.</p>
+    </div>
+  </div>
+  } @else {
+  @for (project of projects; track project.id) {
+  <div class="border rounded-lg overflow-hidden">
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-2">
+        <div>
+          <h3 class="text-lg font-semibold">{{ project.projectTitle }}</h3>
+        </div>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium {{ getStatusBadgeClass(project.status) }}">
+          {{ project.status | titlecase }}
+        </span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <p class="text-sm text-gray-500">Submitted</p>
+          <p class="font-medium">{{ formatDate(project.submissionDate) }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Funding Goal</p>
+          <p class="font-medium">{{ formatCurrency(project.fundingGoal) }}</p>
+        </div>
+      </div>
+      <span
+        class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+        {{ project.category }}
+      </span>
+      <div class="flex items-center justify-between">
+        <div class="flex gap-2">
+          <button (click)="handleStatusChange(project.id, 'approved')" [disabled]="project.status === 'approved'"
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-green-600 hover:bg-green-700 text-white h-9 px-4 py-2">
+            <mat-icon class="h-4 w-4 mr-1">check</mat-icon> Approve
+          </button>
+          <button (click)="handleStatusChange(project.id, 'rejected')" [disabled]="project.status === 'rejected'"
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-9 px-4 py-2">
+            <mat-icon class="h-4 w-4 mr-1">close</mat-icon> Reject
+          </button>
+          <button (click)="handleStatusChange(project.id, 'pending')" [disabled]="project.status === 'pending'"
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+            <mat-icon class="h-4 w-4 mr-1">schedule</mat-icon> Pending
+          </button>
+        </div>
+
+        <a [routerLink]="['/project', project.id]">
+          <button
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+            <mat-icon class="h-4 w-4 mr-1">open_in_new</mat-icon> View Details
+          </button>
+        </a>
+      </div>
+    </div>
+  </div>
+  }
+  }
+</div>
+}

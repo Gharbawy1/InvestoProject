@@ -20,5 +20,6 @@ export class BusinessCreationService {
   postBusinessCreation(data: FormData): Observable<any> {
     return this.http.post<any>(this.apiUrl, data);
   }
+  
 }
 
