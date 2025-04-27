@@ -10,7 +10,7 @@ namespace Investo.DataAccess.Services.Project
 {
     public interface IProjectService
     {
-        Task<IEnumerable<ProjectReadDto>> GetAllProjects();
+        Task<IEnumerable<ProjectCardDetailsDto>> GetAllProjects();
         Task<ProjectReadDto> GetProjectById(int id);
         Task<ProjectReadDto> CreateProject(ProjectCreateUpdateDto dto);
         Task<ProjectReadDto> UpdateProject(int id, ProjectCreateUpdateDto dto);

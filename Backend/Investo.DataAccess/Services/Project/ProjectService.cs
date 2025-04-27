@@ -8,6 +8,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis;
 using Investo.DataAccess.Repository;
+using Investo.DataAccess.Services.Offers;
 
 namespace Investo.DataAccess.Services.Project
 {
@@ -16,12 +17,14 @@ namespace Investo.DataAccess.Services.Project
         private readonly IProjectRepository _projectRepository;
         private readonly IImageLoadService _imageLoadService;
         private readonly IBusinessOwnerRepository _businessOwnerRepository;
+        private readonly IOfferService _offerService;
 
-        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService,IBusinessOwnerRepository businessOwnerRepository)
+        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService, IBusinessOwnerRepository businessOwnerRepository, IOfferService offerService)
         {
             _projectRepository = projectRepository;
             _imageLoadService = imageLoadService;
             _businessOwnerRepository = businessOwnerRepository;
+            _offerService = offerService;
         }
 
         public async Task<ProjectReadDto> CreateProject(ProjectCreateUpdateDto dto)
@@ -33,13 +36,14 @@ namespace Investo.DataAccess.Services.Project
                 imageUrl = await _imageLoadService.Upload(dto.ProjectImage);
             }
 
+            var hasProject = await _projectRepository.HasProjectForOwner(dto.OwnerId);
+            if (hasProject)
+                throw new InvalidOperationException("A business owner can only have one project.");
+
             var ownerExists = await _businessOwnerRepository.ExistsAsync(dto.OwnerId);
             if (!ownerExists)
                 throw new KeyNotFoundException("Business owner with given ID does not exist.");
 
-            var hasProject = await _projectRepository.HasProjectForOwner(dto.OwnerId);
-            if (hasProject)
-                throw new InvalidOperationException("A business owner can only have one project.");
 
 
             var project = new Entities.Models.Project
@@ -56,28 +60,26 @@ namespace Investo.DataAccess.Services.Project
                 CurrentVision = dto.CurrentVision,
                 Goals = dto.Goals,
                 CategoryId = dto.CategoryId,
-                OwnerId = dto.OwnerId,
+                OwnerId = dto.OwnerId
             };
 
             await _projectRepository.Create(project);
-            var createdProject = await _projectRepository.GetById(project.Id);
-
             return new ProjectReadDto
             {
-                Id = createdProject.Id,
-                ProjectTitle = createdProject.ProjectTitle,
-                Subtitle = createdProject.Subtitle,
-                ProjectLocation = createdProject.ProjectLocation,
-                ProjectImageUrl = createdProject.ProjectImageURL,
-                FundingGoal = createdProject.FundingGoal,
-                FundingExchange = createdProject.FundingExchange,
-                Status = createdProject.Status.ToString(),
-                ProjectVision = createdProject.ProjectVision,
-                ProjectStory = createdProject.ProjectStory,
-                CurrentVision = createdProject.CurrentVision,
-                Goals = createdProject.Goals,
-                OwnerId = createdProject.OwnerId,
-                CategoryName = createdProject.Category?.Name // مهم نحط ? عشان نتفادى لو الكاتيجوري مش موجودة لأي سبب
+                Id = project.Id,
+                ProjectTitle = project.ProjectTitle,
+                Subtitle = project.Subtitle,
+                ProjectLocation = project.ProjectLocation,
+                ProjectImageUrl = project.ProjectImageURL,
+                FundingGoal = project.FundingGoal,
+                FundingExchange = project.FundingExchange,
+                Status = project.Status.ToString(),
+                ProjectVision = project.ProjectVision,
+                ProjectStory = project.ProjectStory,
+                CurrentVision = project.CurrentVision,
+                Goals = project.Goals,
+                OwnerName = project.Owner.FirstName + " " + project.Owner.LastName,
+                CategoryName = project.Category.Name
             };
         }
 
@@ -96,6 +98,7 @@ namespace Investo.DataAccess.Services.Project
                 project.ProjectImageURL = await _imageLoadService.Upload(dto.ProjectImage);
             }
 
+
             project.ProjectTitle = dto.ProjectTitle;
             project.Subtitle = dto.Subtitle;
             project.ProjectLocation = dto.ProjectLocation;
@@ -110,6 +113,9 @@ namespace Investo.DataAccess.Services.Project
             project.OwnerId = dto.OwnerId;
 
             await _projectRepository.Update(project);
+            var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
+            var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == id)?.RaisedFund ?? 0;
+
             return new ProjectReadDto
             {
                 Id = project.Id,
@@ -124,7 +130,8 @@ namespace Investo.DataAccess.Services.Project
                 ProjectStory = project.ProjectStory,
                 CurrentVision = project.CurrentVision,
                 Goals = project.Goals,
-                OwnerId = project.OwnerId,
+                OwnerName = project.Owner.FirstName + " " + project.Owner.LastName,
+                RaisedFund = raisedFund,
                 CategoryName = project.Category.Name
             };
 
@@ -139,32 +146,39 @@ namespace Investo.DataAccess.Services.Project
             return true;
         }
 
-        public async Task<IEnumerable<ProjectReadDto>> GetAllProjects()
+        public async Task<IEnumerable<ProjectCardDetailsDto>> GetAllProjects()
         {
             var projects = await _projectRepository.GetAll();
-            return projects.Select(p => new ProjectReadDto
+            var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
+
+
+            return projects.Select(p =>
             {
-                Id = p.Id,
-                ProjectTitle = p.ProjectTitle,
-                Subtitle = p.Subtitle,
-                ProjectLocation = p.ProjectLocation,
-                ProjectImageUrl = p.ProjectImageURL,
-                FundingGoal = p.FundingGoal,
-                FundingExchange = p.FundingExchange,
-                Status = p.Status.ToString(),
-                ProjectVision = p.ProjectVision,
-                ProjectStory = p.ProjectStory,
-                CurrentVision = p.CurrentVision,
-                Goals = p.Goals,
-                CategoryName = p.Category.Name,
-                OwnerId = p.OwnerId
+                var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == p.Id)?.RaisedFund ?? 0;
+
+                return new ProjectCardDetailsDto
+                {
+                    Id = p.Id,
+                    ProjectTitle = p.ProjectTitle,
+                    Subtitle = p.Subtitle,
+                    ProjectImageUrl = p.ProjectImageURL,
+                    FundingGoal = p.FundingGoal,
+                    CategoryName = p.Category.Name,
+                    OwnerName = p.Owner.FirstName + " " + p.Owner.LastName,
+                    raisedFunds = raisedFund
+                };
             });
+            
         }
 
         public async Task<ProjectReadDto> GetProjectById(int id)
         {
             var project = await _projectRepository.GetById(id);
             if (project == null) return null;
+
+            var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
+            var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == id)?.RaisedFund ?? 0;
+
 
             return new ProjectReadDto
             {
@@ -181,7 +195,8 @@ namespace Investo.DataAccess.Services.Project
                 CurrentVision = project.CurrentVision,
                 Goals = project.Goals,
                 CategoryName = project.Category.Name,
-                OwnerId = project.OwnerId
+                OwnerName = project.Owner.FirstName+" "+project.Owner.LastName,
+                RaisedFund = raisedFund,
             };
         }
 
@@ -371,8 +386,14 @@ namespace Investo.DataAccess.Services.Project
         {
             var ReturnedProjects = await _projectRepository.GetProjectsByCategory(CategoryId);
             var ProjectsReadDtos = new List<ProjectReadDto>();
+
+            
             foreach (var Project in ReturnedProjects)
             {
+                // TODO 7:17 - 4/27 : It is easy to store this in data base not be computed variable!
+                var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
+                var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == Project.Id)?.RaisedFund ?? 0;
+
                 var projectDto = new ProjectReadDto
                 {
                     Id = Project.Id,
@@ -388,7 +409,8 @@ namespace Investo.DataAccess.Services.Project
                     CurrentVision = Project.CurrentVision,
                     Goals = Project.Goals,
                     CategoryName = Project.Category.Name,
-                    OwnerId = Project.OwnerId
+                    OwnerName = Project.Owner.FirstName + " " + Project.Owner.LastName,
+                    RaisedFund = raisedFund,
                 };
                 ProjectsReadDtos.Add(projectDto);
             }
