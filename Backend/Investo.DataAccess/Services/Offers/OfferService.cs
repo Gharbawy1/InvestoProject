@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CloudinaryDotNet.Core;
 using Investo.Entities.DTO.Offer;
+using Investo.Entities.DTO.Project;
 using Investo.Entities.IRepository;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Identity;
@@ -33,7 +34,7 @@ namespace Investo.DataAccess.Services.Offers
                 {
                     Data = new ReadOfferDto(),
                     ErrorMessage = $"Investor associated with the given Offer with Id :  {dto.InvestorId} not found",
-                    IsValid = false 
+                    IsValid = false
                 };
 
             }
@@ -49,6 +50,18 @@ namespace Investo.DataAccess.Services.Offers
                 };
             }
 
+            var isOfferAlreadyExists = await _offerRepository.HasInvestorMadeOfferForProject(dto.InvestorId, dto.ProjectId);
+
+
+            if (isOfferAlreadyExists)
+            {
+                return new ValidationResult<ReadOfferDto>
+                {
+                    Data = new ReadOfferDto(),
+                    ErrorMessage = $"Investor with Name : {IsInvestorFound.FirstName} has already made an offer for this project.",
+                    IsValid = false
+                };
+            }
             // تجهيز الكيان الجديد بناءً على الداتا اللي جت من الـ DTO
             var offerEntity = new Entities.Models.Offer
             {
@@ -66,7 +79,6 @@ namespace Investo.DataAccess.Services.Offers
 
             // إنشاء العرض في الداتابيز
             await _offerRepository.Create(offerEntity);
-
             // تجهيز الداتا اللي هرجعها للفرونت بعد الإنشاء
             var result = new ReadOfferDto
             {
@@ -77,7 +89,7 @@ namespace Investo.DataAccess.Services.Offers
                 InvestmentType = offerEntity.InvestmentType.ToString(),
                 ProjectId = offerEntity.ProjectId,
                 InvestorId = offerEntity.InvestorId,
-                Investor = await GetInvestorByOfferId(offerEntity.Id) 
+                Investor = await GetInvestorByOfferId(offerEntity.Id)
             };
 
             var SuccessCreationValidationResult = new ValidationResult<ReadOfferDto>
@@ -99,6 +111,7 @@ namespace Investo.DataAccess.Services.Offers
                 {
                     OfferId = offer.Id,
                     OfferDate = offer.OfferDate,
+                    OfferAmount = offer.OfferAmount,
                     ExpirationDate = offer.ExpirationDate,
                     Status = offer.Status.ToString(),
                     InvestmentType = offer.InvestmentType.ToString(),
@@ -146,6 +159,7 @@ namespace Investo.DataAccess.Services.Offers
             {
                 OfferId = offer.Id,
                 OfferDate = offer.OfferDate,
+                OfferAmount = offer.OfferAmount,
                 ExpirationDate = offer.ExpirationDate,
                 Status = offer.Status.ToString(),
                 InvestmentType = offer.InvestmentType.ToString(),
@@ -168,6 +182,7 @@ namespace Investo.DataAccess.Services.Offers
                 {
                     OfferId = offer.Id,
                     OfferDate = offer.OfferDate,
+                    OfferAmount = offer.OfferAmount,
                     ExpirationDate = offer.ExpirationDate,
                     Status = offer.Status.ToString(),
                     InvestmentType = offer.InvestmentType.ToString(),
@@ -221,6 +236,7 @@ namespace Investo.DataAccess.Services.Offers
             {
                 OfferId = offer.Id,
                 OfferDate = offer.OfferDate,
+                OfferAmount = offer.OfferAmount,
                 ExpirationDate = offer.ExpirationDate,
                 Status = offer.Status.ToString(),
                 InvestmentType = offer.InvestmentType.ToString(),
@@ -236,6 +252,7 @@ namespace Investo.DataAccess.Services.Offers
                 IsValid = true
             };
         }
+
 
         public async Task<IEnumerable<ReadOfferDto>> GetOffersForCurrentUser(string userId, string userRole)
         {
@@ -280,6 +297,12 @@ namespace Investo.DataAccess.Services.Offers
             return readOfferDtos;
         }
 
+
+
+        public async Task<IEnumerable<ProjectRaisedFundDto>> GetProjectsRaisedFundsAsync()
+        {
+            return await _offerRepository.GetOffersAmountForProjectAsync();
+        }
 
     }
 }

@@ -10,6 +10,7 @@ namespace Investo.DataAccess.Services.Image_Loading
 {
     public class CloudinaryImageLoadService : IImageLoadService
     {
+        //TODO : Use IOption Pattern 4/27
         const string cloud = "dhnlpsrf4";
         const string ApiKey = "527911327834983";
         const string ApiSecret = "X9zNKVaqzHYgZYtG1THmLiiMqhU";

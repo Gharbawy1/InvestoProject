@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Investo.Entities.DTO.Offer;
+using Investo.Entities.DTO.Project;
 using Investo.Entities.Models;
 
 namespace Investo.Entities.IRepository
@@ -15,9 +16,14 @@ namespace Investo.Entities.IRepository
         Task Create(Offer offer);
         Task<IEnumerable<Offer>> GetOffersByProjectId(int projectId);
         Task<Offer> UpdateOfferAsync(Offer offer);
+
         Task<IEnumerable<Offer>> GetOffersForBusinessOwnerAsync(string ownerId);
         Task<IEnumerable<Offer>> GetOffersForInvestorAsync(string investorId);
 
+
+
+        Task<IEnumerable<ProjectRaisedFundDto>> GetOffersAmountForProjectAsync();
+        Task<bool> HasInvestorMadeOfferForProject(string investorId, int projectId);
 
 
     }

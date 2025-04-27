@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Investo.DataAccess.ApplicationContext;
+using Investo.Entities.DTO.Project;
 using Investo.Entities.IRepository;
 using Investo.Entities.Models;
 using Microsoft.CodeAnalysis;
@@ -55,7 +56,10 @@ namespace Investo.DataAccess.Repository
         //    _context.SaveChanges();
         //}
 
-
+        public async Task<bool> HasInvestorMadeOfferForProject(string investorId, int projectId)
+        {
+            return await _context.Offers.AnyAsync(o => o.InvestorId == investorId && o.ProjectId == projectId);
+        }
         public async Task<IEnumerable<Offer>> GetOffersByProjectId(int projectId)
         {
             return await _context.Offers
@@ -80,6 +84,7 @@ namespace Investo.DataAccess.Repository
         }
 
 
+
         public async Task<IEnumerable<Offer>> GetOffersForBusinessOwnerAsync(string ownerId)
         {
             return await _context.Offers
@@ -96,6 +101,19 @@ namespace Investo.DataAccess.Repository
                 .Include(o => o.Investor)
                 .Include(o => o.Project)
                 .ToListAsync();
+
+        public async Task<IEnumerable<ProjectRaisedFundDto>> GetOffersAmountForProjectAsync()
+        {
+            return await _context.Offers
+        .Where(o => o.Status == OfferStatus.Accepted)
+        .GroupBy(o => o.ProjectId)
+        .Select(g => new ProjectRaisedFundDto
+        {
+            ProjectId = g.Key,
+            RaisedFund = g.Sum(o => o.OfferAmount)
+        })
+        .ToListAsync();
+
         }
     }
 
