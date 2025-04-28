@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis;
 using Investo.DataAccess.Repository;
 using Investo.DataAccess.Services.Offers;
+using AutoMapper;
 
 namespace Investo.DataAccess.Services.Project
 {
@@ -18,16 +19,18 @@ namespace Investo.DataAccess.Services.Project
         private readonly IImageLoadService _imageLoadService;
         private readonly IBusinessOwnerRepository _businessOwnerRepository;
         private readonly IOfferService _offerService;
+        private readonly IMapper _mapper;
 
-        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService, IBusinessOwnerRepository businessOwnerRepository, IOfferService offerService)
+        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService, IBusinessOwnerRepository businessOwnerRepository, IOfferService offerService, IMapper mapper)
         {
             _projectRepository = projectRepository;
             _imageLoadService = imageLoadService;
             _businessOwnerRepository = businessOwnerRepository;
             _offerService = offerService;
+            this._mapper = mapper;
         }
 
-        public async Task<ProjectReadDto> CreateProject(ProjectCreateUpdateDto dto)
+        public async Task<ValidationResult<ProjectReadDto>> CreateProject(ProjectCreateUpdateDto dto)
         {
             string imageUrl = null;
 
@@ -36,109 +39,83 @@ namespace Investo.DataAccess.Services.Project
                 imageUrl = await _imageLoadService.Upload(dto.ProjectImage);
             }
 
-       
+
             var ownerExists = await _businessOwnerRepository.ExistsAsync(dto.OwnerId);
-            if (!ownerExists)
-                throw new KeyNotFoundException("Business owner with given ID does not exist.");
+            if (!ownerExists) return new ValidationResult<ProjectReadDto>
+            {
+                Data = new ProjectReadDto(),
+                ErrorMessage = "Business owner with given ID does not exist.",
+                IsValid = false
+            };
 
             var hasProject = await _projectRepository.HasProjectForOwner(dto.OwnerId);
-            if (hasProject)
-                throw new InvalidOperationException("A business owner can only have one project.");
-
-            var project = new Entities.Models.Project
+            if (hasProject) return new ValidationResult<ProjectReadDto>
             {
-                ProjectTitle = dto.ProjectTitle,
-                Subtitle = dto.Subtitle,
-                ProjectLocation = dto.ProjectLocation,
-                ProjectImageURL = imageUrl,
-                FundingGoal = dto.FundingGoal,
-                FundingExchange = dto.FundingExchange,
-                //Status = dto.Status,
-                ProjectVision = dto.ProjectVision,
-                ProjectStory = dto.ProjectStory,
-                CurrentVision = dto.CurrentVision,
-                Goals = dto.Goals,
-                CategoryId = dto.CategoryId,
-                OwnerId = dto.OwnerId
+                Data = new ProjectReadDto(),
+                ErrorMessage = "a business owner can only have one project",
+                IsValid = false
             };
+
+            var project =_mapper.Map<Entities.Models.Project>(dto);
+            project.ProjectImageURL = imageUrl;
+
+
             await _projectRepository.Create(project);
+
             var createdProject = await _projectRepository.GetById(project.Id);
 
-            return new ProjectReadDto
-            {
-                Id = createdProject.Id,
-                ProjectTitle = createdProject.ProjectTitle,
-                Subtitle = createdProject.Subtitle,
-                ProjectLocation = createdProject.ProjectLocation,
-                ProjectImageUrl = createdProject.ProjectImageURL,
-                FundingGoal = createdProject.FundingGoal,
-                FundingExchange = createdProject.FundingExchange,
-                Status = createdProject.Status.ToString(),
-                ProjectVision = createdProject.ProjectVision,
-                ProjectStory = createdProject.ProjectStory,
-                CurrentVision = createdProject.CurrentVision,
-                Goals = createdProject.Goals,
-                OwnerId = createdProject.OwnerId,
-                OwnerName = createdProject.Owner?.FirstName+ " " + createdProject.Owner?.LastName,
-                CategoryName = createdProject.Category?.Name // مهم نحط ? عشان نتفادى لو الكاتيجوري مش موجودة لأي سبب
-            };
-        
-        }
+            var mappedProject = _mapper.Map<ProjectReadDto>(createdProject);
 
-        public async Task<ProjectReadDto> UpdateProject(int id, ProjectCreateUpdateDto dto)
+            return new ValidationResult<ProjectReadDto>
+            {
+                Data = mappedProject,
+                ErrorMessage = null,
+                IsValid = true
+            };
+
+        }  // auto mapper Done
+
+        public async Task<ValidationResult<ProjectReadDto>> UpdateProject(int id, ProjectCreateUpdateDto dto)
         {
             var project = await _projectRepository.GetById(id);
-            if (project == null)
-                throw new Exception("Project not found");
+            if (project == null) return new ValidationResult<ProjectReadDto>
+            {
+                Data = new ProjectReadDto(),
+                ErrorMessage = $"Project with given Id : {id} is not found",
+                IsValid = false
+            };
 
             var ownerExists = await _businessOwnerRepository.ExistsAsync(dto.OwnerId);
-            if (!ownerExists)
-                throw new KeyNotFoundException("Business owner with given ID does not exist.");
+            if (!ownerExists) return new ValidationResult<ProjectReadDto>
+            {
+                Data = new ProjectReadDto(),
+                ErrorMessage = $"Business owner with given ID does not exist.",
+                IsValid = false
+            };
 
             if (dto.ProjectImage != null && dto.ProjectImage.Length > 0)
             {
                 project.ProjectImageURL = await _imageLoadService.Upload(dto.ProjectImage);
             }
 
-
-            project.ProjectTitle = dto.ProjectTitle;
-            project.Subtitle = dto.Subtitle;
-            project.ProjectLocation = dto.ProjectLocation;
-            project.FundingGoal = dto.FundingGoal;
-            project.FundingExchange = dto.FundingExchange;
-            //project.Status = dto.Status;
-            project.ProjectVision = dto.ProjectVision;
-            project.ProjectStory = dto.ProjectStory;
-            project.CurrentVision = dto.CurrentVision;
-            project.Goals = dto.Goals;
-            project.CategoryId = dto.CategoryId;
-            project.OwnerId = dto.OwnerId;
+            _mapper.Map(dto, project);// src,dest
 
             await _projectRepository.Update(project);
+
             var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
+
             var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == id)?.RaisedFund ?? 0;
 
-            return new ProjectReadDto
+            var MappedprojectReadDto = _mapper.Map<ProjectReadDto>(project);
+
+            return new ValidationResult<ProjectReadDto>
             {
-                Id = project.Id,
-                ProjectTitle = project.ProjectTitle,
-                Subtitle = project.Subtitle,
-                ProjectLocation = project.ProjectLocation,
-                ProjectImageUrl = project.ProjectImageURL,
-                FundingGoal = project.FundingGoal,
-                FundingExchange = project.FundingExchange,
-                Status = project.Status.ToString(),
-                ProjectVision = project.ProjectVision,
-                ProjectStory = project.ProjectStory,
-                CurrentVision = project.CurrentVision,
-                Goals = project.Goals,
-                OwnerId = project.OwnerId,
-                OwnerName = project.Owner.FirstName + " " + project.Owner.LastName,
-                RaisedFund = raisedFund,
-                CategoryName = project.Category.Name
+                Data = MappedprojectReadDto,
+                ErrorMessage = null,
+                IsValid = true
             };
 
-        }
+        } // auto mapper Done
 
         public async Task<bool> DeleteProject(int id)
         {
@@ -149,33 +126,27 @@ namespace Investo.DataAccess.Services.Project
             return true;
         }
 
-        public async Task<IEnumerable<ProjectCardDetailsDto>> GetAllProjects()
+        public async Task<ValidationResult<IEnumerable<ProjectCardDetailsDto>>> GetAllProjects()
         {
             var projects = await _projectRepository.GetAll();
             var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
+            var ListOfProjectCardDetails = new List<ProjectCardDetailsDto>();
 
-
-            return projects.Select(p =>
+            foreach(var project in projects)
             {
-                var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == p.Id)?.RaisedFund ?? 0;
+                var projectCard = _mapper.Map<ProjectCardDetailsDto>(project);
+                projectCard.raisedFunds = raisedFunds.FirstOrDefault(rf => rf.ProjectId == project.Id)?.RaisedFund ?? 0;
+                ListOfProjectCardDetails.Add(projectCard);
+            }
+            return new ValidationResult<IEnumerable<ProjectCardDetailsDto>>
+            {
+                Data = ListOfProjectCardDetails,
+                ErrorMessage = null,
+                IsValid = true
+            };
+        } // auto mapper Done
 
-                return new ProjectCardDetailsDto
-                {
-                    Id = p.Id,
-                    ProjectTitle = p.ProjectTitle,
-                    Subtitle = p.Subtitle,
-                    ProjectImageUrl = p.ProjectImageURL,
-                    FundingGoal = p.FundingGoal,
-                    CategoryName = p.Category.Name,
-                    OwnerId = p.Owner.Id,
-                    OwnerName = p.Owner.FirstName + " " + p.Owner.LastName,
-                    raisedFunds = raisedFund
-                };
-            });
-            
-        }
-
-        public async Task<ProjectReadDto> GetProjectById(int id)
+        public async Task<ValidationResult<ProjectReadDto>> GetProjectById(int id)
         {
             var project = await _projectRepository.GetById(id);
             if (project == null) return null;
@@ -183,67 +154,29 @@ namespace Investo.DataAccess.Services.Project
             var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
             var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == id)?.RaisedFund ?? 0;
 
-
-            return new ProjectReadDto
+            var MappedProjectReadDto = _mapper.Map<ProjectReadDto>(project);
+            return new ValidationResult<ProjectReadDto>
             {
-                Id = project.Id,
-                ProjectTitle = project.ProjectTitle,
-                Subtitle = project.Subtitle,
-                ProjectLocation = project.ProjectLocation,
-                ProjectImageUrl = project.ProjectImageURL,
-                FundingGoal = project.FundingGoal,
-                FundingExchange = project.FundingExchange,
-                Status = (project.Status).ToString(),
-                ProjectVision = project.ProjectVision,
-                ProjectStory = project.ProjectStory,
-                CurrentVision = project.CurrentVision,
-                Goals = project.Goals,
-                CategoryName = project.Category.Name,
-                OwnerId = project.Owner.Id,
-                OwnerName = project.Owner.FirstName+" "+project.Owner.LastName,
-                RaisedFund = raisedFund,
+                Data = MappedProjectReadDto,
+                ErrorMessage = null,
+                IsValid = true
             };
-        }
+        } // auto mapper Done
 
-        public async Task<ProjectRequestReviewDto> GetProjectReviewDtoByIdAsync(int id)
+        public async Task<ValidationResult<ProjectRequestReviewDto>> GetProjectReviewDtoByIdAsync(int id)
         {
             var project = await _projectRepository.GetById(id);
             if (project == null || project.Owner == null || project.Owner.PersonInfo == null)
                 return null;
 
             var owner = project.Owner;
-
-            return new ProjectRequestReviewDto
+            var MappedProject = _mapper.Map<ProjectRequestReviewDto>(project);
+            return new ValidationResult<ProjectRequestReviewDto>
             {
-                // Project properties
-                Id = project.Id,
-                ProjectTitle = project.ProjectTitle,
-                Subtitle = project.Subtitle,
-                ProjectLocation = project.ProjectLocation,
-                ProjectImageURL = project.ProjectImageURL,
-                FundingGoal = project.FundingGoal,
-                FundingExchange = project.FundingExchange,
-                ProjectVision = project.ProjectVision,
-                ProjectStory = project.ProjectStory,
-                CurrentVision = project.CurrentVision,
-                Goals = project.Goals,
-                CategoryId = project.CategoryId,
-                CategoryName = project.Category.Name,
-                OwnerId = project.OwnerId,
-                Status = (project.Status).ToString(),
+                Data = MappedProject,
+                ErrorMessage = null,
+                IsValid = true
 
-                // Owner info
-                FirstName = owner.FirstName,
-                LastName = owner.LastName,
-                Bio = owner.Bio,
-                RegistrationDate = owner.RegistrationDate,
-                Email = owner.Email,
-                PhoneNumber = owner.PhoneNumber,
-                ProfilePictureURL = owner.ProfilePictureURL,
-                Address = owner.Address,
-                NationalID = owner?.PersonInfo?.NationalID,
-                NationalIDImageFrontURL = owner?.PersonInfo?.NationalIDImageFrontURL,
-                NationalIDImageBackURL = owner?.PersonInfo?.NationalIDImageBackURL
             };
         }
 
@@ -261,91 +194,53 @@ namespace Investo.DataAccess.Services.Project
             return true;
         }
 
-        public async Task<ProjectStatusUpdateDto> GetProjectStatusByOwnerIdAsync(string ownerId)
+        public async Task<ValidationResult<ProjectStatusUpdateDto>> GetProjectStatusByOwnerIdAsync(string ownerId)
         {
             var project = await _projectRepository.GetByOwnerIdAsync(ownerId);
             if (project == null) return null;
 
-            return new ProjectStatusUpdateDto
+            return new ValidationResult<ProjectStatusUpdateDto>
             {
-                ProjectId = project.Id,
-                Status = project.Status.ToString()
+                Data = new ProjectStatusUpdateDto
+                {
+                    ProjectId = project.Id,
+                    Status = project.Status.ToString()
+                },
+                ErrorMessage = null,
+                IsValid = true
             };
         }
 
-        public async Task<IEnumerable<ProjectRequestReviewDto>> GetProjectRequestsByStatusAsync(ProjectStatus status)
+
+
+        public async Task<ValidationResult<List<ProjectReadDto>>> GetProjectsByCategoryAsync(byte categoryId)
         {
-            var requests = await _projectRepository.GetProjectRequestsByStatusAsync(status);
+            var projectsAssociatedWithCategory = await _projectRepository.GetProjectsByCategory(categoryId);
 
-            var result = requests.Select(p => new ProjectRequestReviewDto
+            if (projectsAssociatedWithCategory == null || !projectsAssociatedWithCategory.Any())
             {
-                // Project
-                Id = p.Id,
-                ProjectTitle = p.ProjectTitle,
-                Status = p.Status.ToString(),
-                Subtitle = p.Subtitle,
-                ProjectLocation = p.ProjectLocation,
-                ProjectImageURL = p.ProjectImageURL,
-                FundingGoal = p.FundingGoal,
-                FundingExchange = p.FundingExchange,
-                ProjectVision = p.ProjectVision,
-                ProjectStory = p.ProjectStory,
-                CurrentVision = p.CurrentVision,
-                Goals = p.Goals,
-                CategoryId = p.CategoryId,
-                CategoryName = p.Category?.Name,
-                OwnerId = p.OwnerId,
-                // Owner
-                FirstName = p.Owner?.FirstName,
-                LastName = p.Owner?.LastName,
-                Bio = p.Owner?.Bio,
-                RegistrationDate = p.Owner?.RegistrationDate ?? DateTime.MinValue,
-                Email = p.Owner?.Email,
-                PhoneNumber = p.Owner?.PhoneNumber,
-                ProfilePictureURL = p.Owner?.ProfilePictureURL,
-                Address = p.Owner?.Address,
-                NationalID = p.Owner?.PersonInfo?.NationalID,
-                NationalIDImageFrontURL = p.Owner?.PersonInfo?.NationalIDImageFrontURL,
-                NationalIDImageBackURL = p.Owner?.PersonInfo?.NationalIDImageBackURL
-            });
-
-            return result;
-        }
-       
-        public async Task<List<ProjectReadDto>> GetProjectsByCategoryAsync(byte CategoryId)
-        {
-            var ReturnedProjects = await _projectRepository.GetProjectsByCategory(CategoryId);
-            var ProjectsReadDtos = new List<ProjectReadDto>();
-
-            
-            foreach (var Project in ReturnedProjects)
-            {
-                // TODO 7:17 - 4/27 : It is easy to store this in data base not be computed variable!
-                var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
-                var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == Project.Id)?.RaisedFund ?? 0;
-
-                var projectDto = new ProjectReadDto
+                return new ValidationResult<List<ProjectReadDto>>
                 {
-                    Id = Project.Id,
-                    ProjectTitle = Project.ProjectTitle,
-                    Subtitle = Project.Subtitle,
-                    ProjectLocation = Project.ProjectLocation,
-                    ProjectImageUrl = Project.ProjectImageURL,
-                    FundingGoal = Project.FundingGoal,
-                    FundingExchange = Project.FundingExchange,
-                    Status = Project.Status.ToString(),
-                    ProjectVision = Project.ProjectVision,
-                    ProjectStory = Project.ProjectStory,
-                    CurrentVision = Project.CurrentVision,
-                    Goals = Project.Goals,
-                    CategoryName = Project.Category.Name,
-                    OwnerId = Project.OwnerId,
-                    OwnerName = Project.Owner.FirstName + " " + Project.Owner.LastName,
-                    RaisedFund = raisedFund,
+                    Data = new List<ProjectReadDto>(),
+                    ErrorMessage = $"No projects found for the given category ID: {categoryId}.",
+                    IsValid = false
                 };
-                ProjectsReadDtos.Add(projectDto);
             }
-            return ProjectsReadDtos;
+
+            var mappedProjects = _mapper.Map<List<ProjectReadDto>>(projectsAssociatedWithCategory);
+
+            return new ValidationResult<List<ProjectReadDto>>
+            {
+                Data = mappedProjects,
+                ErrorMessage = null,
+                IsValid = true
+            };
         }
+
+
+        //Task<ValidationResult<ProjectRequestReviewDto>> IProjectService.GetProjectStatusByOwnerIdAsync(string OwnerId)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

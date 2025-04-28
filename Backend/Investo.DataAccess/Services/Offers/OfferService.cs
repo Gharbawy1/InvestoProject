@@ -261,7 +261,6 @@ namespace Investo.DataAccess.Services.Offers
             if (userRole == "Investor")
             {
                 offers = await _offerRepository.GetOffersForInvestorAsync(userId);
-                   
             }
             else if (userRole == "BusinessOwner")
             {

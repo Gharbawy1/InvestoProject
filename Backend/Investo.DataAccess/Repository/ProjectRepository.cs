@@ -63,6 +63,7 @@ namespace Investo.DataAccess.Repository
         {
             return await _context.Projects
                 .Include (p => p.Category)
+                .Include(p=>p.Owner)
                 .Where(p => p.CategoryId == CategoryId).ToListAsync();
         }
 
