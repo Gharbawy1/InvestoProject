@@ -237,10 +237,19 @@ namespace Investo.DataAccess.Services.Project
             };
         }
 
+        public async Task<ValidationResult<IEnumerable<ProjectRequestReviewDto>>> GetProjectRequestsByStatusAsync(ProjectStatus status)
+        {
+            var requests = await _projectRepository.GetProjectRequestsByStatusAsync(status);
+            var mappedRequests = _mapper.Map<IEnumerable<ProjectRequestReviewDto>>(requests);
 
-        //Task<ValidationResult<ProjectRequestReviewDto>> IProjectService.GetProjectStatusByOwnerIdAsync(string OwnerId)
-        //{
-        //    throw new NotImplementedException();
-        //}
+            return new ValidationResult<IEnumerable<ProjectRequestReviewDto>>
+            {
+                Data = mappedRequests,
+                IsValid = true,
+                ErrorMessage = null
+            };
+        }
+
+
     }
 }

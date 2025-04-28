@@ -190,36 +190,36 @@ namespace Investo.Presentation.Controllers
         ///<summary>
         /// Retrieves all project requests based on the provided status (Pending, Accepted, Rejected) for admins only.
         ///// </summary>
-        //[HttpGet("GetProjectRequestsByStatus")]
-        //public async Task<IActionResult> GetProjectRequestsByStatus([FromQuery] string status)
-        //{
-        //    try
-        //    {
-        //        // نحوّل الـ string لـ ProjectStatus
-        //        if (!Enum.TryParse<ProjectStatus>(status, true, out var projectStatus))
-        //        {
-        //            return BadRequest("الـ Status غلط! لازم يكون Pending, Accepted, أو Rejected.");
-        //        }
+        [HttpGet("GetProjectRequestsByStatus")]
+        public async Task<IActionResult> GetProjectRequestsByStatus([FromQuery] string status)
+        {
+            try
+            {
+                // نحوّل الـ string لـ ProjectStatus
+                if (!Enum.TryParse<ProjectStatus>(status, true, out var projectStatus))
+                {
+                    return BadRequest("الـ Status غلط! لازم يكون Pending, Accepted, أو Rejected."); 
+                }
 
-        //        var requests = await _projectService.GetProjectRequestsByStatusAsync(projectStatus);
-        //        if (requests == null || !requests.Any())
-        //        {
-        //            return NotFound($"مفيش طلبات مشاريع بالـ Status ده: {status}");
-        //        }
+                var requests = await _projectService.GetProjectRequestsByStatusAsync(projectStatus);
+                if (!requests.IsValid || requests.Data == null || !requests.Data.Any())
+                {
+                    return NotFound($"مفيش طلبات مشاريع بالـ Status ده: {status}");
+                }
 
-        //        return Ok(requests);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errorDetails = ex.InnerException?.Message ?? ex.Message;
-        //        var errorMessages = new List<string>
-        //{
-        //    "فيه مشكلة وإحنا بنحاول نجيب طلبات المشاريع",
-        //    $"الرسالة: {errorDetails}"
-        //};
-        //        return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
-        //    }
-        //}
-       
+                return Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                var errorMessages = new List<string>
+        {
+            "فيه مشكلة وإحنا بنحاول نجيب طلبات المشاريع",
+            $"الرسالة: {errorDetails}"
+        };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
+        }
+
     }
 }

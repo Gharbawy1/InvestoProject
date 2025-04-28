@@ -19,10 +19,7 @@ namespace Investo.DataAccess.Services.Project
         Task<ValidationResult<ProjectRequestReviewDto>> GetProjectReviewDtoByIdAsync(int id);
         Task<bool> UpdateProjectStatusAsync(ProjectStatusUpdateDto newProjectUpdateStateReq);
         Task<ValidationResult<ProjectStatusUpdateDto>> GetProjectStatusByOwnerIdAsync(string OwnerId);
-
-        //Task<IEnumerable<ValidationResult<ProjectRequestReviewDto>>> GetAllPendingProjectRequestsForReviewAsync();
-        //Task<IEnumerable<ValidationResult<ProjectRequestReviewDto>>> GetAllAcceptedProjectRequestsAsync();
-        //Task<IEnumerable<ValidationResult<ProjectRequestReviewDto>>> GetAllRejectedProjectRequestsAsync();
+        Task<ValidationResult<IEnumerable<ProjectRequestReviewDto>>> GetProjectRequestsByStatusAsync(ProjectStatus status);
 
     }
 }
