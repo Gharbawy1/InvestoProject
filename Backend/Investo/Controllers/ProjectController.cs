@@ -27,6 +27,9 @@ namespace Investo.Presentation.Controllers
         }
 
         // GET api/projects
+        ///<summary>
+        /// Retrieves all projects cards
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -34,6 +37,9 @@ namespace Investo.Presentation.Controllers
             return Ok(projects);
         }
 
+        ///<summary>
+        /// Get Only project details without and additional data, for admin only 
+        /// </summary>
         // GET api/project/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
@@ -54,6 +60,10 @@ namespace Investo.Presentation.Controllers
 
             return Ok(project);
         }
+        
+        ///<summary>
+        /// Create new project with default status "Pending" for only BusinessOwners
+        /// </summary>
         // POST: api/project
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] ProjectCreateUpdateDto dto)
@@ -87,6 +97,9 @@ namespace Investo.Presentation.Controllers
 
         }
 
+        ///<summary>
+        /// Update project details "only details" without status , for only BusinessOwners
+        /// </summary>
         // PUT: api/project/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromForm] ProjectCreateUpdateDto dto)
@@ -134,6 +147,9 @@ namespace Investo.Presentation.Controllers
             }
         }
 
+        ///<summary>
+        /// Get Project Details with its business owner details also , for only admin 
+        /// </summary>
         // GET: api/project/review/{projectId}
         [HttpGet("review/{projectId}")]
         public async Task<IActionResult> GetProjectRequestForReview([FromRoute]int projectId) // for admin
@@ -145,6 +161,9 @@ namespace Investo.Presentation.Controllers
             return Ok(project);
         }
 
+        ///<summary>
+        /// Update only project status give projectId,Status that you need to change project status to , for admin only 
+        /// </summary>
         // PUT: api/project/review/status
         [HttpPut("review/status")]
         public async Task<IActionResult> UpdateProjectStatus([FromBody] ProjectStatusUpdateDto projectStatusUpdateReqDto)// for admin
@@ -157,6 +176,9 @@ namespace Investo.Presentation.Controllers
             return Ok($"Project Status Updated Successfully to {projectStatusUpdateReqDto.Status}");
         }
 
+        ///<summary>
+        /// Get the project status related to specific business owner, for admin,business owners only 
+        /// </summary>
         // GET: api/project/status/owner/{ownerId}
         [HttpGet("status/owner/{ownerId}")]
         public async Task<IActionResult> GetProjectStatus([FromRoute]string ownerId)// for both admin and BO
@@ -168,38 +190,40 @@ namespace Investo.Presentation.Controllers
             return Ok(statusDto);
         }
 
-        // GET: api/project/review/pending
-        [HttpGet("review/pending")]
-        public async Task<IActionResult> GetAllPendingProjectRequestsAsync() // for admin
+
+        ///<summary>
+        /// Retrieves all project requests based on the provided status (Pending, Accepted, Rejected) for admins only.
+        /// </summary>
+        [HttpGet("GetProjectRequestsByStatus")]
+        public async Task<IActionResult> GetProjectRequestsByStatus([FromQuery] string status)
         {
-            var requests = await _projectService.GetAllPendingProjectRequestsForReviewAsync();
-            if (requests == null || !requests.Any())
-                return NotFound("No pending project requests found for review.");
+            try
+            {
+                // نحوّل الـ string لـ ProjectStatus
+                if (!Enum.TryParse<ProjectStatus>(status, true, out var projectStatus))
+                {
+                    return BadRequest("الـ Status غلط! لازم يكون Pending, Accepted, أو Rejected.");
+                }
 
-            return Ok(requests);
-        }
+                var requests = await _projectService.GetProjectRequestsByStatusAsync(projectStatus);
+                if (requests == null || !requests.Any())
+                {
+                    return NotFound($"مفيش طلبات مشاريع بالـ Status ده: {status}");
+                }
 
-        // GET: api/project/review/accepted
-        [HttpGet("review/accepted")]
-        public async Task<IActionResult> GetAllAcceptedProjectRequestsAsync() // for admin
+                return Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                var errorMessages = new List<string>
         {
-            var requests = await _projectService.GetAllAcceptedProjectRequestsAsync();
-            if (requests == null || !requests.Any())
-                return NotFound("No accepted project requests found.");
-
-            return Ok(requests);
+            "فيه مشكلة وإحنا بنحاول نجيب طلبات المشاريع",
+            $"الرسالة: {errorDetails}"
+        };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
         }
-
-        // GET: api/project/review/rejected
-        [HttpGet("review/rejected")]
-        public async Task<IActionResult> GetAllRejectedProjectRequestsAsync() // for admin
-        {
-            var requests = await _projectService.GetAllRejectedProjectRequestsAsync();
-            if (requests == null || !requests.Any())
-                return NotFound("No rejected project requests found.");
-
-            return Ok(requests);
-        }
-
+       
     }
 }

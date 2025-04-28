@@ -66,36 +66,14 @@ namespace Investo.DataAccess.Repository
                 .Where(p => p.CategoryId == CategoryId).ToListAsync();
         }
 
-
-        // it will only get the pending projects for admin
-        public async Task<IEnumerable<Project>> GetPendingProjectRequestsAsync()
+        public async Task<IEnumerable<Project>> GetProjectRequestsByStatusAsync(ProjectStatus status)
         {
             return await _context.Projects
-                .Where(p=> p.Status == ProjectStatus.Pending)
+                .Where(p => p.Status == status)
                 .Include(p => p.Owner)
                 .ThenInclude(owner => owner.PersonInfo)
                 .Include(p => p.Category)
                 .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Project>> GetAcceptedProjectRequestsAsync()
-        {
-            return await _context.Projects
-               .Where(p => p.Status == ProjectStatus.Accepted)
-               .Include(p => p.Owner) // Owner is a BusinessOwner, which inherits from ApplicationUser
-               .ThenInclude(owner => owner.PersonInfo)
-               .Include(p => p.Category)
-               .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Project>> GetRejectedProjectRequestsAsync()
-        {
-            return await _context.Projects
-              .Where(p => p.Status == ProjectStatus.Rejected)
-              .Include(p => p.Owner) // Owner is a BusinessOwner, which inherits from ApplicationUser
-              .ThenInclude(owner => owner.PersonInfo)
-              .Include(p => p.Category)
-              .ToListAsync();
         }
 
         public async Task<bool> HasProjectForOwner(string ownerId)
