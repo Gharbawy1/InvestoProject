@@ -13,14 +13,12 @@ namespace Investo.DataAccess.Services.Offers
     {
         Task<ValidationResult<ReadOfferDto>> CreateOfferAsync(CreateOrUpdateOfferDto offer);
         Task<IEnumerable<ReadOfferDto>> GetAllOffers();
-        Task<InvestorBasicInfoDto> GetInvestorByOfferId(int OfferId);
-        Task<ReadOfferDto> GetOfferById(int OfferId);
-        Task<IEnumerable<ReadOfferDto>> GetOffersByProjectId(int projectId);
+        Task<ValidationResult<InvestorBasicInfoDto>> GetInvestorByOfferId(int OfferId);
+        Task<ValidationResult<ReadOfferDto>> GetOfferById(int OfferId);
+        Task<ValidationResult<List<ReadOfferDto>>> GetOffersByProjectId(int projectId);
         Task<ValidationResult<ReadOfferDto>> RespondToOfferAsync(int offerId, string responseStatus);
-
-        Task<IEnumerable<ReadOfferDto>> GetOffersForCurrentUser(string userId, string userRole);
+        Task<ValidationResult<IEnumerable<ReadOfferDto>>> GetOffersForCurrentUser(string userId, string userRole);
         Task<IEnumerable<ProjectRaisedFundDto>> GetProjectsRaisedFundsAsync();
-
-
     }
+
 }

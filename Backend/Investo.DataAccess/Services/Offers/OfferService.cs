@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using CloudinaryDotNet.Core;
+using AutoMapper;
 using Investo.Entities.DTO.Offer;
 using Investo.Entities.DTO.Project;
 using Investo.Entities.IRepository;
@@ -18,11 +17,14 @@ namespace Investo.DataAccess.Services.Offers
         private readonly IOfferRepository _offerRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IProjectRepository _projectRepository;
-        public OfferService(IOfferRepository offerRepository, UserManager<ApplicationUser> userManager, IProjectRepository projectRepository)
+        private readonly IMapper _mapper;
+
+        public OfferService(IOfferRepository offerRepository, UserManager<ApplicationUser> userManager, IProjectRepository projectRepository, IMapper mapper)
         {
             _offerRepository = offerRepository;
-            this._userManager = userManager;
+            _userManager = userManager;
             _projectRepository = projectRepository;
+            _mapper = mapper;
         }
 
         public async Task<ValidationResult<ReadOfferDto>> CreateOfferAsync(CreateOrUpdateOfferDto dto)
@@ -36,7 +38,6 @@ namespace Investo.DataAccess.Services.Offers
                     ErrorMessage = $"Investor associated with the given Offer with Id :  {dto.InvestorId} not found",
                     IsValid = false
                 };
-
             }
 
             var IsValidProject = await _projectRepository.GetById(dto.ProjectId);
@@ -51,8 +52,6 @@ namespace Investo.DataAccess.Services.Offers
             }
 
             var isOfferAlreadyExists = await _offerRepository.HasInvestorMadeOfferForProject(dto.InvestorId, dto.ProjectId);
-
-
             if (isOfferAlreadyExists)
             {
                 return new ValidationResult<ReadOfferDto>
@@ -62,9 +61,10 @@ namespace Investo.DataAccess.Services.Offers
                     IsValid = false
                 };
             }
-            // تجهيز الكيان الجديد بناءً على الداتا اللي جت من الـ DTO
+
             var offerEntity = new Entities.Models.Offer
             {
+
                 OfferAmount = dto.OfferAmount,
                 InvestmentType = Enum.Parse<InvestmentType>(dto.InvestmentType, ignoreCase: true),
                 EquityPercentage = dto.EquityPercentage,
@@ -72,128 +72,129 @@ namespace Investo.DataAccess.Services.Offers
                 OfferTerms = dto.OfferTerms,
                 ProjectId = dto.ProjectId,
                 OfferDate = DateTime.UtcNow,
-                ExpirationDate = DateTime.UtcNow.AddDays(30), // مثلا بعد 30 يوم ينتهي العرض
-                Status = OfferStatus.Pending, // العرض يبدأ بـ Pending
-                InvestorId = dto.InvestorId // هتحط هنا الآيدي بتاع المستثمر الحالي من التوكن أو السيشن
+                ExpirationDate = DateTime.UtcNow.AddDays(30),
+                Status = OfferStatus.Pending,
+                InvestorId = dto.InvestorId
             };
 
-            // إنشاء العرض في الداتابيز
             await _offerRepository.Create(offerEntity);
-            // تجهيز الداتا اللي هرجعها للفرونت بعد الإنشاء
-            var result = new ReadOfferDto
-            {
-                OfferId = offerEntity.Id,
-                OfferDate = offerEntity.OfferDate,
-                ExpirationDate = offerEntity.ExpirationDate,
-                Status = offerEntity.Status.ToString(),
-                InvestmentType = offerEntity.InvestmentType.ToString(),
-                ProjectId = offerEntity.ProjectId,
-                InvestorId = offerEntity.InvestorId,
-                Investor = await GetInvestorByOfferId(offerEntity.Id)
-            };
 
-            var SuccessCreationValidationResult = new ValidationResult<ReadOfferDto>
+            var result = _mapper.Map<ReadOfferDto>(offerEntity);
+
+            return new ValidationResult<ReadOfferDto>
             {
                 Data = result,
                 ErrorMessage = null,
                 IsValid = true
             };
-            return SuccessCreationValidationResult;
         }
 
         public async Task<IEnumerable<ReadOfferDto>> GetAllOffers()
         {
             var offers = await _offerRepository.GetAll();
-            var ReadOffers = new List<ReadOfferDto>();
-            foreach(var offer in offers)
+            var readOffers = _mapper.Map<List<ReadOfferDto>>(offers);
+
+            foreach (var readOffer in readOffers)
             {
-                var readoffer = new ReadOfferDto
-                {
-                    OfferId = offer.Id,
-                    OfferDate = offer.OfferDate,
-                    OfferAmount = offer.OfferAmount,
-                    ExpirationDate = offer.ExpirationDate,
-                    Status = offer.Status.ToString(),
-                    InvestmentType = offer.InvestmentType.ToString(),
-                    ProjectId = offer.ProjectId,
-                    InvestorId = offer.InvestorId,
-                    Investor = await GetInvestorByOfferId(offer.Id)
-                };
-                ReadOffers.Add(readoffer);
+                var investorResult = await GetInvestorByOfferId(readOffer.OfferId);
+                readOffer.Investor = investorResult.IsValid ? investorResult.Data : null;
             }
-            return ReadOffers;
+
+            return readOffers;
         }
 
-        public async Task<InvestorBasicInfoDto> GetInvestorByOfferId(int offerId)
+        public async Task<ValidationResult<InvestorBasicInfoDto>> GetInvestorByOfferId(int offerId)
         {
-            // أول حاجة تجيب العرض بالآيدي وتنتظر النتيجة
-            var offer = await _offerRepository.GetById(offerId); 
-
+            var offer = await _offerRepository.GetById(offerId);
             if (offer == null || offer.Investor == null)
-                return null; // لو العرض مش موجود أو المستثمر مش موجود
-
-            // بعدين تعمل ماب للي محتاجه بس من الـ Investor
-            var investorDto = new InvestorBasicInfoDto
             {
-                FirstName = offer.Investor.FirstName,
-                LastName = offer.Investor.LastName,
-                Bio = offer.Investor.Bio,
-                ProfilePictureUrl = offer.Investor.ProfilePictureURL,
-                RiskTolerance = offer.Investor.RiskTolerance,
-                InvestmentGoals = offer.Investor.InvestmentGoals,
-                MinInvestmentAmount = offer.Investor.MinInvestmentAmount,
-                MaxInvestmentAmount = offer.Investor.MaxInvestmentAmount,
-                NetWorth = offer.Investor.NetWorth,
-                AnnualIncome = offer.Investor.AnnualIncome,
-                AccreditationStatus = offer.Investor.AccreditationStatus
-            };
+                return new ValidationResult<InvestorBasicInfoDto>
+                {
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = "Investor not found for the offer."
+                };
+            }
 
-            return investorDto;
+            var investorDto = _mapper.Map<InvestorBasicInfoDto>(offer.Investor);
+            return new ValidationResult<InvestorBasicInfoDto>
+            {
+                Data = investorDto,
+                IsValid = true,
+                ErrorMessage = null
+            };
         }
 
-        public async Task<ReadOfferDto> GetOfferById(int OfferId)
+        public async Task<ValidationResult<ReadOfferDto>> GetOfferById(int offerId)
         {
-            var offer = await _offerRepository.GetById(OfferId);
-            if (offer == null) return null;
-            return new ReadOfferDto
+            var offer = await _offerRepository.GetById(offerId);
+            if (offer == null)
             {
-                OfferId = offer.Id,
-                OfferDate = offer.OfferDate,
-                OfferAmount = offer.OfferAmount,
-                ExpirationDate = offer.ExpirationDate,
-                Status = offer.Status.ToString(),
-                InvestmentType = offer.InvestmentType.ToString(),
-                ProjectId = offer.ProjectId,
-                InvestorId = offer.InvestorId,
-                Investor = await GetInvestorByOfferId(offer.Id)
+                return new ValidationResult<ReadOfferDto>
+                {
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = $"Offer with Id: {offerId} not found."
+                };
+            }
+
+            var readOfferDto = _mapper.Map<ReadOfferDto>(offer);
+            var investorResult = await GetInvestorByOfferId(offer.Id);
+
+            if (!investorResult.IsValid)
+            {
+                return new ValidationResult<ReadOfferDto>
+                {
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = investorResult.ErrorMessage
+                };
+            }
+
+            readOfferDto.Investor = investorResult.Data;
+            return new ValidationResult<ReadOfferDto>
+            {
+                Data = readOfferDto,
+                IsValid = true,
+                ErrorMessage = null
             };
         }
 
-        public async Task<IEnumerable<ReadOfferDto>> GetOffersByProjectId(int projectId)
+        public async Task<ValidationResult<List<ReadOfferDto>>> GetOffersByProjectId(int projectId)
         {
             var offers = await _offerRepository.GetOffersByProjectId(projectId);
-            if (offers == null || !offers.Any())
-                return new List<ReadOfferDto>();
 
-            var result = new List<ReadOfferDto>();
-            foreach (var offer in offers)
+            var ListOfReadDto = new List<ReadOfferDto>();
+
+            if (offers == null || !offers.Any())
             {
-                result.Add(new ReadOfferDto
+                return new ValidationResult<List<ReadOfferDto>>()
                 {
-                    OfferId = offer.Id,
-                    OfferDate = offer.OfferDate,
-                    OfferAmount = offer.OfferAmount,
-                    ExpirationDate = offer.ExpirationDate,
-                    Status = offer.Status.ToString(),
-                    InvestmentType = offer.InvestmentType.ToString(),
-                    ProjectId = offer.ProjectId,
-                    InvestorId = offer.InvestorId,
-                    Investor = await GetInvestorByOfferId(offer.Id)
-                });
+                    IsValid = true,
+                    ErrorMessage = "There is no Offers on this project",
+                    Data = ListOfReadDto
+                };
             }
 
-            return result;
+            foreach (var offer in offers)
+            {
+                var offerDto = _mapper.Map<ReadOfferDto>(offer);
+
+                ListOfReadDto.Add(offerDto);
+              
+            }
+
+            return new ValidationResult<List<ReadOfferDto>>
+            {
+                Data = ListOfReadDto,
+                IsValid = true,
+                ErrorMessage = "Offers Retrived Succesfully"
+            };
         }
+    
+
+
+
         public async Task<ValidationResult<ReadOfferDto>> RespondToOfferAsync(int offerId, string responseStatus)
         {
             var offer = await _offerRepository.GetById(offerId);
@@ -201,103 +202,86 @@ namespace Investo.DataAccess.Services.Offers
             {
                 return new ValidationResult<ReadOfferDto>
                 {
-                    Data = new ReadOfferDto(),
-                    ErrorMessage = $"Offer with Id: {offerId} not found.",
-                    IsValid = false
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = $"Offer with Id: {offerId} not found."
                 };
             }
 
-            if (!Enum.TryParse<OfferStatus>(responseStatus, true, out var status) || !Enum.IsDefined(typeof(OfferStatus), status) ||  status== OfferStatus.Pending )
+            if (!Enum.TryParse<OfferStatus>(responseStatus, true, out var status) ||
+                !Enum.IsDefined(typeof(OfferStatus), status) ||
+                status == OfferStatus.Pending)
             {
                 return new ValidationResult<ReadOfferDto>
                 {
-                    Data = new ReadOfferDto(),
-                    ErrorMessage = $"Invalid status value: '{responseStatus}'. Allowed values are 'Accepted' or 'Rejected'.",
-                    IsValid = false
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = $"Invalid status value: '{responseStatus}'. Allowed values are 'Accepted' or 'Rejected'."
                 };
             }
-          
 
             if (offer.Status == status)
             {
                 return new ValidationResult<ReadOfferDto>
                 {
-                    Data = new ReadOfferDto(),
-                    ErrorMessage = $"The offer is already in the {offer.Status} status.",
-                    IsValid = false
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = $"The offer is already in the {offer.Status} status."
                 };
             }
 
             offer.Status = status;
+            await _offerRepository.UpdateOfferAsync(offer);
 
-            var updateSuccess = await _offerRepository.UpdateOfferAsync(offer);
-
-            var updatedOffer = new ReadOfferDto
-            {
-                OfferId = offer.Id,
-                OfferDate = offer.OfferDate,
-                OfferAmount = offer.OfferAmount,
-                ExpirationDate = offer.ExpirationDate,
-                Status = offer.Status.ToString(),
-                InvestmentType = offer.InvestmentType.ToString(),
-                ProjectId = offer.ProjectId,
-                InvestorId = offer.InvestorId,
-                Investor = await GetInvestorByOfferId(offer.Id)
-            };
-
+            var updatedOffer = _mapper.Map<ReadOfferDto>(offer);
             return new ValidationResult<ReadOfferDto>
             {
                 Data = updatedOffer,
-                ErrorMessage = null,
-                IsValid = true
+                IsValid = true,
+                ErrorMessage = null
             };
         }
 
-
-        public async Task<IEnumerable<ReadOfferDto>> GetOffersForCurrentUser(string userId, string userRole)
+        public async Task<ValidationResult<IEnumerable<ReadOfferDto>>> GetOffersForCurrentUser(string userId, string userRole)
         {
             IEnumerable<Offer> offers;
 
+            // Check user role and fetch offers
             if (userRole == "Investor")
             {
                 offers = await _offerRepository.GetOffersForInvestorAsync(userId);
-                   
             }
             else if (userRole == "BusinessOwner")
             {
                 offers = await _offerRepository.GetOffersForBusinessOwnerAsync(userId);
-                      
             }
             else
             {
-                throw new UnauthorizedAccessException("Invalid User Role");
-            }
-
-            var readOfferDtos = new List<ReadOfferDto>();
-
-            foreach (var offer in offers)
-            {
-                var investorInfo = await GetInvestorByOfferId(offer.Id);
-               
-                var readOfferDto = new ReadOfferDto
+                return new ValidationResult<IEnumerable<ReadOfferDto>>
                 {
-                    OfferId = offer.Id,
-                    OfferAmount = offer.OfferAmount,
-                    OfferDate = offer.OfferDate,
-                    ExpirationDate = offer.ExpirationDate,
-                    Status = offer.Status.ToString(),
-                    InvestmentType = offer.InvestmentType.ToString(),
-                    ProjectId = offer.ProjectId,
-                    InvestorId = offer.InvestorId,
-                    Investor = investorInfo
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = "Invalid User Role"
                 };
-
-                readOfferDtos.Add(readOfferDto);
             }
 
-            return readOfferDtos;
-        }
+            if (offers == null || !offers.Any())
+            {
+                return new ValidationResult<IEnumerable<ReadOfferDto>>
+                {
+                    Data = new List<ReadOfferDto>(),
+                    IsValid = true
+                };
+            }
 
+            var readOfferDtos = _mapper.Map<IEnumerable<ReadOfferDto>>(offers);
+
+            return new ValidationResult<IEnumerable<ReadOfferDto>>
+            {
+                Data = readOfferDtos,
+                IsValid = true
+            };
+        }
 
 
         public async Task<IEnumerable<ProjectRaisedFundDto>> GetProjectsRaisedFundsAsync()
@@ -305,5 +289,8 @@ namespace Investo.DataAccess.Services.Offers
             return await _offerRepository.GetOffersAmountForProjectAsync();
         }
 
+
     }
+
 }
+
