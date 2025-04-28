@@ -273,15 +273,16 @@ namespace Investo.DataAccess.Services.Project
             };
         }
 
-        public async Task<IEnumerable<ProjectRequestReviewDto>> GetAllPendingProjectRequestsForReviewAsync()
+        public async Task<IEnumerable<ProjectRequestReviewDto>> GetProjectRequestsByStatusAsync(ProjectStatus status)
         {
-            var requests = await _projectRepository.GetPendingProjectRequestsAsync();
-            
+            var requests = await _projectRepository.GetProjectRequestsByStatusAsync(status);
+
             var result = requests.Select(p => new ProjectRequestReviewDto
             {
                 // Project
                 Id = p.Id,
                 ProjectTitle = p.ProjectTitle,
+                Status = p.Status.ToString(),
                 Subtitle = p.Subtitle,
                 ProjectLocation = p.ProjectLocation,
                 ProjectImageURL = p.ProjectImageURL,
@@ -292,45 +293,7 @@ namespace Investo.DataAccess.Services.Project
                 CurrentVision = p.CurrentVision,
                 Goals = p.Goals,
                 CategoryId = p.CategoryId,
-                CategoryName = p.Category.Name,
-                OwnerId = p.OwnerId, 
-                // Owner
-                FirstName = p.Owner?.FirstName,
-                LastName = p.Owner?.LastName,
-                Bio = p.Owner?.Bio,
-                RegistrationDate = p.Owner?.RegistrationDate ?? DateTime.MinValue,
-                Email = p.Owner?.Email,
-                PhoneNumber = p.Owner?.PhoneNumber,
-                ProfilePictureURL = p.Owner?.ProfilePictureURL,
-                Address = p.Owner?.Address,
-                NationalID = p.Owner?.PersonInfo?.NationalID,
-                NationalIDImageFrontURL = p.Owner?.PersonInfo?.NationalIDImageFrontURL,
-                NationalIDImageBackURL = p.Owner?.PersonInfo?.NationalIDImageBackURL
-            });
-
-            return result;
-        }
-
-        public async Task<IEnumerable<ProjectRequestReviewDto>> GetAllAcceptedProjectRequestsAsync()
-        {
-            var requests = await _projectRepository.GetAcceptedProjectRequestsAsync();
-
-            var result = requests.Select(p => new ProjectRequestReviewDto
-            {
-                // Project
-                Id = p.Id,
-                ProjectTitle = p.ProjectTitle,
-                Subtitle = p.Subtitle,
-                ProjectLocation = p.ProjectLocation,
-                ProjectImageURL = p.ProjectImageURL,
-                FundingGoal = p.FundingGoal,
-                FundingExchange = p.FundingExchange,
-                ProjectVision = p.ProjectVision,
-                ProjectStory = p.ProjectStory,
-                CurrentVision = p.CurrentVision,
-                Goals = p.Goals,
-                CategoryId = p.CategoryId,
-                CategoryName = p.Category.Name,
+                CategoryName = p.Category?.Name,
                 OwnerId = p.OwnerId,
                 // Owner
                 FirstName = p.Owner?.FirstName,
@@ -348,45 +311,7 @@ namespace Investo.DataAccess.Services.Project
 
             return result;
         }
-
-        public async Task<IEnumerable<ProjectRequestReviewDto>> GetAllRejectedProjectRequestsAsync()
-        {
-            var requests = await _projectRepository.GetRejectedProjectRequestsAsync();
-
-            var result = requests.Select(p => new ProjectRequestReviewDto
-            {
-                // Project
-                Id = p.Id,
-                ProjectTitle = p.ProjectTitle,
-                Subtitle = p.Subtitle,
-                ProjectLocation = p.ProjectLocation,
-                ProjectImageURL = p.ProjectImageURL,
-                FundingGoal = p.FundingGoal,
-                FundingExchange = p.FundingExchange,
-                ProjectVision = p.ProjectVision,
-                ProjectStory = p.ProjectStory,
-                CurrentVision = p.CurrentVision,
-                Goals = p.Goals,
-                CategoryId = p.CategoryId,
-                CategoryName = p.Category.Name,
-                OwnerId = p.OwnerId,
-                // Owner
-                FirstName = p.Owner?.FirstName,
-                LastName = p.Owner?.LastName,
-                Bio = p.Owner?.Bio,
-                RegistrationDate = p.Owner?.RegistrationDate ?? DateTime.MinValue,
-                Email = p.Owner?.Email,
-                PhoneNumber = p.Owner?.PhoneNumber,
-                ProfilePictureURL = p.Owner?.ProfilePictureURL,
-                Address = p.Owner?.Address,
-                NationalID = p.Owner?.PersonInfo?.NationalID,
-                NationalIDImageFrontURL = p.Owner?.PersonInfo?.NationalIDImageFrontURL,
-                NationalIDImageBackURL = p.Owner?.PersonInfo?.NationalIDImageBackURL
-            });
-
-            return result;
-        }
-
+       
         public async Task<List<ProjectReadDto>> GetProjectsByCategoryAsync(byte CategoryId)
         {
             var ReturnedProjects = await _projectRepository.GetProjectsByCategory(CategoryId);

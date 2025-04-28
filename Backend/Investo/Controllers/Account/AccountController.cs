@@ -6,6 +6,8 @@ using Investo.Entities.DTO.Account.BODto;
 using Investo.Entities.DTO.Account.InvestorDto;
 using Investo.Entities.DTO.Account.Profile;
 using Investo.Entities.DTO.Account.UserDto;
+using Investo.Entities.DTO.Account.UsersProfile;
+using Investo.Entities.DTO.Account.UsersProfile;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -53,7 +55,7 @@ namespace Investo.Presentation.Controllers.Account
                 }
 
                 var isFirstUser = !(await _userManager.Users.AnyAsync());
-               
+
 
                 var appUser = new ApplicationUser
                 {
@@ -76,15 +78,15 @@ namespace Investo.Presentation.Controllers.Account
                     return StatusCode(500, errors);
                 }
 
-                
+
 
 
                 await _userManager.AddToRoleAsync(appUser, "User");
                 var userRoles = await _userManager.GetRolesAsync(appUser);
-                
+
                 var rgDto = new RegisterResponseDTO
                 {
-                    UserName = appUser.UserName,   
+                    UserName = appUser.UserName,
                     Email = appUser.Email,
                     FirstName = appUser.FirstName,
                     LastName = appUser.LastName,
@@ -105,7 +107,7 @@ namespace Investo.Presentation.Controllers.Account
             $"Error Message: {errorDetails}",
         };
 
-                return StatusCode((int)HttpStatusCode.InternalServerError,errorMessages);
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
             }
         }
 
@@ -163,7 +165,7 @@ namespace Investo.Presentation.Controllers.Account
                     return StatusCode(500, errors);
                 }
 
-                
+
 
                 await _userManager.AddToRoleAsync(InvestoUser, "Investor");
                 var userRoles = await _userManager.GetRolesAsync(InvestoUser);
@@ -244,7 +246,7 @@ namespace Investo.Presentation.Controllers.Account
                     return StatusCode(500, errors);
                 }
 
-                
+
 
 
                 await _userManager.AddToRoleAsync(BoUser, "BusinessOwner");
@@ -286,7 +288,7 @@ namespace Investo.Presentation.Controllers.Account
             }
 
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
-                        
+
             if (user == null)
             {
                 return Unauthorized("Invalid Email or password");
@@ -304,7 +306,7 @@ namespace Investo.Presentation.Controllers.Account
             {
                 Token = await _tokenService.CreateToken(user),
                 Roles = userRoles,
-                UserId = user.Id,                
+                UserId = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 ProfilePictureURL = user.ProfilePictureURL,
@@ -387,7 +389,7 @@ namespace Investo.Presentation.Controllers.Account
                     PhoneNumber = user.PhoneNumber,
                     UserName = user.UserName,
                     PasswordHash = user.PasswordHash,
-                    
+
                 };
 
                 // نحذف اليوزر القديم من الداتابيز
@@ -521,7 +523,7 @@ namespace Investo.Presentation.Controllers.Account
         }
 
         [HttpPost("upload-profile-picture")]
-        [Authorize] 
+        [Authorize]
         public async Task<IActionResult> UploadProfilePicture([FromForm] UpdateProfileImageDto profilePicture)
         {
             try
@@ -588,6 +590,10 @@ namespace Investo.Presentation.Controllers.Account
                     user.PhoneNumber = updateProfileDto.PhoneNumber;
                 if (updateProfileDto.BirthDate.HasValue)
                     user.BirthDate = updateProfileDto.BirthDate.Value;
+                if (!string.IsNullOrEmpty(updateProfileDto.Bio))
+                    user.Bio = updateProfileDto.Bio;
+                if (!string.IsNullOrEmpty(updateProfileDto.Address))
+                    user.Address = updateProfileDto.Address;
 
                 // نحدّث اليوزر في الداتابيز
                 var updateResult = await _userManager.UpdateAsync(user);
@@ -602,7 +608,9 @@ namespace Investo.Presentation.Controllers.Account
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     PhoneNumber = user.PhoneNumber,
-                    BirthDate = user.BirthDate
+                    BirthDate = user.BirthDate,
+                    Bio = user.Bio,
+                    Address = user.Address,
                 });
             }
             catch (Exception ex)
@@ -616,5 +624,115 @@ namespace Investo.Presentation.Controllers.Account
                 return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
             }
         }
+
+        /// <summary>
+        /// Retrieves the profile of the currently authenticated user.
+        /// </summary>
+        /// <returns>
+        /// Returns a UserProfileDto, InvestorProfileDto, or BusinessOwnerProfileDto based on the user type.
+        /// If the user is not found, returns 404 (Not Found).
+        /// </returns>
+        /// <remarks>
+        /// Requires authentication. Returns profile details specific to the user's role (User, Investor, or BusinessOwner).
+        /// </remarks>
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetUserProfile()
+        {
+            try
+            {
+                // نجيب اليوزر الحالي
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                // نجيب الـ Roles بتاع اليوزر
+                var roles = await _userManager.GetRolesAsync(user);
+
+                // لو اليوزر Investor
+                if (user is Investor investor)
+                {
+                    var investorDto = new InvestorProfileDto
+                    {
+                        Id = investor.Id,
+                        UserName = investor.UserName,
+                        Email = investor.Email,
+                        FirstName = investor.FirstName,
+                        LastName = investor.LastName,
+                        BirthDate = investor.BirthDate,
+                        RegistrationDate = investor.RegistrationDate,
+                        ProfilePictureURL = investor.ProfilePictureURL,
+                        Bio = investor.Bio,
+                        Address = investor.Address,
+                        PhoneNumber = investor.PhoneNumber,
+                        Roles = roles,
+                        RiskTolerance = investor.RiskTolerance,
+                        InvestmentGoals = investor.InvestmentGoals,
+                        MinInvestmentAmount = investor.MinInvestmentAmount,
+                        MaxInvestmentAmount = investor.MaxInvestmentAmount,
+                        AccreditationStatus = investor.AccreditationStatus,
+                        NetWorth = investor.NetWorth,
+                        AnnualIncome = investor.AnnualIncome,
+                        NationalID = investor.PersonInfo.NationalID,
+                        
+                    };
+                    return Ok(investorDto);
+                }
+
+                // لو اليوزر BusinessOwner
+                if (user is BusinessOwner businessOwner)
+                {
+                    var businessOwnerDto = new BusinessOwnerProfileDto
+                    {
+                        Id = businessOwner.Id,
+                        UserName = businessOwner.UserName,
+                        Email = businessOwner.Email,
+                        FirstName = businessOwner.FirstName,
+                        LastName = businessOwner.LastName,
+                        BirthDate = businessOwner.BirthDate,
+                        RegistrationDate = businessOwner.RegistrationDate,
+                        ProfilePictureURL = businessOwner.ProfilePictureURL,
+                        Bio = businessOwner.Bio,
+                        Address = businessOwner.Address,
+                        PhoneNumber = businessOwner.PhoneNumber,
+                        Roles = roles,
+                        NationalID = businessOwner.PersonInfo.NationalID,                       
+                    };
+                    return Ok(businessOwnerDto);
+                }
+
+                // لو اليوزر ApplicationUser عادي
+                var userDto = new UserProfileDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    BirthDate = user.BirthDate,
+                    RegistrationDate = user.RegistrationDate,
+                    ProfilePictureURL = user.ProfilePictureURL,
+                    Bio = user.Bio,
+                    Address = user.Address,
+                    PhoneNumber = user.PhoneNumber,
+                    Roles = roles
+                };
+                return Ok(userDto);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                var errorMessages = new List<string>
+                {
+                    "An error occurred while retrieving the user profile",
+                    $"Error Message: {errorDetails}"
+                };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
+        }
     }
+
 }
+

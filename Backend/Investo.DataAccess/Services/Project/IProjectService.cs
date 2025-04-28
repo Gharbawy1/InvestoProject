@@ -19,9 +19,9 @@ namespace Investo.DataAccess.Services.Project
         Task<ProjectRequestReviewDto> GetProjectReviewDtoByIdAsync(int id);
         Task<bool> UpdateProjectStatusAsync(ProjectStatusUpdateDto newProjectUpdateStateReq);
         Task<ProjectStatusUpdateDto> GetProjectStatusByOwnerIdAsync(string OwnerId);
-        Task<IEnumerable<ProjectRequestReviewDto>> GetAllPendingProjectRequestsForReviewAsync();
-        Task<IEnumerable<ProjectRequestReviewDto>> GetAllAcceptedProjectRequestsAsync();
-        Task<IEnumerable<ProjectRequestReviewDto>> GetAllRejectedProjectRequestsAsync();
-
+        //Task<IEnumerable<ProjectRequestReviewDto>> GetAllPendingProjectRequestsForReviewAsync();
+        //Task<IEnumerable<ProjectRequestReviewDto>> GetAllAcceptedProjectRequestsAsync();
+        //Task<IEnumerable<ProjectRequestReviewDto>> GetAllRejectedProjectRequestsAsync();
+        Task<IEnumerable<ProjectRequestReviewDto>> GetProjectRequestsByStatusAsync(ProjectStatus status);
     }
 }

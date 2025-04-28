@@ -1,4 +1,4 @@
-
+﻿
 using Investo.DataAccess;
 using Investo.DataAccess.ApplicationContext;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Investo.DataAccess.Services.Token;
 using Investo.DataAccess.Services.Offers;
+using System.Reflection;
 
 namespace Investo
 {
@@ -96,6 +97,13 @@ namespace Investo
 
             builder.Services.AddSwaggerGen(option =>
             {
+                option.SwaggerDoc("v1", new OpenApiInfo { Title = "Investo API", Version = "v1" });
+
+                // إضافة ملف الـ XML
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                option.IncludeXmlComments(xmlPath);
+
                 option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,

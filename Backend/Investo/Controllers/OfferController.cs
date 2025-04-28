@@ -21,6 +21,9 @@ namespace Investo.Presentation.Controllers
             _projectService = projectService;
         }
 
+        ///<summary>
+        /// Create new offer for project , for investors only
+        /// </summary>
         [HttpPost("create-offer")]
         public async Task<IActionResult> CreateOffer([FromBody] CreateOrUpdateOfferDto dto)
         {
@@ -46,6 +49,10 @@ namespace Investo.Presentation.Controllers
             return Ok(offer);
         }
 
+        ///<summary>
+        /// Get offer details with investor who made it , for businessOwner,Investor
+        /// </summary>
+
         [HttpGet("get-offer-by-id/{offerId}")]
         public async Task<IActionResult> GetOfferById(int offerId)
         {
@@ -57,6 +64,9 @@ namespace Investo.Presentation.Controllers
             return Ok(offer);
         }
 
+        ///<summary>
+        /// Get All offers which offerd to specific project with all status,for businessOwner,Admin
+        /// </summary>
         [HttpGet("get-offers-byId/{projectId}")]
         public async Task<IActionResult> GetOffersByProjectId(int projectId)
         {
@@ -75,7 +85,9 @@ namespace Investo.Presentation.Controllers
             return Ok(offersResult.Data);
         }
 
-
+        ///<summary>
+        /// For respond or take an action with offerd offer that accept the offer or reject it , for businessOwner
+        /// </summary>
         [HttpPost("{offerId}/respond")]
         public async Task<IActionResult> RespondToOffer(int offerId, [FromQuery] string status)
         {
@@ -90,6 +102,11 @@ namespace Investo.Presentation.Controllers
 
             return Ok(response.Data);
         }
+
+        ///<summary>
+        /// Get all offers for current user , when user click on Offers section we call it
+        /// </summary>
+
         [HttpGet("offers/current-user")]
         public async Task<IActionResult> GetOffersForCurrentUser()
         {
