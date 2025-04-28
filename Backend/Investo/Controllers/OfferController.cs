@@ -67,13 +67,14 @@ namespace Investo.Presentation.Controllers
             if (project == null)
                 return NotFound($"Project with ID {projectId} does not exist.");
 
-            var offers = await _offerService.GetOffersByProjectId(projectId);
+            var offersResult = await _offerService.GetOffersByProjectId(projectId);
 
-            if (offers == null || !offers.Any())
-                return Ok(new List<Offer>());
+            if (!offersResult.IsValid || offersResult.Data == null || !offersResult.Data.Any())
+                return Ok(new List<ReadOfferDto>());
 
-            return Ok(offers);
+            return Ok(offersResult.Data);
         }
+
 
         [HttpPost("{offerId}/respond")]
         public async Task<IActionResult> RespondToOffer(int offerId, [FromQuery] string status)
