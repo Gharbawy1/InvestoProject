@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Investo.DataAccess.ApplicationContext;
 using Investo.DataAccess.Services.Interfaces;
 using Investo.Entities.DTO.Category;
@@ -17,11 +18,13 @@ namespace Investo.DataAccess.Services.Categories
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly CoreEntitiesDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CategoryService(ICategoryRepository categoryRepository, CoreEntitiesDbContext context)
+        public CategoryService(ICategoryRepository categoryRepository, CoreEntitiesDbContext context, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<ValidationResult<IEnumerable<CategoryDTO>>> GetAllCategoriesAsync()
@@ -37,16 +40,13 @@ namespace Investo.DataAccess.Services.Categories
                     IsValid = false
                 };
             }
+            // map category with categoryDto using Automapper
+            var categoryDto = _mapper.Map<List<CategoryDTO>>(categories);
 
-            var categoryDTOs = categories.Select(category => new CategoryDTO
-            {
-                Id = category.Id,
-                Name = category.Name
-            }).ToList();
-
+          
             return new ValidationResult<IEnumerable<CategoryDTO>>
             {
-                Data = categoryDTOs,
+                Data = categoryDto,
                 ErrorMessage = null,
                 IsValid = true
             };
@@ -65,13 +65,9 @@ namespace Investo.DataAccess.Services.Categories
                     IsValid = false
                 };
             }
-
-            var categoryDTO = new CategoryDTO
-            {
-                Id = category.Id,
-                Name = category.Name
-            };
-
+            // map category with categoryDto using Automapper
+            var categoryDTO = _mapper.Map<CategoryDTO>(category);
+           
             return new ValidationResult<CategoryDTO>
             {
                 Data = categoryDTO,
@@ -93,16 +89,12 @@ namespace Investo.DataAccess.Services.Categories
                     IsValid = false
                 };
             }
-
-            var categoryDTO = new CategoryDTO
-            {
-                Id = category.Id,
-                Name = category.Name
-            };
+            // map category with categoryDto using Automapper
+            var categoryDtos = _mapper.Map<CategoryDTO>(category);
 
             return new ValidationResult<CategoryDTO>
             {
-                Data = categoryDTO,
+                Data = categoryDtos,
                 ErrorMessage = null,
                 IsValid = true
             };
@@ -122,10 +114,7 @@ namespace Investo.DataAccess.Services.Categories
                 };
             }
 
-            var categoryEntity = new Category
-            {
-                Name = dto.Name
-            };
+            var categoryEntity = _mapper.Map<Category>(dto);
 
             await _categoryRepository.Add(categoryEntity);
 
@@ -157,16 +146,10 @@ namespace Investo.DataAccess.Services.Categories
                     IsValid = false
                 };
             }
-
-            category.Name = dto.Name;
-
+            // map category with categoryDto using Automapper
+            _mapper.Map(dto, category);
             await _categoryRepository.Update(category);
-
-            var updatedCategoryDTO = new CategoryDTO
-            {
-                Id = category.Id,
-                Name = category.Name
-            };
+            var updatedCategoryDTO = _mapper.Map<CategoryDTO>(category);
 
             return new ValidationResult<CategoryDTO>
             {
@@ -174,6 +157,7 @@ namespace Investo.DataAccess.Services.Categories
                 ErrorMessage = null,
                 IsValid = true
             };
+
         }
 
 

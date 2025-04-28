@@ -47,6 +47,7 @@ namespace Investo
 
             builder.Services.AddScoped<IImageLoadService, CloudinaryImageLoadService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddAutoMapper(typeof (Program));
 
             builder.Services.AddScoped<IBusinessOwnerRepository, BusinessOwnerRepository>();
 

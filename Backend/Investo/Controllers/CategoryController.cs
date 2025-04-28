@@ -1,4 +1,5 @@
-﻿using Investo.DataAccess.Services.Interfaces;
+﻿using AutoMapper;
+using Investo.DataAccess.Services.Interfaces;
 using Investo.Entities.DTO.Category;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Http;
@@ -11,10 +12,12 @@ namespace Investo.Presentation.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly IMapper _mapper;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, IMapper mapper)
         {
             _categoryService = categoryService;
+            _mapper = mapper;
         }
 
         [HttpGet]
