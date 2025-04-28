@@ -26,9 +26,9 @@ namespace Investo.Presentation.Controllers
             var result = await _categoryService.GetAllCategoriesAsync();
             if (!result.IsValid)
             {
-                return BadRequest(new ValidationResult<IEnumerable<CategoryDTO>>(null, false, result.ErrorMessage));
+                return BadRequest(result);
             }
-            return Ok(result.Data);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -37,9 +37,9 @@ namespace Investo.Presentation.Controllers
             var result = await _categoryService.GetCategoryByIdAsync(id);
             if (!result.IsValid)
             {
-                return NotFound(new ValidationResult<CategoryDTO>(null, false, result.ErrorMessage));
+                return NotFound(result);
             }
-            return Ok(result.Data);
+            return Ok(result);
         }
 
         [HttpPost]
@@ -56,10 +56,10 @@ namespace Investo.Presentation.Controllers
 
             if (!createResult.IsValid)
             {
-                return BadRequest(new ValidationResult<CategoryDTO>(null, false, createResult.ErrorMessage));
+                return BadRequest(createResult);
             }
 
-            return StatusCode(201, new ValidationResult<CategoryDTO>(createResult.Data, true, "Category created successfully"));
+            return StatusCode(201, createResult);
         }
 
         [HttpPut("{id}")]
@@ -75,11 +75,11 @@ namespace Investo.Presentation.Controllers
             var updateResult = await _categoryService.UpdateCategory(id, dto);
 
             if (!updateResult.IsValid)
-            {
-                return BadRequest(new ValidationResult<CategoryDTO>(null, false, updateResult.ErrorMessage));
+            {   
+                return BadRequest(updateResult);
             }
 
-            return Ok(new ValidationResult<CategoryDTO>(updateResult.Data, true, "Category updated successfully"));
+            return Ok(updateResult);
         }
 
         [HttpDelete("{id}")]
@@ -88,7 +88,7 @@ namespace Investo.Presentation.Controllers
             var result = await _categoryService.DeleteCategory(id);
             if (!result.IsValid)
             {
-                return NotFound(new ValidationResult<object>(null, false, result.ErrorMessage));
+                return NotFound(result);
             }
 
             return Ok(new ValidationResult<object>(null, true, "Category deleted successfully"));
