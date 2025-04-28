@@ -60,7 +60,7 @@ namespace Investo.Presentation.Controllers
 
             return Ok(project);
         }
-        
+
         ///<summary>
         /// Create new project with default status "Pending" for only BusinessOwners
         /// </summary>
@@ -86,14 +86,10 @@ namespace Investo.Presentation.Controllers
                 var createdProject = await _projectService.CreateProject(dto);
                 return Ok(createdProject);
             }
-            catch (KeyNotFoundException ex)
+            catch (Exception ex)
             {
                 return NotFound(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            } 
 
         }
 
@@ -193,7 +189,7 @@ namespace Investo.Presentation.Controllers
 
         ///<summary>
         /// Retrieves all project requests based on the provided status (Pending, Accepted, Rejected) for admins only.
-        /// </summary>
+        ///// </summary>
         [HttpGet("GetProjectRequestsByStatus")]
         public async Task<IActionResult> GetProjectRequestsByStatus([FromQuery] string status)
         {
@@ -202,11 +198,11 @@ namespace Investo.Presentation.Controllers
                 // نحوّل الـ string لـ ProjectStatus
                 if (!Enum.TryParse<ProjectStatus>(status, true, out var projectStatus))
                 {
-                    return BadRequest("الـ Status غلط! لازم يكون Pending, Accepted, أو Rejected.");
+                    return BadRequest("الـ Status غلط! لازم يكون Pending, Accepted, أو Rejected."); 
                 }
 
                 var requests = await _projectService.GetProjectRequestsByStatusAsync(projectStatus);
-                if (requests == null || !requests.Any())
+                if (!requests.IsValid || requests.Data == null || !requests.Data.Any())
                 {
                     return NotFound($"مفيش طلبات مشاريع بالـ Status ده: {status}");
                 }
@@ -224,6 +220,6 @@ namespace Investo.Presentation.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
             }
         }
-       
+
     }
 }

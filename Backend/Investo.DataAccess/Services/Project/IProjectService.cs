@@ -10,18 +10,16 @@ namespace Investo.DataAccess.Services.Project
 {
     public interface IProjectService
     {
-        Task<IEnumerable<ProjectCardDetailsDto>> GetAllProjects();
-        Task<ProjectReadDto> GetProjectById(int id);
-        Task<ProjectReadDto> CreateProject(ProjectCreateUpdateDto dto);
-        Task<ProjectReadDto> UpdateProject(int id, ProjectCreateUpdateDto dto);
-        Task<List<ProjectReadDto>> GetProjectsByCategoryAsync(byte CategoryId);
+        Task<ValidationResult<IEnumerable<ProjectCardDetailsDto>>> GetAllProjects();
+        Task<ValidationResult<ProjectReadDto>> GetProjectById(int id);
+        Task<ValidationResult<ProjectReadDto>> CreateProject(ProjectCreateUpdateDto dto);
+        Task<ValidationResult<ProjectReadDto>> UpdateProject(int id, ProjectCreateUpdateDto dto);
+        Task<ValidationResult<List<ProjectReadDto>>> GetProjectsByCategoryAsync(byte CategoryId);
         Task<bool> DeleteProject(int id);
-        Task<ProjectRequestReviewDto> GetProjectReviewDtoByIdAsync(int id);
+        Task<ValidationResult<ProjectRequestReviewDto>> GetProjectReviewDtoByIdAsync(int id);
         Task<bool> UpdateProjectStatusAsync(ProjectStatusUpdateDto newProjectUpdateStateReq);
-        Task<ProjectStatusUpdateDto> GetProjectStatusByOwnerIdAsync(string OwnerId);
-        //Task<IEnumerable<ProjectRequestReviewDto>> GetAllPendingProjectRequestsForReviewAsync();
-        //Task<IEnumerable<ProjectRequestReviewDto>> GetAllAcceptedProjectRequestsAsync();
-        //Task<IEnumerable<ProjectRequestReviewDto>> GetAllRejectedProjectRequestsAsync();
-        Task<IEnumerable<ProjectRequestReviewDto>> GetProjectRequestsByStatusAsync(ProjectStatus status);
+        Task<ValidationResult<ProjectStatusUpdateDto>> GetProjectStatusByOwnerIdAsync(string OwnerId);
+        Task<ValidationResult<IEnumerable<ProjectRequestReviewDto>>> GetProjectRequestsByStatusAsync(ProjectStatus status);
+
     }
 }
