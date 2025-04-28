@@ -8,6 +8,7 @@ import { IBusinessProfile } from '../interfaces/IBusinessProfile';
   providedIn: 'root',
 })
 export class BusinessApprovalService {
+
   private pendingProjectsUrl = `${environment.baseApi}${environment.project.getAll}`;
   private updateProjectsUrl = `${environment.baseApi}${environment.project.updateById}`;
   constructor(private http: HttpClient) {}
@@ -21,5 +22,6 @@ export class BusinessApprovalService {
     status: 'Approved' | 'Rejected' | 'Pending'
   ): Observable<any> {
     return this.http.put(this.updateProjectsUrl, { projectId, status });
+
   }
 }
