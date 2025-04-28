@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { IInvestor } from '../interfaces/iinvestor';
+import { IInvestor } from '../../../auth/interfaces/iinvestor';
+import { environment } from '../../../../../environments/environment.development';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InvestorService {
-  private baseUrl = ''; //https://your-api-url.com/api/investors
+  private baseUrl = `${environment.baseApi}`;
 
   constructor(private http: HttpClient) {}
 

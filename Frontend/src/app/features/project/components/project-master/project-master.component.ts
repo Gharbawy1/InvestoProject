@@ -6,44 +6,54 @@ import { IProjectCard } from '../../interfaces/iprojectcard';
 import { ICategory } from '../../interfaces/icategory';
 import { CategoryService } from '../../services/category/category.service';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'project-master',
   standalone: true,
-  imports: [ProjectFilterComponent, ProjectCardComponent, MatPaginatorModule ],
+  imports: [
+    CommonModule,
+    ProjectFilterComponent,
+    ProjectCardComponent,
+    MatPaginatorModule,
+  ],
   templateUrl: './project-master.component.html',
-  styleUrls: ['./project-master.component.css'], 
-  providers:[ProjectCardService, CategoryService]
+  styleUrls: ['./project-master.component.css'],
+  providers: [ProjectCardService, CategoryService],
 })
-export class ProjectMasterComponent  { //implements OnInit
+export class ProjectMasterComponent implements OnInit {
+  //implements OnInit
 
   allProjects: IProjectCard[] = [];
   filteredProjects: IProjectCard[] = [];
-  categoriesList : ICategory[] = [];
-  currentPage: number = 1;
-  pageSize: number = 20; 
-  
-  constructor(private projectCardService: ProjectCardService, private categoriesService : CategoryService) {}
+  categoriesList: ICategory[] = [];
+  currentPage: number = 0;
+  pageSize: number = 20;
 
-  // ngOnInit(): void {
-    // this.projectCardService.getProjects().subscribe((prjctData) => {
-    //   this.allProjects = prjctData;
-    //   this.filteredProjects = [...prjctData]; 
-    // });
-    
-  //   this.categoriesService.getCategories().subscribe((categories)=>{
-  //     this.categoriesList = categories;
-  //   });
-  // }
+  constructor(
+    private projectCardService: ProjectCardService,
+    private categoriesService: CategoryService
+  ) {}
+
+  ngOnInit(): void {
+    this.projectCardService.getProjects().subscribe((prjctData) => {
+      this.allProjects = prjctData;
+      this.filteredProjects = [...prjctData];
+    });
+    console.log(this.filteredProjects);
+    this.categoriesService.getCategories().subscribe((categories) => {
+      this.categoriesList = categories;
+    });
+  }
 
   onFiltersChanged(filters: any) {
-    this.filteredProjects = this.allProjects.filter(p => {
+    this.filteredProjects = this.allProjects.filter((p) => {
       return filters.category ? p.category === filters.category : true;
     });
-    
-    this.currentPage = 1;
+
+    this.currentPage = 0;
   }
-  
+
   getPaginatedProjects(): IProjectCard[] {
     const startIndex = this.currentPage * this.pageSize;
     const endIndex = startIndex + this.pageSize;
@@ -52,8 +62,6 @@ export class ProjectMasterComponent  { //implements OnInit
 
   // Handle page change event
   onPageChange(event: any): void {
-    this.currentPage = event.pageIndex; 
+    this.currentPage = event.pageIndex;
   }
-  
-  
 }

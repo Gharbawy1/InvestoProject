@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IOffer } from '../interfaces/ioffer';
+import { environment } from '../../../../environments/environment.development';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OfferService {
-
-  private baseUrl = ''; // https://your-api-url.com/api/offers  =>API 
+  private baseUrl = `${environment.baseApi}`;
 
   constructor(private http: HttpClient) {}
 

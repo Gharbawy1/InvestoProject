@@ -42,14 +42,14 @@ export class AuthModelComponent implements AfterViewInit {
    * only if the code is running in a browser.
    */
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+   /* if (isPlatformBrowser(this.platformId)) {
       // Initialize third-party authentication services.
       this.authService.initializeAuth();
       // Set a short delay to ensure that external authentication buttons are fully initialized.
       setTimeout(() => {
         this.isButtonReady = true;
       }, 1000);
-    }
+    }*/
   }
 
   /**

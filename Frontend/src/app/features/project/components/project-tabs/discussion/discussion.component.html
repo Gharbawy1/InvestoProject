@@ -16,7 +16,7 @@
         <div *ngFor="let comment of comments; let i = index" class="flex space-x-4">
             <div class="flex-shrink-0">
                 <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-100">
-                    <img [src]="comment.avatar" [alt]="comment.user" class="w-full h-full object-cover" />
+                    <img title="avatar" [src]="comment.avatar" [alt]="comment.user" class="w-full h-full object-cover" />
                 </div>
             </div>
             <div class="flex-grow">

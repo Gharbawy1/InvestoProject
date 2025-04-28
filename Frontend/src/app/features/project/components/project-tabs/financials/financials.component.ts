@@ -1,27 +1,23 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-
-interface FinancialHighlight {
-  label: string;
-  value: string;
-}
+import { ProjectContextService } from '../../../services/project-context.service';
+import { IBusinessDetails } from '../../../interfaces/IBusinessDetails';
 
 @Component({
   selector: 'app-financials',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatProgressBarModule],
+  imports: [CommonModule, MatIconModule, MatProgressBarModule],
   templateUrl: './financials.component.html',
-  styleUrls: ['./financials.component.css']
+  styleUrls: ['./financials.component.css'],
 })
-export class FinancialsComponent {
-  @Input() financialHighlights: FinancialHighlight[] = [
-    { label: "Initial Investment", value: "$250,000" },
-    { label: "Projected Annual Revenue", value: "$420,000" },
-    { label: "Break-even Point", value: "18 months" },
-    { label: "5-Year ROI", value: "215%" },
-    { label: "Profit Margin", value: "32%" },
-    { label: "Investor Equity Offered", value: "15%" },
-  ];
+export class FinancialsComponent implements OnInit {
+  project: IBusinessDetails | null = null;
+
+  constructor(private ctx: ProjectContextService) {}
+
+  ngOnInit() {
+    this.ctx.project$.subscribe((p) => (this.project = p));
+  }
 }

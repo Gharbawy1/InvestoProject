@@ -1,37 +1,48 @@
 <section class="bg-gray-50 p-4 w-full rounded-lg shadow-md">
-    <!-- Search & Filter Row -->
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-        <!-- Search Bar -->
-        <div class="relative w-full md:w-96">
-            <input-component type="text" placeholder="Search by name..."  [ngModel]="searchTerm()"
-                (ngModelChange)="onSearchChange($event)" />
-        </div>
-
-        <!-- Sorting & More Filters -->
-        <div class="flex gap-2 items-center">
-            <span class="text-sm font-medium text-gray-500">
-                Sort By : 
-            </span>
-            <button-component variant="outline" size="sm" (click)="changeSortOrder()">
-                <span class="text-sm font-medium">
-                    <i class="fas fa-sort"></i> {{ sortOrder() === 'default' ? 'Default' : sortOrder() === 'funding' ?
-                    'Funding %' : 'Recent' }}
-                </span>
-            </button-component>
-        </div>
+  <!-- Search & Filter Row -->
+  <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+    <!-- Search Bar -->
+    <div class="relative w-full md:w-96">
+      <input-component
+        type="text"
+        placeholder="Search by name..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearchChange($event)"
+      />
     </div>
 
-    <!-- Categories -->
-    <div class="flex flex-wrap gap-2 mt-4 p-2 bg-gray-100 rounded-lg">
-        <button 
-            *ngFor="let category of [{id: 0, categoryName: 'All Projects'}].concat(this.categories)" 
-            class="px-4 py-1 text-sm rounded-full"
-            [ngClass]="{ 
-                'bg-white shadow-md font-semibold': activeCategoryId === category.id, 
-                'text-gray-600': activeCategoryId !== category.id 
-            }"
-            (click)="setCategory(category.id)">
-            {{ category.categoryName}}
-        </button>
+    <!-- Sorting & More Filters -->
+    <div class="flex gap-2 items-center">
+      <span class="text-sm font-medium text-gray-500"> Sort By : </span>
+      <button-component variant="outline" size="sm" (click)="changeSortOrder()">
+        <span class="text-sm font-medium">
+          <i class="fas fa-sort"></i>
+          {{
+            sortOrder() === "default"
+              ? "Default"
+              : sortOrder() === "funding"
+              ? "Funding %"
+              : "Recent"
+          }}
+        </span>
+      </button-component>
     </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="flex flex-wrap gap-2 mt-4 p-2 bg-gray-100 rounded-lg">
+    <button
+      *ngFor="
+        let category of [{ id: '0', name: 'All Projects' }].concat(categories)
+      "
+      class="px-4 py-1 text-sm rounded-full"
+      [ngClass]="{
+        'bg-white shadow-md font-semibold': activeCategoryId === +category.id,
+        'text-gray-600': activeCategoryId !== +category.id
+      }"
+      (click)="setCategory(+category.id)"
+    >
+      {{ category.name }}
+    </button>
+  </div>
 </section>

@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-project-approval-card',
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './project-approval-card.component.html',
-  styleUrls: ['./project-approval-card.component.css']
+  styleUrls: ['./project-approval-card.component.css'],
 })
 export class ProjectApprovalCardComponent implements OnInit {
   private projectService = inject(BusinessApprovalService);
@@ -39,9 +39,12 @@ export class ProjectApprovalCardComponent implements OnInit {
     );
   }
 
-  handleStatusChange(projectId: string, newStatus: 'approved' | 'rejected' | 'pending') {
+  handleStatusChange(
+    projectId: string,
+    newStatus: 'Approved' | 'Rejected' | 'Pending'
+  ) {
     // Optimistically update UI
-    this.projects = this.projects.map(project =>
+    this.projects = this.projects.map((project) =>
       project.id === projectId ? { ...project, status: newStatus } : project
     );
 
@@ -72,20 +75,11 @@ export class ProjectApprovalCardComponent implements OnInit {
     }
   }
 
-  formatDate(dateString: string): string {
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  }
-
   formatCurrency(amount: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(amount);
   }
 

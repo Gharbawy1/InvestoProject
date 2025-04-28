@@ -1,12 +1,20 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { ProjectContextService } from '../../../services/project-context.service';
+import { IBusinessDetails } from '../../../interfaces/IBusinessDetails';
 
 @Component({
   selector: 'app-business-info',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './business-info.component.html'
+  imports: [CommonModule, MatIconModule],
+  templateUrl: './business-info.component.html',
 })
-export class BusinessInfoComponent {
-  @Input() businessData: any;
+export class BusinessInfoComponent implements OnInit {
+  project: IBusinessDetails | null = null;
+
+  constructor(private ctx: ProjectContextService) {}
+
+  ngOnInit() {
+    this.ctx.project$.subscribe((p) => (this.project = p));
+  }
 }
