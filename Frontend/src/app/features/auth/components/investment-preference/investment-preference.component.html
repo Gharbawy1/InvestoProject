@@ -1,12 +1,21 @@
 <div class="p-6 space-y-8 animate-fade-in">
-  <h2 class="text-2xl font-bold text-gray-900 text-center">Investment Preferences</h2>
+  <h2 class="text-2xl font-bold text-gray-900 text-center">
+    Investment Preferences
+  </h2>
 
   <!-- Investor Preference Form -->
-  <form *ngIf="selectedRole==='investor'" [formGroup]="investorPreferenceForm" (ngSubmit)="onSubmit()" class="space-y-4 animate-stagger">
+  <form
+    *ngIf="selectedRole === 'investor'"
+    [formGroup]="investorPreferenceForm"
+    (ngSubmit)="onSubmit()"
+    class="space-y-4 animate-stagger"
+  >
     <!-- Preferred Industries & Geographic Focus -->
     <div class="grid grid-cols-2 gap-4">
       <div class="flex flex-col gap-0.5 form-group">
-        <label for="preferredIndustries" class="text-sm font-medium">Preferred Industries</label>
+        <label for="preferredIndustries" class="text-sm font-medium"
+          >Preferred Industries</label
+        >
         <input
           id="preferredIndustries"
           formControlName="preferredIndustries"
@@ -14,15 +23,20 @@
           class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
         />
         <div class="min-h-[20px]">
-          <p *ngIf="investorPreferenceForm.get('preferredIndustries')?.errors?.['required'] && (investorPreferenceForm.get('preferredIndustries')?.touched || formSubmitted)"
-             class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+          <p
+            *ngIf="investorPreferenceForm.get('preferredIndustries')?.errors?.['required'] && (investorPreferenceForm.get('preferredIndustries')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
             * Preferred industries are required
           </p>
         </div>
       </div>
 
       <div class="flex flex-col gap-0.5 form-group">
-        <label for="geographicFocus" class="text-sm font-medium">Geographic Focus</label>
+        <label for="geographicFocus" class="text-sm font-medium"
+          >Geographic Focus</label
+        >
         <input
           id="geographicFocus"
           formControlName="geographicFocus"
@@ -30,8 +44,11 @@
           class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
         />
         <div class="min-h-[20px]">
-          <p *ngIf="investorPreferenceForm.get('geographicFocus')?.errors?.['required'] && (investorPreferenceForm.get('geographicFocus')?.touched || formSubmitted)"
-             class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+          <p
+            *ngIf="investorPreferenceForm.get('geographicFocus')?.errors?.['required'] && (investorPreferenceForm.get('geographicFocus')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
             * Geographic focus is required
           </p>
         </div>
@@ -40,20 +57,27 @@
 
     <!-- Risk Tolerance -->
     <div class="flex flex-col gap-0.5 form-group">
-      <label for="riskTolerance" class="text-sm font-medium">Risk Tolerance</label>
+      <label for="riskTolerance" class="text-sm font-medium"
+        >Risk Tolerance</label
+      >
       <select
         id="riskTolerance"
         formControlName="riskTolerance"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 cursor-pointer transition-select select-hover"
       >
-        <option value="" disabled class="text-gray-400">-- Select your risk tolerance --</option>
+        <option value="" disabled class="text-gray-400">
+          -- Select your risk tolerance --
+        </option>
         <option value="low">Low</option>
         <option value="moderate">Moderate</option>
         <option value="high">High</option>
       </select>
       <div class="min-h-[20px]">
-        <p *ngIf="investorPreferenceForm.get('riskTolerance')?.errors?.['required'] && (investorPreferenceForm.get('riskTolerance')?.touched || formSubmitted)"
-           class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+        <p
+          *ngIf="investorPreferenceForm.get('riskTolerance')?.errors?.['required'] && (investorPreferenceForm.get('riskTolerance')?.touched || formSubmitted)"
+          class="text-red-500 text-sm animate-slide-in error-message"
+          aria-live="polite"
+        >
           * Please select a risk tolerance level
         </p>
       </div>
@@ -61,7 +85,9 @@
 
     <!-- Investment Goals -->
     <div class="flex flex-col gap-0.5 form-group">
-      <label for="investmentGoals" class="text-sm font-medium">Investment Goals</label>
+      <label for="investmentGoals" class="text-sm font-medium"
+        >Investment Goals</label
+      >
       <input
         id="investmentGoals"
         formControlName="investmentGoals"
@@ -69,8 +95,11 @@
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
       />
       <div class="min-h-[20px]">
-        <p *ngIf="investorPreferenceForm.get('investmentGoals')?.errors?.['required'] && (investorPreferenceForm.get('investmentGoals')?.touched || formSubmitted)"
-           class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+        <p
+          *ngIf="investorPreferenceForm.get('investmentGoals')?.errors?.['required'] && (investorPreferenceForm.get('investmentGoals')?.touched || formSubmitted)"
+          class="text-red-500 text-sm animate-slide-in error-message"
+          aria-live="polite"
+        >
           * Investment goals are required
         </p>
       </div>
@@ -79,7 +108,9 @@
     <!-- Investment Range -->
     <div class="grid grid-cols-2 gap-4">
       <div class="flex flex-col gap-0.5 form-group">
-        <label for="minInvestment" class="text-sm font-medium">Minimum Investment</label>
+        <label for="minInvestment" class="text-sm font-medium"
+          >Minimum Investment</label
+        >
         <input
           id="minInvestment"
           type="number"
@@ -88,19 +119,27 @@
           class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
         />
         <div class="min-h-[20px]">
-          <p *ngIf="investorPreferenceForm.get('minInvestment')?.errors?.['required'] && (investorPreferenceForm.get('minInvestment')?.touched || formSubmitted)"
-             class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+          <p
+            *ngIf="investorPreferenceForm.get('minInvestment')?.errors?.['required'] && (investorPreferenceForm.get('minInvestment')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
             * Minimum investment is required
           </p>
-          <p *ngIf="investorPreferenceForm.get('minInvestment')?.errors?.['min']"
-             class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+          <p
+            *ngIf="investorPreferenceForm.get('minInvestment')?.errors?.['min']"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
             * Must be at least $0
           </p>
         </div>
       </div>
 
       <div class="flex flex-col gap-0.5 form-group">
-        <label for="maxInvestment" class="text-sm font-medium">Maximum Investment</label>
+        <label for="maxInvestment" class="text-sm font-medium"
+          >Maximum Investment</label
+        >
         <input
           id="maxInvestment"
           type="number"
@@ -109,24 +148,35 @@
           class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
         />
         <div class="min-h-[20px]">
-          <p *ngIf="investorPreferenceForm.get('maxInvestment')?.errors?.['required'] && (investorPreferenceForm.get('maxInvestment')?.touched || formSubmitted)"
-             class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+          <p
+            *ngIf="investorPreferenceForm.get('maxInvestment')?.errors?.['required'] && (investorPreferenceForm.get('maxInvestment')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
             * Maximum investment is required
           </p>
-          <p *ngIf="investorPreferenceForm.get('maxInvestment')?.errors?.['min']"
-             class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+          <p
+            *ngIf="investorPreferenceForm.get('maxInvestment')?.errors?.['min']"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
             * Must be at least $0
           </p>
         </div>
       </div>
     </div>
-    <div *ngIf="investorPreferenceForm.errors?.['maxLessThanMin']" class="text-red-500 text-sm -mt-2 animate-slide-in error-message">
+    <div
+      *ngIf="investorPreferenceForm.errors?.['maxLessThanMin']"
+      class="text-red-500 text-sm -mt-2 animate-slide-in error-message"
+    >
       * Maximum investment must be greater than minimum investment
     </div>
 
     <!-- Liquidity Preferences -->
     <div class="flex flex-col gap-0.5 form-group">
-      <label for="liquidityPreferences" class="text-sm font-medium">Liquidity Preferences</label>
+      <label for="liquidityPreferences" class="text-sm font-medium"
+        >Liquidity Preferences</label
+      >
       <input
         id="liquidityPreferences"
         formControlName="liquidityPreferences"
@@ -134,30 +184,29 @@
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
       />
       <div class="min-h-[20px]">
-        <p *ngIf="investorPreferenceForm.get('liquidityPreferences')?.errors?.['required'] && (investorPreferenceForm.get('liquidityPreferences')?.touched || formSubmitted)"
-           class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+        <p
+          *ngIf="investorPreferenceForm.get('liquidityPreferences')?.errors?.['required'] && (investorPreferenceForm.get('liquidityPreferences')?.touched || formSubmitted)"
+          class="text-red-500 text-sm animate-slide-in error-message"
+          aria-live="polite"
+        >
           * Liquidity preferences are required
         </p>
       </div>
     </div>
 
     <!-- Submit Button -->
-    <button 
-      type="submit" 
-      [disabled]="isLoading || investorPreferenceForm.invalid" 
+    <button
+      type="submit"
+      [disabled]="investorPreferenceForm.invalid"
       class="w-full text-sm font-medium py-2 mb-2 rounded-md transition flex items-center justify-center cursor-pointer transition-button button-hover"
       [ngClass]="{
-        'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700': !isLoading && investorPreferenceForm.valid,
-        'bg-gray-300 text-gray-500 cursor-not-allowed': isLoading || investorPreferenceForm.invalid
-      }">
-      <span *ngIf="!isLoading">Complete Registration</span>
-      <span *ngIf="isLoading" class="flex items-center">
-        <svg class="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="10" stroke-width="4"></circle>
-          <path d="M4 12a8 8 0 0 1 16 0" stroke-linecap="round"></path>
-        </svg>
-        Processing...
-      </span>
+        'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700':
+          investorPreferenceForm.valid,
+        'bg-gray-300 text-gray-500 cursor-not-allowed':
+          investorPreferenceForm.invalid
+      }"
+    >
+      <span>Complete Registration</span>
     </button>
   </form>
 </div>

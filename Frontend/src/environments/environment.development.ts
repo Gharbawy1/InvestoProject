@@ -47,8 +47,6 @@ export const environment = {
     reviewProject: (projectId: number) => `/Project/review/${projectId}`,
     updateReviewStatus: '/Project/review/status',
     getStatusByOwner: (ownerId: string) => `/Project/status/owner/${ownerId}`,
-    getPendingProjects: '/Project/review/pending',
-    getAcceptedProjects: '/Project/review/accepted',
-    getRejectedProjects: '/Project/review/rejected',
+    getPendingProjects: '/Project/GetProjectByStatus',
   },
 };

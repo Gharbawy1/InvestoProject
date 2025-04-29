@@ -147,7 +147,6 @@ export class BusinessCreationComponent implements OnInit {
     formData.append('currentVision', formValues.currentVision);
     formData.append('goals', formValues.goals);
     formData.append('categoryId', formValues.categoryId.toString());
-    formData.append('ownerId', formValues.ownerId.toString());
 
     // Append the ID of the current user as the project owner
     if (this.ownerId !== null) {
@@ -180,19 +179,6 @@ export class BusinessCreationComponent implements OnInit {
         this.isLoading = false;
       },
     });
-    //for test
-    /*this.businessCreationService.postBusinessJSON(payload).subscribe({
-      next: () => {
-        console.log('Created successfully');
-        this.isLoading = false;
-        this.router.navigate(['/ProjectDetails']);
-        this.businessForm.reset();
-      },
-      error: err => {
-        console.error('Creation error', err);
-        this.isLoading = false;
-      }
-    });*/
   }
 
   /**

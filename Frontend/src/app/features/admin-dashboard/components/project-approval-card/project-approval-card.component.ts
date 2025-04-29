@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, Input, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BusinessApprovalService } from '../../services/business-approval.service';
@@ -11,33 +11,11 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './project-approval-card.component.html',
   styleUrls: ['./project-approval-card.component.css'],
 })
-export class ProjectApprovalCardComponent implements OnInit {
+export class ProjectApprovalCardComponent {
   private projectService = inject(BusinessApprovalService);
 
-  projects: IBusinessProfile[] = [];
-  loading = true;
+  @Input() projects: IBusinessProfile[] = [];
   error: string | null = null;
-
-  ngOnInit() {
-    this.fetchProjects();
-  }
-
-  fetchProjects() {
-    this.loading = true;
-    this.projectService.getProjects().subscribe(
-      (projects) => {
-        this.projects = projects;
-        this.error = null;
-      },
-      (err) => {
-        this.error = 'Failed to load projects. Please try again.';
-        console.error('Error fetching projects:', err);
-      },
-      () => {
-        this.loading = false;
-      }
-    );
-  }
 
   handleStatusChange(
     projectId: string,
@@ -48,18 +26,15 @@ export class ProjectApprovalCardComponent implements OnInit {
       project.id === projectId ? { ...project, status: newStatus } : project
     );
 
-    this.projectService.updateProjectStatus(projectId, newStatus).subscribe(
-      () => {
+    this.projectService.updateProjectStatus(projectId, newStatus).subscribe({
+      next: () => {
         // Status updated successfully, no need to do anything
+        console.log('Status updated successfully');
       },
-      (err) => {
+      error: (err) => {
         this.error = 'Failed to update project status. Please try again.';
-        console.error('Error updating project status:', err);
-
-        // Revert the optimistic update and refresh the project list
-        this.fetchProjects();
-      }
-    );
+      },
+    });
   }
 
   getStatusBadgeClass(status: string): string {
