@@ -4,13 +4,16 @@ import { HttpClient } from '@angular/common/http';
 import { IGuest } from '../interfaces/iguest';
 import { IBusiness } from '../interfaces/ibusiness';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment.development';
+import { IInvestor } from '../interfaces/iinvestor';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RegisterService {
-  private guestUrl = ''; //https://yourapi.com/api/register/guest
-  private businessUrl = ''; //https://yourapi.com/api/register/business
+  private guestUrl = `${environment.baseApi}${environment.account.registerUser}`;
+  private businessUrl = `${environment.baseApi}${environment.account.registerBusinessOwner}`;
+  private investorUrl = `${environment.baseApi}${environment.account.registerInvestor}`;
 
   constructor(private http: HttpClient) {}
 
@@ -24,5 +27,12 @@ export class RegisterService {
       formData.append(key, value);
     });
     return this.http.post(this.businessUrl, formData);
+  }
+  registerInvestor(investorData: IInvestor): Observable<any> {
+    const formData = new FormData();
+    Object.entries(investorData).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    return this.http.post(this.investorUrl, formData);
   }
 }

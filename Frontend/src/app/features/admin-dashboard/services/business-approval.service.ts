@@ -8,17 +8,20 @@ import { IBusinessProfile } from '../interfaces/IBusinessProfile';
   providedIn: 'root',
 })
 export class BusinessApprovalService {
-  private apiUrl = `${environment.apiBase}/businessProfiles`;
+
+  private pendingProjectsUrl = `${environment.baseApi}${environment.project.getAll}`;
+  private updateProjectsUrl = `${environment.baseApi}${environment.project.updateById}`;
   constructor(private http: HttpClient) {}
 
   getProjects(): Observable<IBusinessProfile[]> {
-    return this.http.get<IBusinessProfile[]>(this.apiUrl);
+    return this.http.get<IBusinessProfile[]>(this.pendingProjectsUrl);
   }
 
   updateProjectStatus(
     projectId: string,
     status: 'Approved' | 'Rejected' | 'Pending'
   ): Observable<any> {
-    return this.http.patch(this.apiUrl, { projectId, status });
+    return this.http.put(this.updateProjectsUrl, { projectId, status });
+
   }
 }

@@ -5,10 +5,10 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment.development';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoryService {
-  private apiUrl = `${environment.categoryUrl}`;
+  private apiUrl = `${environment.baseApi}${environment.category.getAll}`;
 
   constructor(private http: HttpClient) {}
 
