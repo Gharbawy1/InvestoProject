@@ -2,13 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import {
-  BusinessDetailsService,
-  UserDetails,
-} from '../../features/project/services/business-details/business-details.service';
+import { UserDetails} from '../../features/project/services/business-details/business-details.service';
 import { ProjectTabsComponent } from '../../features/project/components/project-tabs/project-tabs.component';
 import { InvestmentSidebarComponent } from '../../features/project/components/investment-sidebar/investment-sidebar.component';
-import { BusinessCreationComponent } from '../business-creation/business-creation.component';
 import { ProjectContextService } from '../../features/project/services/project-context.service';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -36,13 +32,25 @@ export class ProjectDetailsComponent implements OnInit {
 
   activeTab: string = 'overview';
 
-  isOwnerRejected = false;
   isProjectOwner = false;
 
+  blockMessage = '';
+  navigationPath: string[] = ['/'];
+  navigationButtonText = 'Go home';
+
+  private blockAccess(config: {
+    message: string;
+    path: string[];
+    buttonText?: string;
+  }) {
+    this.blockMessage = config.message;
+    this.navigationPath = config.path;
+    this.navigationButtonText = config.buttonText || 'Go home';
+  }
+
   constructor(
-    private businessDetailsService: BusinessDetailsService,
     private projectContext: ProjectContextService,
-    private router: Router,
+    public router: Router,
     private route: ActivatedRoute,
     private authService: AuthService
   ) {}
@@ -54,23 +62,45 @@ export class ProjectDetailsComponent implements OnInit {
         next: ({ projectData }) => {
           if (!projectData) return;
 
-          console.log('Received project data:', projectData);
-
           this.project = projectData.project;
           this.owner = projectData.owner;
-
           this.isProjectOwner = this.authService.getUserId() === this.owner?.id;
-          this.isOwnerRejected =
-            this.project?.status.toLowerCase() === 'rejected';
+          
+          const status = this.project?.status.toLowerCase() || 'pending';
 
-          console.log('Component Check:', {
-            isProjectOwner: this.isProjectOwner,
-            isOwnerRejected: this.isOwnerRejected,
-          });
+          // Handle rejected projects
+          if (status === 'rejected') {
+            if (this.isProjectOwner) {
+              this.blockAccess({
+                message: 'Your project has been rejected. Please create a new business.',
+                path: ['/business-creation'],
+                buttonText: 'Create New Business'
+              });
+            } else {
+              this.blockAccess({
+                message: 'This project is no longer available.',
+                path: ['/']
+              });
+            }
+            this.isLoading = false;
+            return;
+          }
 
-          if (this.isOwnerRejected && !this.isProjectOwner) {
-            console.log('Redirecting non-owner from rejected project');
-            this.router.navigate(['/']);
+          // Handle pending projects
+          if (status === 'pending') {
+            if (this.isProjectOwner) {
+              this.blockAccess({
+                message: 'Your project is under review. Please check back later.',
+                path: ['/dashboard'],
+                buttonText: 'Go to Dashboard'
+              });
+            } else {
+              this.blockAccess({
+                message: 'This project is not yet available for investment.',
+                path: ['/']
+              });
+            }
+            this.isLoading = false;
             return;
           }
 
@@ -178,7 +208,7 @@ export class ProjectDetailsComponent implements OnInit {
 
   /** current funding */
   get currentFunding(): number {
-    return 5000;
+    return this.project?.raisedFund || 0;
   }
 
   /** number of investor */
@@ -189,10 +219,5 @@ export class ProjectDetailsComponent implements OnInit {
   /** project team */
   get projectTeam(): string[] {
     return ['John Doe', 'Jane Smith', 'Alice Johnson'];
-  }
-
-  /** market analysis */
-  get marketAnalysis(): string {
-    return 'Market analysis content goes here.';
   }
 }

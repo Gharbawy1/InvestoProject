@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { IProjectCard } from '../../interfaces/iprojectcard';
 import { environment } from '../../../../../environments/environment.development';
 import { IBusiness } from '../../interfaces/IBusiness';
@@ -15,7 +15,9 @@ export class ProjectCardService {
   constructor(private http: HttpClient) {}
 
   getProjects(): Observable<IProjectCard[]> {
-    return this.http.get<IProjectCard[]>(this.apiUrl);
+    return this.http.get<any>(this.apiUrl).pipe(
+      map(response => response.data.map((project: IBusinessDetails) => this.mapToProjectCard(project)))
+    );
   }
 
   progressPercentage(fundingProgress: number, fundingGoal: number): number {
@@ -29,7 +31,7 @@ export class ProjectCardService {
       subtitle: apiResponse.subtitle,
       projectImageURL: apiResponse.projectImageUrl,
       fundingGoal: apiResponse.fundingGoal,
-      raisedFunds: 0,
+      raisedFunds: apiResponse.raisedFund,
       category: apiResponse.categoryName,
       owner: apiResponse.ownerId,
     };

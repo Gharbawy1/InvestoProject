@@ -1,5 +1,7 @@
 export interface IDocument {
-    name: string;
-    type: string;
-    url: string;
-  }
+  id: string;
+  title: string,
+  type: string;
+  url: string;
+  userId: string
+}

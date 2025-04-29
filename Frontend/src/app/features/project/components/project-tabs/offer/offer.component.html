@@ -1,0 +1,190 @@
+<div class="space-y-8 max-w-[950px] mx-auto">
+
+  <!-- Block Message Card -->
+  <div *ngIf="!showForm" class="bg-white rounded-2xl shadow-lg p-6 text-center space-y-4">
+    <mat-icon class="text-red-500 text-4xl">warning</mat-icon>
+    <h3 class="text-xl font-semibold text-gray-900">{{ blockMessage }}</h3>
+    
+    <button 
+      mat-raised-button
+      color="primary"
+      (click)="router.navigate(navigationPath)"
+      class="w-full md:w-auto"
+    >
+      {{ navigationButtonText }}
+    </button>
+  </div>
+
+  <!-- Offer Form Card -->
+  <div *ngIf="showForm && canSubmit" class="bg-white rounded-2xl shadow-lg p-6 space-y-6">
+    <h3 class="text-xl font-bold text-gray-900 tracking-tight">
+      Submit Investment Offer
+    </h3>
+
+    <!-- Success/Error Messages -->
+    <div *ngIf="successMessage" class="p-4 bg-green-50 text-green-700 rounded-lg flex items-center gap-2">
+      <mat-icon>check_circle</mat-icon>
+      {{ successMessage }}
+    </div>
+
+    <form (ngSubmit)="submit()" #offerForm="ngForm" class="space-y-6">
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-gray-700">Offer Amount (LE)</label>
+        <div class="relative">
+          <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 scale-90">
+            currency_pound
+          </mat-icon>
+          <input
+            type="number"
+            [(ngModel)]="offer.offerAmount"
+            #offerAmountInput="ngModel"
+            name="offerAmount"
+            required
+            min="10000"
+            max="100000000"
+            step="100"
+            class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300/50 focus:border-blue-400 transition-all"
+            placeholder="Enter amount"
+          />
+        </div>
+        <div class="min-h-[20px]">
+          <p *ngIf="offerAmountInput.invalid && (offerAmountInput.touched || formSubmitted)" 
+             class="text-red-500 text-sm animate-slide-in">
+            * Amount must be between LE10,000 and LE100,000,000
+          </p>
+        </div>
+      </div>
+
+      <!-- Investment Type Select -->
+      <div class="space-y-2">
+        <label for="investmentType" class="text-sm font-medium text-gray-700">Investment Type</label>
+        <select 
+          id="investmentType"
+          [(ngModel)]="offer.investmentType"
+          #investmentTypeInput="ngModel"
+          name="investmentType"
+          class="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300/50 focus:border-blue-400 appearance-none bg-white cursor-pointer hover:border-gray-300 transition-all"
+          required
+        >
+          <option value="" disabled selected>Select investment type</option>
+          <option *ngFor="let type of investmentTypes" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+        <div class="min-h-[20px]">
+          <p *ngIf="investmentTypeInput.invalid && (investmentTypeInput.touched || formSubmitted)" 
+             class="text-red-500 text-sm animate-slide-in">
+            * Please select an investment type
+          </p>
+        </div>
+      </div>
+
+      <!-- Equity & Profit Share Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700">Equity Percentage</label>
+          <div class="relative">
+            <input
+              type="number"
+              [(ngModel)]="offer.equityPercentage"
+              #equityPercentageInput="ngModel"
+              name="equityPercentage"
+              min="0"
+              max="100"
+              class="w-full pl-4 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300/50 focus:border-blue-400"
+              placeholder="0-100%"
+            >
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+          </div>
+          <div class="min-h-[20px]">
+            <p *ngIf="equityPercentageInput.invalid && (equityPercentageInput.touched || formSubmitted)" 
+               class="text-red-500 text-sm animate-slide-in">
+              * Must be between 0% and 100%
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700">Profit Share</label>
+          <div class="relative">
+            <input
+              type="number"
+              [(ngModel)]="offer.profitShare"
+              #profitShareInput="ngModel"
+              name="profitShare"
+              min="0"
+              max="100"
+              class="w-full pl-4 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300/50 focus:border-blue-400"
+              placeholder="0-100%"
+            >
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+          </div>
+          <div class="min-h-[20px]">
+            <p *ngIf="profitShareInput.invalid && (profitShareInput.touched || formSubmitted)" 
+               class="text-red-500 text-sm animate-slide-in">
+              * Must be between 0% and 100%
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offer Terms -->
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-gray-700">Offer Terms</label>
+        <textarea
+          [(ngModel)]="offer.offerTerms"
+          #offerTermsInput="ngModel"
+          name="offerTerms"
+          rows="4"
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300/50 focus:border-blue-400"
+          placeholder="Describe your offer terms..."
+          required
+        ></textarea>
+        <div class="min-h-[20px]">
+          <p *ngIf="offerTermsInput.invalid && (offerTermsInput.touched || formSubmitted)" 
+             class="text-red-500 text-sm animate-slide-in">
+            * Offer terms are required
+          </p>
+        </div>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div class="space-y-3">
+        <button 
+          type="submit"
+          [disabled]="isLoading || !canSubmit || !isValid()"
+          class="w-full text-sm font-medium py-2 mb-2 mt-1.5 rounded-md transition flex items-center justify-center cursor-pointer transition-button button-hover"
+          [ngClass]="{
+            'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700': !isLoading && canSubmit && isValid(),
+            'bg-gray-300 text-gray-500 cursor-not-allowed': isLoading || !canSubmit || !isValid()
+          }">
+          <span *ngIf="!isLoading">Submit Offer</span>
+          <span *ngIf="isLoading" class="flex items-center">
+            <mat-spinner>Processing...</mat-spinner>
+            Processing...
+          </span>
+        </button>
+
+        <div class="min-h-[20px]">
+          <p *ngIf="errorMessage" 
+            class="animate-slide-in error-message text-red-500 text-sm text-center" 
+            aria-live="polite">
+            {{ errorMessage }}
+          </p>
+        </div>
+      </div>
+    </form>
+
+    <!-- Confidentiality Notice -->
+    <div class="mt-6 p-4 bg-blue-50 rounded-lg text-sm text-gray-600">
+      <mat-icon class="align-middle mr-2 text-blue-500">security</mat-icon>
+      All offers are confidential and subject to our terms of service. By submitting, you agree to our NDA.
+    </div>
+  </div>
+
+    <!-- Loading State -->
+    <div *ngIf="showForm && !canSubmit" class="text-center p-6">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p class="mt-4 text-gray-600">Verifying offer eligibility...</p>
+    </div>
+</div>

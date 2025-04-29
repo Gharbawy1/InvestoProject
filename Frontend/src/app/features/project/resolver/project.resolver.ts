@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { BusinessDetailsService } from '../services/business-details/business-details.service';
 import { map, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Injectable({ providedIn: 'root' })
@@ -36,7 +36,7 @@ export class ProjectResolver {
 
         if (isRejected && !isOwner) {
           this.router.navigate(['/']);
-          return null;
+          return EMPTY;
         }
 
         return data;

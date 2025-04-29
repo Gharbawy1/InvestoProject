@@ -1,34 +1,66 @@
-<div class="documents-container">
-    <h2 class="documents-title">Project Documents</h2>
-    <p class="documents-description">
-        Review the following documents to get a comprehensive
-        understanding of the project, its financial projections, and
-        technical specifications.
-    </p>
+<!-- Loading Spinner -->
+<div *ngIf="loading" class="flex justify-center py-10">
+  <mat-spinner diameter="40" color="primary"></mat-spinner>
+</div>
 
-    <div class="documents-list">
-        <div *ngFor="let doc of documents" class="document-card">
-            <div class="document-info">
-                <mat-icon class="document-icon">description</mat-icon>
-                <div>
-                    <p class="document-name">{{ doc.name }}</p>
-                    <p class="document-type">{{ doc.type }} File</p>
-                </div>
-            </div>
-            <a [href]="doc.url" class="download-link">
-                Download
-            </a>
+<!-- Error State -->
+<div *ngIf="error && !loading" class="text-center text-red-600 font-medium">
+  {{ error }}
+</div>
+
+<div class="space-y-8 max-w-[950px] mx-auto">
+
+  <!-- Documents Section -->
+  <div class="bg-white rounded-2xl shadow-lg p-6 space-y-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900">Project Documents</h2>
+        <p class="text-gray-600 mt-1">Review key documents related to this investment opportunity</p>
+      </div>
+    </div>
+
+    <!-- Documents List -->
+    <div class="space-y-4">
+      <div *ngFor="let doc of documents" class="flex items-center justify-between p-4 hover:bg-gray-100 transition rounded-lg border border-gray-200">
+        <div class="flex items-center gap-4">
+          <mat-icon class="text-blue-500">{{ getFileIcon(doc.type) }}</mat-icon>
+          <div>
+            <p class="font-medium text-gray-900">{{ doc.title }}</p>
+            <p class="text-sm text-gray-500">{{ doc.type | uppercase }} File</p>
+          </div>
         </div>
-    </div>
+        
+        <div class="flex items-center gap-2">
+          <button mat-icon-button class="text-gray-600 hover:bg-gray-100" (click)="previewDocument(doc)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button class="text-gray-600 hover:bg-gray-100" (click)="downloadDocument(doc)">
+            <mat-icon>download</mat-icon>
+          </button>
+        </div>
+      </div>
 
-    <div class="confidentiality-notice">
-        <h3 class="notice-title">Confidentiality Notice</h3>
-        <p class="notice-text">
-            The documents provided contain confidential and
-            proprietary information. By accessing these documents, you
-            agree to maintain the confidentiality of the information
-            and use it solely for the purpose of evaluating a
-            potential investment in this project.
-        </p>
+      <!-- Empty State -->
+      <div *ngIf="documents.length === 0" class="text-center py-8 text-gray-500">
+        <mat-icon class="text-4xl mb-2">folder_off</mat-icon>
+        <p class="font-medium">No documents found</p>
+      </div>
     </div>
+  </div>
+
+  <!-- Confidentiality Notice -->
+  <div class="bg-white rounded-2xl shadow-lg p-6">
+    <div class="flex items-start gap-4">
+      <mat-icon class="text-red-500 pt-1 pl-0 p-6 ">warning</mat-icon>
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Confidentiality Notice</h3>
+        <p class="text-gray-700 leading-relaxed">
+          These documents contain confidential information protected under NDA #2023-INV-456. 
+          By accessing this content, you agree to maintain strict confidentiality and use it 
+          solely for evaluation purposes.
+        </p>
+      </div>
+    </div>
+  </div>
+
 </div>

@@ -1,3 +1,32 @@
+<!-- Block Message Card -->
+<div *ngIf="blockMessage" class="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm">
+  <div class="min-h-screen flex items-center justify-center p-6 animate-fade-in">
+    <div class="max-w-md w-full space-y-6 text-center">
+      
+      <!-- Icon Container -->
+      <div class="flex justify-center animate-pulse">
+        <div class="p-5 bg-red-100 rounded-full shadow-lg">
+          <mat-icon class="text-red-600 text-5xl">warning</mat-icon>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-3xl font-bold text-gray-900 tracking-tight">{{ blockMessage }}</h3>
+        <p class="text-gray-600 text-lg leading-relaxed">
+      </div>
+
+      <button 
+        mat-raised-button
+        color="primary"
+        (click)="router.navigate(navigationPath)"
+        class="w-full max-w-xs mx-auto py-4 text-lg font-medium hover:scale-[1.02] active:scale-95 transition-transform shadow-lg hover:shadow-xl"
+      >
+        {{ navigationButtonText }}
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Loading State -->
 <ng-container *ngIf="isLoading">
   <div class="min-h-screen flex items-center justify-center">
@@ -5,58 +34,8 @@
   </div>
 </ng-container>
 
-<!-- Add at the top of your template -->
-<div
-  *ngIf="!isLoading && isOwnerRejected && isProjectOwner"
-  class="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm"
->
-  <div class="min-h-screen flex items-center justify-center p-4">
-    <div class="max-w-2xl w-full text-center space-y-8 animate-fade-in-up">
-      <!-- Error Icon -->
-      <div class="flex justify-center">
-        <div class="p-6 bg-red-100 rounded-full animate-pulse">
-          <mat-icon class="text-red-600 scale-[2]">dangerous</mat-icon>
-        </div>
-      </div>
-
-      <!-- Content -->
-      <div class="space-y-4">
-        <h1 class="text-4xl font-bold text-red-900 tracking-tight">
-          Project Rejected
-        </h1>
-        <p class="text-xl text-red-800/90 max-w-prose mx-auto leading-relaxed">
-          We're sorry, your project "<span class="font-medium">{{ title }}</span
-          >" did not meet our current investment criteria. Please review our
-          guidelines and try again.
-        </p>
-      </div>
-
-      <!-- Action Button -->
-      <button
-        mat-raised-button
-        color="primary"
-        class="w-full max-w-xs mx-auto py-3 text-lg"
-        (click)="goToBusinessCreation()"
-      >
-        Create New Business
-      </button>
-
-      <!-- Supplemental Text -->
-      <p class="text-sm text-gray-600 mt-8">
-        Need help?
-        <a href="/support" class="text-red-700 hover:underline font-medium"
-          >Contact our support team</a
-        >
-      </p>
-    </div>
-  </div>
-</div>
-
-<div
-  *ngIf="!isLoading && !isOwnerRejected"
-  class="w-full bg-white min-h-screen"
->
-  <!-- Image Section - Enhanced -->
+<div *ngIf="!blockMessage && !isLoading" class="w-full bg-white min-h-screen pt-15">
+  <!-- Image Section -->
   <div class="w-full max-w-5xl mx-auto px-4 pt-8">
     <div
       class="relative group overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300"
@@ -115,7 +94,7 @@
             </p>
           </div>
 
-          <!-- Owner Info - Enhanced -->
+          <!-- Owner Info -->
           <div class="flex items-center gap-3 pt-4 group">
             <div class="relative transition-transform hover:scale-105">
               <img
@@ -157,7 +136,6 @@
             <app-investment-sidebar
               [fundingGoal]="fundingGoal"
               [currentFunding]="currentFunding"
-              [status]="status"
               [numOfInvestors]="numOfInvestors"
               class="pt-4"
             ></app-investment-sidebar>

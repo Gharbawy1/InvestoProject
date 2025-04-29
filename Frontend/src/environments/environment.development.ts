@@ -1,3 +1,5 @@
+import { off } from "process";
+
 export const environment = {
   production: false,
 
@@ -20,4 +22,8 @@ export const environment = {
   projectUrl: 'https://investo.runasp.net/api/Project',
 
   categoryUrl: 'https://investo.runasp.net/api/Category',
+
+  documentUrl: 'http://localhost:3000/documents',
+
+  offerUrl: 'https://investo.runasp.net/api/Offer',
 };

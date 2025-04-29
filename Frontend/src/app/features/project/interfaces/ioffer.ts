@@ -1,19 +1,10 @@
 export interface IOffer {
   id: string;
-  offerAmount: number;
-  equityPercentage: number;
-  profitShare: number;
-  investmentType: string;
-  offerTerms: string;
-  status: string;
-  additionalServices: string;
-  offerDate: Date;
-  expirationDate: Date;
-  investorId: number;
-  investor: {
-    firstName: string;
-    lastName: string;
-  };
-  projectId: number;
-  projectTitle: string;
+  offerAmount: number,
+  investmentType: 'Equity' | 'Debt' | 'ProfitShare',
+  equityPercentage: number,
+  profitShare: number,
+  offerTerms: string,
+  projectId: number,
+  investorId: string
 }
