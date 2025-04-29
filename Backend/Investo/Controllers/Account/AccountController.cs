@@ -1,4 +1,5 @@
 ﻿using Investo.DataAccess.Services.Image_Loading;
+using Investo.DataAccess.Services.OAuth;
 using Investo.DataAccess.Services.Token;
 using Investo.Entities.DTO.Account;
 using Investo.Entities.DTO.Account.BO;
@@ -8,6 +9,7 @@ using Investo.Entities.DTO.Account.Profile;
 using Investo.Entities.DTO.Account.UserDto;
 using Investo.Entities.DTO.Account.UsersProfile;
 using Investo.Entities.DTO.Account.UsersProfile;
+using Investo.Entities.DTO.oAuth;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -28,13 +30,16 @@ namespace Investo.Presentation.Controllers.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IImageLoadService _imageLoadService;
-        public AccountController(UserManager<ApplicationUser> userManager, ITokenService tokenService, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IImageLoadService imageLoadService)
+        private readonly IAuthGoogleService _authGoogleService;
+
+        public AccountController(UserManager<ApplicationUser> userManager, ITokenService tokenService, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IImageLoadService imageLoadService, IAuthGoogleService authGoogleService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _imageLoadService = imageLoadService;
+            _authGoogleService = authGoogleService;
             //_authGoogleService = authGoogleService;
             // _emailSender = emailSender;
         }
@@ -730,6 +735,35 @@ namespace Investo.Presentation.Controllers.Account
                     $"Error Message: {errorDetails}"
                 };
                 return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
+        }
+
+        /// <remarks>
+        /// Example: { "idToken": "google_id_token", "role": "Investor", "investorData": { "firstName": "John", ... }, "businessOwnerData": null }
+        /// </remarks>
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromForm] GoogleLoginDto googleLoginDto)
+        {
+            try
+            {
+                var tokenDto = await _authGoogleService.AuthenticateWithGoogleAsync(googleLoginDto);
+                return Ok(tokenDto);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (UserCreationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred", Details = ex.Message });
             }
         }
     }

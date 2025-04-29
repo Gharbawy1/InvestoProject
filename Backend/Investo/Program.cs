@@ -17,6 +17,7 @@ using System.Text;
 using Investo.DataAccess.Services.Token;
 using Investo.DataAccess.Services.Offers;
 using System.Reflection;
+using Investo.DataAccess.Services.OAuth;
 
 namespace Investo
 {
@@ -51,6 +52,8 @@ namespace Investo
             builder.Services.AddAutoMapper(typeof (Program));
 
             builder.Services.AddScoped<IBusinessOwnerRepository, BusinessOwnerRepository>();
+
+            builder.Services.AddScoped<IAuthGoogleService, AuthGoogleService>();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
             {
