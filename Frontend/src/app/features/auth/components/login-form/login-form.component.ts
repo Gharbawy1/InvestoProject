@@ -84,7 +84,6 @@ export class LoginFormComponent implements OnInit {
       .subscribe({
         next: (response) => {
           const role = response.roles?.[0];
-          console.log('login response:', response);
           if (role) {
             this.navigationService.navigateByRole(role);
           } else {
