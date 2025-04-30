@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis;
 using Investo.DataAccess.Repository;
 using Investo.DataAccess.Services.Offers;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace Investo.DataAccess.Services.Project
 {
@@ -20,14 +21,15 @@ namespace Investo.DataAccess.Services.Project
         private readonly IBusinessOwnerRepository _businessOwnerRepository;
         private readonly IOfferService _offerService;
         private readonly IMapper _mapper;
-
-        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService, IBusinessOwnerRepository businessOwnerRepository, IOfferService offerService, IMapper mapper)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService, IBusinessOwnerRepository businessOwnerRepository, IOfferService offerService, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _projectRepository = projectRepository;
             _imageLoadService = imageLoadService;
             _businessOwnerRepository = businessOwnerRepository;
             _offerService = offerService;
             this._mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task<ValidationResult<ProjectReadDto>> CreateProject(ProjectCreateUpdateDto dto)
@@ -245,6 +247,49 @@ namespace Investo.DataAccess.Services.Project
             return new ValidationResult<IEnumerable<ProjectRequestReviewDto>>
             {
                 Data = mappedRequests,
+                IsValid = true,
+                ErrorMessage = null
+            };
+        }
+
+        public async Task<ValidationResult<ProjectReadDto>> GetProjectForCurrentBusinessOwnerAsync(string businessOwnerId)
+        {
+            var project = await _projectRepository.GetByOwnerIdAsync(businessOwnerId);
+            if (project == null)
+            {
+                return new ValidationResult<ProjectReadDto>
+                {
+                    Data=null,
+                    IsValid = false,
+                    ErrorMessage = "مفيش مشروع مرتبط بالمستخدم ده"
+                };
+            }
+            var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
+            var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == project.Id)?.RaisedFund ?? 0;
+            
+            var mappedProject = new ProjectReadDto
+            {
+                CategoryName = project.Category.Name,
+                CurrentVision = project.CurrentVision,
+                FundingExchange = project.FundingExchange,
+                FundingGoal = project.FundingGoal,
+                Goals = project.Goals,
+                Id = project.Id,
+                OwnerId = project.OwnerId,
+                OwnerName = project.Owner.FirstName+" "+project.Owner.LastName,
+                ProjectImageUrl = project.ProjectImageURL,
+                ProjectStory = project.ProjectStory,
+                ProjectTitle = project.ProjectTitle,
+                ProjectVision = project.ProjectVision,
+                Status = project.Status.ToString(),
+                ProjectLocation = project.ProjectLocation,
+                Subtitle= project.Subtitle,
+                RaisedFund = raisedFund,
+            };
+
+            return new ValidationResult<ProjectReadDto>
+            {
+                Data = mappedProject,
                 IsValid = true,
                 ErrorMessage = null
             };

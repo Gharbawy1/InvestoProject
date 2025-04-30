@@ -2,10 +2,12 @@
 using Investo.DataAccess.Services.Project;
 using Investo.Entities.DTO.Project;
 using Investo.Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Investo.Presentation.Controllers
@@ -221,5 +223,32 @@ namespace Investo.Presentation.Controllers
             }
         }
 
+        ///<summary>
+        /// Get project for authnticated user "must be authnticated"
+        ///<summary>
+        [HttpGet("get-project-for-currentUser")]
+        [Authorize]
+        public async Task<IActionResult> GetProjectForCurrentUser()
+        {
+            var project = new ValidationResult<ProjectReadDto>();
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                project =  await _projectService.GetProjectForCurrentBusinessOwnerAsync(userId);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                var errorMessages = new List<string>
+                {       
+                    "فيه مشكلة وإحنا بنحاول نجيب طلبات المشاريع",
+                    $"الرسالة: {errorDetails}"
+                };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
+            return Ok(project);
+        }
     }
+
+
 }
