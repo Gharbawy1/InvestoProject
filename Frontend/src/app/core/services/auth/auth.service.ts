@@ -1,4 +1,4 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
@@ -8,22 +8,14 @@ import { environment } from '../../../../environments/environment.development';
 import { Router } from '@angular/router';
 import { tap, catchError } from 'rxjs/operators';
 import { UserDetails } from '../../../features/project/services/business-details/business-details.service';
+import { AuthResponse } from '../../interfaces/AuthResponse';
 
 // Define the shape of the authentication response from the server.
-export interface AuthResponse {
-  token: string;
-  roles: string[];
-  userId: string;
-  firstName: string;
-  lastName: string;
-  profilePictureURL: string;
-}
 
 export interface User {
   id: string;
   name: string;
   role: string;
-  avatarUrl: string;
 }
 
 @Injectable({
@@ -32,6 +24,7 @@ export interface User {
 export class AuthService {
   // BehaviorSubject holding current user; initialized from storage if exists
   private userSubject = new BehaviorSubject<User | null>(null);
+  currentUserSig = signal<AuthResponse | undefined | null>(undefined);
 
   /**
    * Observable stream of the current authenticated user (or null if not logged in)
@@ -59,7 +52,6 @@ export class AuthService {
       id: response.userId,
       name: `${response.firstName} ${response.lastName}`,
       role: response.roles[0] || 'user',
-      avatarUrl: response.profilePictureURL,
     };
   }
 
@@ -198,7 +190,7 @@ export class AuthService {
    * Retrieves JWT token from storage.
    * @returns The token string if available; otherwise, null.
    */
-  private getToken(): string | null {
+  getToken(): string | null {
     if (!isPlatformBrowser(this.platformId)) return null;
     return localStorage.getItem('token') || sessionStorage.getItem('token');
   }
@@ -244,16 +236,18 @@ export class AuthService {
    * Initializes third-party authentication services (Facebook and Google).
    * This method should be called during application initialization.
    */
-  /*initializeAuth() {
+  initializeAuth() {
     // Initialize Facebook authentication.
-    this.fbAuthService.initializeFacebook().catch(error => {
+    this.fbAuthService.initializeFacebook().catch((error) => {
       console.error('Error initializing Facebook SDK:', error);
     });
 
     // Initialize Google authentication.
     // The callback 'handleGoogleLogin' will handle the response after Google sign-in.
-    this.googleAuthService.initializeGoogleSignIn(this.handleGoogleLogin.bind(this));
-  }*/
+    this.googleAuthService.initializeGoogleSignIn(
+      this.handleGoogleLogin.bind(this)
+    );
+  }
 
   /**
    * Initiates the Facebook login process.
@@ -274,11 +268,14 @@ export class AuthService {
    * Callback for Google sign-in: exchanges code for AuthResponse, stores token & user.
    * @param response - Google callback containing auth code.
    */
-  /*private handleGoogleLogin(response: any): void {
+  private handleGoogleLogin(response: any): void {
     console.log('Google Login Response:', response);
-    this.http.post<AuthResponse>(`${environment.userApiUrl}/google-auth`, { code: response.code })
+    this.http
+      .post<AuthResponse>(`${environment.userApiUrl}/google-auth`, {
+        code: response.code,
+      })
       .pipe(
-        tap(authResponse => {
+        tap((authResponse) => {
           if (isPlatformBrowser(this.platformId)) {
             this.storeToken(authResponse.token, true);
             const user = this.createUserFromAuthResponse(authResponse);
@@ -286,14 +283,15 @@ export class AuthService {
             this.userSubject.next(user);
           }
         }),
-        catchError(error => {
+        catchError((error) => {
           console.error('Google login failed:', error);
           return throwError(() => error);
         })
       )
       .subscribe({
         next: () => console.log('Google login successful.'),
-        error: err => console.error('Error during Google login process:', err)
+        error: (err) =>
+          console.error('Error during Google login process:', err),
       });
-  }*/
+  }
 }

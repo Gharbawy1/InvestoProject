@@ -89,8 +89,8 @@ export class BusinessCreationComponent implements OnInit {
     this.errorMessage = '';
 
     this.categoryService.getCategories().subscribe({
-      next: (categories) => {
-        this.categories = categories;
+      next: (response) => {
+        this.categories = response.data;
         this.isLoadingCategories = false;
         this.businessForm.get('categoryId')?.enable();
       },

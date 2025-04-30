@@ -1,0 +1,51 @@
+mat-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+mat-card {
+  margin: 1rem 0;
+  padding: 1.5rem;
+}
+
+mat-spinner {
+  display: inline-block;
+}
+
+.text-success {
+  color: #2e7d32;
+}
+
+.text-error {
+  color: #c62828;
+}
+
+.custom-select-panel {
+  margin-top: 8px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e5e7eb !important;
+  width: calc(100% - 2px) !important; /* Account for border */
+  transform: translateY(8px) scale(1) !important;
+  transform-origin: top center !important;
+}
+
+/* Fix option alignment */
+.mat-option-text {
+  width: 100% !important;
+}
+
+/* Remove default Material styles */
+.mat-select-panel {
+  min-width: unset !important;
+  max-width: unset !important;
+  position: static !important;
+}
+
+.mat-option:hover:not(.mat-option-disabled) {
+  background-color: #f3f4f6 !important;
+}
+
+.mat-select-arrow-wrapper {
+  display: none !important;
+}

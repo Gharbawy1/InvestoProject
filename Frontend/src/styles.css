@@ -203,3 +203,5 @@ router-outlet + * {
   --ring: 217.2 32.6% 17.5%;
   --input: 217.2 32.6% 17.5%;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

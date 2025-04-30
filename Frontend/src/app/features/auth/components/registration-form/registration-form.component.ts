@@ -20,15 +20,10 @@ import { IBusinessOwner } from '../../interfaces/ibusinessOwner';
 import { HttpClient } from '@angular/common/http';
 import { RegisterService } from '../../services/register.service';
 import { IUser } from '../../interfaces/iuser';
-import { response } from 'express';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { Router } from '@angular/router';
 
 type RegistrationData = IGuest | IInvestor | IBusinessOwner;
-
-interface userinterface {
-  email: string;
-  token: string;
-  username: string;
-}
 
 @Component({
   selector: 'app-registration-form',
@@ -53,11 +48,9 @@ export class RegistrationFormComponent {
   data: RegistrationData | null = null;
 
   registerService = inject(RegisterService);
-
-  constructor(
-    private navigationService: NavigationService,
-    private http: HttpClient
-  ) {}
+  authService = inject(AuthService);
+  router = inject(Router);
+  constructor(private navigationService: NavigationService) {}
 
   setRole(role: 'investor' | 'business' | 'guest') {
     this.selectedRole = role;
@@ -84,27 +77,11 @@ export class RegistrationFormComponent {
   handlePersonalInfoSubmit(personalData: any) {
     this.data = { ...this.data, ...personalData } as RegistrationData;
     if (this.selectedRole === 'guest') {
-      // this.http
-      // .post<{ user: userinterface }>('https://api.realworld.io/api/users', {
-      //   user: {
-      //     username: this.data.firstName,
-      //     email: this.data.email,
-      //     password: this.data.password,
-      //   },
-      // })
-      // .subscribe({
-      //   next: (response) => {
-      //     console.log('Response:', response);
-      //   },
-      //   error: (error) => {
-      //     console.error('Error occurred:', error);
-      //   }
-      // });
-
-      console.log(this.data);
       this.registerService.registerGuest(this.data as IGuest).subscribe({
         next: (response) => {
-          console.log('Response:', response);
+          localStorage.setItem('token', response.token);
+          this.authService.currentUserSig.set(response);
+          this.router.navigateByUrl('/');
         },
         error: (error) => {
           console.error('Error occurred:', error);
@@ -122,7 +99,9 @@ export class RegistrationFormComponent {
         .registerGuest(this.data as IBusinessOwner)
         .subscribe({
           next: (response) => {
-            console.log('Response:', response);
+            localStorage.setItem('token', response.token);
+            this.authService.currentUserSig.set(response);
+            this.navigationService.navigateByRole('businessOwner');
           },
           error: (error) => {
             console.error('Error occurred:', error);
@@ -135,10 +114,11 @@ export class RegistrationFormComponent {
 
   handleInvestmentPreferenceSubmit(data: any) {
     this.data = { ...this.data, ...data } as RegistrationData;
-    this.navigationService.navigateByRole('investor');
     this.registerService.registerGuest(this.data as IInvestor).subscribe({
       next: (response) => {
-        console.log('Response:', response);
+        localStorage.setItem('token', response.token);
+        this.authService.currentUserSig.set(response);
+        this.navigationService.navigateByRole('investor');
       },
       error: (error) => {
         console.error('Error occurred:', error);

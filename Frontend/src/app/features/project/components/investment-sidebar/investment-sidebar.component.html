@@ -19,8 +19,7 @@
           class="w-2 h-2 rounded-full animate-pulse"
           [ngClass]="{
             'bg-green-500': status === 'active',
-            'bg-red-500': status === 'rejected',
-            'bg-gray-500': status === 'funded'
+            'bg-blue-500': status === 'funded'
           }"
         ></span>
         <span class="capitalize text-gray-700 font-medium">
@@ -35,8 +34,7 @@
           [style.width.%]="progressPercentage"
           [ngClass]="{
             'bg-green-500': status === 'active',
-            'bg-red-500': status === 'rejected',
-            'bg-gray-500': status === 'funded'
+            'bg-blue-500': status === 'funded'
           }"
         ></div>
       </div>
@@ -179,13 +177,6 @@
         Project Metrics
       </h3>
       <div class="grid grid-cols-2 gap-4 text-sm">
-        <div class="flex items-center gap-3">
-          <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-          <div>
-            <p class="text-gray-500">Risk Level</p>
-            <p class="font-medium text-gray-900">Moderate</p>
-          </div>
-        </div>
         <div class="flex items-center gap-3">
           <mat-icon class="text-green-500 scale-90"
             >account_balance_wallet</mat-icon

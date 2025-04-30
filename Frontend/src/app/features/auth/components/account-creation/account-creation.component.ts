@@ -66,7 +66,7 @@ export class AccountCreationComponent {
 
     switch (validatorName) {
       case 'minlength':
-        return control.value?.length >= 8;
+        return control.value?.length >= 12;
       case 'lowercase':
         return /[a-z]/.test(control.value);
       case 'uppercase':

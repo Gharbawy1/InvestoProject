@@ -11,6 +11,11 @@ export const routes: Routes = [
     component: AppLayoutComponent,
     children: [
       {
+        path: 'Home',
+        loadComponent: () =>
+          import('./pages/home/home.component').then((m) => m.HomeComponent),
+      },
+      {
         path: 'LandingPage',
         loadComponent: () =>
           import('./pages/landing-page/landing-page.component').then(

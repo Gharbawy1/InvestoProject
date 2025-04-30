@@ -7,6 +7,8 @@ import { ICategory } from '../../interfaces/icategory';
 import { CategoryService } from '../../services/category/category.service';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CommonModule } from '@angular/common';
+import { response } from 'express';
+import { ApiResponse } from '../../../../core/interfaces/ApiResponse';
 
 @Component({
   selector: 'project-master',
@@ -36,13 +38,18 @@ export class ProjectMasterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.projectCardService.getProjects().subscribe((prjctData) => {
-      this.allProjects = prjctData;
-      this.filteredProjects = [...prjctData];
+    this.projectCardService.getProjects().subscribe((response) => {
+      this.allProjects = response.data;
+      this.filteredProjects = [...response.data];
     });
     console.log(this.filteredProjects);
-    this.categoriesService.getCategories().subscribe((categories) => {
-      this.categoriesList = categories;
+    this.categoriesService.getCategories().subscribe({
+      next: (response) => {
+        this.categoriesList = response.data;
+      },
+      error: (err) => {
+        console.error('Error fetching categories:', err);
+      },
     });
   }
 

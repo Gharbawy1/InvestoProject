@@ -36,6 +36,14 @@ export const environment = {
     deleteById: (id: string) => `/Category/${id}`,
   },
 
+  offer: {
+    create: `/Offer/create-offer`,
+    getOfferByOfferId: (id: number) => `/Offer/get-offer-by-id/${id}`,
+    getOfferByProjectId: (id: number) => `/Offer/get-offers-byId/${id}`,
+    BusinessOwnerAnswer: (id:number) => `/Offer/${id}/respond`,
+    getAllForCurrentUser: `/Offer/offers/current-user`
+  },
+
   project: {
     getAll: '/Project',
     create: '/Project',
