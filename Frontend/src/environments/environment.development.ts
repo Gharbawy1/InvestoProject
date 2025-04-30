@@ -40,8 +40,8 @@ export const environment = {
     create: `/Offer/create-offer`,
     getOfferByOfferId: (id: number) => `/Offer/get-offer-by-id/${id}`,
     getOfferByProjectId: (id: number) => `/Offer/get-offers-byId/${id}`,
-    BusinessOwnerAnswer: (id:number) => `/Offer/${id}/respond`,
-    getAllForCurrentUser: `/Offer/offers/current-user`
+    BusinessOwnerAnswer: (id: number) => `/Offer/${id}/respond`,
+    getAllForCurrentUser: `/Offer/offers/current-user`,
   },
 
   project: {
@@ -56,5 +56,10 @@ export const environment = {
     updateReviewStatus: '/Project/review/status',
     getStatusByOwner: (ownerId: string) => `/Project/status/owner/${ownerId}`,
     getPendingProjects: '/Project/GetProjectByStatus',
+  },
+
+  document: {
+    getAll: '/Document',
+    getByUser: '/Document/get-documents-by-user',
   },
 };

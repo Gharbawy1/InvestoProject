@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OfferService } from '../../../services/offer/offer.service';
-import { IOffer } from '../../../interfaces/Ioffer';
+import { IOffer } from '../../../interfaces/ioffer';
 import { AuthService } from '../../../../../core/services/auth/auth.service';
 import { ProjectContextService } from '../../../services/project-context.service';
 import { IBusinessDetails } from '../../../interfaces/IBusinessDetails';
@@ -14,14 +14,9 @@ import { Subject, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-offer',
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatIconModule,
-    MatProgressSpinnerModule
-  ],
+  imports: [CommonModule, FormsModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './offer.component.html',
-  styleUrls: ['./offer.component.css']
+  styleUrls: ['./offer.component.css'],
 })
 export class OfferComponent implements OnInit {
   offer: Partial<IOffer> = {
@@ -32,7 +27,7 @@ export class OfferComponent implements OnInit {
     profitShare: 0,
     offerTerms: '',
     projectId: 0,
-    investorId: ''
+    investorId: '',
   };
 
   private destroy$ = new Subject<void>();
@@ -61,7 +56,7 @@ export class OfferComponent implements OnInit {
       this.blockAccess({
         message: 'You must be logged in as an Investor to submit offers.',
         path: ['/auth'],
-        buttonText: 'Login Now'
+        buttonText: 'Login Now',
       });
       return;
     }
@@ -69,26 +64,27 @@ export class OfferComponent implements OnInit {
       this.blockAccess({
         message: 'Only users with the Investor role may submit offers.',
         path: ['/'],
-        buttonText: 'Return to home'
+        buttonText: 'Return to home',
       });
       return;
     }
     this.offer.investorId = user.id;
-  
+
     this.projectCtx.project$
-    .pipe(takeUntil(this.destroy$),
-      filter((p): p is IBusinessDetails => !!p),
-      take(1),
-      timeout({ first: 5000, with: () => throwError('Project load timeout') })
-    )
-    .subscribe({
-      next: (p) => {
-        const projectIdNum = Number(p.id);
-        this.offer.projectId = projectIdNum;
-        this.ensureSingleOffer(projectIdNum, user.id);
-      },
-      error: () => this.errorMessage = 'No project selected.'
-    });
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((p): p is IBusinessDetails => !!p),
+        take(1),
+        timeout({ first: 5000, with: () => throwError('Project load timeout') })
+      )
+      .subscribe({
+        next: (p) => {
+          const projectIdNum = Number(p.id);
+          this.offer.projectId = projectIdNum;
+          this.ensureSingleOffer(projectIdNum, user.id);
+        },
+        error: () => (this.errorMessage = 'No project selected.'),
+      });
   }
 
   private blockAccess(config: {
@@ -97,27 +93,27 @@ export class OfferComponent implements OnInit {
     buttonText?: string;
   }) {
     this.showForm = false;
-    this.canSubmit = false
+    this.canSubmit = false;
     this.blockMessage = config.message;
     this.navigationPath = config.path;
     this.navigationButtonText = config.buttonText || 'Continue';
   }
 
   private ensureSingleOffer(projectId: number, investorId: string) {
-    this.offerSvc.getCurrentUserOffers()
+    this.offerSvc
+      .getCurrentUserOffers()
       .pipe(take(1))
       .subscribe({
-        next: offers => {
-          const hasExisting = offers.some(o => 
-            o.projectId === projectId && 
-            o.investorId === investorId
+        next: (offers) => {
+          const hasExisting = offers.some(
+            (o) => o.projectId === projectId && o.investorId === investorId
           );
-  
+
           if (hasExisting) {
             this.blockAccess({
               message: 'You have already submitted an offer for this project.',
               path: ['/InvestorDashboard'],
-              buttonText: 'View Dashboard'
+              buttonText: 'View Dashboard',
             });
           } else {
             this.showForm = true;
@@ -127,12 +123,13 @@ export class OfferComponent implements OnInit {
         error: (err) => {
           console.error('Offer verification failed:', err);
           this.blockAccess({
-            message: 'Could not verify existing offers. Please try again later.',
+            message:
+              'Could not verify existing offers. Please try again later.',
             path: ['/InvestorDashboard'],
-            buttonText: 'Try Again'
+            buttonText: 'Try Again',
           });
           this.canSubmit = false;
-        }
+        },
       });
   }
 
@@ -144,16 +141,16 @@ export class OfferComponent implements OnInit {
       this.errorMessage = 'Please fill all required fields';
       return;
     }
-  
+
     if (!this.isValid()) {
       this.errorMessage = 'Please correct validation errors';
       return;
     }
-  
+
     this.isLoading = true;
     this.offerSvc.createOffer(this.offer).subscribe({
       next: () => this.handleSuccess(),
-      error: (err) => this.handleError(err)
+      error: (err) => this.handleError(err),
     });
   }
 
@@ -165,41 +162,45 @@ export class OfferComponent implements OnInit {
 
   private handleError(error: any) {
     this.blockAccess({
-      message: error.error?.message || 'Failed to submit offer. Please try again.',
+      message:
+        error.error?.message || 'Failed to submit offer. Please try again.',
       path: ['/InvestorDashboard'],
-      buttonText: 'Try Again'
+      buttonText: 'Try Again',
     });
   }
 
   private clearMessages() {
     this.successMessage = '';
-    this.errorMessage   = '';
+    this.errorMessage = '';
   }
 
   isValid(): boolean {
-    return this.validateRequiredFields() && 
-           this.validateAmount() &&
-           this.validatePercentages();
+    return (
+      this.validateRequiredFields() &&
+      this.validateAmount() &&
+      this.validatePercentages()
+    );
   }
-  
+
   private validateAmount(): boolean {
     const amount = this.offer.offerAmount;
-    return typeof amount === 'number' && 
-          amount >= 10000 && 
-          amount <= 100000000;
+    return typeof amount === 'number' && amount >= 10000 && amount <= 100000000;
   }
 
   private validateRequiredFields(): boolean {
-    return !!this.offer.offerAmount &&
-           !!this.offer.investmentType &&
-           !!this.offer.offerTerms &&
-           !!this.offer.equityPercentage &&
-           !!this.offer.profitShare;
+    return (
+      !!this.offer.offerAmount &&
+      !!this.offer.investmentType &&
+      !!this.offer.offerTerms &&
+      !!this.offer.equityPercentage &&
+      !!this.offer.profitShare
+    );
   }
 
   private validatePercentages(): boolean {
-    return [this.offer.equityPercentage, this.offer.profitShare]
-      .every(pct => (pct ?? 0) > 0 && (pct ?? 0) <= 100);
+    return [this.offer.equityPercentage, this.offer.profitShare].every(
+      (pct) => (pct ?? 0) > 0 && (pct ?? 0) <= 100
+    );
   }
 
   ngOnDestroy() {

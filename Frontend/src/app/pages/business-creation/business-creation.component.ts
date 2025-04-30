@@ -10,10 +10,11 @@ import { RouterModule, Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { BusinessCreationService } from '../../features/project/services/business-creation/business-creation.service';
 import { AutoFocusDirective } from '../../shared/directives/auto-focus/auto-focus.directive';
-import { AuthService, User } from '../../core/services/auth/auth.service';
+import { AuthService } from '../../core/services/auth/auth.service';
 import { ICategory } from '../../features/project/interfaces/icategory';
 import { CategoryService } from '../../features/project/services/category/category.service';
 import { IBusiness } from '../../features/project/interfaces/IBusiness';
+import { UserDetails } from '../../core/interfaces/UserDetails';
 
 @Component({
   selector: 'app-business-creation',
@@ -76,7 +77,7 @@ export class BusinessCreationComponent implements OnInit {
     // Load categories for selection
     this.loadCategories();
     // Subscribe to AuthService to get and keep track of the logged-in user's ID
-    this.authService.user$.subscribe((user: User | null) => {
+    this.authService.user$.subscribe((user: UserDetails | null) => {
       this.ownerId = user ? user.id : null;
     });
   }

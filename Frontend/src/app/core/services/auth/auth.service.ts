@@ -7,15 +7,15 @@ import { GoogleAuthService } from '../googleSignIn/google-signin.service';
 import { environment } from '../../../../environments/environment.development';
 import { Router } from '@angular/router';
 import { tap, catchError } from 'rxjs/operators';
-import { UserDetails } from '../../../features/project/services/business-details/business-details.service';
-import { AuthResponse } from '../../interfaces/AuthResponse';
+import { LoginResponse } from '../../interfaces/LoginResponse';
+import { UserDetails } from '../../interfaces/UserDetails';
 
 // Define the shape of the authentication response from the server.
 
 export interface User {
   id: string;
-  name: string;
   role: string;
+  profilePicture: string;
 }
 
 @Injectable({
@@ -23,13 +23,13 @@ export interface User {
 })
 export class AuthService {
   // BehaviorSubject holding current user; initialized from storage if exists
-  private userSubject = new BehaviorSubject<User | null>(null);
-  currentUserSig = signal<AuthResponse | undefined | null>(undefined);
+  private userSubject = new BehaviorSubject<UserDetails | null>(null);
 
   /**
    * Observable stream of the current authenticated user (or null if not logged in)
    */
-  public user$: Observable<User | null> = this.userSubject.asObservable();
+  public user$: Observable<UserDetails | null> =
+    this.userSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -47,11 +47,13 @@ export class AuthService {
     }
   }
 
-  private createUserFromAuthResponse(response: AuthResponse): User {
+  private createUserFromAuthResponse(response: LoginResponse): UserDetails {
     return {
       id: response.userId,
-      name: `${response.firstName} ${response.lastName}`,
+      firstName: response.firstName,
+      lastName: response.lastName,
       role: response.roles[0] || 'user',
+      profilePictureURL: response.profilePicture,
     };
   }
 
@@ -68,12 +70,12 @@ export class AuthService {
     email: string,
     password: string,
     rememberMe: boolean
-  ): Observable<AuthResponse> {
+  ): Observable<LoginResponse> {
     // Remove extra spaces from credentials.
     const credentials = { email: email.trim(), password: password.trim() };
 
     return this.http
-      .post<AuthResponse>(
+      .post<LoginResponse>(
         `${environment.baseApi}${environment.account.login}`,
         credentials
       )
@@ -170,7 +172,7 @@ export class AuthService {
   /**
    * Returns the currentUser object
    */
-  getCurrentUser(): User | null {
+  getCurrentUser(): UserDetails | null {
     return this.getStoredUser();
   }
 
@@ -178,12 +180,12 @@ export class AuthService {
    * Retrieves stored user object from storage.
    * @returns parsed user object or null.
    */
-  private getStoredUser(): User | null {
+  private getStoredUser(): UserDetails | null {
     if (!isPlatformBrowser(this.platformId)) return null;
     const raw =
       localStorage.getItem('currentUser') ||
       sessionStorage.getItem('currentUser');
-    return raw ? (JSON.parse(raw) as User) : null;
+    return raw ? (JSON.parse(raw) as UserDetails) : null;
   }
 
   /**
@@ -271,14 +273,14 @@ export class AuthService {
   private handleGoogleLogin(response: any): void {
     console.log('Google Login Response:', response);
     this.http
-      .post<AuthResponse>(`${environment.userApiUrl}/google-auth`, {
+      .post<LoginResponse>(`${environment.userApiUrl}/google-auth`, {
         code: response.code,
       })
       .pipe(
-        tap((authResponse) => {
+        tap((loginResponse) => {
           if (isPlatformBrowser(this.platformId)) {
-            this.storeToken(authResponse.token, true);
-            const user = this.createUserFromAuthResponse(authResponse);
+            this.storeToken(loginResponse.token, true);
+            const user = this.createUserFromAuthResponse(loginResponse);
             this.storeUserData('currentUser', user, true);
             this.userSubject.next(user);
           }

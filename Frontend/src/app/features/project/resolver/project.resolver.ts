@@ -17,21 +17,21 @@ export class ProjectResolver {
     const id = route.paramMap.get('id');
     if (!id) return this.redirectHome();
 
-    return this.businessService.getFullProjectDetails(id).pipe(
+    return this.businessService.getProjectDetails(id).pipe(
       catchError(() => this.redirectHome()),
-      map(data => {
+      map((data) => {
         if (!data) return null;
 
         const currentUserId = this.authService.getUserId();
-        const isRejected = data.project.status.toLowerCase() === 'rejected';
-        const isOwner = data.owner.id === currentUserId;
+        const isRejected = data.status.toLowerCase() === 'rejected';
+        const isOwner = data.ownerId === currentUserId;
 
-        console.log('Resolver Check:', { 
-          status: data.project.status,
+        console.log('Resolver Check:', {
+          status: data.status,
           currentUserId,
-          ownerId: data.owner.id,
+          ownerId: data.ownerId,
           isRejected,
-          isOwner
+          isOwner,
         });
 
         if (isRejected && !isOwner) {

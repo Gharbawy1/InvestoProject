@@ -1,13 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-  FormsModule,
-  NgForm,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ProgressIndicatorRegComponent } from '../progress-indicator-reg/progress-indicator-reg.component';
 import { PersonalInfoRegComponent } from '../personal-info-reg/personal-info-reg.component';
 import { IdentityVerificationComponent } from '../identity-verification/identity-verification.component';
@@ -17,10 +10,7 @@ import { AccountCreationComponent } from '../account-creation/account-creation.c
 import { IGuest } from '../../interfaces/iguest';
 import { IInvestor } from '../../interfaces/iinvestor';
 import { IBusinessOwner } from '../../interfaces/ibusinessOwner';
-import { HttpClient } from '@angular/common/http';
 import { RegisterService } from '../../services/register.service';
-import { IUser } from '../../interfaces/iuser';
-import { AuthService } from '../../../../core/services/auth/auth.service';
 import { Router } from '@angular/router';
 
 type RegistrationData = IGuest | IInvestor | IBusinessOwner;
@@ -48,7 +38,6 @@ export class RegistrationFormComponent {
   data: RegistrationData | null = null;
 
   registerService = inject(RegisterService);
-  authService = inject(AuthService);
   router = inject(Router);
   constructor(private navigationService: NavigationService) {}
 
@@ -79,9 +68,7 @@ export class RegistrationFormComponent {
     if (this.selectedRole === 'guest') {
       this.registerService.registerGuest(this.data as IGuest).subscribe({
         next: (response) => {
-          localStorage.setItem('token', response.token);
-          this.authService.currentUserSig.set(response);
-          this.router.navigateByUrl('/');
+          window.location.reload();
         },
         error: (error) => {
           console.error('Error occurred:', error);
@@ -99,9 +86,7 @@ export class RegistrationFormComponent {
         .registerGuest(this.data as IBusinessOwner)
         .subscribe({
           next: (response) => {
-            localStorage.setItem('token', response.token);
-            this.authService.currentUserSig.set(response);
-            this.navigationService.navigateByRole('businessOwner');
+            window.location.reload();
           },
           error: (error) => {
             console.error('Error occurred:', error);
@@ -116,9 +101,7 @@ export class RegistrationFormComponent {
     this.data = { ...this.data, ...data } as RegistrationData;
     this.registerService.registerGuest(this.data as IInvestor).subscribe({
       next: (response) => {
-        localStorage.setItem('token', response.token);
-        this.authService.currentUserSig.set(response);
-        this.navigationService.navigateByRole('investor');
+        window.location.reload();
       },
       error: (error) => {
         console.error('Error occurred:', error);

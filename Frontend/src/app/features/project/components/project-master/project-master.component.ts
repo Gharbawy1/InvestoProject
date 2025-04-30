@@ -7,8 +7,6 @@ import { ICategory } from '../../interfaces/icategory';
 import { CategoryService } from '../../services/category/category.service';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CommonModule } from '@angular/common';
-import { response } from 'express';
-import { ApiResponse } from '../../../../core/interfaces/ApiResponse';
 
 @Component({
   selector: 'project-master',

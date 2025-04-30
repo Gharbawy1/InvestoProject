@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { AuthService, User } from '../../../../core/services/auth/auth.service';
+import { AuthService } from '../../../../core/services/auth/auth.service';
 import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-investment-sidebar',
@@ -74,7 +80,7 @@ export class InvestmentSidebarComponent implements OnDestroy {
 
   get canInvest(): boolean {
     return (
-      this.isInvestor && 
+      this.isInvestor &&
       !this.isLoading &&
       this.investmentAmount >= this.MIN_INVESTMENT &&
       this.status === 'active'
