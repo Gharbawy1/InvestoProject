@@ -14,8 +14,9 @@ import {
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
-import { loadingInterceptor } from './core/interceptors/loading.interceptor';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { loadingInterceptor } from './core/interceptors/loading/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
