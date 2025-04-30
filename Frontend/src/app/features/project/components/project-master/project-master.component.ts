@@ -36,13 +36,18 @@ export class ProjectMasterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.projectCardService.getProjects().subscribe((prjctData) => {
-      this.allProjects = prjctData;
-      this.filteredProjects = [...prjctData];
+    this.projectCardService.getProjects().subscribe((response) => {
+      this.allProjects = response.data;
+      this.filteredProjects = [...response.data];
     });
     console.log(this.filteredProjects);
-    this.categoriesService.getCategories().subscribe((categories) => {
-      this.categoriesList = categories;
+    this.categoriesService.getCategories().subscribe({
+      next: (response) => {
+        this.categoriesList = response.data;
+      },
+      error: (err) => {
+        console.error('Error fetching categories:', err);
+      },
     });
   }
 

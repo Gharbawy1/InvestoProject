@@ -10,23 +10,22 @@ type UserRole = 'investor' | 'businessOwner' | 'admin';
  * Service to handle navigation based on user roles.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NavigationService {
-  
   /**
    * Defines role-based routes for navigation.
    */
   private readonly roleRoutes: Record<UserRole, string> = {
     investor: '/InvestorDashboard',
-    businessOwner: '/dashboard',
-    admin: '/admin-dashboard'
+    businessOwner: '/BusinessDashboard',
+    admin: '/AdminDashboard',
   };
 
   /**
    * Default route if role is not recognized.
    */
-  private readonly defaultRoute = '/dashboard';
+  private readonly defaultRoute = '/';
 
   constructor(private router: Router) {}
 

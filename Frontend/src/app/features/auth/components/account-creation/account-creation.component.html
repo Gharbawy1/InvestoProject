@@ -3,22 +3,50 @@
     <div class="flex items-center justify-center mb-2">
       <ng-container [ngSwitch]="step">
         <div *ngSwitchCase="1" class="flex items-center">
-          <svg class="w-6 h-6 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          <svg
+            class="w-6 h-6 text-blue-500 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            ></path>
           </svg>
           <h2 class="text-xl font-bold text-gray-900">Create Your Account</h2>
         </div>
         <div *ngSwitchCase="" class="flex items-center">
-          <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          <svg
+            class="w-6 h-6 text-green-500 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            ></path>
           </svg>
           <h2 class="text-xl font-bold text-gray-900">Business Information</h2>
         </div>
         <div *ngSwitchCase="3" class="flex items-center">
-          <svg class="w-6 h-6 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 8v4l3 3m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          <svg
+            class="w-6 h-6 text-purple-500 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
           </svg>
           <h2 class="text-xl font-bold text-gray-900">Document Verification</h2>
         </div>
@@ -30,65 +58,124 @@
   <div *ngIf="step === 1" class="space-y-6">
     <div class="grid grid-cols-3 gap-4 mb-6">
       <!-- Guest -->
-      <button (click)="setRole('guest')"
+      <button
+        (click)="setRole('guest')"
         class="p-6 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center cursor-pointer"
         [ngClass]="{
-      'border-gray-900 bg-gray-50 shadow-inner': selectedRole === 'guest',
-      'border-gray-200 hover:border-gray-300': selectedRole !== 'guest'
-    }">
-        <svg class="w-8 h-8 mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          'border-gray-900 bg-gray-50 shadow-inner': selectedRole === 'guest',
+          'border-gray-200 hover:border-gray-300': selectedRole !== 'guest'
+        }"
+      >
+        <svg
+          class="w-8 h-8 mb-3 text-gray-700"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
         </svg>
         <h3 class="font-semibold text-gray-900 mb-1">Guest</h3>
-        <p class="text-sm text-gray-500 text-center">Just exploring the platform.</p>
+        <p class="text-sm text-gray-500 text-center">
+          Just exploring the platform.
+        </p>
       </button>
 
       <!-- Investor -->
-      <button (click)="setRole('investor')"
+      <button
+        (click)="setRole('investor')"
         class="p-6 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center cursor-pointer"
         [ngClass]="{
-          'border-gray-900 bg-gray-50 shadow-inner': selectedRole === 'investor',
+          'border-gray-900 bg-gray-50 shadow-inner':
+            selectedRole === 'investor',
           'border-gray-200 hover:border-gray-300': selectedRole !== 'investor'
-        }">
-        <svg class="w-8 h-8 mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        }"
+      >
+        <svg
+          class="w-8 h-8 mb-3 text-gray-700"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+          />
         </svg>
         <h3 class="font-semibold text-gray-900 mb-1">Investor</h3>
-        <p class="text-sm text-gray-500 text-center">Looking to invest in promising businesses</p>
+        <p class="text-sm text-gray-500 text-center">
+          Looking to invest in promising businesses
+        </p>
       </button>
 
       <!-- Business Owner -->
-      <button (click)="setRole('business')"
+      <button
+        (click)="setRole('business')"
         class="p-6 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center cursor-pointer"
         [ngClass]="{
-          'border-gray-900 bg-gray-50 shadow-inner': selectedRole === 'business',
+          'border-gray-900 bg-gray-50 shadow-inner':
+            selectedRole === 'business',
           'border-gray-200 hover:border-gray-300': selectedRole !== 'business'
-        }">
-        <svg class="w-8 h-8 mb-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        }"
+      >
+        <svg
+          class="w-8 h-8 mb-3 text-gray-700"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          ></path>
         </svg>
         <h3 class="font-semibold text-gray-900 mb-1">Business Owner</h3>
-        <p class="text-sm text-gray-500 text-center">Looking to grow your business</p>
+        <p class="text-sm text-gray-500 text-center">
+          Looking to grow your business
+        </p>
       </button>
     </div>
   </div>
 
   <div class="space-y-4">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="animate-stagger" novalidate>
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="animate-stagger"
+      novalidate
+    >
       <!-- Email -->
       <div class="flex flex-col gap-0.5 form-group">
         <label for="email" class="text-sm font-medium">Email</label>
-        <input id="email" formControlName="email" type="email" placeholder="example@domain.com" [appAutoFocus]="true"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale" />
+        <input
+          id="email"
+          formControlName="email"
+          type="email"
+          placeholder="example@domain.com"
+          [appAutoFocus]="true"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+        />
         <div class="min-h-[20px]">
-          <p *ngIf="form.get('email')?.errors?.['required'] && (form.get('email')?.touched || formSubmitted)"
-            class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+          <p
+            *ngIf="form.get('email')?.errors?.['required'] && (form.get('email')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
             * Email is required
           </p>
-          <p *ngIf="form.get('email')?.errors?.['email'] && (form.get('email')?.touched || formSubmitted)"
-            class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+          <p
+            *ngIf="form.get('email')?.errors?.['email'] && (form.get('email')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
             * Please enter a valid email address
           </p>
         </div>
@@ -98,25 +185,50 @@
       <div class="flex flex-col gap-0.5 form-group">
         <label for="password" class="text-sm font-medium">Password</label>
         <div class="relative">
-          <input id="password" formControlName="password" [type]="showPassword ? 'text' : 'password'"
+          <input
+            id="password"
+            formControlName="password"
+            [type]="showPassword ? 'text' : 'password'"
             placeholder="••••••••"
             class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale pr-10"
-            (input)="onPasswordInput()" />
+            (input)="onPasswordInput()"
+          />
           <app-eye-password [(showPassword)]="showPassword"></app-eye-password>
         </div>
         <!-- Password Requirements List -->
         <div class="space-y-1 mt-2 mb-2">
-          <div *ngFor="let req of passwordRequirements" class="flex items-center gap-2 transition-all duration-200"
-            [class.text-green-600]="isRequirementMet(req.validator)">
-            <svg class="w-4 h-4 flex-shrink-0" [class.text-green-500]="isRequirementMet(req.validator)"
-              [class.text-gray-400]="!isRequirementMet(req.validator)" fill="none" stroke="currentColor"
-              viewBox="0 0 24 24">
-              <path *ngIf="isRequirementMet(req.validator)" stroke-linecap="round" stroke-linejoin="round"
-                stroke-width="2" d="M5 13l4 4L19 7" />
-              <path *ngIf="!isRequirementMet(req.validator)" stroke-linecap="round" stroke-linejoin="round"
-                stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <div
+            *ngFor="let req of passwordRequirements"
+            class="flex items-center gap-2 transition-all duration-200"
+            [class.text-green-600]="isRequirementMet(req.validator)"
+          >
+            <svg
+              class="w-4 h-4 flex-shrink-0"
+              [class.text-green-500]="isRequirementMet(req.validator)"
+              [class.text-gray-400]="!isRequirementMet(req.validator)"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                *ngIf="isRequirementMet(req.validator)"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+              <path
+                *ngIf="!isRequirementMet(req.validator)"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
-            <span class="text-sm" [class.line-through]="isRequirementMet(req.validator)">
+            <span
+              class="text-sm"
+              [class.line-through]="isRequirementMet(req.validator)"
+            >
               {{ req.label }}
             </span>
           </div>
@@ -125,21 +237,35 @@
 
       <!-- Confirm Password -->
       <div class="flex flex-col gap-0.5 mb-2 form-group">
-        <label for="confirmPassword" class="text-sm font-medium">Confirm Password</label>
+        <label for="confirmPassword" class="text-sm font-medium"
+          >Confirm Password</label
+        >
         <div class="relative">
-          <input id="confirmPassword" formControlName="confirmPassword"
-            [type]="showConfirmPassword ? 'text' : 'password'" placeholder="Re-enter your password"
-            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale" />
-          <app-eye-password [(showPassword)]="showConfirmPassword"></app-eye-password>
+          <input
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            placeholder="Re-enter your password"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+          />
+          <app-eye-password
+            [(showPassword)]="showConfirmPassword"
+          ></app-eye-password>
         </div>
         <div class="min-h-[20px]">
           <div *ngIf="form.get('confirmPassword')?.touched || formSubmitted">
-            <p *ngIf="form.get('confirmPassword')?.errors?.['required']"
-              class="text-red-500 text-sm animate-slide-in error-message" aria-live="polite">
+            <p
+              *ngIf="form.get('confirmPassword')?.errors?.['required']"
+              class="text-red-500 text-sm animate-slide-in error-message"
+              aria-live="polite"
+            >
               * Please confirm your password
             </p>
-            <p *ngIf="form.hasError('passwordMismatch')" class="text-red-500 text-sm animate-slide-in error-message"
-              aria-live="polite">
+            <p
+              *ngIf="form.hasError('passwordMismatch')"
+              class="text-red-500 text-sm animate-slide-in error-message"
+              aria-live="polite"
+            >
               * Passwords do not match
             </p>
           </div>
@@ -147,21 +273,17 @@
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" [disabled]="isLoading || form.invalid"
+      <button
+        type="submit"
+        [disabled]="form.invalid"
         class="w-full text-sm font-medium py-2 mb-2 rounded-md transition flex items-center justify-center cursor-pointer transition-button button-hover"
         [ngClass]="{
-          'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700': !isLoading && form.valid,
-          'bg-gray-300 text-gray-500 cursor-not-allowed': isLoading || form.invalid
-        }">
-        <span *ngIf="!isLoading">Create Account</span>
-        <span *ngIf="isLoading" class="flex items-center">
-          <svg class="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" stroke-width="4"></circle>
-            <path d="M4 12a8 8 0 0 1 16 0" stroke-linecap="round"></path>
-          </svg>
-          Creating Account...
-        </span>
+          'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700':
+            form.valid,
+          'bg-gray-300 text-gray-500 cursor-not-allowed': form.invalid
+        }"
+      >
+        <span>Create Account</span>
       </button>
     </form>
   </div>

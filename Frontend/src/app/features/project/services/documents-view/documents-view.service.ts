@@ -5,20 +5,21 @@ import { IDocument } from '../../interfaces/IDocument';
 import { environment } from '../../../../../environments/environment.development';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DocumentViewService {
-  private apiUrl = environment.documentUrl;
-  
-  constructor(private http: HttpClient) { }
+  private getAllDocUrl = `${environment.baseApi}${environment.document.getAll}`;
+  private getDocsByUserUrl = `${environment.baseApi}${environment.document.getByUser}`;
+
+  constructor(private http: HttpClient) {}
 
   getDocuments(): Observable<IDocument[]> {
-    return this.http.get<IDocument[]>(this.apiUrl);
+    return this.http.get<IDocument[]>(this.getAllDocUrl);
   }
 
   /** Fetch only documents belonging to a specific user/owner */
   getDocumentsByUser(userId: string): Observable<IDocument[]> {
     const params = new HttpParams().set('userId', userId);
-    return this.http.get<IDocument[]>(this.apiUrl, { params });
+    return this.http.get<IDocument[]>(this.getDocsByUserUrl, { params });
   }
 }

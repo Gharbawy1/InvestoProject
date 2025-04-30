@@ -4,7 +4,7 @@ export interface IBusinessProfile extends Omit<IBusiness, 'projectImage'> {
   id: string;
   projectImageURL: string;
   categoryName: string;
-  status: string | null;
+  status: string;
   bio: string | null;
   registrationDate: string;
   firstName: string;

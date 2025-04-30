@@ -10,10 +10,11 @@ import { RouterModule, Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { BusinessCreationService } from '../../features/project/services/business-creation/business-creation.service';
 import { AutoFocusDirective } from '../../shared/directives/auto-focus/auto-focus.directive';
-import { AuthService, User } from '../../core/services/auth/auth.service';
+import { AuthService } from '../../core/services/auth/auth.service';
 import { ICategory } from '../../features/project/interfaces/icategory';
 import { CategoryService } from '../../features/project/services/category/category.service';
 import { IBusiness } from '../../features/project/interfaces/IBusiness';
+import { UserDetails } from '../../core/interfaces/UserDetails';
 
 @Component({
   selector: 'app-business-creation',
@@ -76,7 +77,7 @@ export class BusinessCreationComponent implements OnInit {
     // Load categories for selection
     this.loadCategories();
     // Subscribe to AuthService to get and keep track of the logged-in user's ID
-    this.authService.user$.subscribe((user: User | null) => {
+    this.authService.user$.subscribe((user: UserDetails | null) => {
       this.ownerId = user ? user.id : null;
     });
   }
@@ -89,8 +90,8 @@ export class BusinessCreationComponent implements OnInit {
     this.errorMessage = '';
 
     this.categoryService.getCategories().subscribe({
-      next: (categories) => {
-        this.categories = categories;
+      next: (response) => {
+        this.categories = response.data;
         this.isLoadingCategories = false;
         this.businessForm.get('categoryId')?.enable();
       },
@@ -147,7 +148,6 @@ export class BusinessCreationComponent implements OnInit {
     formData.append('currentVision', formValues.currentVision);
     formData.append('goals', formValues.goals);
     formData.append('categoryId', formValues.categoryId.toString());
-    formData.append('ownerId', formValues.ownerId.toString());
 
     // Append the ID of the current user as the project owner
     if (this.ownerId !== null) {
@@ -180,19 +180,6 @@ export class BusinessCreationComponent implements OnInit {
         this.isLoading = false;
       },
     });
-    //for test
-    /*this.businessCreationService.postBusinessJSON(payload).subscribe({
-      next: () => {
-        console.log('Created successfully');
-        this.isLoading = false;
-        this.router.navigate(['/ProjectDetails']);
-        this.businessForm.reset();
-      },
-      error: err => {
-        console.error('Creation error', err);
-        this.isLoading = false;
-      }
-    });*/
   }
 
   /**

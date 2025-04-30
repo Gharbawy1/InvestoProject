@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AppLayoutComponent } from './pages/layoutes/app-layout/app-layout.component';
 import { ErrorPageComponent } from './pages/error-page/error-page.component';
 import { AuthLayoutComponent } from './pages/layoutes/auth-layout/auth-layout.component';
+import { adminResolver } from './features/admin-dashboard/resolvers/admin.resolver';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'LandingPage', pathMatch: 'full' },
@@ -9,6 +10,11 @@ export const routes: Routes = [
     path: '',
     component: AppLayoutComponent,
     children: [
+      {
+        path: 'Home',
+        loadComponent: () =>
+          import('./pages/home/home.component').then((m) => m.HomeComponent),
+      },
       {
         path: 'LandingPage',
         loadComponent: () =>
@@ -36,6 +42,9 @@ export const routes: Routes = [
           import('./pages/admin-dashboard/admin-dashboard.component').then(
             (m) => m.AdminDashboardComponent
           ),
+        resolve: {
+          projects: adminResolver,
+        },
       },
       {
         path: 'ProjectDetails',

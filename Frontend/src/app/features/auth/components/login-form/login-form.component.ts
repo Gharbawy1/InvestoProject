@@ -13,12 +13,18 @@ import { EyePasswordComponent } from '../../../../shared/componentes/eye-passwor
  */
 @Component({
   selector: 'app-login-form',
-  imports: [FormsModule, CommonModule, AutoFocusDirective, HttpClientModule, ForgotPasswordComponent, EyePasswordComponent],
+  imports: [
+    FormsModule,
+    CommonModule,
+    AutoFocusDirective,
+    HttpClientModule,
+    ForgotPasswordComponent,
+    EyePasswordComponent,
+  ],
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css'],
 })
 export class LoginFormComponent implements OnInit {
-  
   /** Reference to the login form */
   @ViewChild('loginForm') loginForm!: NgForm;
 
@@ -29,7 +35,6 @@ export class LoginFormComponent implements OnInit {
 
   /** UI State Management */
   showPassword: boolean = false;
-  isLoading: boolean = false;
   formSubmitted: boolean = false;
   loginError: boolean = false;
 
@@ -54,8 +59,8 @@ export class LoginFormComponent implements OnInit {
   }
 
   handleCloseModal() {
-    this.isForgotPasswordOpen = false; 
-  }  
+    this.isForgotPasswordOpen = false;
+  }
 
   /**
    * Toggles the "Remember Me" option.
@@ -72,27 +77,26 @@ export class LoginFormComponent implements OnInit {
 
     if (this.loginForm.invalid) return;
 
-    this.isLoading = true;
     this.loginError = false;
 
-    this.authService.login(this.email, this.password, this.isChecked).subscribe({
-      next: response => {
-        const role = response.roles?.[0];
-        console.log('login response:', response);
-        if (role) {
-          this.navigationService.navigateByRole(role);
-        } else {
-          console.error('No roles in login response', response);
+    this.authService
+      .login(this.email, this.password, this.isChecked)
+      .subscribe({
+        next: (response) => {
+          const role = response.roles?.[0];
+          console.log('login response:', response);
+          if (role) {
+            this.navigationService.navigateByRole(role);
+          } else {
+            console.error('No roles in login response', response);
+            this.loginError = true;
+          }
+        },
+        error: (err) => {
+          console.error('Login failed:', err);
           this.loginError = true;
-        }
-        this.isLoading = false;
-      },
-      error: err => {
-        console.error('Login failed:', err);
-        this.isLoading = false;
-        this.loginError = true;
-      }
-    });
+        },
+      });
   }
 
   /**
@@ -100,14 +104,14 @@ export class LoginFormComponent implements OnInit {
    */
   ngOnInit(): void {
     this.authService.checkAuthStatus().subscribe({
-      next: response => {
+      next: (response) => {
         if (response.valid) {
           this.navigationService.navigateByRole(response.user.role);
         } else {
           this.authService.logout();
         }
       },
-      error: () => this.authService.logout()
+      error: () => this.authService.logout(),
     });
   }
 }

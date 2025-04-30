@@ -6,15 +6,14 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardSubtitle, MatCardModule } from '@angular/material/card';
-import { InvestmentService } from '../../features/investor-dashboard/services/investment-service.service';
-import { WatchlistService } from '../../features/investor-dashboard/services/watchlist-service.service';
-import { OpportunitiesService } from '../../features/investor-dashboard/services/opportunities.service.ts.service';
+import { InvestmentService } from '../../features/investor-dashboard/services/investment/investment-service.service';
+import { WatchlistService } from '../../features/investor-dashboard/services/watchlist/watchlist.service';
+import { OpportunitiesService } from '../../features/investor-dashboard/services/opportunities/opportunities.service';
 import { Iinvestment } from '../../features/investor-dashboard/interfaces/iinvestment';
 import { DashboardCardComponent } from '../../features/investor-dashboard/components/dashboard-card/dashboard-card.component';
 import { DashboardTabComponent } from '../../features/investor-dashboard/components/dashboard-tab/dashboard-tab.component';
 import { ListItemComponent } from '../../features/investor-dashboard/components/list-item/list-item.component';
 import { ButtonComponent } from '../../shared/componentes/button/button.component';
-
 
 @Component({
   selector: 'investor-dashboard',
@@ -35,7 +34,7 @@ import { ButtonComponent } from '../../shared/componentes/button/button.componen
     ButtonComponent,
   ],
   templateUrl: './investor-dashboard.component.html',
-  styleUrls: ['./investor-dashboard.component.css']
+  styleUrls: ['./investor-dashboard.component.css'],
 })
 export class InvestorDashboardComponent implements OnInit {
   private investmentService = inject(InvestmentService);
@@ -55,27 +54,31 @@ export class InvestorDashboardComponent implements OnInit {
     const investorId = '1';
 
     this.investmentService.getInvestmentsByInvestorId(investorId).subscribe({
-      next: (data) => this.investments = data,
-      error: (err) => console.error('Error fetching investments:', err)
+      next: (data) => (this.investments = data),
+      error: (err) => console.error('Error fetching investments:', err),
     });
 
     this.watchlistService.getWatchlistByInvestorId(investorId).subscribe({
-      next: (data) => this.wishlist = data,
-      error: (err) => console.error('Error fetching watchlist:', err)
+      next: (data) => (this.wishlist = data),
+      error: (err) => console.error('Error fetching watchlist:', err),
     });
 
     this.opportunitiesService.getAvailableOpportunities().subscribe({
-      next: (data) => this.opportunities = data,
-      error: (err) => console.error('Error fetching opportunities:', err)
+      next: (data) => (this.opportunities = data),
+      error: (err) => console.error('Error fetching opportunities:', err),
     });
   }
 
   getStatusClass(status: string): string {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'completed': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active':
+        return 'bg-green-100 text-green-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'completed':
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   }
 }

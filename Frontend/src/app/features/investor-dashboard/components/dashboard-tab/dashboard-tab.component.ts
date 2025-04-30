@@ -2,7 +2,7 @@ import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
-import { InvestmentService } from '../../services/investment-service.service';
+import { InvestmentService } from '../../services/investment/investment-service.service';
 import { Iinvestment } from '../../interfaces/iinvestment';
 
 @Component({
@@ -10,7 +10,7 @@ import { Iinvestment } from '../../interfaces/iinvestment';
   standalone: true,
   imports: [CommonModule, MatTabsModule, MatCardModule],
   templateUrl: './dashboard-tab.component.html',
-  styleUrls: ['./dashboard-tab.component.css']
+  styleUrls: ['./dashboard-tab.component.css'],
 })
 export class DashboardTabComponent implements OnInit {
   @Input() investments: Iinvestment[] = [];
@@ -18,7 +18,6 @@ export class DashboardTabComponent implements OnInit {
   @Input() wishlist: Iinvestment[] = [];
   private investmentService = inject(InvestmentService);
 
-  
   loading = true;
   error: string | null = null;
   @Input() tabs: any;
@@ -41,11 +40,13 @@ export class DashboardTabComponent implements OnInit {
       },
       complete: () => {
         this.loading = false;
-      }
+      },
     });
   }
 
   getInvestmentsByStatus(status: 'active' | 'pending' | 'completed') {
-    return this.investments.filter(investment => investment.status === status);
+    return this.investments.filter(
+      (investment) => investment.status === status
+    );
   }
 }

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { UserDetails} from '../../features/project/services/business-details/business-details.service';
 import { ProjectTabsComponent } from '../../features/project/components/project-tabs/project-tabs.component';
 import { InvestmentSidebarComponent } from '../../features/project/components/investment-sidebar/investment-sidebar.component';
 import { ProjectContextService } from '../../features/project/services/project-context.service';
@@ -10,6 +9,7 @@ import { AuthService } from '../../core/services/auth/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { tap } from 'rxjs';
 import { IBusinessDetails } from '../../features/project/interfaces/IBusinessDetails';
+import { UserDetails } from '../../core/interfaces/UserDetails';
 
 @Component({
   selector: 'app-project-details',
@@ -27,7 +27,6 @@ import { IBusinessDetails } from '../../features/project/interfaces/IBusinessDet
 export class ProjectDetailsComponent implements OnInit {
   project?: IBusinessDetails;
   owner?: UserDetails;
-  isLoading = true;
   error?: string;
 
   activeTab: string = 'overview';
@@ -61,57 +60,14 @@ export class ProjectDetailsComponent implements OnInit {
       .subscribe({
         next: ({ projectData }) => {
           if (!projectData) return;
-
-          this.project = projectData.project;
-          this.owner = projectData.owner;
+          console.log('Project data:', projectData);
+          this.project = projectData;
+          this.owner = projectData.ownerName;
           this.isProjectOwner = this.authService.getUserId() === this.owner?.id;
-          
-          const status = this.project?.status.toLowerCase() || 'pending';
-
-          // Handle rejected projects
-          if (status === 'rejected') {
-            if (this.isProjectOwner) {
-              this.blockAccess({
-                message: 'Your project has been rejected. Please create a new business.',
-                path: ['/business-creation'],
-                buttonText: 'Create New Business'
-              });
-            } else {
-              this.blockAccess({
-                message: 'This project is no longer available.',
-                path: ['/']
-              });
-            }
-            this.isLoading = false;
-            return;
-          }
-
-          // Handle pending projects
-          if (status === 'pending') {
-            if (this.isProjectOwner) {
-              this.blockAccess({
-                message: 'Your project is under review. Please check back later.',
-                path: ['/dashboard'],
-                buttonText: 'Go to Dashboard'
-              });
-            } else {
-              this.blockAccess({
-                message: 'This project is not yet available for investment.',
-                path: ['/']
-              });
-            }
-            this.isLoading = false;
-            return;
-          }
-
-          if (this.project) {
-            this.projectContext.setProject(this.project);
-          }
-          this.isLoading = false;
+          this.projectContext.setProject(projectData);
         },
         error: (err) => {
           this.error = err.message;
-          this.isLoading = false;
           this.router.navigate(['/error']);
         },
       });

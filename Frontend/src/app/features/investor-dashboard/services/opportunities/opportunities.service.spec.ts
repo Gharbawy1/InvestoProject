@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OpportunitiesService } from './opportunities.service.ts.service';
+import { OpportunitiesService } from './opportunities.service';
 
 describe('OpportunitiesServiceTsService', () => {
   let service: OpportunitiesService;
