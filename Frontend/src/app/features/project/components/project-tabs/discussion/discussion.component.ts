@@ -36,4 +36,23 @@ export class DiscussionComponent {
       this.newComment = '';
     }
   }
+  addComment(comment: string): void {
+    const newComment: IComment = {
+      user: '',
+      avatar: '',
+      content: comment,
+      date: new Date(),
+    };
+    this.comments.unshift(newComment);
+  }
+
+  onCommentSubmitted(comment: string) {
+    // Add to local comments array if needed
+    this.comments.unshift({
+      user: 'Current User',
+      avatar: 'path/to/avatar.jpg',
+      date: new Date(),
+      content: comment,
+    });
+  }
 }

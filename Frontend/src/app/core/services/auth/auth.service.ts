@@ -198,7 +198,7 @@ export class AuthService {
    * Retrieves JWT token from storage.
    * @returns The token string if available; otherwise, null.
    */
-  private getToken(): string | null {
+  getToken(): string | null {
     if (!isPlatformBrowser(this.platformId)) return null;
     return localStorage.getItem('token') || sessionStorage.getItem('token');
   }

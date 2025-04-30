@@ -9,10 +9,53 @@
             "profilePictureURL": "http://res.cloudinary.com/dhnlpsrf4/image/upload/v1745461727/jz7jze1pmlm4jfhhqo6s.jpg"
         },
         {
-            "id": "d9f1e7c2-1234-4abc-8def-0123456789ab",
-            "firstName": "Bob",
-            "lastName": "Jones",
-            "profilePicture": "https://i.pravatar.cc/150?img=2"
+            "id": "486234cd-de76-45e4-8d27-18ce76aa88a4",
+            "firstName": "Ahmed",
+            "lastName": "Mohamed",
+            "profilePicture": "http://res.cloudinary.com/dhnlpsrf4/image/upload/v1745690366/uckga7beau68n1dgwg0v.jpg"
+        },
+        {
+            "id": "3234c2a5-e688-4751-87cb-29d683394ff3",
+            "firstName": "alalal",
+            "lastName": "mmmm",
+            "profilePictureURL": "http://res.cloudinary.com/dhnlpsrf4/image/upload/v1745693076/dm4ykpreo6jqlkjotg6p.jpg"
+        }
+    ],
+    "documents":[
+        {
+            "id": "1",
+            "title": "Document 1",
+            "type": "pdf",
+            "url": "https://example.com/doc1.pdf",
+            "userId": "06aca056-9768-49bf-95f2-277f1ce17d37"
+        },
+        {
+            "id": "2",
+            "title": "Document 2",
+            "type": "docx",
+            "url": "https://example.com/doc2.docx",
+            "userId": "d9f1e7c2-1234-4abc-8def-0123456789ab"
+        },
+        {
+            "id": "3",
+            "title": "Document 3",
+            "type": "pdf",
+            "url": "https://example.com/doc3.pdf",
+            "userId": "06aca056-9768-49bf-95f2-277f1ce17d37"
+        },
+        {
+            "id": "4",
+            "title": "Document 4",
+            "type": "docx",
+            "url": "https://example.com/doc4.docx",
+            "userId": "d9f1e7c2-1234-4abc-8def-0123456789ab"
+        },
+        {
+            "id": "5",
+            "title": "Document 5",
+            "type": "pdf",
+            "url": "https://example.com/doc5.pdf",
+            "userId": "d9f1e7c2-1234-4abc-8def-0123456789ab"
         }
     ]
 }

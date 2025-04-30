@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,10 +6,10 @@ import { MatInputModule } from '@angular/material/input';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-
+import { AuthService, User } from '../../../../core/services/auth/auth.service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-investment-sidebar',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -17,17 +17,14 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatIconModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule,
     MatProgressBarModule,
-    MatButtonModule,
   ],
   templateUrl: './investment-sidebar.component.html',
   styleUrls: ['./investment-sidebar.component.css'],
 })
-export class InvestmentSidebarComponent {
+export class InvestmentSidebarComponent implements OnDestroy {
   @Input() fundingGoal = 0;
   @Input() currentFunding = 0;
-  @Input() status = 'pending';
   @Input() numOfInvestors = 0;
 
   @Output() discussionClicked = new EventEmitter<void>();
@@ -39,15 +36,28 @@ export class InvestmentSidebarComponent {
 
   investmentAmount = this.MIN_INVESTMENT;
   isLoading = false;
+  isLoggedIn = false;
+  isInvestor = false;
+  private userSub: Subscription = Subscription.EMPTY;
 
-  constructor(public router: Router, private route: ActivatedRoute) {}
+  constructor(
+    public router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService
+  ) {
+    const user = this.authService.getCurrentUser();
+    this.isLoggedIn = !!user;
+    this.isInvestor = user?.role.toLowerCase() === 'investor';
+  }
+
+  get status(): string {
+    return this.currentFunding >= this.fundingGoal ? 'funded' : 'active';
+  }
 
   get progressPercentage(): number {
-    if (!this.fundingGoal || this.fundingGoal <= 0) {
-      return 0;
-    }
-    const pct = (this.currentFunding / this.fundingGoal) * 100;
-    return Math.max(0, Math.min(100, Math.round(pct)));
+    if (!this.fundingGoal || this.fundingGoal <= 0) return 0;
+    const percentage = (this.currentFunding / this.fundingGoal) * 100;
+    return Math.min(100, percentage);
   }
 
   setInvestmentAmount(amount: number): void {
@@ -64,9 +74,10 @@ export class InvestmentSidebarComponent {
 
   get canInvest(): boolean {
     return (
+      this.isInvestor && 
       !this.isLoading &&
       this.investmentAmount >= this.MIN_INVESTMENT &&
-      this.progressPercentage < 100
+      this.status === 'active'
     );
   }
 
@@ -105,7 +116,7 @@ export class InvestmentSidebarComponent {
     if (projectId) {
       // navigate into the nested child
       this.router
-        .navigate(['/Payment'])
+        .navigate(['offer'], { relativeTo: this.route })
         .then(() => (this.isLoading = false))
         .catch(() => (this.isLoading = false));
     }
@@ -113,5 +124,9 @@ export class InvestmentSidebarComponent {
 
   onContact() {
     this.router.navigate(['discussion'], { relativeTo: this.route });
+  }
+
+  ngOnDestroy() {
+    this.userSub.unsubscribe();
   }
 }
