@@ -1,10 +1,13 @@
 ﻿using System.Security.Claims;
+using Investo.DataAccess.Hubs;
+using Investo.DataAccess.Services.Notifications;
 using Investo.DataAccess.Services.Offers;
 using Investo.DataAccess.Services.Project;
 using Investo.Entities.DTO.Offer;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Investo.Presentation.Controllers
 {
@@ -14,11 +17,13 @@ namespace Investo.Presentation.Controllers
     {
         private readonly IOfferService _offerService;
         private readonly IProjectService _projectService;
+        private readonly NotificationService _notifcationService;
 
-        public OfferController(IOfferService offerService, IProjectService projectService)
+        public OfferController(IOfferService offerService, IProjectService projectService, NotificationService notifcationService)
         {
             _offerService = offerService;
             _projectService = projectService;
+            _notifcationService = notifcationService;
         }
 
         ///<summary>
@@ -39,14 +44,25 @@ namespace Investo.Presentation.Controllers
             var offer = new ValidationResult<ReadOfferDto>();
             try
             {
+                // Here we create the offer is created with Investor who made it and the project offerd 
                 offer = await _offerService.CreateOfferAsync(dto);
             }
             catch(Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+            // After Creation of the offer ,directly send notification to "BusinessOwner assosiated with offerd project"
+            // we have to get the businessOwnerId to send notify to it 
+            if (offer.IsValid)
+            {
+                await _notifcationService.SendOfferNotificationAsync(offer.Data);
+                return Ok(offer);
+            }
+            else
+            {
+                return BadRequest(offer.ErrorMessage);
+            }
 
-            return Ok(offer);
         }
 
         ///<summary>

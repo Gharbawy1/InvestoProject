@@ -18,6 +18,8 @@ using Investo.DataAccess.Services.Token;
 using Investo.DataAccess.Services.Offers;
 using System.Reflection;
 using Investo.DataAccess.Services.OAuth;
+using Investo.DataAccess.Hubs;
+using Investo.DataAccess.Services.Notifications;
 
 namespace Investo
 {
@@ -32,6 +34,7 @@ namespace Investo
             builder.Services.AddControllers();
 
             builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddSignalR();
 
             // Active Model State
             builder.Services.AddControllers().ConfigureApiBehaviorOptions(
@@ -54,6 +57,8 @@ namespace Investo
             builder.Services.AddScoped<IBusinessOwnerRepository, BusinessOwnerRepository>();
 
             builder.Services.AddScoped<IAuthGoogleService, AuthGoogleService>();
+
+            builder.Services.AddScoped<NotificationService>();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
             {
@@ -86,15 +91,30 @@ namespace Investo
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]))
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationHub"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins", builder => 
                 {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
+                    builder
+                        .SetIsOriginAllowed(origin => true) // يخلي أي origin مسموح مؤقتًا
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials(); // مهم لو بتستخدم Google login أو SignalR
                 });
             });
 
@@ -160,9 +180,12 @@ namespace Investo
 
             app.UseHttpsRedirection();
 
+
             app.UseCors("AllowAllOrigins");
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapHub<NotificationHub>("/notificationHub");
 
 
             app.MapControllers();
