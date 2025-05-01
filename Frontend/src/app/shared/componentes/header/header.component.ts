@@ -18,7 +18,6 @@ import { stat } from 'fs';
     MatButtonModule,
     MatIconModule,
     RouterLink,
-    RouterLinkActive,
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
@@ -36,7 +35,6 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.authService.isLoggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
-      console.log(status);
       if (status) {
         this.authService.user$.subscribe((user) => {
           this.userName = user?.firstName || 'User';

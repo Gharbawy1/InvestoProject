@@ -62,50 +62,68 @@
 
     <!-- Search, Auth Buttons, User Menu (Desktop) -->
     <div class="hidden md:flex items-center space-x-4">
-      <button class="text-gray-700 hover:text-primary transition-colors">
-        <mat-icon class="scale-90">search</mat-icon>
-      </button>
-
       <ng-container *ngIf="isLoggedIn; else loggedOut">
         <div class="relative" [matMenuTriggerFor]="userMenu">
-          <button mat-button class="flex items-center gap-2">
-            <div
-              class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden"
-            >
-              <mat-icon class="text-gray-600 scale-90">account_circle</mat-icon>
+          <button mat-button class="flex items-center gap-2 group">
+            <!-- Avatar + Name wrapper -->
+            <div class="flex items-center gap-2">
+              <div
+                class="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden"
+              >
+                <mat-icon
+                  class="text-gray-600 group-hover:text-primary-600 transition duration-200"
+                >
+                  account_circle
+                </mat-icon>
+              </div>
+              <span
+                class="font-medium text-black group-hover:text-primary-600 transition duration-200"
+              >
+                {{ userName }}
+              </span>
             </div>
-            <span class="font-medium">{{ userName }}</span>
-            <mat-icon class="scale-75">expand_more</mat-icon>
+            <!-- Chevron Icon -->
+            <mat-icon
+              class="scale-90 text-gray-500 group-hover:text-primary-600 transition duration-200"
+            >
+              expand_more
+            </mat-icon>
           </button>
         </div>
+
         <mat-menu #userMenu="matMenu">
-          <button mat-menu-item routerLink="/dashboard">Dashboard</button>
-          <button mat-menu-item routerLink="/profile">My Profile</button>
-          <button mat-menu-item routerLink="/investments">
-            My Investments
+          <button mat-menu-item routerLink="/dashboard">
+            <mat-icon>dashboard</mat-icon>
+            <span>Dashboard</span>
           </button>
-          <button mat-menu-item routerLink="/messages">Messages</button>
-          <button mat-menu-item routerLink="/settings">Settings</button>
-          <button mat-menu-item class="text-red-600" (click)="onLogout()">
-            Sign Out
+          <button mat-menu-item routerLink="/investments">
+            <mat-icon>trending_up</mat-icon>
+            <span>My Investments</span>
+          </button>
+          <button mat-menu-item routerLink="/settings">
+            <mat-icon>settings</mat-icon>
+            <span>Settings</span>
+          </button>
+          <button mat-menu-item (click)="onLogout()">
+            <mat-icon class="text-red-600">logout</mat-icon>
+            <span class="text-red-600">Sign Out</span>
           </button>
         </mat-menu>
       </ng-container>
 
       <ng-template #loggedOut>
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center gap-4">
           <button
             mat-button
-            routerLinkActive="active"
             routerLink="/auth"
             (click)="loginClick.emit()"
+            class="text-gray-700 hover:text-primary-600 transition"
           >
             Log In
           </button>
           <button
             mat-raised-button
             color="primary"
-            routerLinkActive="active"
             routerLink="/auth"
             (click)="registerClick.emit()"
           >

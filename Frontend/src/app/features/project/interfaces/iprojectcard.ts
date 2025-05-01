@@ -2,9 +2,9 @@ export interface IProjectCard {
   id: string;
   projectTitle: string;
   subtitle: string;
-  projectImageURL: string;
+  projectImageUrl: string;
   fundingGoal: number;
   raisedFunds: number;
-  category: string;
+  categoryName: string;
   owner: string;
 }

@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { IDocument } from '../../../interfaces/IDocument';
 import { DocumentViewService } from '../../../services/documents-view/documents-view.service';
 import { HttpClientModule } from '@angular/common/http';
-import { ProjectContextService } from '../../../services/project-context.service';
+import { ProjectContextService } from '../../../services/project-context/project-context.service';
 import { filter, switchMap, take } from 'rxjs/operators';
 
 @Component({
@@ -24,10 +24,10 @@ import { filter, switchMap, take } from 'rxjs/operators';
     MatSelectModule,
     MatFormFieldModule,
     MatProgressSpinner,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './documents.component.html',
-  styleUrls: ['./documents.component.css']
+  styleUrls: ['./documents.component.css'],
 })
 export class DocumentsComponent implements OnInit {
   documents: IDocument[] = [];
@@ -46,31 +46,33 @@ export class DocumentsComponent implements OnInit {
   }
 
   loadDocuments() {
-    this.projectCtx.project$.pipe(
-      filter(p => p !== null),
-      take(1),
-      switchMap(project => {
-        this.currentUserId = project!.ownerId;
-        return this.documentViewService.getDocumentsByUser(project!.ownerId);
-      })
-    ).subscribe({
-      next: docs => {
-        this.documents = docs;
-        this.loading = false;
-      },
-      error: err => {
-        this.error = 'Failed to load documents. Please try again later.';
-        this.loading = false;
-        console.error(err);
-      }
-    });
+    this.projectCtx.project$
+      .pipe(
+        filter((p) => p !== null),
+        take(1),
+        switchMap((project) => {
+          this.currentUserId = project!.ownerId;
+          return this.documentViewService.getDocumentsByUser(project!.ownerId);
+        })
+      )
+      .subscribe({
+        next: (docs) => {
+          this.documents = docs;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = 'Failed to load documents. Please try again later.';
+          this.loading = false;
+          console.error(err);
+        },
+      });
   }
-  
+
   getFileIcon(fileType: string): string {
     const iconMap: { [key: string]: string } = {
-      'pdf': 'picture_as_pdf',
-      'docx': 'description',
-      'default': 'insert_drive_file'
+      pdf: 'picture_as_pdf',
+      docx: 'description',
+      default: 'insert_drive_file',
     };
     return iconMap[fileType.toLowerCase()] || iconMap['default'];
   }
@@ -81,7 +83,7 @@ export class DocumentsComponent implements OnInit {
     link.download = doc.title;
     link.click();
   }
-  
+
   previewDocument(doc: IDocument) {
     window.open(doc.url, '');
   }

@@ -7,7 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OfferService } from '../../../services/offer/offer.service';
 import { IOffer } from '../../../interfaces/ioffer';
 import { AuthService } from '../../../../../core/services/auth/auth.service';
-import { ProjectContextService } from '../../../services/project-context.service';
+import { ProjectContextService } from '../../../services/project-context/project-context.service';
 import { IBusinessDetails } from '../../../interfaces/IBusinessDetails';
 import { filter, take, takeUntil, timeout } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';

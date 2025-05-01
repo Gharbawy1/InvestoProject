@@ -1,53 +1,55 @@
-import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../../../shared/componentes/button/button.component';
 import { InputComponent } from '../../../../shared/componentes/input/input.component';
 import { ICategory } from '../../interfaces/icategory';
 
-
 @Component({
   selector: 'app-project-filter',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, InputComponent], 
+  imports: [CommonModule, FormsModule, ButtonComponent, InputComponent],
   templateUrl: './project-filter.component.html',
-  styleUrl: './project-filter.component.css'
+  styleUrl: './project-filter.component.css',
 })
 export class ProjectFilterComponent {
   @Input() categories: ICategory[] = [];
-  @Output() filterChange = new EventEmitter<{searchTerm: string, categoryId: number, sortOrder: string}>();
+  @Output() filterChange = new EventEmitter<{
+    searchTerm: string;
+    categoryName: string;
+    sortOrder: 'default' | 'funding' | 'recent';
+  }>();
 
-  searchTerm = signal('');
-  activeCategoryId = 0; 
-  sortOrder = signal<'default' | 'funding' | 'recent'>('default');
+  searchTerm: string = '';
+  activeCategoryName = 'All Projects';
+  sortOrder: 'default' | 'funding' | 'recent' = 'default';
 
-  // Combined filter changes
-  private emitFilterChange() {
+  private emitFilterChange(): void {
     this.filterChange.emit({
-      searchTerm: this.searchTerm(),
-      categoryId: this.activeCategoryId,
-      sortOrder: this.sortOrder()
+      searchTerm: this.searchTerm,
+      categoryName: this.activeCategoryName,
+      sortOrder: this.sortOrder,
     });
   }
 
-  changeSortOrder(): void {
-    this.sortOrder.set(
-      this.sortOrder() === 'default'
-        ? 'funding'
-        : this.sortOrder() === 'funding'
-        ? 'recent'
-        : 'default'
-    );
-    this.emitFilterChange();
-  }
-  
-  setCategory(categoryId: number): void {
-    this.activeCategoryId = categoryId;
+  onSearchChange(value: string): void {
+    this.searchTerm = value;
     this.emitFilterChange();
   }
 
-  onSearchChange(value: string): void {
-    this.searchTerm.set(value);
+  setCategory(categoryName: string): void {
+    this.activeCategoryName = categoryName;
+    this.emitFilterChange();
+  }
+
+  changeSortOrder(): void {
+    this.sortOrder =
+      this.sortOrder === 'default'
+        ? 'funding'
+        : this.sortOrder === 'funding'
+        ? 'recent'
+        : 'default';
+
     this.emitFilterChange();
   }
 }

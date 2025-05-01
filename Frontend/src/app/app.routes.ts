@@ -44,13 +44,6 @@ export const routes: Routes = [
         },
       },
       {
-        path: 'ProjectDetails',
-        loadChildren: () =>
-          import('./features/project/routes').then(
-            (m) => m.PROJECT_DETAILS_ROUTES
-          ),
-      },
-      {
         path: 'BusinessCreation',
         loadComponent: () =>
           import('./pages/business-creation/business-creation.component').then(
@@ -86,7 +79,6 @@ export const routes: Routes = [
   {
     path: '',
     component: AppLayoutComponent,
-    canActivate: [guestGuard],
     children: [
       {
         path: 'LandingPage',
@@ -94,6 +86,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/landing-page/landing-page.component').then(
             (m) => m.LandingPageComponent
+          ),
+      },
+      {
+        path: 'ProjectDetails',
+        loadChildren: () =>
+          import('./features/project/routes').then(
+            (m) => m.PROJECT_DETAILS_ROUTES
           ),
       },
     ],

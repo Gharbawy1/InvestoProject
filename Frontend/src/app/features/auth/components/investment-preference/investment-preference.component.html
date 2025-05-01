@@ -10,59 +10,14 @@
     (ngSubmit)="onSubmit()"
     class="space-y-4 animate-stagger"
   >
-    <!-- Preferred Industries & Geographic Focus -->
-    <div class="grid grid-cols-2 gap-4">
-      <div class="flex flex-col gap-0.5 form-group">
-        <label for="preferredIndustries" class="text-sm font-medium"
-          >Preferred Industries</label
-        >
-        <input
-          id="preferredIndustries"
-          formControlName="preferredIndustries"
-          placeholder="e.g., Technology, Healthcare"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
-        />
-        <div class="min-h-[20px]">
-          <p
-            *ngIf="investorPreferenceForm.get('preferredIndustries')?.errors?.['required'] && (investorPreferenceForm.get('preferredIndustries')?.touched || formSubmitted)"
-            class="text-red-500 text-sm animate-slide-in error-message"
-            aria-live="polite"
-          >
-            * Preferred industries are required
-          </p>
-        </div>
-      </div>
-
-      <div class="flex flex-col gap-0.5 form-group">
-        <label for="geographicFocus" class="text-sm font-medium"
-          >Geographic Focus</label
-        >
-        <input
-          id="geographicFocus"
-          formControlName="geographicFocus"
-          placeholder="e.g., North America, Europe"
-          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
-        />
-        <div class="min-h-[20px]">
-          <p
-            *ngIf="investorPreferenceForm.get('geographicFocus')?.errors?.['required'] && (investorPreferenceForm.get('geographicFocus')?.touched || formSubmitted)"
-            class="text-red-500 text-sm animate-slide-in error-message"
-            aria-live="polite"
-          >
-            * Geographic focus is required
-          </p>
-        </div>
-      </div>
-    </div>
-
     <!-- Risk Tolerance -->
     <div class="flex flex-col gap-0.5 form-group">
-      <label for="riskTolerance" class="text-sm font-medium"
+      <label for="RiskTolerance" class="text-sm font-medium"
         >Risk Tolerance</label
       >
       <select
-        id="riskTolerance"
-        formControlName="riskTolerance"
+        id="RiskTolerance"
+        formControlName="RiskTolerance"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 cursor-pointer transition-select select-hover"
       >
         <option value="" disabled class="text-gray-400">
@@ -74,7 +29,7 @@
       </select>
       <div class="min-h-[20px]">
         <p
-          *ngIf="investorPreferenceForm.get('riskTolerance')?.errors?.['required'] && (investorPreferenceForm.get('riskTolerance')?.touched || formSubmitted)"
+          *ngIf="investorPreferenceForm.get('RiskTolerance')?.errors?.['required'] && (investorPreferenceForm.get('RiskTolerance')?.touched || formSubmitted)"
           class="text-red-500 text-sm animate-slide-in error-message"
           aria-live="polite"
         >
@@ -85,18 +40,18 @@
 
     <!-- Investment Goals -->
     <div class="flex flex-col gap-0.5 form-group">
-      <label for="investmentGoals" class="text-sm font-medium"
+      <label for="InvestmentGoals" class="text-sm font-medium"
         >Investment Goals</label
       >
       <input
-        id="investmentGoals"
-        formControlName="investmentGoals"
+        id="InvestmentGoals"
+        formControlName="InvestmentGoals"
         placeholder="e.g., Growth, Income"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
       />
       <div class="min-h-[20px]">
         <p
-          *ngIf="investorPreferenceForm.get('investmentGoals')?.errors?.['required'] && (investorPreferenceForm.get('investmentGoals')?.touched || formSubmitted)"
+          *ngIf="investorPreferenceForm.get('InvestmentGoals')?.errors?.['required'] && (investorPreferenceForm.get('InvestmentGoals')?.touched || formSubmitted)"
           class="text-red-500 text-sm animate-slide-in error-message"
           aria-live="polite"
         >
@@ -108,26 +63,26 @@
     <!-- Investment Range -->
     <div class="grid grid-cols-2 gap-4">
       <div class="flex flex-col gap-0.5 form-group">
-        <label for="minInvestment" class="text-sm font-medium"
+        <label for="MinInvestmentAmount" class="text-sm font-medium"
           >Minimum Investment</label
         >
         <input
-          id="minInvestment"
+          id="MinInvestmentAmountAmount"
           type="number"
-          formControlName="minInvestment"
+          formControlName="MinInvestmentAmount"
           placeholder="e.g., 1000"
           class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
         />
         <div class="min-h-[20px]">
           <p
-            *ngIf="investorPreferenceForm.get('minInvestment')?.errors?.['required'] && (investorPreferenceForm.get('minInvestment')?.touched || formSubmitted)"
+            *ngIf="investorPreferenceForm.get('MinInvestmentAmount')?.errors?.['required'] && (investorPreferenceForm.get('MinInvestmentAmount')?.touched || formSubmitted)"
             class="text-red-500 text-sm animate-slide-in error-message"
             aria-live="polite"
           >
             * Minimum investment is required
           </p>
           <p
-            *ngIf="investorPreferenceForm.get('minInvestment')?.errors?.['min']"
+            *ngIf="investorPreferenceForm.get('MinInvestmentAmount')?.errors?.['min']"
             class="text-red-500 text-sm animate-slide-in error-message"
             aria-live="polite"
           >
@@ -137,26 +92,26 @@
       </div>
 
       <div class="flex flex-col gap-0.5 form-group">
-        <label for="maxInvestment" class="text-sm font-medium"
+        <label for="MaxInvestmentAmount" class="text-sm font-medium"
           >Maximum Investment</label
         >
         <input
-          id="maxInvestment"
+          id="MaxInvestmentAmount"
           type="number"
-          formControlName="maxInvestment"
+          formControlName="MaxInvestmentAmount"
           placeholder="e.g., 50000"
           class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
         />
         <div class="min-h-[20px]">
           <p
-            *ngIf="investorPreferenceForm.get('maxInvestment')?.errors?.['required'] && (investorPreferenceForm.get('maxInvestment')?.touched || formSubmitted)"
+            *ngIf="investorPreferenceForm.get('MaxInvestmentAmount')?.errors?.['required'] && (investorPreferenceForm.get('MaxInvestmentAmount')?.touched || formSubmitted)"
             class="text-red-500 text-sm animate-slide-in error-message"
             aria-live="polite"
           >
             * Maximum investment is required
           </p>
           <p
-            *ngIf="investorPreferenceForm.get('maxInvestment')?.errors?.['min']"
+            *ngIf="investorPreferenceForm.get('MaxInvestmentAmount')?.errors?.['min']"
             class="text-red-500 text-sm animate-slide-in error-message"
             aria-live="polite"
           >
@@ -172,25 +127,84 @@
       * Maximum investment must be greater than minimum investment
     </div>
 
-    <!-- Liquidity Preferences -->
+    <!-- Accreditation Status -->
     <div class="flex flex-col gap-0.5 form-group">
-      <label for="liquidityPreferences" class="text-sm font-medium"
-        >Liquidity Preferences</label
+      <label for="AccreditationStatus" class="text-sm font-medium"
+        >Accreditation Status</label
       >
       <input
-        id="liquidityPreferences"
-        formControlName="liquidityPreferences"
-        placeholder="e.g., Short-term, Long-term"
+        id="AccreditationStatus"
+        formControlName="AccreditationStatus"
+        placeholder="e.g., Accreated or Non-Accreated"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
       />
       <div class="min-h-[20px]">
         <p
-          *ngIf="investorPreferenceForm.get('liquidityPreferences')?.errors?.['required'] && (investorPreferenceForm.get('liquidityPreferences')?.touched || formSubmitted)"
+          *ngIf="investorPreferenceForm.get('AccreditationStatus')?.errors?.['required'] && (investorPreferenceForm.get('AccreditationStatus')?.touched || formSubmitted)"
           class="text-red-500 text-sm animate-slide-in error-message"
           aria-live="polite"
         >
-          * Liquidity preferences are required
+          * Accreditation Status is required
         </p>
+      </div>
+    </div>
+
+    <!-- Investment Range -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col gap-0.5 form-group">
+        <label for="NetWorth" class="text-sm font-medium">Net Worth</label>
+        <input
+          id="NetWorth"
+          type="number"
+          formControlName="NetWorth"
+          placeholder="e.g., 1000"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+        />
+        <div class="min-h-[20px]">
+          <p
+            *ngIf="investorPreferenceForm.get('NetWorth')?.errors?.['required'] && (investorPreferenceForm.get('NetWorth')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
+            * Net Worth is required
+          </p>
+          <p
+            *ngIf="investorPreferenceForm.get('NetWorth')?.errors?.['min']"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
+            * Must be at least $0
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-0.5 form-group">
+        <label for="AnnualIncome" class="text-sm font-medium"
+          >Annual Income</label
+        >
+        <input
+          id="AnnualIncome"
+          type="number"
+          formControlName="AnnualIncome"
+          placeholder="e.g., 50000"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+        />
+        <div class="min-h-[20px]">
+          <p
+            *ngIf="investorPreferenceForm.get('AnnualIncome')?.errors?.['required'] && (investorPreferenceForm.get('AnnualIncome')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
+            * Annual Income is required
+          </p>
+          <p
+            *ngIf="investorPreferenceForm.get('AnnualIncome')?.errors?.['min']"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
+            * Must be at least $0
+          </p>
+        </div>
       </div>
     </div>
 

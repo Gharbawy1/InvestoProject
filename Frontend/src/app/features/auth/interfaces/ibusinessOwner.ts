@@ -1,6 +1,7 @@
 import { IGuest } from './iguest';
 
 export interface IBusinessOwner extends IGuest {
-  address: string;
-  verificationIdentity: File;
+  NationalID: string;
+  NationalIDImageFrontURL: File;
+  NationalIDImageBackURL: File;
 }
