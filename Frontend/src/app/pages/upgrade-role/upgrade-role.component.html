@@ -1,0 +1,91 @@
+<!-- BLOCKED STATE -->
+<div *ngIf="blockMessage"
+     class="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50">
+  <p class="text-lg text-red-600 mb-4">{{ blockMessage }}</p>
+  <button (click)="goNavigate()"
+          class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+    {{ navigationButtonText }}
+  </button>
+</div>
+
+<!-- NORMAL UPGRADE UI -->
+<div *ngIf="!blockMessage" class="min-h-screen bg-gray-50">
+  <div class="grid lg:grid-cols-2 min-h-screen">
+    <!-- Left Side Illustration/Copy -->
+    <div class="hidden lg:block relative bg-gradient-to-br from-blue-600 to-purple-500">
+      <ng-container *ngIf="activeTab === 'Investor'">
+        <div class="absolute inset-0 flex items-center justify-center p-12 text-white">
+          <div class="max-w-2xl space-y-6">
+            <h2 class="text-5xl font-bold">Become an Investor</h2>
+            <p class="text-xl opacity-90">
+              Ready to put your money to work? Fill in your details and join our network of savvy investors.
+            </p>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="activeTab === 'BusinessOwner'">
+        <div class="absolute inset-0 flex items-center justify-center p-12 text-white">
+          <div class="max-w-2xl space-y-6">
+            <h2 class="text-5xl font-bold">Become a Business Owner</h2>
+            <p class="text-xl opacity-90">
+              Share your project vision, upload your credentials, and start connecting with investors today.
+            </p>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Right Side (Tabs + Forms) -->
+    <div class="flex items-center justify-center p-6 sm:p-12">
+      <div class="w-full max-w-[400px] mx-auto">
+        <!-- Header -->
+        <div class="mb-8 text-center">
+          <h2 class="text-3xl font-bold text-gray-900">
+            {{ activeTab === 'Investor'
+               ? 'Become an Investor'
+               : 'Become a Business Owner' }}
+          </h2>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-8">
+          <div class="flex space-x-4">
+            <!-- Investor Tab -->
+            <button (click)="navigate('Investor')"
+                    class="py-4 px-1 text-sm font-medium relative
+                           focus:outline-none
+                           {{ activeTab==='Investor'
+                              ? 'text-blue-600 font-bold'
+                              : 'text-gray-500 hover:text-gray-700' }}">
+              Investor
+              <div class="absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-300"
+                   [class.bg-blue-600]="activeTab==='Investor'"
+                   [class.bg-transparent]="activeTab!=='Investor'">
+              </div>
+            </button>
+
+            <!-- Business Owner Tab -->
+            <button (click)="navigate('BusinessOwner')"
+                    class="py-4 px-1 text-sm font-medium relative
+                           focus:outline-none
+                           {{ activeTab==='BusinessOwner'
+                              ? 'text-blue-600 font-bold'
+                              : 'text-gray-500 hover:text-gray-700' }}">
+              Business Owner
+              <div class="absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-300"
+                   [class.bg-blue-600]="activeTab==='BusinessOwner'"
+                   [class.bg-transparent]="activeTab!=='BusinessOwner'">
+              </div>
+            </button>
+          </div>
+          <div class="border-b border-gray-200 mt-[-1px]"></div>
+        </div>
+
+        <!-- Child Form Outlet -->
+        <div class="transition-all duration-300 ease-out">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

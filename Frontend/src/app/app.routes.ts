@@ -83,6 +83,12 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'UpgradeRole',
+    loadChildren: () =>
+      import('./features/upgrade-role/routes')
+        .then(m => m.upgradeRoutes)
+  },
+  {
     path: 'error',
     component: ErrorPageComponent,
   },
