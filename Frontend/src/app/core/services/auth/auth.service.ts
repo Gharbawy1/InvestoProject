@@ -23,11 +23,15 @@ export interface User {
 })
 export class AuthService {
   // BehaviorSubject holding current user; initialized from storage if exists
-  private userSubject = new BehaviorSubject<UserDetails | null>(null);
+  private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
+  isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   /**
    * Observable stream of the current authenticated user (or null if not logged in)
    */
+  private userSubject = new BehaviorSubject<UserDetails | null>(
+    this.getCurrentUser()
+  );
   public user$: Observable<UserDetails | null> =
     this.userSubject.asObservable();
 
@@ -89,6 +93,7 @@ export class AuthService {
             this.storeUserData('currentUser', user, rememberMe);
             // Emit new user value to all subscribers
             this.userSubject.next(user);
+            this.isLoggedInSubject.next(true);
           }
         }),
         catchError((error) => {
@@ -193,8 +198,12 @@ export class AuthService {
    * @returns The token string if available; otherwise, null.
    */
   getToken(): string | null {
-    if (!isPlatformBrowser(this.platformId)) return null;
     return localStorage.getItem('token') || sessionStorage.getItem('token');
+  }
+
+  hasToken(): boolean {
+    console.log(!!this.getToken());
+    return !!this.getToken();
   }
 
   /**
