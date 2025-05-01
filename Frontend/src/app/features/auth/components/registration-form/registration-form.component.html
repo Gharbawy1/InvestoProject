@@ -29,4 +29,11 @@
     (submitted)="handleInvestmentPreferenceSubmit($event)"
   >
   </app-investment-preference>
+  <button
+    [hidden]="step === 1"
+    (click)="goBack()"
+    class="w-full text-sm font-medium py-2 mb-2 mt-1.5 rounded-md transition flex items-center justify-center cursor-pointer transition-button button-hover bg-gray-300 text-gray-600 hover:bg-gray-400 hover:text-gray-100 active:bg-gray-700"
+  >
+    <span>Back</span>
+  </button>
 </div>

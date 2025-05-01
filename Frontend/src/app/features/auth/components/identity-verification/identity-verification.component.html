@@ -11,6 +11,27 @@
     class="space-y-8 animate-stagger"
   >
     <div class="space-y-6">
+      <!-- National ID -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label for="nationalID" class="text-sm font-medium">National ID</label>
+        <input
+          id="nationalID"
+          formControlName="NationalID"
+          type="text"
+          placeholder="Enter your national ID"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+        />
+        <div class="min-h-[20px]">
+          <p
+            *ngIf="verificationForm.get('NationalID')?.errors?.['required'] && (verificationForm.get('NationalID')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
+            * National ID is required
+          </p>
+        </div>
+      </div>
+
       <!-- Upload Status Message -->
       <div
         *ngIf="uploadMessage"
@@ -60,18 +81,22 @@
               #frontFileInput
               title="frontID"
               type="file"
-              (change)="onFileChange($event, 'idFront')"
+              (change)="onFileChange($event, 'NationalIDImageFrontURL')"
               accept=".jpg,.jpeg,.png,.pdf"
               class="hidden"
             />
             <div
               (click)="frontFileInput.click()"
               class="w-full min-h-[120px] rounded-lg border-2 border-dashed flex flex-col items-center justify-center p-6 transition-all cursor-pointer hover:scale-[1.005]"
-              [class.border-gray-200]="!isFieldInvalid('idFront')"
-              [class.border-red-300]="isFieldInvalid('idFront')"
-              [class.bg-gray-50]="!isFieldInvalid('idFront')"
-              [class.bg-red-50]="isFieldInvalid('idFront')"
-              [class.group-hover:border-gray-300]="!isFieldInvalid('idFront')"
+              [class.border-gray-200]="
+                !isFieldInvalid('NationalIDImageFrontURL')
+              "
+              [class.border-red-300]="isFieldInvalid('NationalIDImageFrontURL')"
+              [class.bg-gray-50]="!isFieldInvalid('NationalIDImageFrontURL')"
+              [class.bg-red-50]="isFieldInvalid('NationalIDImageFrontURL')"
+              [class.group-hover:border-gray-300]="
+                !isFieldInvalid('NationalIDImageFrontURL')
+              "
             >
               <svg
                 class="w-8 h-8 text-gray-400 mb-3 animate-pulse"
@@ -96,20 +121,22 @@
                 </p>
               </div>
               <div
-                *ngIf="verificationForm.get('idFront')?.value"
+                *ngIf="verificationForm.get('NationalIDImageFrontURL')?.value"
                 class="mt-3 animate-fade-in"
               >
                 <span
                   class="bg-gray-100 px-2 py-1 rounded-md text-xs font-medium text-gray-700"
                 >
-                  {{ verificationForm.get("idFront")?.value.name }}
+                  {{
+                    verificationForm.get("NationalIDImageFrontURL")?.value.name
+                  }}
                 </span>
               </div>
             </div>
           </div>
           <div class="min-h-[20px]">
             <div
-              *ngIf="isFieldInvalid('idFront')"
+              *ngIf="isFieldInvalid('NationalIDImageFrontURL')"
               class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
               aria-live="polite"
             >
@@ -125,7 +152,7 @@
                 />
               </svg>
               <span>{{
-                getErrorMessage(verificationForm.get("idFront"))
+                getErrorMessage(verificationForm.get("NationalIDImageFrontURL"))
               }}</span>
             </div>
           </div>
@@ -142,18 +169,20 @@
             #backFileInput
             title="backID"
             type="file"
-            (change)="onFileChange($event, 'idBack')"
+            (change)="onFileChange($event, 'NationalIDImageBackURL')"
             accept=".jpg,.jpeg,.png,.pdf"
             class="hidden"
           />
           <div
             (click)="backFileInput.click()"
             class="w-full min-h-[120px] rounded-lg border-2 border-dashed flex flex-col items-center justify-center p-6 transition-all cursor-pointer hover:scale-[1.005]"
-            [class.border-gray-200]="!isFieldInvalid('idBack')"
-            [class.border-red-300]="isFieldInvalid('idBack')"
-            [class.bg-gray-50]="!isFieldInvalid('idBack')"
-            [class.bg-red-50]="isFieldInvalid('idBack')"
-            [class.group-hover:border-gray-300]="!isFieldInvalid('idBack')"
+            [class.border-gray-200]="!isFieldInvalid('NationalIDImageBackURL')"
+            [class.border-red-300]="isFieldInvalid('NationalIDImageBackURL')"
+            [class.bg-gray-50]="!isFieldInvalid('NationalIDImageBackURL')"
+            [class.bg-red-50]="isFieldInvalid('NationalIDImageBackURL')"
+            [class.group-hover:border-gray-300]="
+              !isFieldInvalid('NationalIDImageBackURL')
+            "
           >
             <svg
               class="w-8 h-8 text-gray-400 mb-3 animate-pulse"
@@ -178,20 +207,20 @@
               </p>
             </div>
             <div
-              *ngIf="verificationForm.get('idBack')?.value"
+              *ngIf="verificationForm.get('NationalIDImageBackURL')?.value"
               class="mt-3 animate-fade-in"
             >
               <span
                 class="bg-gray-100 px-2 py-1 rounded-md text-xs font-medium text-gray-700"
               >
-                {{ verificationForm.get("idBack")?.value.name }}
+                {{ verificationForm.get("NationalIDImageBackURL")?.value.name }}
               </span>
             </div>
           </div>
         </div>
         <div class="min-h-[20px]">
           <div
-            *ngIf="isFieldInvalid('idBack')"
+            *ngIf="isFieldInvalid('NationalIDImageBackURL')"
             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
             aria-live="polite"
           >
@@ -206,7 +235,9 @@
                 clip-rule="evenodd"
               />
             </svg>
-            <span>{{ getErrorMessage(verificationForm.get("idBack")) }}</span>
+            <span>{{
+              getErrorMessage(verificationForm.get("NationalIDImageBackURL"))
+            }}</span>
           </div>
         </div>
       </div>

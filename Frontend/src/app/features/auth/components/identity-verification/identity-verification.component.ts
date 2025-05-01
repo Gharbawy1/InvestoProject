@@ -68,8 +68,9 @@ export class IdentityVerificationComponent implements OnInit {
     ];
 
     const baseControls = {
-      idFront: [null, fileValidators],
-      idBack: [null, fileValidators],
+      NationalIDImageFrontURL: [null, fileValidators],
+      NationalIDImageBackURL: [null, fileValidators],
+      NationalID: ['', Validators.required],
     };
 
     this.verificationForm = this.fb.group({
@@ -90,9 +91,18 @@ export class IdentityVerificationComponent implements OnInit {
     this.fileUploadProgress = 0;
 
     const formData = new FormData();
-    formData.append('idFront', this.verificationForm.get('idFront')?.value);
-    formData.append('idBack', this.verificationForm.get('idBack')?.value);
-
+    formData.append(
+      'NationalIDImageFrontURL',
+      this.verificationForm.get('NationalIDImageFrontURL')?.value
+    );
+    formData.append(
+      'NationalIDImageBackURL',
+      this.verificationForm.get('NationalIDImageBackURL')?.value
+    );
+    formData.append(
+      'NationalID',
+      this.verificationForm.get('NationalID')?.value as string
+    );
     this.submitted.emit(formData);
   }
 

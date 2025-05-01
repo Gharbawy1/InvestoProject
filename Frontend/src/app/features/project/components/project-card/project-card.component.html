@@ -4,7 +4,7 @@
   <!-- Thumbnail Image -->
   <div class="relative h-64 overflow-hidden">
     <img
-      [src]="projectData.projectImageURL"
+      [src]="projectData.projectImageUrl"
       alt="{{ projectData.projectTitle }}"
       [title]="projectData.projectTitle"
       class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -57,7 +57,7 @@
       <span
         class="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full border border-gray-200 transition-all hover:-translate-y-0.5 hover:shadow-sm hover:bg-gray-200 hover:border-gray-300"
       >
-        {{ projectData.category }}
+        {{ projectData.categoryName }}
       </span>
     </div>
   </div>

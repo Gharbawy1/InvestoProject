@@ -22,8 +22,6 @@ import { CommonModule } from '@angular/common';
   providers: [ProjectCardService, CategoryService],
 })
 export class ProjectMasterComponent implements OnInit {
-  //implements OnInit
-
   allProjects: IProjectCard[] = [];
   filteredProjects: IProjectCard[] = [];
   categoriesList: ICategory[] = [];
@@ -40,7 +38,6 @@ export class ProjectMasterComponent implements OnInit {
       this.allProjects = response.data;
       this.filteredProjects = [...response.data];
     });
-    console.log(this.filteredProjects);
     this.categoriesService.getCategories().subscribe({
       next: (response) => {
         this.categoriesList = response.data;
@@ -51,10 +48,34 @@ export class ProjectMasterComponent implements OnInit {
     });
   }
 
-  onFiltersChanged(filters: any) {
-    this.filteredProjects = this.allProjects.filter((p) => {
-      return filters.category ? p.category === filters.category : true;
-    });
+  onFiltersChanged(filters: {
+    searchTerm: string;
+    categoryName: string;
+    sortOrder: 'default' | 'funding' | 'recent';
+  }) {
+    const search = filters.searchTerm.toLowerCase();
+    const category =
+      filters.categoryName === 'All Projects' ? null : filters.categoryName;
+
+    this.filteredProjects = this.allProjects
+      .filter((project) => {
+        const matchesSearch = project.projectTitle
+          .toLowerCase()
+          .includes(search);
+        const matchesCategory = category
+          ? project.categoryName === category
+          : true;
+        return matchesSearch && matchesCategory;
+      })
+      .sort((a, b) => {
+        if (filters.sortOrder === 'funding') {
+          return b.raisedFunds - a.raisedFunds;
+        }
+        // if (filters.sortOrder === 'recent') {
+        //   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        // }
+        return 0;
+      });
 
     this.currentPage = 0;
   }

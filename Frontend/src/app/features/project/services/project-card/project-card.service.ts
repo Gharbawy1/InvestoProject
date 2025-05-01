@@ -21,17 +21,4 @@ export class ProjectCardService {
   progressPercentage(fundingProgress: number, fundingGoal: number): number {
     return Math.min(Math.round((fundingProgress / fundingGoal) * 100), 100);
   }
-
-  mapToProjectCard(apiResponse: IBusinessDetails): IProjectCard {
-    return {
-      id: apiResponse.id,
-      projectTitle: apiResponse.projectTitle,
-      subtitle: apiResponse.subtitle,
-      projectImageURL: apiResponse.projectImageUrl,
-      fundingGoal: apiResponse.fundingGoal,
-      raisedFunds: apiResponse.raisedFund,
-      category: apiResponse.categoryName,
-      owner: apiResponse.ownerId,
-    };
-  }
 }

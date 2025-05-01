@@ -56,7 +56,7 @@ export class AuthService {
       id: response.userId,
       firstName: response.firstName,
       lastName: response.lastName,
-      role: response.roles[0] || 'user',
+      role: response.roles[0] || 'User',
       profilePictureURL: response.profilePicture,
     };
   }
@@ -202,7 +202,6 @@ export class AuthService {
   }
 
   hasToken(): boolean {
-    console.log(!!this.getToken());
     return !!this.getToken();
   }
 

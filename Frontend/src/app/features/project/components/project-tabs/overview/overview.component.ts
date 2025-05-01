@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { ProjectContextService } from '../../../services/project-context.service';
+import { ProjectContextService } from '../../../services/project-context/project-context.service';
 import { IBusinessDetails } from '../../../interfaces/IBusinessDetails';
 
 @Component({

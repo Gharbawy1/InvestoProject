@@ -4,9 +4,8 @@
     <!-- Search Bar -->
     <div class="relative w-full md:w-96">
       <input-component
-        type="text"
         placeholder="Search by name..."
-        [ngModel]="searchTerm()"
+        [(ngModel)]="searchTerm"
         (ngModelChange)="onSearchChange($event)"
       />
     </div>
@@ -18,9 +17,9 @@
         <span class="text-sm font-medium">
           <i class="fas fa-sort"></i>
           {{
-            sortOrder() === "default"
+            sortOrder === "default"
               ? "Default"
-              : sortOrder() === "funding"
+              : sortOrder === "funding"
               ? "Funding %"
               : "Recent"
           }}
@@ -37,10 +36,11 @@
       "
       class="px-4 py-1 text-sm rounded-full"
       [ngClass]="{
-        'bg-white shadow-md font-semibold': activeCategoryId === +category.id,
-        'text-gray-600': activeCategoryId !== +category.id
+        'bg-white shadow-md font-semibold':
+          activeCategoryName === category.name,
+        'text-gray-600': activeCategoryName !== category.name
       }"
-      (click)="setCategory(+category.id)"
+      (click)="setCategory(category.name)"
     >
       {{ category.name }}
     </button>

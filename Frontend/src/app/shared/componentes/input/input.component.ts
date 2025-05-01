@@ -5,8 +5,12 @@ import { CommonModule } from '@angular/common';
   selector: 'input-component',
   standalone: true,
   imports: [CommonModule],
-  template: `<input [type]="type" [placeholder]="placeholder" [disabled]="disabled" />`,
-   styleUrl: './input.component.css'
+  template: `<input
+    [type]="type"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+  />`,
+  styleUrl: './input.component.css',
 })
 export class InputComponent {
   @Input() type: string = 'text';

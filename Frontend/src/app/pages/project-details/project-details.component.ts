@@ -4,7 +4,7 @@ import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { ProjectTabsComponent } from '../../features/project/components/project-tabs/project-tabs.component';
 import { InvestmentSidebarComponent } from '../../features/project/components/investment-sidebar/investment-sidebar.component';
-import { ProjectContextService } from '../../features/project/services/project-context.service';
+import { ProjectContextService } from '../../features/project/services/project-context/project-context.service';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { tap } from 'rxjs';

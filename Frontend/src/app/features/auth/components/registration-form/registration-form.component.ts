@@ -4,16 +4,15 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ProgressIndicatorRegComponent } from '../progress-indicator-reg/progress-indicator-reg.component';
 import { PersonalInfoRegComponent } from '../personal-info-reg/personal-info-reg.component';
 import { IdentityVerificationComponent } from '../identity-verification/identity-verification.component';
-import { InvestmentPreferenceComponent } from '../investment-preference/investment-preference.component';
+import {
+  InvestmentPreference,
+  InvestmentPreferenceComponent,
+} from '../investment-preference/investment-preference.component';
 import { NavigationService } from '../../../../core/services/navigation/navigation.service';
 import { AccountCreationComponent } from '../account-creation/account-creation.component';
 import { IGuest } from '../../interfaces/iguest';
-import { IInvestor } from '../../interfaces/iinvestor';
-import { IBusinessOwner } from '../../interfaces/ibusinessOwner';
 import { RegisterService } from '../../services/register.service';
 import { Router } from '@angular/router';
-
-type RegistrationData = IGuest | IInvestor | IBusinessOwner;
 
 @Component({
   selector: 'app-registration-form',
@@ -35,7 +34,9 @@ export class RegistrationFormComponent {
   selectedRole: 'investor' | 'business' | 'guest' = 'guest';
   formSubmitted = false;
 
-  data: RegistrationData | null = null;
+  data: IGuest | null = null;
+  businessFormData = new FormData();
+  investorFormData = new FormData();
 
   registerService = inject(RegisterService);
   router = inject(Router);
@@ -63,8 +64,8 @@ export class RegistrationFormComponent {
     this.step++;
   }
 
-  handlePersonalInfoSubmit(personalData: any) {
-    this.data = { ...this.data, ...personalData } as RegistrationData;
+  handlePersonalInfoSubmit(personalData: IGuest) {
+    this.data = { ...this.data, ...personalData } as IGuest;
     if (this.selectedRole === 'guest') {
       this.registerService.registerGuest(this.data as IGuest).subscribe({
         next: (response) => {
@@ -79,27 +80,29 @@ export class RegistrationFormComponent {
     }
   }
 
-  handleIdentityVerificationSubmit(data: any) {
-    this.data = { ...this.data, ...data } as RegistrationData;
+  handleIdentityVerificationSubmit(verificationData: FormData) {
+    this.businessFormData = this.merge(this.data as IGuest, verificationData);
     if (this.selectedRole === 'business') {
-      this.registerService
-        .registerGuest(this.data as IBusinessOwner)
-        .subscribe({
-          next: (response) => {
-            window.location.reload();
-          },
-          error: (error) => {
-            console.error('Error occurred:', error);
-          },
-        });
+      this.registerService.registerBusiness(this.businessFormData).subscribe({
+        next: (response) => {
+          window.location.reload();
+        },
+        error: (error) => {
+          console.error('Error occurred:', error);
+        },
+      });
     } else {
       this.step++;
     }
   }
 
-  handleInvestmentPreferenceSubmit(data: any) {
-    this.data = { ...this.data, ...data } as RegistrationData;
-    this.registerService.registerGuest(this.data as IInvestor).subscribe({
+  handleInvestmentPreferenceSubmit(data: InvestmentPreference) {
+    this.investorFormData = this.merge(data, this.businessFormData);
+    debugger;
+    for (const [key, value] of this.investorFormData.entries()) {
+      console.log(`${key}:`, value);
+    }
+    this.registerService.registerInvestor(this.investorFormData).subscribe({
       next: (response) => {
         window.location.reload();
       },
@@ -107,5 +110,23 @@ export class RegistrationFormComponent {
         console.error('Error occurred:', error);
       },
     });
+  }
+
+  merge(data: IGuest | InvestmentPreference, fileData: FormData): FormData {
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    fileData.forEach((value, key) => {
+      formData.append(key, value);
+    });
+
+    return formData;
+  }
+
+  goBack() {
+    this.step == 1 ? (this.step = 1) : this.step--;
   }
 }

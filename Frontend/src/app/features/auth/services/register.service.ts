@@ -9,6 +9,7 @@ import { IInvestor } from '../interfaces/iinvestor';
 import { IUser } from '../interfaces/iuser';
 import { response } from 'express';
 import { AuthResponse } from '../../../core/interfaces/AuthResponse';
+import { UserDetails } from '../../../core/interfaces/UserDetails';
 
 @Injectable({
   providedIn: 'root',
@@ -17,26 +18,17 @@ export class RegisterService {
   private guestUrl = `${environment.baseApi}${environment.account.registerUser}`;
   private businessUrl = `${environment.baseApi}${environment.account.registerBusinessOwner}`;
   private investorUrl = `${environment.baseApi}${environment.account.registerInvestor}`;
-  currentUserSig = signal<AuthResponse | undefined | null>(undefined);
 
   constructor(private http: HttpClient) {}
 
   registerGuest(guestData: IGuest): Observable<any> {
-    return this.http.post<IUser>(this.guestUrl, guestData);
+    return this.http.post<UserDetails>(this.guestUrl, guestData);
   }
 
-  registerBusiness(businessData: IBusinessOwner): Observable<any> {
-    const formData = new FormData();
-    Object.entries(businessData).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-    return this.http.post<IUser>(this.businessUrl, formData);
+  registerBusiness(businessData: FormData): Observable<any> {
+    return this.http.post<UserDetails>(this.businessUrl, businessData);
   }
-  registerInvestor(investorData: IInvestor): Observable<any> {
-    const formData = new FormData();
-    Object.entries(investorData).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-    return this.http.post<IUser>(this.investorUrl, formData);
+  registerInvestor(investorData: FormData): Observable<any> {
+    return this.http.post<UserDetails>(this.investorUrl, investorData);
   }
 }

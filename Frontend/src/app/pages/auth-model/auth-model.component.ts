@@ -5,17 +5,26 @@ import { RegistrationFormComponent } from '../../features/auth/components/regist
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { AuthService } from '../../core/services/auth/auth.service';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-auth-modal',
-  imports: [CommonModule, FontAwesomeModule, LoginFormComponent, RegistrationFormComponent],
+  imports: [
+    CommonModule,
+    FontAwesomeModule,
+    LoginFormComponent,
+    RegistrationFormComponent,
+    RouterLink,
+    MatIcon,
+  ],
   templateUrl: './auth-model.component.html',
   styleUrl: './auth-model.component.css',
 })
 export class AuthModelComponent implements AfterViewInit {
- // Active tab state determines which form (login or register) is displayed.
+  // Active tab state determines which form (login or register) is displayed.
   activeTab: 'login' | 'register' = 'login';
-   // FontAwesome icons for Facebook and Google buttons.
+  // FontAwesome icons for Facebook and Google buttons.
   faFacebook = faFacebook;
   faGoogle = faGoogle;
   // Flag to indicate if third-party auth buttons are ready to be displayed.
@@ -29,7 +38,7 @@ export class AuthModelComponent implements AfterViewInit {
 
   /**
    * Switches between the login and register tabs.
-   * 
+   *
    * @param tab - The tab to display ('login' or 'register').
    */
   showTab(tab: 'login' | 'register') {
@@ -42,7 +51,7 @@ export class AuthModelComponent implements AfterViewInit {
    * only if the code is running in a browser.
    */
   ngAfterViewInit(): void {
-   /* if (isPlatformBrowser(this.platformId)) {
+    /* if (isPlatformBrowser(this.platformId)) {
       // Initialize third-party authentication services.
       this.authService.initializeAuth();
       // Set a short delay to ensure that external authentication buttons are fully initialized.
