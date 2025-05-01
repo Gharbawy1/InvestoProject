@@ -138,7 +138,6 @@ namespace Investo.Presentation.Controllers.Account
                 {
                     AccreditationStatus = investorRegisterDto.AccreditationStatus,
                     RiskTolerance = investorRegisterDto.RiskTolerance,
-                    ProfilePictureURL = await _imageLoadService.Upload(investorRegisterDto.ProfilePictureURL),
                     NetWorth = investorRegisterDto.NetWorth,
                     MinInvestmentAmount = investorRegisterDto.MinInvestmentAmount,
                     MaxInvestmentAmount = investorRegisterDto.MaxInvestmentAmount,
@@ -232,7 +231,6 @@ namespace Investo.Presentation.Controllers.Account
                 var BoUser = new BusinessOwner
                 {
                     PersonInfo = PersonInfo,
-                    ProfilePictureURL = await _imageLoadService.Upload(boRegisterDto.ProfilePictureURL),
                     FirstName = boRegisterDto.FirstName,
                     LastName = boRegisterDto.LastName,
                     BirthDate = boRegisterDto.BirthDate,
