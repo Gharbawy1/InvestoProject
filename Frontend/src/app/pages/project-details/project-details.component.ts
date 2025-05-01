@@ -37,7 +37,7 @@ export class ProjectDetailsComponent implements OnInit {
   navigationPath: string[] = ['/'];
   navigationButtonText = 'Go home';
 
-  private blockAccess(config: {
+  public blockAccess(config: {
     message: string;
     path: string[];
     buttonText?: string;

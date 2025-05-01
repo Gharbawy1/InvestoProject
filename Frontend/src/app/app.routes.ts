@@ -98,6 +98,23 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'BusinessCreation',
+    loadComponent: () =>
+      import('./pages/business-creation/business-creation.component').then(
+        (m) => m.BusinessCreationComponent
+      ),
+  },
+  {
+    path: 'UpgradeRole',
+    loadChildren: () =>
+      import('./features/upgrade-role/routes')
+        .then(m => m.upgradeRoutes)
+  },
+  {
+    path: 'error',
+    component: ErrorPageComponent,
+  },
+  {
     path: '**',
     redirectTo: 'Home',
   },
