@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { tap, catchError } from 'rxjs/operators';
 import { LoginResponse } from '../../interfaces/LoginResponse';
 import { UserDetails } from '../../interfaces/UserDetails';
+import { GoogleRegister } from '../../../features/auth/interfaces/IGoogleReg';
 
 // Define the shape of the authentication response from the server.
 
@@ -44,6 +45,7 @@ export class AuthService {
   ) {
     // Seed the current user from storage on service initialization
     if (isPlatformBrowser(this.platformId)) {
+      this.initializeAuth();
       const storedUser = this.getStoredUser();
       if (storedUser) {
         this.userSubject.next(storedUser);
@@ -198,7 +200,10 @@ export class AuthService {
    * @returns The token string if available; otherwise, null.
    */
   getToken(): string | null {
-    return localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (typeof window !== 'undefined' && localStorage) {
+      return localStorage.getItem('token') || sessionStorage.getItem('token');
+    }
+    return null;
   }
 
   hasToken(): boolean {
@@ -270,38 +275,25 @@ export class AuthService {
   /**
    * Initiates the Google login process.
    */
-  loginWithGoogle() {
-    this.googleAuthService.triggerGoogleLogin();
+  loginWithGoogle(): Promise<any> {
+    return this.googleAuthService.triggerGoogleLogin();
   }
 
   /**
    * Callback for Google sign-in: exchanges code for AuthResponse, stores token & user.
    * @param response - Google callback containing auth code.
    */
-  private handleGoogleLogin(response: any): void {
-    console.log('Google Login Response:', response);
-    this.http
-      .post<LoginResponse>(`${environment.userApiUrl}/google-auth`, {
-        code: response.code,
-      })
+  handleGoogleLogin(data: FormData): Observable<any> {
+    for (const [key, value] of data.entries()) {
+      console.log(`${key}:`, value);
+    }
+    return this.http
+      .post<LoginResponse>(`${environment.account.googleLogin}`, data)
       .pipe(
-        tap((loginResponse) => {
-          if (isPlatformBrowser(this.platformId)) {
-            this.storeToken(loginResponse.token, true);
-            const user = this.createUserFromAuthResponse(loginResponse);
-            this.storeUserData('currentUser', user, true);
-            this.userSubject.next(user);
-          }
-        }),
         catchError((error) => {
-          console.error('Google login failed:', error);
+          console.error('Error logging in with Google:', error);
           return throwError(() => error);
         })
-      )
-      .subscribe({
-        next: () => console.log('Google login successful.'),
-        error: (err) =>
-          console.error('Error during Google login process:', err),
-      });
+      );
   }
 }

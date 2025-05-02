@@ -1,6 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterModule,
+} from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,7 +35,7 @@ export class HeaderComponent implements OnInit {
 
   isMenuOpen = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.authService.isLoggedIn$.subscribe((status) => {
@@ -43,6 +48,27 @@ export class HeaderComponent implements OnInit {
         this.userName = '';
       }
     });
+  }
+
+  getRole(): string | undefined {
+    return this.authService.getCurrentUser()?.role.toLowerCase();
+  }
+
+  goToDashboard() {
+    switch (this.getRole()) {
+      case 'investor':
+        this.router.navigate(['/InvestorDashboard']);
+        break;
+      case 'businessowner':
+        this.router.navigate(['/BusinessDashboard']);
+        break;
+      case 'user':
+        this.router.navigate(['/UpgradeRole']);
+        break;
+      default:
+        this.router.navigate(['/']);
+        break;
+    }
   }
 
   toggleMenu() {
