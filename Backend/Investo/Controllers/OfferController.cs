@@ -132,5 +132,18 @@ namespace Investo.Presentation.Controllers
             }
         }
 
+
+        [HttpGet("investor/{investorId}/accepted_Offers")]
+        public async Task<IActionResult> GetAcceptedOffersByInvestorId(string investorId)
+        {
+            var result = await _offerService.GetAcceptedOffersByInvestorId(investorId);
+
+            if (!result.IsValid)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+
     }
 }

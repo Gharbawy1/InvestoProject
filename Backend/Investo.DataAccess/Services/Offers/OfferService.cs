@@ -289,6 +289,45 @@ namespace Investo.DataAccess.Services.Offers
             return await _offerRepository.GetOffersAmountForProjectAsync();
         }
 
+        public async Task<ValidationResult<List<ReadOfferDto>>> GetAcceptedOffersByInvestorId(string investorId)
+        {
+            var investor = await _userManager.FindByIdAsync(investorId);
+            if (investor == null)
+            {
+                return new ValidationResult<List<ReadOfferDto>>
+                {
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = $"Investor with Id: {investorId} not found."
+                };
+            }
+
+            var allOffers = await _offerRepository.GetAll();
+            var offers = allOffers
+                .Where(o => o.InvestorId == investorId && o.Status == OfferStatus.Accepted)
+                .ToList();
+
+            if (!offers.Any())
+            {
+                return new ValidationResult<List<ReadOfferDto>>
+                {
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = $"No accepted offers found for investorID:{investorId}"
+                };
+            }
+
+            var readOffersDto = _mapper.Map<List<ReadOfferDto>>(offers);
+
+            return new ValidationResult<List<ReadOfferDto>>
+            {
+                Data = readOffersDto,
+                IsValid = true,
+                ErrorMessage = null
+            };
+        }
+
+
 
     }
 
