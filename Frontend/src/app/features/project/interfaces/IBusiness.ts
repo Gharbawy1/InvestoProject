@@ -11,5 +11,6 @@ export interface IBusiness {
   goals: string;
   categoryId: number;
   ownerId: string;
+  ownerName: string;
   raisedFund: number;
 }

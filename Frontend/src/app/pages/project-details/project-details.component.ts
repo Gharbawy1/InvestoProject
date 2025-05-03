@@ -37,16 +37,6 @@ export class ProjectDetailsComponent implements OnInit {
   navigationPath: string[] = ['/'];
   navigationButtonText = 'Go home';
 
-  public blockAccess(config: {
-    message: string;
-    path: string[];
-    buttonText?: string;
-  }) {
-    this.blockMessage = config.message;
-    this.navigationPath = config.path;
-    this.navigationButtonText = config.buttonText || 'Go home';
-  }
-
   constructor(
     private projectContext: ProjectContextService,
     public router: Router,
@@ -65,6 +55,21 @@ export class ProjectDetailsComponent implements OnInit {
           this.owner = projectData.ownerName;
           this.isProjectOwner = this.authService.getUserId() === this.owner?.id;
           this.projectContext.setProject(projectData);
+          if (this.status === 'pending' || this.status === 'rejected') {
+            if (this.isProjectOwner) {
+              this.blockAccess({
+                message: 'This project is under review or unavailable. Please check back later.',
+                path: ['/BusinessDashboard'],
+                buttonText: 'Go to Dashboard',
+              });
+            } else {
+              this.blockAccess({
+                message: 'This project is under review or unavailable. Please check back later.',
+                path: ['/'],
+                buttonText: 'Go Home',
+              });
+            }
+          }
         },
         error: (err) => {
           this.error = err.message;
@@ -76,6 +81,12 @@ export class ProjectDetailsComponent implements OnInit {
       const tab = params.get('tab');
       if (tab) this.activeTab = tab;
     });
+  }
+
+  blockAccess(config: { message: string; path: string[]; buttonText?: string }) {
+    this.blockMessage = config.message;
+    this.navigationPath = config.path;
+    this.navigationButtonText = config.buttonText || 'Go home';
   }
 
   // Add to component methods
@@ -152,14 +163,7 @@ export class ProjectDetailsComponent implements OnInit {
 
   /** Owner Full Name */
   get ownerName(): string {
-    return this.owner
-      ? `${this.owner.firstName} ${this.owner.lastName}`
-      : 'Unknown Owner';
-  }
-
-  /** Owner Avatar */
-  get ownerProfileImage(): string {
-    return this.owner?.profilePictureURL || 'assets/OIP.jpg';
+    return this.project?.ownerName || '';
   }
 
   /** current funding */

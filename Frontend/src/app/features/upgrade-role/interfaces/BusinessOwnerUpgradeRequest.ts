@@ -1,7 +1,7 @@
 export interface BusinessOwnerUpgradeRequest {
-  nationalID: string;
-  nationalIDImageFrontURL: string;
-  nationalIDImageBackURL: string;
-  profilePictureURL: string;
+  NationalID: string;
+  NationalIDImageFrontURL: string;
+  NationalIDImageBackURL: string;
+  ProfilePictureURL: string;
 }
   
