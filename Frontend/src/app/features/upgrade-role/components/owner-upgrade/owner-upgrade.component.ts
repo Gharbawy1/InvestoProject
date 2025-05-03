@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BusinessOwnerUpgradeRequest } from '../../interfaces/BusinessOwnerUpgradeRequest';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UpgradeService } from '../../services/UpgradeService/Upgrade.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ObjectApiResponse } from '../../../../core/interfaces/ApiResponse';
+import { UpgradeResponse } from '../../interfaces/UpgradeResponse ';
+import { AuthService } from '../../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-owner-upgrade',
@@ -14,15 +17,21 @@ import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
   styleUrls: ['./owner-upgrade.component.css']
 })
 export class OwnerUpgradeComponent implements OnInit {
-  form: any;
+  form!: FormGroup;
   loading = false;
   errorMsg?: string;
   success = false;
+  submitted = false;
   uploadProgress: number | null = null;
   maxFileSizeMB = 5;
   allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
 
-  constructor(private fb: FormBuilder, private svc: UpgradeService) { }
+  constructor(
+    private fb: FormBuilder,
+    private svc: UpgradeService, 
+    private router: Router,
+    private auth: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -30,7 +39,7 @@ export class OwnerUpgradeComponent implements OnInit {
 
   private initializeForm(): void {
     this.form = this.fb.group({
-      nationalID: ['', [
+      NationalID: ['', [
         Validators.required,
         Validators.pattern(/^[0-9]/),
         Validators.minLength(14),
@@ -43,7 +52,7 @@ export class OwnerUpgradeComponent implements OnInit {
   }
 
   getNationalIDErrors() {
-    const control = this.form.get('nationalID');
+    const control = this.form.get('NationalID');
     if (!control) return '';
     
     if (control.hasError('required')) {
@@ -79,6 +88,7 @@ export class OwnerUpgradeComponent implements OnInit {
     
     if (!file) return;
 
+    this.form.get(field)?.setErrors(null);
     this.errorMsg = undefined;
 
     const validationError = this.validateFile(file);
@@ -122,13 +132,14 @@ export class OwnerUpgradeComponent implements OnInit {
   }
 
   submit() {
+    this.submitted = true;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
     const formData = new FormData();
-    formData.append('NationalID', this.form.value.nationalID);
+    formData.append('NationalID', this.form.value.NationalID);
     formData.append('NationalIDImageFrontURL', this.form.value.NationalIDImageFrontURL);
     formData.append('NationalIDImageBackURL', this.form.value.NationalIDImageBackURL);
     formData.append('ProfilePictureURL', this.form.value.ProfilePictureURL);
@@ -138,29 +149,16 @@ export class OwnerUpgradeComponent implements OnInit {
     this.errorMsg = undefined;
 
     this.svc.upgradeToBusinessOwner(formData).subscribe({
-      next: (event) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          this.uploadProgress = Math.round(100 * (event.loaded / (event.total || 1)));
-        } else if (event.type === HttpEventType.Response) {
-          if (event.body?.isValid) {
-            this.success = true;
-            this.form.reset();
-            this.uploadProgress = null;
-          } else {
-            this.errorMsg = event.body?.errorMessage || 'Verification failed';
-          }
-        }
+      next: (evt) => {
+        this.router.navigateByUrl('/auth');
       },
-      error: (err) => {
-        this.errorMsg = err.message;
-        if (err instanceof HttpErrorResponse) {
-          this.errorMsg = err.error.errorMessage || 'Submission failed';
-        }
+      error: (err: HttpErrorResponse) => {
+        console.error('Upgrade error:', err);
+        this.errorMsg = err.error?.errorMessage 
+                        || err.message 
+                        || 'Upgrade failed. Please try again.';
+        this.loading = false;
         this.uploadProgress = null;
-        this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
       }
     });
   }

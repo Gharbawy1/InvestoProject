@@ -7,5 +7,5 @@ export interface IBusinessDetails
   status: 'Accepted' | 'Rejected' | 'Pending';
   categoryName: string;
   ownerId: string;
-  owner: string;
+  ownerName: string;
 }

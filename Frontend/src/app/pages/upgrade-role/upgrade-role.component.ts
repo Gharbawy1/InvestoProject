@@ -8,30 +8,29 @@ import {
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '../../core/services/auth/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-upgrade-role',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './upgrade-role.component.html',
   styleUrls: ['./upgrade-role.component.css']
 })
 export class UpgradeRoleComponent implements OnInit {
-  // drives which copy + which tab is “active”
   activeTab: 'Investor' | 'BusinessOwner' = 'Investor';
 
   blockMessage?: string;
-  navigationPath: string[] = [];
+  navigationPath: string[] = ['/'];
   navigationButtonText = 'Go home';
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private auth: AuthService
+    public auth: AuthService
   ) {}
 
   ngOnInit() {
-    // ---- access control (same as before) ----
     const user = this.auth.getCurrentUser();
     if (!user) {
       this.blockAccess({
@@ -50,18 +49,15 @@ export class UpgradeRoleComponent implements OnInit {
       return;
     }
 
-    // ---- manual tab detection on route changes ----
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe(() => {
-        // look at the first child of this route to see which path is active
         const childPath = this.route.snapshot.firstChild?.routeConfig?.path;
         this.activeTab = childPath === 'BusinessOwner'
           ? 'BusinessOwner'
           : 'Investor';
       });
 
-    // also trigger once on init in case you landed directly on /Investor or /BusinessOwner
     const initChild = this.route.snapshot.firstChild?.routeConfig?.path;
     this.activeTab = initChild === 'BusinessOwner' ? 'BusinessOwner' : 'Investor';
   }
@@ -80,7 +76,7 @@ export class UpgradeRoleComponent implements OnInit {
     this.navigationButtonText = config.buttonText ?? 'Go home';
   }
 
-  goNavigate() {
+  public goNavigate() {
     this.router.navigate(this.navigationPath);
   }
 }

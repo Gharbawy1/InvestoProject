@@ -3,7 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { UpgradeService } from '../../services/UpgradeService/Upgrade.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpEventType } from '@angular/common/http';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
+import { Router }       from '@angular/router';
+import { ObjectApiResponse } from '../../../../core/interfaces/ApiResponse';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { UpgradeResponse } from '../../interfaces/UpgradeResponse ';
 
 @Component({
   selector: 'app-investor-upgrade',
@@ -20,7 +25,12 @@ export class InvestorUpgradeComponent implements OnInit {
   maxFileSizeMB = 5;
   allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
 
-  constructor(private fb: FormBuilder, private svc: UpgradeService) { }
+  constructor(
+    private fb: FormBuilder, 
+    private svc: UpgradeService,
+    private auth: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -168,22 +178,16 @@ export class InvestorUpgradeComponent implements OnInit {
     this.errorMsg = undefined;
 
     this.svc.upgradeToInvestor(formData).subscribe({
-      next: (event) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          this.uploadProgress = Math.round(100 * (event.loaded / (event.total || 1)));
-        } else if (event.type === HttpEventType.Response) {
-          this.success = true;
-          this.form.reset();
-          this.uploadProgress = null;
-        }
+      next: (evt) => {
+        this.router.navigateByUrl('/auth');
       },
-      error: (err) => {
-        this.errorMsg = err.message || 'Submission failed. Please try again.';
+      error: (err: HttpErrorResponse) => {
+        console.error('Upgrade error:', err);
+        this.errorMsg = err.error?.errorMessage 
+                        || err.message 
+                        || 'Upgrade failed. Please try again.';
+        this.loading = false;
         this.uploadProgress = null;
-        this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
       }
     });
   }

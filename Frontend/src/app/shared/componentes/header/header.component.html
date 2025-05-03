@@ -91,19 +91,14 @@
           </button>
         </div>
         <mat-menu #userMenu="matMenu">
-          <button
-            mat-menu-item
-            *ngIf="getRole() === 'user'"
-            (click)="goToDashboard()"
-          >
-            <mat-icon>upgrade</mat-icon>
-            <span>Upgrade</span>
+
+          <button mat-menu-item *ngIf="userRole === 'User'" routerLink="/UpgradeRole">
+            <mat-icon class="text-green-600">upgrade</mat-icon>
+            <span class="text-green-600">Upgrade Account</span>
           </button>
-          <button
-            mat-menu-item
-            *ngIf="getRole() !== 'user'"
-            (click)="goToDashboard()"
-          >
+
+          <button mat-menu-item routerLink="/dashboard">
+
             <mat-icon>dashboard</mat-icon>
             <span>Dashboard</span>
           </button>
@@ -254,6 +249,12 @@
               </div>
             </div>
             <div class="space-y-3">
+              <a *ngIf="userRole === 'User'"
+                routerLink="/UpgradeRole"
+                class="block text-green-600 hover:text-green-700 transition-colors"
+                (click)="toggleMenu()">
+                Upgrade Account
+              </a>
               <a
                 *ngIf="getRole() !== 'user'"
                 (click)="goToDashboard()"

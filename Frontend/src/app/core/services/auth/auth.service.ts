@@ -30,7 +30,7 @@ export class AuthService {
   /**
    * Observable stream of the current authenticated user (or null if not logged in)
    */
-  private userSubject = new BehaviorSubject<UserDetails | null>(
+  public userSubject = new BehaviorSubject<UserDetails | null>(
     this.getCurrentUser()
   );
   public user$: Observable<UserDetails | null> =
@@ -214,7 +214,7 @@ export class AuthService {
    * @param token - JWT token string.
    * @param rememberMe - If true, token is stored in localStorage; else in sessionStorage.
    */
-  private storeToken(token: string, rememberMe: boolean): void {
+  public storeToken(token: string, rememberMe: boolean): void {
     if (rememberMe) {
       localStorage.setItem('token', token);
       sessionStorage.removeItem('token');
