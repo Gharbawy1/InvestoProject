@@ -23,7 +23,7 @@ namespace Investo.DataAccess.ApplicationContext
 
 
         //public DbSet<OpenChatRequest> OpenChatRequests { get; set; }
-        //public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         //public DbSet<Message> Messages { get; set; }
         //public DbSet<Attachment> Attachments { get; set; }
     }

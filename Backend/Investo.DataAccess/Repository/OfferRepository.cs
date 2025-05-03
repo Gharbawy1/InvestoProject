@@ -117,6 +117,13 @@ namespace Investo.DataAccess.Repository
 
         }
 
+
+        public async Task<decimal> GetOfferAmountAsync(int offerId)
+        {
+            return await _context.Offers.Where(o => o.Id == offerId).Select(o => o.OfferAmount).FirstOrDefaultAsync();
+        }
+
+
         public async Task<List<ReadOfferDto>> GetAcceptedOffersByInvestorIdAsync(string InvestorId)
         {
             return await _context.Offers

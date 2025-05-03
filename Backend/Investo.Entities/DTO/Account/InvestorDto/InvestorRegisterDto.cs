@@ -40,7 +40,6 @@ namespace Investo.Entities.DTO.Account.InvestorDto
         public IFormFile NationalIDImageFrontURL { get; set; }
         public IFormFile NationalIDImageBackURL { get; set; }
         public string NationalID { get; set; }
-        public IFormFile ProfilePictureURL { get; set; }
 
         public decimal MinInvestmentAmount { get; set; }
         public decimal MaxInvestmentAmount { get; set; }

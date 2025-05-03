@@ -34,7 +34,6 @@ namespace Investo.Entities.DTO.Account.BO
 
         public IFormFile NationalIDImageFrontURL { get; set; }
         public IFormFile NationalIDImageBackURL { get; set; }
-        public IFormFile ProfilePictureURL { get; set; }
 
     }
 }

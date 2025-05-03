@@ -1,11 +1,14 @@
-﻿using System;
+using System;
 using System.Security.Claims;
+using Investo.DataAccess.Hubs;
+using Investo.DataAccess.Services.Notifications;
 using Investo.DataAccess.Services.Offers;
 using Investo.DataAccess.Services.Project;
 using Investo.Entities.DTO.Offer;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Investo.Presentation.Controllers
 {
@@ -15,11 +18,13 @@ namespace Investo.Presentation.Controllers
     {
         private readonly IOfferService _offerService;
         private readonly IProjectService _projectService;
+        private readonly NotificationService _notifcationService;
 
-        public OfferController(IOfferService offerService, IProjectService projectService)
+        public OfferController(IOfferService offerService, IProjectService projectService, NotificationService notifcationService)
         {
             _offerService = offerService;
             _projectService = projectService;
+            _notifcationService = notifcationService;
         }
 
         ///<summary>
@@ -61,23 +66,17 @@ namespace Investo.Presentation.Controllers
             try
             {
                 var offerResult = await _offerService.CreateOfferAsync(dto);
-
-                if (!offerResult.IsValid)
+                // After Creation of the offer ,directly send notification to "BusinessOwner assosiated with offerd project"
+                // we have to get the businessOwnerId to send notify to it 
+                if (offerResult.IsValid)
                 {
+                    await _notifcationService.SendOfferNotificationAsync(offerResult.Data);
                     return Ok(new ValidationResult<ReadOfferDto>
-                    {
-                        IsValid = false,
-                        ErrorMessage = offerResult.ErrorMessage,
-                        Data = null
-                    });
-                }
-
-                return Ok(new ValidationResult<ReadOfferDto>
-                {
+                      {
                     IsValid = true,
                     Data = offerResult.Data,
                     ErrorMessage = null
-                });
+                      });
             }
             catch (Exception ex)
             {
@@ -167,6 +166,9 @@ namespace Investo.Presentation.Controllers
             }
 
             var response = await _offerService.RespondToOfferAsync(offerId, status);
+
+            // after respond to offer we send notification for the investor 
+            await _notifcationService.SendOfferResponseNotificationAsync(offerId, status);
 
             if (!response.IsValid)
             {

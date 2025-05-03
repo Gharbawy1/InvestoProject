@@ -56,6 +56,7 @@ namespace Investo.DataAccess.Repository
         public async Task<Project> GetByOwnerIdAsync(string ownerId)
         {
             return await _context.Projects
+                .Include(p=>p.Category)
                 .Include(p => p.Owner)       // Include Owner if you need BusinessOwner data
                 .FirstOrDefaultAsync(p => p.OwnerId == ownerId);
         }
