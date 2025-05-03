@@ -110,8 +110,10 @@ namespace Investo.Presentation.Controllers
             if (string.IsNullOrWhiteSpace(status))
                 return BadRequest("Status is required. Allowed values are 'Accepted' or 'Rejected'.");
 
-
             var response = await _offerService.RespondToOfferAsync(offerId, status);
+
+            // after respond to offer we send notification for the investor 
+            await _notifcationService.SendOfferResponseNotificationAsync(offerId, status);
 
             if (!response.IsValid)
                 return BadRequest(response.ErrorMessage);

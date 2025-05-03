@@ -20,6 +20,7 @@ using System.Reflection;
 using Investo.DataAccess.Services.OAuth;
 using Investo.DataAccess.Hubs;
 using Investo.DataAccess.Services.Notifications;
+using Stripe;
 
 namespace Investo
 {
@@ -51,14 +52,20 @@ namespace Investo
             builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 
             builder.Services.AddScoped<IImageLoadService, CloudinaryImageLoadService>();
-            builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<ITokenService, DataAccess.Services.Token.TokenService>();
             builder.Services.AddAutoMapper(typeof (Program));
 
             builder.Services.AddScoped<IBusinessOwnerRepository, BusinessOwnerRepository>();
 
             builder.Services.AddScoped<IAuthGoogleService, AuthGoogleService>();
 
+            builder.Services.AddScoped<INotificationRepository,NotificationRepository>();
             builder.Services.AddScoped<NotificationService>();
+
+            //Stripe configuration
+            //Retrieve the Stripe API keys from appsettings.json
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
             {
