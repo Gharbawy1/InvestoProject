@@ -1,6 +1,6 @@
 export interface GoogleRegister {
-  idToken: string;
+  IdToken: string;
   Role: string;
-  investorData: FormData | null;
-  businessOwnerData: FormData | null;
+  InvestorData: FormData | null;
+  BusinessOwnerData: FormData | null;
 }

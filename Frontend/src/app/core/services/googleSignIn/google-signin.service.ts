@@ -18,33 +18,17 @@ export class GoogleAuthService {
   initializeGoogleSignIn(callback: (response: any) => void) {
     if (!this.isBrowser) return;
 
-    const setupClient = () => {
-      this.client = (window as any).google.accounts.oauth2.initCodeClient({
-        client_id: environment.googleClientId,
-        scope: 'openid email profile',
-        redirect_uri: 'postmessage', // Required for exchanging in backend
-        callback: callback, // Will receive `{ code }`
-      });
-      this.isClientReady = true;
-    };
-
-    if ((window as any).google?.accounts?.oauth2) {
-      setupClient();
-      return;
-    }
-
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     script.defer = true;
     script.onload = () => {
-      if ((window as any).google?.accounts?.oauth2) {
-        setupClient();
-      } else {
-        console.error(
-          'Google Accounts library not available after script load.'
-        );
-      }
+      (window as any).google.accounts.id.initialize({
+        client_id: environment.googleClientId,
+        callback: callback,
+      });
+
+      (window as any).google.accounts.id.prompt();
     };
 
     script.onerror = (error: any) => {

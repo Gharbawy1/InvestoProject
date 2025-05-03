@@ -17,6 +17,7 @@ import { AuthService } from '../../../../core/services/auth/auth.service';
 import { GoogleRegister } from '../../interfaces/IGoogleReg';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ButtonComponent } from '../../../../shared/componentes/button/button.component';
+import { GoogleAuthService } from '../../../../core/services/googleSignIn/google-signin.service';
 
 @Component({
   selector: 'app-registration-form',
@@ -49,7 +50,8 @@ export class RegistrationFormComponent {
   router = inject(Router);
   constructor(
     private navigationService: NavigationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private googleAuthService: GoogleAuthService
   ) {}
 
   setRole(role: 'investor' | 'business' | 'guest') {
@@ -79,10 +81,21 @@ export class RegistrationFormComponent {
     if (this.selectedRole === 'guest') {
       if (this.isGoogleLogin) {
         const formData = new FormData();
-        formData.append('idToken', this.googleRegister.idToken);
+        formData.append('IdToken', this.googleRegister.IdToken);
         formData.append('Role', this.googleRegister.Role);
-
+        debugger;
         this.authService.handleGoogleLogin(formData).subscribe({
+          next: (response) => {
+            console.log(response);
+            debugger;
+            window.location.reload();
+          },
+          error: (error) => {
+            console.error('Error occurred:', error);
+          },
+        });
+      } else {
+        this.registerService.registerGuest(this.data as IGuest).subscribe({
           next: (response) => {
             window.location.reload();
           },
@@ -91,14 +104,6 @@ export class RegistrationFormComponent {
           },
         });
       }
-      this.registerService.registerGuest(this.data as IGuest).subscribe({
-        next: (response) => {
-          window.location.reload();
-        },
-        error: (error) => {
-          console.error('Error occurred:', error);
-        },
-      });
     } else {
       this.step++;
     }
@@ -109,23 +114,16 @@ export class RegistrationFormComponent {
 
     if (this.selectedRole === 'business') {
       if (this.isGoogleLogin) {
-        const original = this.businessFormData;
-        const newFormData = new FormData();
-        for (const [key, value] of original.entries()) {
-          if (!['email', 'password', 'registerationDate'].includes(key)) {
-            newFormData.append(key, value);
-          }
-        }
-        this.googleRegister.businessOwnerData = newFormData;
+        this.googleRegister.BusinessOwnerData = this.businessFormData;
         const formData = new FormData();
-        formData.append('idToken', this.googleRegister.idToken);
+        formData.append('IdToken', this.googleRegister.IdToken);
         formData.append('Role', this.googleRegister.Role);
-        if (this.googleRegister.businessOwnerData) {
+        if (this.googleRegister.BusinessOwnerData) {
           for (const [
             key,
             value,
-          ] of this.googleRegister.businessOwnerData.entries()) {
-            formData.append(`businessOwnerData.${key}`, value);
+          ] of this.googleRegister.BusinessOwnerData.entries()) {
+            formData.append(`BusinessOwnerData.${key}`, value);
           }
         }
         this.authService.handleGoogleLogin(formData).subscribe({
@@ -136,15 +134,16 @@ export class RegistrationFormComponent {
             console.error('Error occurred:', error);
           },
         });
+      } else {
+        this.registerService.registerBusiness(this.businessFormData).subscribe({
+          next: (response) => {
+            window.location.reload();
+          },
+          error: (error) => {
+            console.error('Error occurred:', error);
+          },
+        });
       }
-      this.registerService.registerBusiness(this.businessFormData).subscribe({
-        next: (response) => {
-          window.location.reload();
-        },
-        error: (error) => {
-          console.error('Error occurred:', error);
-        },
-      });
     } else {
       this.step++;
     }
@@ -153,23 +152,13 @@ export class RegistrationFormComponent {
   handleInvestmentPreferenceSubmit(data: InvestmentPreference) {
     this.investorFormData = this.merge(data, this.businessFormData);
     if (this.isGoogleLogin && this.selectedRole === 'investor') {
-      const original = this.investorFormData;
-      const newFormData = new FormData();
-      for (const [key, value] of original.entries()) {
-        if (!['email', 'password', 'registerationDate'].includes(key)) {
-          newFormData.append(key, value);
-        }
-      }
-      this.googleRegister.investorData = newFormData;
+      this.googleRegister.InvestorData = this.investorFormData;
       const formData = new FormData();
-      formData.append('idToken', this.googleRegister.idToken);
+      formData.append('IdToken', this.googleRegister.IdToken);
       formData.append('Role', this.googleRegister.Role);
-      if (this.googleRegister.businessOwnerData) {
-        for (const [
-          key,
-          value,
-        ] of this.googleRegister.businessOwnerData.entries()) {
-          formData.append(`businessOwnerData.${key}`, value);
+      if (this.googleRegister.InvestorData) {
+        for (const [key, value] of this.googleRegister.InvestorData.entries()) {
+          formData.append(`InvestorData.${key}`, value);
         }
       }
       this.authService.handleGoogleLogin(formData).subscribe({
@@ -180,32 +169,36 @@ export class RegistrationFormComponent {
           console.error('Error occurred:', error);
         },
       });
+    } else {
+      this.registerService.registerInvestor(this.investorFormData).subscribe({
+        next: (response) => {
+          window.location.reload();
+        },
+        error: (error) => {
+          console.error('Error occurred:', error);
+        },
+      });
     }
-    this.registerService.registerInvestor(this.investorFormData).subscribe({
-      next: (response) => {
-        window.location.reload();
-      },
-      error: (error) => {
-        console.error('Error occurred:', error);
-      },
-    });
   }
 
   loginWithGoogle() {
     this.isGoogleLogin = true;
     debugger;
-    this.authService
-      .loginWithGoogle()
-      .then((googleResponse) => {
-        this.googleRegister!.idToken = googleResponse.code;
-        this.googleRegister.Role = this.selectedRole;
-        console.log('Received ID Token:', this.googleRegister!.idToken);
+    this.googleAuthService.initializeGoogleSignIn((response: any) => {
+      if (response.credential) {
+        const IdToken = response.credential;
+
+        this.googleRegister.IdToken = IdToken;
+        this.googleRegister.Role =
+          this.selectedRole === 'guest'
+            ? 'User'
+            : this.selectedRole === 'business'
+            ? 'BusinessOwner'
+            : 'Investor';
+        console.log('Received ID Token:', this.googleRegister.IdToken);
         this.step++;
-      })
-      .catch((error) => {
-        this.isGoogleLogin = false;
-        console.error('Google login failed:', error);
-      });
+      }
+    });
   }
 
   merge(data: IGuest | InvestmentPreference, fileData: FormData): FormData {
@@ -225,18 +218,18 @@ export class RegistrationFormComponent {
   private googleRegisterToFormData(googleRegister: GoogleRegister): FormData {
     const formData = new FormData();
 
-    formData.append('idToken', googleRegister.idToken);
+    formData.append('IdToken', googleRegister.IdToken);
     formData.append('Role', googleRegister.Role);
 
-    if (googleRegister.investorData) {
-      for (const [key, value] of googleRegister.investorData.entries()) {
-        formData.append(`investorData.${key}`, value);
+    if (googleRegister.InvestorData) {
+      for (const [key, value] of googleRegister.InvestorData.entries()) {
+        formData.append(`InvestorData.${key}`, value);
       }
     }
 
-    if (googleRegister.businessOwnerData) {
-      for (const [key, value] of googleRegister.businessOwnerData.entries()) {
-        formData.append(`businessOwnerData.${key}`, value);
+    if (googleRegister.BusinessOwnerData) {
+      for (const [key, value] of googleRegister.BusinessOwnerData.entries()) {
+        formData.append(`BusinessOwnerData.${key}`, value);
       }
     }
 

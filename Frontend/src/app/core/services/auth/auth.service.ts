@@ -40,8 +40,7 @@ export class AuthService {
     private http: HttpClient,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: object,
-    private fbAuthService: FacebookAuthService,
-    private googleAuthService: GoogleAuthService
+    private fbAuthService: FacebookAuthService // private googleAuthService: GoogleAuthService
   ) {
     // Seed the current user from storage on service initialization
     if (isPlatformBrowser(this.platformId)) {
@@ -259,9 +258,9 @@ export class AuthService {
 
     // Initialize Google authentication.
     // The callback 'handleGoogleLogin' will handle the response after Google sign-in.
-    this.googleAuthService.initializeGoogleSignIn(
-      this.handleGoogleLogin.bind(this)
-    );
+    // this.googleAuthService.initializeGoogleSignIn(
+    //   this.handleGoogleLogin.bind(this)
+    // );
   }
 
   /**
@@ -275,22 +274,32 @@ export class AuthService {
   /**
    * Initiates the Google login process.
    */
-  loginWithGoogle(): Promise<any> {
-    return this.googleAuthService.triggerGoogleLogin();
-  }
+  // loginWithGoogle(): Promise<any> {
+  //   return this.googleAuthService.triggerGoogleLogin();
+  // }
 
   /**
    * Callback for Google sign-in: exchanges code for AuthResponse, stores token & user.
    * @param response - Google callback containing auth code.
    */
   handleGoogleLogin(data: FormData): Observable<any> {
+    debugger;
     for (const [key, value] of data.entries()) {
       console.log(`${key}:`, value);
+      if (value instanceof FormData) {
+        for (const [key1, value1] of value.entries()) {
+          console.log(`${key1}:`, value1);
+        }
+      }
     }
     return this.http
-      .post<LoginResponse>(`${environment.account.googleLogin}`, data)
+      .post<LoginResponse>(
+        `${environment.baseApi}${environment.account.googleLogin}`,
+        data
+      )
       .pipe(
         catchError((error) => {
+          debugger;
           console.error('Error logging in with Google:', error);
           return throwError(() => error);
         })
