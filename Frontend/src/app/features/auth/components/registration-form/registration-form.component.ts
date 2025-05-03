@@ -13,6 +13,11 @@ import { AccountCreationComponent } from '../account-creation/account-creation.c
 import { IGuest } from '../../interfaces/iguest';
 import { RegisterService } from '../../services/register.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { GoogleRegister } from '../../interfaces/IGoogleReg';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ButtonComponent } from '../../../../shared/componentes/button/button.component';
+import { GoogleAuthService } from '../../../../core/services/googleSignIn/google-signin.service';
 
 @Component({
   selector: 'app-registration-form',
@@ -25,6 +30,7 @@ import { Router } from '@angular/router';
     IdentityVerificationComponent,
     InvestmentPreferenceComponent,
     AccountCreationComponent,
+    ButtonComponent,
   ],
   templateUrl: './registration-form.component.html',
   styleUrls: ['./registration-form.component.css'],
@@ -37,10 +43,16 @@ export class RegistrationFormComponent {
   data: IGuest | null = null;
   businessFormData = new FormData();
   investorFormData = new FormData();
+  isGoogleLogin: boolean = false;
+  googleRegister: GoogleRegister = {} as GoogleRegister;
 
   registerService = inject(RegisterService);
   router = inject(Router);
-  constructor(private navigationService: NavigationService) {}
+  constructor(
+    private navigationService: NavigationService,
+    private authService: AuthService,
+    private googleAuthService: GoogleAuthService
+  ) {}
 
   setRole(role: 'investor' | 'business' | 'guest') {
     this.selectedRole = role;
@@ -67,14 +79,31 @@ export class RegistrationFormComponent {
   handlePersonalInfoSubmit(personalData: IGuest) {
     this.data = { ...this.data, ...personalData } as IGuest;
     if (this.selectedRole === 'guest') {
-      this.registerService.registerGuest(this.data as IGuest).subscribe({
-        next: (response) => {
-          window.location.reload();
-        },
-        error: (error) => {
-          console.error('Error occurred:', error);
-        },
-      });
+      if (this.isGoogleLogin) {
+        const formData = new FormData();
+        formData.append('IdToken', this.googleRegister.IdToken);
+        formData.append('Role', this.googleRegister.Role);
+        debugger;
+        this.authService.handleGoogleLogin(formData).subscribe({
+          next: (response) => {
+            console.log(response);
+            debugger;
+            window.location.reload();
+          },
+          error: (error) => {
+            console.error('Error occurred:', error);
+          },
+        });
+      } else {
+        this.registerService.registerGuest(this.data as IGuest).subscribe({
+          next: (response) => {
+            window.location.reload();
+          },
+          error: (error) => {
+            console.error('Error occurred:', error);
+          },
+        });
+      }
     } else {
       this.step++;
     }
@@ -82,8 +111,57 @@ export class RegistrationFormComponent {
 
   handleIdentityVerificationSubmit(verificationData: FormData) {
     this.businessFormData = this.merge(this.data as IGuest, verificationData);
+
     if (this.selectedRole === 'business') {
-      this.registerService.registerBusiness(this.businessFormData).subscribe({
+      if (this.isGoogleLogin) {
+        this.googleRegister.BusinessOwnerData = this.businessFormData;
+        const formData = new FormData();
+        formData.append('IdToken', this.googleRegister.IdToken);
+        formData.append('Role', this.googleRegister.Role);
+        if (this.googleRegister.BusinessOwnerData) {
+          for (const [
+            key,
+            value,
+          ] of this.googleRegister.BusinessOwnerData.entries()) {
+            formData.append(`BusinessOwnerData.${key}`, value);
+          }
+        }
+        this.authService.handleGoogleLogin(formData).subscribe({
+          next: (response) => {
+            window.location.reload();
+          },
+          error: (error) => {
+            console.error('Error occurred:', error);
+          },
+        });
+      } else {
+        this.registerService.registerBusiness(this.businessFormData).subscribe({
+          next: (response) => {
+            window.location.reload();
+          },
+          error: (error) => {
+            console.error('Error occurred:', error);
+          },
+        });
+      }
+    } else {
+      this.step++;
+    }
+  }
+
+  handleInvestmentPreferenceSubmit(data: InvestmentPreference) {
+    this.investorFormData = this.merge(data, this.businessFormData);
+    if (this.isGoogleLogin && this.selectedRole === 'investor') {
+      this.googleRegister.InvestorData = this.investorFormData;
+      const formData = new FormData();
+      formData.append('IdToken', this.googleRegister.IdToken);
+      formData.append('Role', this.googleRegister.Role);
+      if (this.googleRegister.InvestorData) {
+        for (const [key, value] of this.googleRegister.InvestorData.entries()) {
+          formData.append(`InvestorData.${key}`, value);
+        }
+      }
+      this.authService.handleGoogleLogin(formData).subscribe({
         next: (response) => {
           window.location.reload();
         },
@@ -92,23 +170,34 @@ export class RegistrationFormComponent {
         },
       });
     } else {
-      this.step++;
+      this.registerService.registerInvestor(this.investorFormData).subscribe({
+        next: (response) => {
+          window.location.reload();
+        },
+        error: (error) => {
+          console.error('Error occurred:', error);
+        },
+      });
     }
   }
 
-  handleInvestmentPreferenceSubmit(data: InvestmentPreference) {
-    this.investorFormData = this.merge(data, this.businessFormData);
+  loginWithGoogle() {
+    this.isGoogleLogin = true;
     debugger;
-    for (const [key, value] of this.investorFormData.entries()) {
-      console.log(`${key}:`, value);
-    }
-    this.registerService.registerInvestor(this.investorFormData).subscribe({
-      next: (response) => {
-        window.location.reload();
-      },
-      error: (error) => {
-        console.error('Error occurred:', error);
-      },
+    this.googleAuthService.initializeGoogleSignIn((response: any) => {
+      if (response.credential) {
+        const IdToken = response.credential;
+
+        this.googleRegister.IdToken = IdToken;
+        this.googleRegister.Role =
+          this.selectedRole === 'guest'
+            ? 'User'
+            : this.selectedRole === 'business'
+            ? 'BusinessOwner'
+            : 'Investor';
+        console.log('Received ID Token:', this.googleRegister.IdToken);
+        this.step++;
+      }
     });
   }
 
@@ -122,6 +211,27 @@ export class RegistrationFormComponent {
     fileData.forEach((value, key) => {
       formData.append(key, value);
     });
+
+    return formData;
+  }
+
+  private googleRegisterToFormData(googleRegister: GoogleRegister): FormData {
+    const formData = new FormData();
+
+    formData.append('IdToken', googleRegister.IdToken);
+    formData.append('Role', googleRegister.Role);
+
+    if (googleRegister.InvestorData) {
+      for (const [key, value] of googleRegister.InvestorData.entries()) {
+        formData.append(`InvestorData.${key}`, value);
+      }
+    }
+
+    if (googleRegister.BusinessOwnerData) {
+      for (const [key, value] of googleRegister.BusinessOwnerData.entries()) {
+        formData.append(`BusinessOwnerData.${key}`, value);
+      }
+    }
 
     return formData;
   }

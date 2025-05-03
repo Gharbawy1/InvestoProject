@@ -31,6 +31,7 @@ export const appConfig: ApplicationConfig = {
         loadingInterceptor, 
       ])
     ),
+
     importProvidersFrom([BrowserAnimationsModule]),
   ],
 };
