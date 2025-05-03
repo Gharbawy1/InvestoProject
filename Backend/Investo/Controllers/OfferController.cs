@@ -72,11 +72,21 @@ namespace Investo.Presentation.Controllers
                 {
                     await _notifcationService.SendOfferNotificationAsync(offerResult.Data);
                     return Ok(new ValidationResult<ReadOfferDto>
-                      {
-                    IsValid = true,
-                    Data = offerResult.Data,
-                    ErrorMessage = null
-                      });
+                    {
+                        IsValid = true,
+                        Data = offerResult.Data,
+                        ErrorMessage = null
+                    });
+                }
+                else
+                {
+                    return BadRequest(new ValidationResult<ReadOfferDto>
+                    {
+                        IsValid = false,
+                        Data = null,
+                        ErrorMessage = offerResult.ErrorMessage
+                    });
+                }
             }
             catch (Exception ex)
             {
