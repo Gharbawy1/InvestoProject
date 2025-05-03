@@ -302,10 +302,7 @@ namespace Investo.DataAccess.Services.Offers
                 };
             }
 
-            var allOffers = await _offerRepository.GetAll();
-            var offers = allOffers
-                .Where(o => o.InvestorId == investorId && o.Status == OfferStatus.Accepted)
-                .ToList();
+            var offers = await _offerRepository.GetAcceptedOffersByInvestorIdAsync(investorId);
 
             if (!offers.Any())
             {
@@ -313,21 +310,17 @@ namespace Investo.DataAccess.Services.Offers
                 {
                     Data = null,
                     IsValid = false,
-                    ErrorMessage = $"No accepted offers found for investorID:{investorId}"
+                    ErrorMessage = $"No accepted offers found for investorID: {investorId}"
                 };
             }
 
-            var readOffersDto = _mapper.Map<List<ReadOfferDto>>(offers);
-
             return new ValidationResult<List<ReadOfferDto>>
             {
-                Data = readOffersDto,
+                Data = offers,
                 IsValid = true,
                 ErrorMessage = null
             };
         }
-
-
 
     }
 
