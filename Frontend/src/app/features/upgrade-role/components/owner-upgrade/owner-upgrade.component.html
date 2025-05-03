@@ -23,7 +23,7 @@
   <div class="flex flex-col gap-1.5">
     <label class="text-sm font-medium text-gray-700">National ID Number</label>
     <input 
-      formControlName="nationalID" 
+      formControlName="NationalID" 
       class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input"
       placeholder="Enter 14-digit national ID"
       inputmode="numeric"
@@ -31,7 +31,7 @@
       maxlength="14"
     >
     <div class="min-h-[20px]">
-      <div *ngIf="form.get('nationalID')?.errors && (form.get('nationalID')?.touched || form.submitted)" 
+      <div *ngIf="form.get('NationalID')?.errors && (form.get('NationalID')?.touched || submitted)" 
            class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
         <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>

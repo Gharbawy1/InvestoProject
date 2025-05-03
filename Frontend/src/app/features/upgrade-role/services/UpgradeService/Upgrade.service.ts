@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { ObjectApiResponse } from '../../../../core/interfaces/ApiResponse';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../../../../environments/environment.development';
+import { UpgradeResponse } from '../../interfaces/UpgradeResponse ';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UpgradeService {
   investorApiUrl = `${environment.baseApi}${environment.account.upgradeToInvestor}`;
@@ -13,23 +14,15 @@ export class UpgradeService {
 
   constructor(private http: HttpClient) {}
 
-  upgradeToInvestor(formData: FormData): Observable<HttpEvent<ObjectApiResponse<boolean>>> {
-    return this.http.post<ObjectApiResponse<boolean>>(this.investorApiUrl, formData, {
-      reportProgress: true,
-      observe: 'events'
-    }).pipe(catchError(this.handleError));
+  upgradeToInvestor(formData: FormData): Observable<UpgradeResponse> {
+    return this.http.post<UpgradeResponse>(this.investorApiUrl, formData);
   }
 
-  upgradeToBusinessOwner(formData: FormData): Observable<HttpEvent<ObjectApiResponse<boolean>>> {
-    return this.http.post<ObjectApiResponse<boolean>>(this.ownerApiUrl, formData, {
-      reportProgress: true,
-      observe: 'events'
-    }).pipe(catchError(this.handleError));
-  }
-
-  private handleError(err: HttpErrorResponse) {
-    console.error('[UpgradeService]', err);
-    const msg = err.error?.errorMessage || 'Server error';
-    return throwError(() => new Error(msg));
+  upgradeToBusinessOwner(formData: FormData): Observable<UpgradeResponse> {
+    debugger;
+    for (const [key, value] of formData) {
+      console.log(`${key}:`, value);
+    }
+    return this.http.post<UpgradeResponse>(this.ownerApiUrl, formData);
   }
 }

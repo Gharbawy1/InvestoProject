@@ -1,1 +1,36 @@
-<p>project-details-dialog works!</p>
+<div class="p-6">
+    <h2 class="text-2xl font-bold mb-4">{{ data.project.projectTitle }}</h2>
+    
+    <div class="space-y-4">
+      <div>
+        <label class="text-sm text-gray-500">Funding Goal</label>
+        <p class="font-medium">{{ formatCurrency(data.project.fundingGoal) }}</p>
+      </div>
+  
+      <div>
+        <label class="text-sm text-gray-500">Category</label>
+        <p class="font-medium">{{ data.project.categoryName }}</p>
+      </div>
+  
+      <div class="mt-6 flex justify-end gap-3">
+        <button 
+          (click)="close()"
+          class="px-4 py-2 border rounded-md hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+        <button 
+          (click)="onReject()"
+          class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+        >
+          Reject
+        </button>
+        <button 
+          (click)="onApprove()"
+          class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+        >
+          Approve
+        </button>
+      </div>
+    </div>
+  </div>

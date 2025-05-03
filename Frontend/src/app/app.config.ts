@@ -17,15 +17,20 @@ import {
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { loadingInterceptor } from './core/interceptors/loading/loading.interceptor';
+import { authInterceptor } from './core/interceptors/auth/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideRouter(routes),
-    provideHttpClient(withFetch()),
-    provideHttpClient(withInterceptors([loadingInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([
+        authInterceptor,
+        loadingInterceptor, 
+      ])
+    ),
     importProvidersFrom([BrowserAnimationsModule]),
   ],
 };

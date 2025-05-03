@@ -25,6 +25,8 @@ import { stat } from 'fs';
 export class HeaderComponent implements OnInit {
   isLoggedIn = false;
   userName: string = '';
+  userRole: string = '';
+
   @Output() loginClick = new EventEmitter<void>();
   @Output() registerClick = new EventEmitter<void>();
 
@@ -38,9 +40,11 @@ export class HeaderComponent implements OnInit {
       if (status) {
         this.authService.user$.subscribe((user) => {
           this.userName = user?.firstName || 'User';
+          this.userRole = user?.role || '';
         });
       } else {
         this.userName = '';
+        this.userRole = '';
       }
     });
   }

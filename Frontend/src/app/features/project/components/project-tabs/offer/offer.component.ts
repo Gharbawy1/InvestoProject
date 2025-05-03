@@ -61,6 +61,14 @@ export class OfferComponent implements OnInit {
       return;
     }
     if (user.role !== 'Investor') {
+      if(user.role === 'User'){
+        this.blockAccess({
+          message: 'You must upgrade to the Investor role to submit offers.',
+          path: ['/UpgradeRole'],
+          buttonText: 'Upgrade Now',
+        });
+        return;
+      }
       this.blockAccess({
         message: 'Only users with the Investor role may submit offers.',
         path: ['/'],
@@ -148,7 +156,7 @@ export class OfferComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.offerSvc.createOffer(this.offer).subscribe({
+    this.offerSvc.createOffer(this.offer as IOffer).subscribe({
       next: () => this.handleSuccess(),
       error: (err) => this.handleError(err),
     });

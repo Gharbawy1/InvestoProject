@@ -1,5 +1,5 @@
 export interface IOffer {
-  id: string;
+  id?: string;
   offerAmount: number,
   investmentType: 'Equity' | 'Debt' | 'ProfitShare',
   equityPercentage: number,
