@@ -35,7 +35,7 @@ namespace Investo.Presentation.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Ok(new ValidationResult<ReadOfferDto>
+                return BadRequest(new ValidationResult<ReadOfferDto>
                 {
                     IsValid = false,
                     ErrorMessage = "Model validation failed",
@@ -45,7 +45,7 @@ namespace Investo.Presentation.Controllers
 
             if (dto.InvestmentType == "Equity" && !dto.EquityPercentage.HasValue)
             {
-                return Ok(new ValidationResult<ReadOfferDto>
+                return BadRequest(new ValidationResult<ReadOfferDto>
                 {
                     IsValid = false,
                     ErrorMessage = "Equity percentage is required for equity investments.",
@@ -55,7 +55,7 @@ namespace Investo.Presentation.Controllers
 
             if (dto.InvestmentType == "ProfitShare" && !dto.ProfitShare.HasValue)
             {
-                return Ok(new ValidationResult<ReadOfferDto>
+                return BadRequest(new ValidationResult<ReadOfferDto>
                 {
                     IsValid = false,
                     ErrorMessage = "Profit share is required for profit share investments.",
@@ -71,26 +71,18 @@ namespace Investo.Presentation.Controllers
                 if (offerResult.IsValid)
                 {
                     await _notifcationService.SendOfferNotificationAsync(offerResult.Data);
-                    return Ok(new ValidationResult<ReadOfferDto>
-                    {
-                        IsValid = true,
-                        Data = offerResult.Data,
-                        ErrorMessage = null
-                    });
+                    return Ok(offerResult);
+                  
                 }
                 else
                 {
-                    return BadRequest(new ValidationResult<ReadOfferDto>
-                    {
-                        IsValid = false,
-                        Data = null,
-                        ErrorMessage = offerResult.ErrorMessage
-                    });
+                    return BadRequest(offerResult);
+                   
                 }
             }
             catch (Exception ex)
             {
-                return Ok(new ValidationResult<ReadOfferDto>
+                return StatusCode(500, new ValidationResult<ReadOfferDto>
                 {
                     IsValid = false,
                     ErrorMessage = ex.Message,
@@ -108,19 +100,14 @@ namespace Investo.Presentation.Controllers
             var offerResult = await _offerService.GetOfferById(offerId);
 
             if (!offerResult.IsValid || offerResult.Data == null)
-                return Ok(new ValidationResult<ReadOfferDto>
+                return NotFound(new ValidationResult<ReadOfferDto>
                 {
                     IsValid = false,
                     ErrorMessage = $"Offer with ID: {offerId} is not found",
                     Data = null
                 });
 
-            return Ok(new ValidationResult<ReadOfferDto>
-            {
-                IsValid = true,
-                ErrorMessage = null,
-                Data = offerResult.Data
-            });
+            return Ok(offerResult);
         }
 
 
@@ -132,7 +119,7 @@ namespace Investo.Presentation.Controllers
         public async Task<IActionResult> GetOffersByProjectId(int projectId)
         {
             if (projectId <= 0)
-                return Ok(new ValidationResult<List<ReadOfferDto>>
+                return BadRequest(new ValidationResult<List<ReadOfferDto>>
                 {
                     IsValid = false,
                     ErrorMessage = "Invalid Project Id",
@@ -141,7 +128,7 @@ namespace Investo.Presentation.Controllers
 
             var project = await _projectService.GetProjectById(projectId);
             if (project == null)
-                return Ok(new ValidationResult<List<ReadOfferDto>>
+                return NotFound(new ValidationResult<List<ReadOfferDto>>
                 {
                     IsValid = false,
                     ErrorMessage = $"Project With ID {projectId} does not exist",
@@ -149,14 +136,9 @@ namespace Investo.Presentation.Controllers
                 });
 
             var offersResult = await _offerService.GetOffersByProjectId(projectId);
-
-            return Ok(new ValidationResult<List<ReadOfferDto>>
-            {
-                IsValid = offersResult.IsValid,
-                ErrorMessage = offersResult.ErrorMessage,
-                Data = offersResult.Data
-            });
+            return Ok(offersResult);
         }
+
 
 
         ///<summary>
@@ -167,7 +149,7 @@ namespace Investo.Presentation.Controllers
         {
             if (string.IsNullOrWhiteSpace(status))
             {
-                return Ok(new ValidationResult<ReadOfferDto>
+                return BadRequest(new ValidationResult<ReadOfferDto>
                 {
                     IsValid = false,
                     ErrorMessage = "Status is required. Allowed values are 'Accepted' or 'Rejected'.",
@@ -176,27 +158,16 @@ namespace Investo.Presentation.Controllers
             }
 
             var response = await _offerService.RespondToOfferAsync(offerId, status);
-
-            // after respond to offer we send notification for the investor 
             await _notifcationService.SendOfferResponseNotificationAsync(offerId, status);
 
             if (!response.IsValid)
             {
-                return Ok(new ValidationResult<ReadOfferDto>
-                {
-                    IsValid = false,
-                    ErrorMessage = response.ErrorMessage,
-                    Data = null
-                });
+                return BadRequest(response);
             }
 
-            return Ok(new ValidationResult<ReadOfferDto>
-            {
-                IsValid = true,
-                ErrorMessage = null,
-                Data = response.Data
-            });
+            return Ok(response);
         }
+
 
 
         ///<summary>
@@ -217,17 +188,10 @@ namespace Investo.Presentation.Controllers
                     Data = null
                 });
             }
-
             try
             {
                 var offers = await _offerService.GetOffersForCurrentUser(userId, userRole);
-
-                return Ok(new ValidationResult<IEnumerable<ReadOfferDto>>
-                {
-                    Data = offers.Data,
-                    IsValid = true,
-                    ErrorMessage = null
-                });
+                return Ok(offers);
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -248,10 +212,6 @@ namespace Investo.Presentation.Controllers
                 });
             }
         }
-
-
-
-
         [HttpGet("investor/{investorId}/accepted_Offers")]
         public async Task<IActionResult> GetAcceptedOffersByInvestorId(string investorId)
         {
@@ -259,24 +219,11 @@ namespace Investo.Presentation.Controllers
 
             if (!result.IsValid)
             {
-                return Ok(new ValidationResult<List<ReadOfferDto>>
-                {
-                    IsValid = false,
-                    ErrorMessage = result.ErrorMessage,
-                    Data = null
-                });
+                return BadRequest(result);
             }
 
-            return Ok(new ValidationResult<List<ReadOfferDto>>
-            {
-                Data = result.Data,
-                IsValid = true,
-                ErrorMessage = null
-            });
+            return Ok(result);
         }
-
-
-
 
     }
 }
