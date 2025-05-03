@@ -8,6 +8,7 @@ namespace Investo.Entities.DTO.Stripe
 {
     public class CheckoutRequestDto
     {
+
         public int ProjectId { get; set; }
         public int OfferId { get; set; } 
     }

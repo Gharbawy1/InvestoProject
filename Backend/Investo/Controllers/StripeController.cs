@@ -15,6 +15,7 @@ namespace Investo.Presentation.Controllers
     [ApiController]
     public class StripeController : ControllerBase
     {
+
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IProjectService _projectService;
         private readonly IOfferRepository _offerRepository;
