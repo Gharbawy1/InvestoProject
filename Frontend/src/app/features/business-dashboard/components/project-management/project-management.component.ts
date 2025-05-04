@@ -6,7 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export interface Milestone {
   title: string;
   date: Date;
-  status: 'completed' | 'in-progress' | 'pending';
+  status: 'completed' | 'in-progress' | 'Pending';
   description: string;
   daysRemaining: number;
   actionTooltip?: string;
@@ -59,9 +59,9 @@ export class ProjectManagementComponent implements OnInit {
       { 
         title: 'Launch Preparation', 
         date: new Date('2024-03-01'),
-        status: 'pending',
+        status: 'Pending',
         description: 'Final approvals and documentation completion.',
-        // Calculate days remaining for this pending milestone.
+        // Calculate days remaining for this Pending milestone.
         daysRemaining: this.calculateDaysRemaining(new Date('2024-03-01')),
         actionTooltip: 'Prepare launch materials'
       }

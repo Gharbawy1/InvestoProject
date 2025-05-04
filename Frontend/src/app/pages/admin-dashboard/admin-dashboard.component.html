@@ -1,73 +1,87 @@
-<div class="container mx-auto py-12 px-4">
-  <!-- Header -->
-  <div class="mb-8 text-center">
-    <h1 class="text-4xl font-bold text-primary mb-2">Admin Dashboard</h1>
-    <p class="text-gray-500 text-lg">
-      Manage projects, users, and platform settings
-    </p>
-  </div>
-
-  <!-- Tabs -->
-  <div class="w-full">
-    <div class="grid grid-cols-3 bg-muted p-2 rounded-xl shadow-sm mb-10">
-      <ng-container *ngFor="let tab of tabs">
-        <button
+<div class="min-h-screen bg-gray-50 flex flex-col pt-15">
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Desktop Sidebar -->
+    <aside class="hidden lg:block w-64 bg-white border-r border-gray-200 shadow-sm overflow-y-auto">
+      <nav class="p-4 space-y-1">
+        <button 
+          *ngFor="let tab of tabs"
           (click)="setActiveTab(tab)"
-          [ngClass]="{
-            'bg-white text-foreground shadow-md': activeTab() === tab,
-            'hover:bg-white hover:text-foreground': activeTab() !== tab
-          }"
-          class="flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-gray-600 font-semibold transition-all"
+          [class.text-blue-600]="activeTab() === tab"
+          [class.bg-gray-100]="activeTab() === tab"
+          class="w-full text-left px-4 py-2.5 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium"
         >
-          <mat-icon class="w-5 h-5">
-            {{
-              tab === "projects"
-                ? "description"
-                : tab === "users"
-                ? "group"
-                : "settings"
-            }}
+          <mat-icon class="w-5 h-5 mr-2 align-middle">
+
           </mat-icon>
           {{ tab | titlecase }}
         </button>
-      </ng-container>
-    </div>
+      </nav>
+    </aside>
 
-    <!-- Tab Content -->
-    @if (activeTab() === 'projects') {
-    <div class="bg-card rounded-2xl shadow-md p-8 space-y-6">
-      <div>
-        <h2 class="text-2xl font-bold text-primary">Project Approvals</h2>
-        <p class="text-muted-foreground text-sm">
-          Review and manage projects submitted by business owners.
-        </p>
+    <!-- Main Content -->
+    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
+      <!-- Mobile Tabs -->
+      <nav class="lg:hidden relative p-4 pb-0">
+        <div class="flex overflow-x-auto scrollbar-custom pb-3">
+          <div class="flex flex-nowrap space-x-2">
+            <button 
+              *ngFor="let tab of tabs"
+              (click)="setActiveTab(tab)"
+              [class.text-blue-600]="activeTab() === tab"
+              [class.bg-blue-50]="activeTab() === tab"
+              class="flex-shrink-0 px-4 py-2.5 rounded-full text-sm font-medium 
+                    text-gray-600 hover:bg-gray-100 transition-colors border"
+            >
+              {{ tab | titlecase }}
+            </button>
+          </div>
+        </div>
+        <div class="absolute top-0 right-0 w-8 h-full bg-gradient-to-l from-gray-50"></div>
+      </nav>
+
+      <!-- Content Sections -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <!-- Projects Tab -->
+          <section *ngIf="activeTab() === 'projects'" class="animate-content-fade">
+            <div class="mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">Project Approvals</h2>
+              <p class="text-gray-500 mt-1">
+                Review and manage projects submitted by business owners.
+              </p>
+            </div>
+            <app-project-approval-card></app-project-approval-card>
+          </section>
+
+          <!-- Users Tab -->
+          <section *ngIf="activeTab() === 'users'" class="animate-content-fade">
+            <div class="mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">User Management</h2>
+              <p class="text-gray-500 mt-1">
+                Manage user accounts, roles, and permissions.
+              </p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-8 text-center border-2 border-dashed">
+              <mat-icon class="text-4xl text-gray-400 mb-4">engineering</mat-icon>
+              <p class="text-gray-500 font-medium">User management coming soon</p>
+            </div>
+          </section>
+
+          <!-- Settings Tab -->
+          <section *ngIf="activeTab() === 'settings'" class="animate-content-fade">
+            <div class="mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">Platform Settings</h2>
+              <p class="text-gray-500 mt-1">
+                Configure platform-wide settings and preferences.
+              </p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-8 text-center border-2 border-dashed">
+              <mat-icon class="text-4xl text-gray-400 mb-4">settings_suggest</mat-icon>
+              <p class="text-gray-500 font-medium">Settings panel under construction</p>
+            </div>
+          </section>
+        </div>
       </div>
-      <app-project-approval-card
-        [projects]="projects"
-      ></app-project-approval-card>
-    </div>
-    } @if (activeTab() === 'users') {
-    <div class="bg-card rounded-2xl shadow-md p-8 space-y-6">
-      <div>
-        <h2 class="text-2xl font-bold text-primary">User Management</h2>
-        <p class="text-muted-foreground text-sm">
-          Manage user accounts, roles, and permissions.
-        </p>
-      </div>
-      <p class="text-gray-500 italic">
-        User management functionality coming soon.
-      </p>
-    </div>
-    } @if (activeTab() === 'settings') {
-    <div class="bg-card rounded-2xl shadow-md p-8 space-y-6">
-      <div>
-        <h2 class="text-2xl font-bold text-primary">Platform Settings</h2>
-        <p class="text-muted-foreground text-sm">
-          Configure platform-wide settings and preferences.
-        </p>
-      </div>
-      <p class="text-gray-500 italic">Settings functionality coming soon.</p>
-    </div>
-    }
+    </main>
   </div>
 </div>

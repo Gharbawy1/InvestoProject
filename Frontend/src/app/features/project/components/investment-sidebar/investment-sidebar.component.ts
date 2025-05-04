@@ -4,6 +4,8 @@ import {
   Input,
   Output,
   OnDestroy,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -28,9 +30,9 @@ import { Subscription } from 'rxjs';
   templateUrl: './investment-sidebar.component.html',
   styleUrls: ['./investment-sidebar.component.css'],
 })
-export class InvestmentSidebarComponent implements OnDestroy {
+export class InvestmentSidebarComponent implements OnDestroy, OnChanges {
   @Input() fundingGoal = 0;
-  @Input() currentFunding = 0;
+  @Input() raisedFunds = 0;
   @Input() numOfInvestors = 0;
 
   @Output() discussionClicked = new EventEmitter<void>();
@@ -46,6 +48,12 @@ export class InvestmentSidebarComponent implements OnDestroy {
   isInvestor = false;
   private userSub: Subscription = Subscription.EMPTY;
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['raisedFunds'] || changes['fundingGoal']) {
+      console.log('Progress updated:', this.progressPercentage);
+    }
+  }
+
   constructor(
     public router: Router,
     private route: ActivatedRoute,
@@ -57,13 +65,13 @@ export class InvestmentSidebarComponent implements OnDestroy {
   }
 
   get status(): string {
-    return this.currentFunding >= this.fundingGoal ? 'funded' : 'active';
+    return this.raisedFunds >= this.fundingGoal ? 'funded' : 'active';
   }
 
   get progressPercentage(): number {
     if (!this.fundingGoal || this.fundingGoal <= 0) return 0;
-    const percentage = (this.currentFunding / this.fundingGoal) * 100;
-    return Math.min(100, percentage);
+    const percentage = (this.raisedFunds / this.fundingGoal) * 100;
+    return Math.min(100, Math.round(percentage * 10) / 10);
   }
 
   setInvestmentAmount(amount: number): void {

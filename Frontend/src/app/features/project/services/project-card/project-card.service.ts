@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IProjectCard } from '../../interfaces/iprojectcard';
 import { environment } from '../../../../../environments/environment.development';
-import { IBusinessDetails } from '../../interfaces/IBusinessDetails';
 import { ArrayApiResponse } from '../../../../core/interfaces/ApiResponse';
 
 @Injectable({

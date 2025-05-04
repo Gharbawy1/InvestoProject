@@ -1,36 +1,172 @@
-<div class="p-6">
-    <h2 class="text-2xl font-bold mb-4">{{ data.project.projectTitle }}</h2>
-    
-    <div class="space-y-4">
-      <div>
-        <label class="text-sm text-gray-500">Funding Goal</label>
-        <p class="font-medium">{{ formatCurrency(data.project.fundingGoal) }}</p>
+<div class="p-8 max-h-[90vh] overflow-y-auto">
+  <!-- Modal Header -->
+  <div class="flex items-center justify-between mb-6 pb-4 border-b">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-900">{{ project.projectTitle }}</h2>
+      <p class="text-gray-500 mt-1">{{ project.subtitle }}</p>
+    </div>
+    <button 
+      (click)="close()" 
+      class="text-gray-400 hover:text-gray-500">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Project Details Column -->
+    <div class="space-y-6">
+      <!-- Project Core Info -->
+      <div class="bg-gray-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center">
+          <mat-icon class="mr-2 text-blue-600">business</mat-icon>
+          Project Essentials
+        </h3>
+        <div class="space-y-3">
+          <div>
+            <label class="text-sm text-gray-500">Category</label>
+            <p class="font-medium">{{ project.categoryName }}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-500">Location</label>
+            <p class="font-medium">{{ project.projectLocation }}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-500">Registration Date</label>
+            <p class="font-medium">{{ project.registrationDate | date:'longDate' }}</p>
+          </div>
+        </div>
       </div>
-  
-      <div>
-        <label class="text-sm text-gray-500">Category</label>
-        <p class="font-medium">{{ data.project.categoryName }}</p>
+
+      <!-- Funding Section -->
+      <div class="bg-gray-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center">
+          <mat-icon class="mr-2 text-green-600">attach_money</mat-icon>
+          Financial Details
+        </h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm text-gray-500">Funding Goal</label>
+            <p class="font-medium text-lg">{{ formatCurrency(project.fundingGoal!) }}</p>
+          </div>
+          <div class="col-span-2">
+            <label class="text-sm text-gray-500">Funding Exchange</label>
+            <p class="font-medium">{{ project.fundingExchange }}</p>
+          </div>
+        </div>
       </div>
-  
-      <div class="mt-6 flex justify-end gap-3">
-        <button 
-          (click)="close()"
-          class="px-4 py-2 border rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button 
-          (click)="onReject()"
-          class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-        >
-          Reject
-        </button>
-        <button 
-          (click)="onApprove()"
-          class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-        >
-          Approve
-        </button>
+    </div>
+
+    <!-- User/Business Column -->
+    <div class="space-y-6">
+      <!-- Owner Profile -->
+      <div class="bg-gray-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center">
+          <mat-icon class="mr-2 text-red-600">person</mat-icon>
+          Business Owner
+        </h3>
+        <div class="flex items-center mb-4">
+          <img *ngIf="project.profilePictureURL"
+              [src]="project.profilePictureURL"
+              class="w-16 h-16 rounded-full object-cover mr-4 border-2 border-white shadow"
+              alt="Profile picture">
+          <div>
+            <p class="font-medium text-lg">{{ project.firstName }} {{ project.lastName }}</p>
+            <p class="text-gray-500 text-sm">{{ project.email }}</p>
+            <p class="text-gray-500 text-sm">{{ project.phoneNumber }}</p>
+          </div>
+        </div>
+        <div class="mt-4">
+          <label class="text-sm text-gray-500">Bio</label>
+          <p class="whitespace-pre-line text-gray-700 mt-1">
+            {{ project.bio || 'No bio provided' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Verification Documents -->
+      <div class="bg-gray-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center">
+          <mat-icon class="mr-2 text-orange-600">verified</mat-icon>
+          KYC Verification
+        </h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm text-gray-500 block mb-2">National ID Front</label>
+            <a [href]="project.nationalIDImageFrontURL" 
+              target="_blank"
+              class="flex items-center text-blue-600 hover:underline">
+              <mat-icon class="mr-1">image</mat-icon>
+              View Document
+            </a>
+          </div>
+          <div>
+            <label class="text-sm text-gray-500 block mb-2">National ID Back</label>
+            <a [href]="project.nationalIDImageBackURL" 
+              target="_blank"
+              class="flex items-center text-blue-600 hover:underline">
+              <mat-icon class="mr-1">image</mat-icon>
+              View Document
+            </a>
+          </div>
+          <div class="col-span-2">
+            <label class="text-sm text-gray-500">National ID Number</label>
+            <p class="font-mono bg-white p-2 rounded border mt-1">
+              {{ project.nationalID || 'Not provided' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Legal Info -->
+      <div class="bg-gray-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center">
+          <mat-icon class="mr-2 text-indigo-600">corporate_fare</mat-icon>
+          Legal Information
+        </h3>
+        <div class="space-y-3">
+          <div>
+            <label class="text-sm text-gray-500">Business Address</label>
+            <p class="text-gray-700">{{ project.address || 'Not provided' }}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-500">Business Vision</label>
+            <p class="whitespace-pre-line text-gray-700">
+              {{ project.projectVision }}
+            </p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-500">Current Progress</label>
+            <p class="whitespace-pre-line text-gray-700">
+              {{ project.currentVision }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Action Footer -->
+  <div class="mt-8 pt-6 border-t flex flex-col sm:flex-row justify-end gap-3">
+    <button 
+      (click)="close()"
+      class="px-6 py-2 text-gray-700 hover:bg-gray-100 rounded-lg order-last sm:order-first">
+      Close Review
+    </button>
+    <div class="flex flex-col sm:flex-row gap-3">
+      <button 
+      (click)="project && onStatusChange('Rejected')"
+      [disabled]="!project || project.status === 'Rejected'"
+      class="px-6 py-2 text-red-600 hover:bg-red-50 rounded-lg border disabled:opacity-50">
+      Reject Application
+    </button>
+    
+    <button 
+      (click)="project && onStatusChange('Accepted')"
+      [disabled]="!project || project.status === 'Accepted'"
+      class="px-6 py-2 text-white bg-green-600 hover:bg-green-700 rounded-lg disabled:opacity-50">
+      Approve Project
+    </button>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 export interface IBusiness {
+  id?: number;
   projectTitle: string;
   subtitle: string;
   projectLocation: string;
@@ -11,6 +12,4 @@ export interface IBusiness {
   goals: string;
   categoryId: number;
   ownerId: string;
-  ownerName: string;
-  raisedFund: number;
 }

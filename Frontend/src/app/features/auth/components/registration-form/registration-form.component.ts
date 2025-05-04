@@ -98,7 +98,6 @@ export class RegistrationFormComponent {
 
   handleInvestmentPreferenceSubmit(data: InvestmentPreference) {
     this.investorFormData = this.merge(data, this.businessFormData);
-    debugger;
     for (const [key, value] of this.investorFormData.entries()) {
       console.log(`${key}:`, value);
     }

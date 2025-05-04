@@ -1,89 +1,54 @@
-<div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg">
-  <div class="p-6">
+<!-- project-approval-card.component.html -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Error -->
+  <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
     <p class="text-red-800">{{ error }}</p>
-    <button
-      (click)="reloadPage()"
-      class="mt-4 px-4 py-2 border rounded-md hover:bg-gray-50"
-    >
+    <button (click)="reload()" 
+            class="mt-2 px-4 py-2 border rounded text-sm hover:bg-gray-50">
       Retry
     </button>
   </div>
-</div>
 
-<div *ngIf="!error">
-  <!-- Check if projects is loaded properly -->
-  <div *ngIf="projects.length === 0" class="border rounded-lg">
-    <div class="p-6 text-center">
-      <p class="text-gray-500 py-8">No projects awaiting approval.</p>
-    </div>
+  <!-- Filter Controls -->
+  <div class="mb-6 flex items-center justify-between">
+    <h2 class="text-2xl font-bold text-gray-900">Project Approvals</h2>
+    <select [(ngModel)]="filterStatus" 
+            (change)="onFilterChange()"
+            title="Filter projects by status"
+            class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-blue-500 focus:border-blue-500">
+      <option value="Pending">Pending Approval</option>
+      <option value="Accepted">Approved Projects</option>
+      <option value="Rejected">Rejected Projects</option>
+    </select>
   </div>
 
-  <div *ngIf="projects.length > 0">
-    <div
-      *ngFor="let project of projects"
-      class="border rounded-lg overflow-hidden mb-4"
-    >
-      <div class="p-6">
-        <div class="flex justify-between items-start mb-2">
-          <div>
-            <h3 class="text-lg font-semibold">{{ project.projectTitle }}</h3>
-          </div>
-          <span
-            class="px-2.5 py-0.5 rounded-full text-xs font-medium {{
-              getStatusBadgeClass(project.status)
-            }}"
-          >
-            {{ project.status | titlecase }}
-          </span>
+  <!-- Loading & Empty States -->
+  <div *ngIf="isLoading" class="py-12 text-center text-gray-500">
+    <mat-icon class="animate-spin">refresh</mat-icon>
+    <p class="mt-2">Loading projects...</p>
+  </div>
+
+  <div *ngIf="!isLoading && noResults" class="text-center py-8">
+    <mat-icon class="text-gray-400 text-4xl mb-2">search_off</mat-icon>
+    <p class="text-gray-500">No {{ filterStatus.toLowerCase() }} projects found</p>
+  </div>
+
+  <div *ngIf="!isLoading && projects.length > 0" class="space-y-4">
+    <div *ngFor="let p of projects"
+         class="bg-white border rounded-lg shadow-sm transition-all cursor-pointer hover:border-blue-200"
+         (click)="openDetailsModal(p)">
+      <div class="flex items-center justify-between p-4">
+        <div>
+          <h3 class="text-base font-semibold text-gray-900 truncate">{{ p.projectTitle }}</h3>
+          <p class="text-sm text-gray-500">{{ p.subtitle }}</p>
         </div>
-
-        <div class="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <p class="text-sm text-gray-500">Funding Goal</p>
-            <p class="font-medium">{{ formatCurrency(project.fundingGoal) }}</p>
-          </div>
-        </div>
-
-        <span
-          class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-        >
-          {{ project.categoryName }}
-        </span>
-
-        <div class="mt-4 flex items-center justify-between">
-          <div class="flex gap-2">
-            <button
-              (click)="handleStatusChange(project.id, 'Approved')"
-              [disabled]="project.status === 'Approved'"
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-green-600 hover:bg-green-700 text-white h-9 px-4 py-2"
-            >
-              <mat-icon class="h-4 w-4 mr-1">check</mat-icon> Approve
-            </button>
-            <button
-              (click)="handleStatusChange(project.id, 'Rejected')"
-              [disabled]="project.status === 'Rejected'"
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-red-600 text-white hover:bg-red-700 h-9 px-4 py-2"
-            >
-              <mat-icon class="h-4 w-4 mr-1">close</mat-icon> Reject
-            </button>
-            <button
-              (click)="handleStatusChange(project.id, 'Pending')"
-              [disabled]="project.status === 'Pending'"
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
-            >
-              <mat-icon class="h-4 w-4 mr-1">schedule</mat-icon> Pending
-            </button>
-          </div>
-
-          <a [routerLink]="['/project', project.id]">
-            <button
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
-            >
-              <mat-icon class="h-4 w-4 mr-1">open_in_new</mat-icon> View Details
-            </button>
-          </a>
-        </div>
+        <mat-icon>chevron_right</mat-icon>
       </div>
     </div>
   </div>
+
+  <!-- Project Details Modal -->
+  <ng-template #detailsModal>
+    <app-project-details-dialog></app-project-details-dialog>
+  </ng-template>
 </div>
