@@ -1,15 +1,11 @@
-import {
-  ActivatedRouteSnapshot,
-  ResolveFn,
-  RouterStateSnapshot,
-} from '@angular/router';
-import { BusinessApprovalService } from '../services/business-approval.service';
+import { ResolveFn, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { inject } from '@angular/core';
 import { IBusinessProfile } from '../interfaces/IBusinessProfile';
+import { BusinessApprovalService } from '../services/business-approval.service';
 
 export const adminResolver: ResolveFn<IBusinessProfile[]> = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
-  return inject(BusinessApprovalService).getProjects();
+  return inject(BusinessApprovalService).getAllProjects();
 };

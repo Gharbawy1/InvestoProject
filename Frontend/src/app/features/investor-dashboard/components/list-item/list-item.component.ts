@@ -27,7 +27,7 @@ export class ListItemComponent {
   @Input() projectName : string = '';
   @Input() amount  : number = 0;
   @Input() date   : string = '';
-  @Input() status : 'active' | 'pending' | 'completed' = 'active';
+  @Input() status : 'active' | 'Pending' | 'completed' = 'active';
   @Input() progress : number = 0;
   @Input() returnRate : number = 0;
   
@@ -35,7 +35,7 @@ export class ListItemComponent {
     switch (status) {
       case 'active':
         return 'bg-green-100 text-green-800';
-      case 'pending':
+      case 'Pending':
         return 'bg-yellow-100 text-yellow-800';
       case 'completed':
         return 'bg-blue-100 text-blue-800';

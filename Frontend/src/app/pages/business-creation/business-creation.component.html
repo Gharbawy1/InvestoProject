@@ -1,4 +1,35 @@
-<div class="container mx-auto py-10 px-4 max-w-4xl bg-white">
+<div *ngIf="isChecking" class="flex items-center justify-center h-64">
+  <mat-icon class="animate-spin text-4xl">autorenew</mat-icon>
+</div>
+
+<div *ngIf="isChecking" class="flex items-center justify-center h-64">
+  <mat-icon class="animate-spin text-4xl">autorenew</mat-icon>
+</div>
+
+<!-- 2) Blocked UI -->
+<div *ngIf="!isChecking && blockMessage" 
+     class="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm">
+  <div class="min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full space-y-6 text-center">
+      <div class="flex justify-center">
+        <div class="p-5 bg-red-100 rounded-full">
+          <mat-icon class="text-red-600 text-5xl">warning</mat-icon>
+        </div>
+      </div>
+      <h3 class="text-3xl font-bold text-gray-900">{{ blockMessage }}</h3>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="router.navigate(navigationPath)"
+        class="w-full py-4 text-lg font-medium"
+      >
+        {{ navigationButtonText }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!isChecking && !blockMessage" class="container mx-auto py-10 px-4 max-w-4xl bg-white">
   <div class="mb-8 text-center animate-fade-in">
     <h1 class="text-2xl font-bold text-gray-900 mb-2">
       Create Business Profile
@@ -113,7 +144,7 @@
               formControlName="fundingGoal"
               type="number"
               placeholder="50000"
-              min="100"
+              min="10000"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
             />
             <div class="min-h-[20px]">
@@ -346,17 +377,7 @@
           </div>
         </div>
 
-        <!-- Submit Button -->
-        <!--<button 
-          type="submit" 
-          [disabled]="isLoading || businessForm.invalid || !businessImageFile" 
-          class="w-full text-sm font-medium py-2.5 rounded-md transition flex items-center justify-center cursor-pointer transition-button button-hover"
-          [ngClass]="{
-            'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-700': !isLoading && !businessForm.invalid,
-            'bg-gray-300 text-gray-500 cursor-not-allowed': isLoading || businessForm.invalid || !businessImageFile
-          }">-->
-        <!-- for test -->
-        <button
+        <button 
           type="submit"
           [disabled]="isLoading || businessForm.invalid"
           class="w-full text-sm font-medium py-2.5 rounded-md transition flex items-center justify-center cursor-pointer transition-button button-hover"

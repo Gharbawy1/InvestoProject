@@ -11,7 +11,7 @@ interface Document {
   uploadDate: Date;
   url: string;
   size?: number;
-  reviewStatus: 'approved' | 'pending' | 'rejected';
+  reviewStatus: 'approved' | 'Pending' | 'rejected';
 }
 
 @Component({
@@ -42,7 +42,7 @@ export class DocumentCenterComponent {
       uploadDate: new Date(),
       url: '#',
       size: 1.8,
-      reviewStatus: 'pending',
+      reviewStatus: 'Pending',
     },
     {
       id: 3,

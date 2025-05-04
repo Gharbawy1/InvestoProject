@@ -55,7 +55,7 @@ export class ProjectDetailsComponent implements OnInit {
           this.owner = projectData.ownerName;
           this.isProjectOwner = this.authService.getUserId() === this.owner?.id;
           this.projectContext.setProject(projectData);
-          if (this.status === 'pending' || this.status === 'rejected') {
+          if (this.status === 'Pending' || this.status === 'rejected') {
             if (this.isProjectOwner) {
               this.blockAccess({
                 message: 'This project is under review or unavailable. Please check back later.',
@@ -131,6 +131,11 @@ export class ProjectDetailsComponent implements OnInit {
     return this.project?.fundingGoal || 0;
   }
 
+  /** current funding */
+  get raisedFunds(): number {
+    return this.project?.raisedFunds || 0;
+  }
+
   /** Funding terms */
   get fundingExchange(): string {
     return this.project?.fundingExchange || '';
@@ -138,7 +143,7 @@ export class ProjectDetailsComponent implements OnInit {
 
   /** Project status */
   get status(): string {
-    return this.project?.status.toLowerCase() || 'pending';
+    return this.project?.status.toLowerCase() || 'Pending';
   }
 
   /** Vision */
@@ -164,11 +169,6 @@ export class ProjectDetailsComponent implements OnInit {
   /** Owner Full Name */
   get ownerName(): string {
     return this.project?.ownerName || '';
-  }
-
-  /** current funding */
-  get currentFunding(): number {
-    return this.project?.raisedFund || 0;
   }
 
   /** number of investor */

@@ -7,14 +7,14 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { LucideAngularModule } from 'lucide-angular';
 import { BusinessCreationService } from '../../features/project/services/business-creation/business-creation.service';
 import { AutoFocusDirective } from '../../shared/directives/auto-focus/auto-focus.directive';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { ICategory } from '../../features/project/interfaces/icategory';
 import { CategoryService } from '../../features/project/services/category/category.service';
 import { IBusiness } from '../../features/project/interfaces/IBusiness';
-import { UserDetails } from '../../core/interfaces/UserDetails';
+import { take } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-business-creation',
@@ -22,8 +22,8 @@ import { UserDetails } from '../../core/interfaces/UserDetails';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    LucideAngularModule,
     AutoFocusDirective,
+    MatIconModule
   ],
   templateUrl: './business-creation.component.html',
   styleUrls: ['./business-creation.component.css'],
@@ -51,6 +51,11 @@ export class BusinessCreationComponent implements OnInit {
   // Owner ID of the project, set to the currently logged-in user's ID
   ownerId: string | null = null;
 
+  blockMessage = '';
+  navigationPath: string[] = ['/'];
+  navigationButtonText = 'Go home';
+  isChecking = true;  
+
   constructor(
     private businessCreationService: BusinessCreationService,
     public categoryService: CategoryService,
@@ -69,16 +74,51 @@ export class BusinessCreationComponent implements OnInit {
       currentVision: ['', Validators.required],
       goals: ['', Validators.required],
       categoryId: [0, [Validators.required, Validators.min(1)]],
-      ownerId: [0, [Validators.required, Validators.min(1)]],
     });
   }
 
   ngOnInit() {
-    // Load categories for selection
     this.loadCategories();
-    // Subscribe to AuthService to get and keep track of the logged-in user's ID
-    this.authService.user$.subscribe((user: UserDetails | null) => {
-      this.ownerId = user ? user.id : null;
+
+    this.authService.user$.pipe(take(1)).subscribe((user) => {
+      // 1) Not a BusinessOwner?
+      if (!user || user.role !== 'BusinessOwner') {
+        this.blockAccess(
+          'Only Business Owners can create projects',
+          ['/'],
+          'Return home'
+        );
+        this.isChecking = false;
+        return;
+      }
+
+      this.ownerId = user.id;
+
+      // 2) Check for existing project
+      this.businessCreationService
+        .getProjectsForCurrentUser()
+        .pipe(take(1))
+        .subscribe({
+          next: (resp) => {
+            if (resp.isValid && resp.data && resp.data.ownerId === this.ownerId) {
+              this.blockAccess(
+                'You already have a project!',
+                ['/BusinessDashboard'],
+                'Go to Dashboard'
+              );
+            }
+            this.isChecking = false;
+          },
+          error: (err) => {
+            console.error('Error fetching projects:', err);
+            this.blockAccess(
+              'Error verifying existing projects',
+              ['/'],
+              'Try again later'
+            );
+            this.isChecking = false;
+          },
+        });
     });
   }
 
@@ -104,6 +144,17 @@ export class BusinessCreationComponent implements OnInit {
     });
   }
 
+  private blockAccess(
+    message: string,
+    path: string[],
+    buttonText = 'Go home'
+  ) {
+    this.blockMessage = message;
+    this.navigationPath = path;
+    this.navigationButtonText = buttonText;
+    this.businessForm.disable(); 
+  }
+
   /**
    * Handles file input change event to capture the selected image
    */
@@ -123,60 +174,30 @@ export class BusinessCreationComponent implements OnInit {
    */
   onSubmit() {
     this.formSubmitted = true;
-    Object.values(this.businessForm.controls).forEach((c) => c.markAsTouched());
+    this.businessForm.markAllAsTouched();
 
     if (this.businessForm.invalid || !this.businessImageFile) {
       return;
     }
 
     this.isLoading = true;
-    const formValues: IBusiness = this.businessForm.value;
 
-    const formData = new FormData();
-    formData.append(
-      'projectImage',
-      this.businessImageFile,
-      this.businessImageFile.name
-    );
-    formData.append('projectTitle', formValues.projectTitle);
-    formData.append('subtitle', formValues.subtitle);
-    formData.append('projectLocation', formValues.projectLocation);
-    formData.append('fundingGoal', formValues.fundingGoal.toString());
-    formData.append('fundingExchange', formValues.fundingExchange);
-    formData.append('projectVision', formValues.projectVision);
-    formData.append('projectStory', formValues.projectStory);
-    formData.append('currentVision', formValues.currentVision);
-    formData.append('goals', formValues.goals);
-    formData.append('categoryId', formValues.categoryId.toString());
+    const formValues = this.businessForm.value;
 
-    // Append the ID of the current user as the project owner
-    if (this.ownerId !== null) {
-      formData.append('ownerId', this.ownerId.toString());
-    }
-
-    // Debug: log all key/value pairs
-    for (const [key, val] of formData.entries()) {
-      console.log(key, val);
-    }
-
-    /*// for test
-    const values = this.businessForm.getRawValue();
-    // for test
-    const payload = {
+    const biz: IBusiness = {
       ...formValues,
-      categoryId: Number(formValues.categoryId),
-    };*/
+      ownerId: this.ownerId!,
+    };
 
-    // Send creation request
-    this.businessCreationService.postBusinessCreation(formData).subscribe({
-      next: (response) => {
-        console.log('Business profile created successfully', response);
+    // Fire & forget via your new service method
+    this.businessCreationService.createProject(biz).subscribe({
+      next: () => {
         this.isLoading = false;
-        this.router.navigate(['/ProjectDetails']);
+        this.router.navigate(['/BusinessDashboard']);
         this.businessForm.reset();
       },
-      error: (error) => {
-        console.error('Error creating profile', error);
+      error: (err) => {
+        console.error('Create failed', err);
         this.isLoading = false;
       },
     });

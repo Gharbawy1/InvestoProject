@@ -1,3 +1,5 @@
+import { stat } from "node:fs";
+
 export const environment = {
   production: false,
 
@@ -56,7 +58,8 @@ export const environment = {
     reviewProject: (projectId: number) => `/Project/review/${projectId}`,
     updateReviewStatus: '/Project/review/status',
     getStatusByOwner: (ownerId: string) => `/Project/status/owner/${ownerId}`,
-    getPendingProjects: '/Project/GetProjectByStatus',
+    getProjectsbyStatus: `/Project/GetProjectRequestsByStatus/`,
+    getProjectForCurrentUser: `/Project/get-project-for-currentUser`,
   },
 
   document: {

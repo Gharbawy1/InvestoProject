@@ -16,20 +16,12 @@ import { IBusinessProfile } from '../../features/admin-dashboard/interfaces/IBus
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css',
 })
-export class AdminDashboardComponent implements OnInit {
-  tabs: Array<'projects' | 'users' | 'settings'> = [
-    'projects',
-    'users',
-    'settings',
-  ];
+export class AdminDashboardComponent {
+  tabs = ['projects', 'users', 'settings'] as const;
   activeTab = signal<'projects' | 'users' | 'settings'>('projects');
-  projects: IBusinessProfile[] = [];
-  constructor(private route: ActivatedRoute) {}
-  ngOnInit(): void {
-    this.projects = this.route.snapshot.data['projects'];
-  }
 
   setActiveTab(tab: 'projects' | 'users' | 'settings') {
     this.activeTab.set(tab);
   }
+
 }

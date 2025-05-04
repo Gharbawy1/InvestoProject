@@ -14,7 +14,7 @@ export class PaymentPageComponent {
   projectId: string | null;
   amount: number = 1000;
   paymentMethod = signal<'card' | 'bank'>('card');
-  paymentStatus = signal<'pending' | 'processing' | 'completed'>('pending');
+  paymentStatus = signal<'Pending' | 'processing' | 'completed'>('Pending');
 
   cardDetails = {
     cardNumber: '',

@@ -19,15 +19,14 @@ import { Subject, throwError } from 'rxjs';
   styleUrls: ['./offer.component.css'],
 })
 export class OfferComponent implements OnInit {
-  offer: Partial<IOffer> = {
-    id: '',
+  offer: IOffer = {
     offerAmount: 0,
     investmentType: 'Equity',
     equityPercentage: 0,
     profitShare: 0,
     offerTerms: '',
     projectId: 0,
-    investorId: '',
+    investorId: ''
   };
 
   private destroy$ = new Subject<void>();
@@ -79,19 +78,26 @@ export class OfferComponent implements OnInit {
     this.offer.investorId = user.id;
 
     this.projectCtx.project$
-      .pipe(
-        takeUntil(this.destroy$),
-        filter((p): p is IBusinessDetails => !!p),
-        take(1),
-        timeout({ first: 5000, with: () => throwError('Project load timeout') })
+    .pipe(
+      takeUntil(this.destroy$),
+      filter((p): p is IBusinessDetails => !!p),
+      take(1),
+      timeout({ first: 5000, with: () => throwError(() => new Error('Project load timeout')) })
       )
       .subscribe({
         next: (p) => {
           const projectIdNum = Number(p.id);
+          if (isNaN(projectIdNum)) {
+            this.errorMessage = 'Invalid project ID';
+            return;
+          }
           this.offer.projectId = projectIdNum;
           this.ensureSingleOffer(projectIdNum, user.id);
         },
-        error: () => (this.errorMessage = 'No project selected.'),
+        error: (err) => {
+          this.errorMessage = err.message || 'No project selected.';
+          this.canSubmit = false;
+        }
       });
   }
 
@@ -108,11 +114,20 @@ export class OfferComponent implements OnInit {
   }
 
   private ensureSingleOffer(projectId: number, investorId: string) {
-    this.offerSvc
-      .getCurrentUserOffers()
-      .pipe(take(1))
-      .subscribe({
+    this.offerSvc.getCurrentUserOffers().pipe(take(1)).subscribe({
         next: (offers) => {
+          console.log('→ offers array:', offers);
+          console.log('→ projectId:', projectId, 'investorId:', investorId);
+          console.log(
+            '→ offer.projectId values:',
+            offers.map(o => o.projectId),
+            'offer.investorId values:',
+            offers.map(o => o.investorId)
+          );
+          console.log(
+            '→ hasExisting?',
+            offers.some(o => o.projectId === projectId && o.investorId === investorId)
+          );
           const hasExisting = offers.some(
             (o) => o.projectId === projectId && o.investorId === investorId
           );

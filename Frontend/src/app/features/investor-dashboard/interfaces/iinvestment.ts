@@ -3,7 +3,7 @@ export interface Iinvestment {
   projectName: string;
   amount: number;
   date: string;
-  status: 'active' | 'pending' | 'completed';
+  status: 'active' | 'Pending' | 'completed';
   progress: number;
   returnRate: number;
 }

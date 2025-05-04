@@ -71,12 +71,12 @@
     <div *ngFor="let doc of filteredDocuments" 
          class="relative p-4 rounded-lg border transition-all hover:border-blue-200 bg-white group border-gray-200">
       <!-- Status Indicator -->
-      <!-- Shows the review status of the document (approved, pending, or rejected) -->
+      <!-- Shows the review status of the document (approved, Pending, or rejected) -->
       <div class="absolute top-4 right-4">
         <span class="px-2 py-1 rounded-full text-xs font-medium shadow-sm"
               [ngClass]="{
                 'bg-green-100 text-green-700': doc.reviewStatus === 'approved',
-                'bg-yellow-100 text-yellow-700': doc.reviewStatus === 'pending',
+                'bg-yellow-100 text-yellow-700': doc.reviewStatus === 'Pending',
                 'bg-red-100 text-red-700': doc.reviewStatus === 'rejected'
               }">
           {{ doc.reviewStatus | titlecase }}

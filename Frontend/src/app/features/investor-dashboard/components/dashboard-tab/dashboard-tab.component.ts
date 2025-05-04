@@ -44,7 +44,7 @@ export class DashboardTabComponent implements OnInit {
     });
   }
 
-  getInvestmentsByStatus(status: 'active' | 'pending' | 'completed') {
+  getInvestmentsByStatus(status: 'active' | 'Pending' | 'completed') {
     return this.investments.filter(
       (investment) => investment.status === status
     );
