@@ -64,9 +64,9 @@ export class AuthModelComponent implements AfterViewInit {
   /**
    * Triggers the Google sign-in process by calling the AuthService.
    */
-  loginWithGoogle() {
-    this.authService.loginWithGoogle();
-  }
+  // loginWithGoogle() {
+  //   this.authService.loginWithGoogle();
+  // }
 
   /**
    * Triggers the Facebook sign-in process.

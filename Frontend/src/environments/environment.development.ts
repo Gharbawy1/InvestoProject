@@ -28,6 +28,7 @@ export const environment = {
     upgradeToBusinessOwner: '/Account/upgrade-to-businessowner',
     uploadProfilePicture: '/Account/upload-profile-picture',
     updateProfile: '/Account/update-profile',
+    googleLogin: '/Account/google-login',
   },
 
   category: {
