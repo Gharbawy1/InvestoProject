@@ -4,17 +4,27 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UpgradeService } from '../../services/UpgradeService/Upgrade.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpEventType,
+  HttpResponse,
+} from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ObjectApiResponse } from '../../../../core/interfaces/ApiResponse';
 import { UpgradeResponse } from '../../interfaces/UpgradeResponse ';
 import { AuthService } from '../../../../core/services/auth/auth.service';
+import { ButtonComponent } from '../../../../shared/componentes/button/button.component';
 
 @Component({
   selector: 'app-owner-upgrade',
-  imports: [CommonModule, ReactiveFormsModule, MatProgressSpinner],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatProgressSpinner,
+    ButtonComponent,
+  ],
   templateUrl: './owner-upgrade.component.html',
-  styleUrls: ['./owner-upgrade.component.css']
+  styleUrls: ['./owner-upgrade.component.css'],
 })
 export class OwnerUpgradeComponent implements OnInit {
   form!: FormGroup;
@@ -28,10 +38,10 @@ export class OwnerUpgradeComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private svc: UpgradeService, 
+    private svc: UpgradeService,
     private router: Router,
     private auth: AuthService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -39,22 +49,28 @@ export class OwnerUpgradeComponent implements OnInit {
 
   private initializeForm(): void {
     this.form = this.fb.group({
-      NationalID: ['', [
-        Validators.required,
-        Validators.pattern(/^[0-9]/),
-        Validators.minLength(14),
-        Validators.maxLength(14)
-      ]],
-      NationalIDImageFrontURL: [null, [Validators.required, this.fileValidator]],
+      NationalID: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]/),
+          Validators.minLength(14),
+          Validators.maxLength(14),
+        ],
+      ],
+      NationalIDImageFrontURL: [
+        null,
+        [Validators.required, this.fileValidator],
+      ],
       NationalIDImageBackURL: [null, [Validators.required, this.fileValidator]],
-      ProfilePictureURL: [null, [Validators.required, this.fileValidator]]
+      ProfilePictureURL: [null, [Validators.required, this.fileValidator]],
     });
   }
 
   getNationalIDErrors() {
     const control = this.form.get('NationalID');
     if (!control) return '';
-    
+
     if (control.hasError('required')) {
       return 'National ID is required';
     }
@@ -68,9 +84,15 @@ export class OwnerUpgradeComponent implements OnInit {
   }
 
   restrictToNumbers(event: KeyboardEvent) {
-    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+    const allowedKeys = [
+      'Backspace',
+      'Delete',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+    ];
     const isDigit = event.key >= '0' && event.key <= '9';
-    
+
     if (!isDigit && !allowedKeys.includes(event.key)) {
       event.preventDefault();
     }
@@ -82,10 +104,16 @@ export class OwnerUpgradeComponent implements OnInit {
     return null;
   }
 
-  onFileSelect(event: Event, field: 'NationalIDImageFrontURL'|'NationalIDImageBackURL'|'ProfilePictureURL') {
+  onFileSelect(
+    event: Event,
+    field:
+      | 'NationalIDImageFrontURL'
+      | 'NationalIDImageBackURL'
+      | 'ProfilePictureURL'
+  ) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    
+
     if (!file) return;
 
     this.form.get(field)?.setErrors(null);
@@ -102,18 +130,18 @@ export class OwnerUpgradeComponent implements OnInit {
     this.form.get(field)?.updateValueAndValidity();
   }
 
-  private validateFile(file: File): { type: string, message: string } | null {
+  private validateFile(file: File): { type: string; message: string } | null {
     if (!this.allowedTypes.includes(file.type)) {
       return {
         type: 'invalidType',
-        message: 'Invalid file type. Allowed types: JPEG, PNG, PDF'
+        message: 'Invalid file type. Allowed types: JPEG, PNG, PDF',
       };
     }
 
     if (file.size > this.maxFileSizeMB * 1024 * 1024) {
       return {
         type: 'invalidSize',
-        message: `File size exceeds ${this.maxFileSizeMB}MB limit`
+        message: `File size exceeds ${this.maxFileSizeMB}MB limit`,
       };
     }
 
@@ -123,11 +151,11 @@ export class OwnerUpgradeComponent implements OnInit {
   getFileError(field: string): string {
     const control = this.form.get(field);
     if (!control?.errors) return '';
-    
+
     if (control.hasError('required')) return 'This file is required';
     if (control.hasError('invalidType')) return 'Invalid file type';
     if (control.hasError('invalidSize')) return 'File too large';
-    
+
     return '';
   }
 
@@ -140,8 +168,14 @@ export class OwnerUpgradeComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('NationalID', this.form.value.NationalID);
-    formData.append('NationalIDImageFrontURL', this.form.value.NationalIDImageFrontURL);
-    formData.append('NationalIDImageBackURL', this.form.value.NationalIDImageBackURL);
+    formData.append(
+      'NationalIDImageFrontURL',
+      this.form.value.NationalIDImageFrontURL
+    );
+    formData.append(
+      'NationalIDImageBackURL',
+      this.form.value.NationalIDImageBackURL
+    );
     formData.append('ProfilePictureURL', this.form.value.ProfilePictureURL);
 
     this.loading = true;
@@ -154,12 +188,16 @@ export class OwnerUpgradeComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         console.error('Upgrade error:', err);
-        this.errorMsg = err.error?.errorMessage 
-                        || err.message 
-                        || 'Upgrade failed. Please try again.';
+        this.errorMsg =
+          err.error?.errorMessage ||
+          err.message ||
+          'Upgrade failed. Please try again.';
         this.loading = false;
         this.uploadProgress = null;
-      }
+      },
     });
+  }
+  goBack() {
+    this.router.navigateByUrl('/Home');
   }
 }

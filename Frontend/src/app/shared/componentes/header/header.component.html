@@ -1,318 +1,318 @@
-<header
-  class="w-full h-20 bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50 shadow-sm"
->
-  <div class="container mx-auto px-4 h-full flex items-center justify-between">
-    <!-- Logo -->
-    <a routerLink="/" class="flex items-center">
-      <div class="font-bold text-2xl text-primary">InvestGo</div>
-    </a>
-
-    <!-- Desktop Navigation -->
-    <nav class="hidden md:flex items-center space-x-8">
-      <a
-        routerLink="/projects"
-        class="text-gray-700 hover:text-primary transition-colors"
-      >
-        Browse Projects
-      </a>
-
-      <!-- For Investors Dropdown -->
-      <div class="relative" [matMenuTriggerFor]="investorsMenu">
-        <button
-          class="flex items-center text-gray-700 hover:text-primary transition-colors"
-        >
-          For Investors
-          <mat-icon class="ml-1 scale-75">expand_more</mat-icon>
-        </button>
-      </div>
-      <mat-menu #investorsMenu="matMenu">
-        <button mat-menu-item routerLink="/how-it-works">How It Works</button>
-        <button mat-menu-item routerLink="/investment-guide">
-          Investment Guide
-        </button>
-        <button mat-menu-item routerLink="/success-stories">
-          Success Stories
-        </button>
-      </mat-menu>
-
-      <!-- For Businesses Dropdown -->
-      <div class="relative" [matMenuTriggerFor]="businessesMenu">
-        <button
-          class="flex items-center text-gray-700 hover:text-primary transition-colors"
-        >
-          For Businesses
-          <mat-icon class="ml-1 scale-75">expand_more</mat-icon>
-        </button>
-      </div>
-      <mat-menu #businessesMenu="matMenu">
-        <button mat-menu-item routerLink="/raise-capital">Raise Capital</button>
-        <button mat-menu-item routerLink="/business-resources">
-          Resources
-        </button>
-        <button mat-menu-item routerLink="/pricing">Pricing</button>
-      </mat-menu>
-
-      <a
-        routerLink="/about"
-        class="text-gray-700 hover:text-primary transition-colors"
-      >
-        About Us
-      </a>
-    </nav>
-
-    <!-- Search, Auth Buttons, User Menu (Desktop) -->
-    <div class="hidden md:flex items-center space-x-4">
-      <ng-container *ngIf="isLoggedIn; else loggedOut">
-        <div class="relative" [matMenuTriggerFor]="userMenu">
-          <button mat-button class="flex items-center gap-2 group">
-            <!-- Avatar + Name wrapper -->
-            <div class="flex items-center gap-2">
-              <div
-                class="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden"
-              >
-                <mat-icon
-                  class="text-gray-600 group-hover:text-primary-600 transition duration-200"
-                >
-                  account_circle
-                </mat-icon>
-              </div>
-              <span
-                class="font-medium text-black group-hover:text-primary-600 transition duration-200"
-              >
-                {{ userName }}
-              </span>
-            </div>
-            <!-- Chevron Icon -->
-            <mat-icon
-              class="scale-90 text-gray-500 group-hover:text-primary-600 transition duration-200"
-            >
-              expand_more
-            </mat-icon>
-          </button>
-        </div>
-        <mat-menu #userMenu="matMenu">
-
-          <button mat-menu-item *ngIf="userRole === 'User'" routerLink="/UpgradeRole">
-            <mat-icon class="text-green-600">upgrade</mat-icon>
-            <span class="text-green-600">Upgrade Account</span>
-          </button>
-
-          <button mat-menu-item routerLink="/dashboard">
-
-            <mat-icon>dashboard</mat-icon>
-            <span>Dashboard</span>
-          </button>
-          <button mat-menu-item *ngIf="getRole() === 'investor'">
-            <mat-icon>trending_up</mat-icon>
-            <span>My Investments</span>
-          </button>
-          <button mat-menu-item (click)="onLogout()">
-            <mat-icon class="text-red-600">logout</mat-icon>
-            <span class="text-red-600">Sign Out</span>
-          </button>
-        </mat-menu>
-      </ng-container>
-
-      <ng-template #loggedOut>
-        <div class="flex items-center gap-4">
-          <button
-            mat-button
-            routerLink="/auth"
-            (click)="loginClick.emit()"
-            class="text-gray-700 hover:text-primary-600 transition"
-          >
-            Log In
-          </button>
-          <button
-            mat-raised-button
-            color="primary"
-            routerLink="/auth"
-            (click)="registerClick.emit()"
-          >
-            Register
-          </button>
-        </div>
-      </ng-template>
-    </div>
-
-    <!-- Mobile Menu Button -->
-    <button
-      class="md:hidden text-gray-700 focus:outline-none"
-      (click)="toggleMenu()"
-    >
-      <mat-icon *ngIf="isMenuOpen">close</mat-icon>
-      <mat-icon *ngIf="!isMenuOpen">menu</mat-icon>
-    </button>
-  </div>
-
-  <!-- Mobile Menu -->
-  <div
-    class="fixed inset-0 top-20 bg-white z-40 md:hidden transition-transform duration-300 ease-in-out"
-    [class.translate-x-0]="isMenuOpen"
-    [class.translate-x-full]="!isMenuOpen"
+<ng-container *ngIf="isLoggedIn !== null">
+  <header
+    class="w-full h-20 bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50 shadow-sm"
   >
-    <div class="container mx-auto px-4 py-6 flex flex-col h-full">
-      <div class="flex justify-between items-center mb-6">
-        <div class="text-lg font-medium">Menu</div>
-        <button class="text-gray-700 hover:text-primary transition-colors">
-          <mat-icon class="scale-90">search</mat-icon>
-        </button>
-      </div>
+    <div
+      class="container mx-auto px-4 h-full flex items-center justify-between"
+    >
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center">
+        <div class="font-bold text-2xl text-primary">InvestGo</div>
+      </a>
 
-      <nav class="flex flex-col space-y-6">
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center space-x-8">
         <a
           routerLink="/projects"
-          class="text-gray-700 hover:text-primary transition-colors text-lg"
-          (click)="toggleMenu()"
+          class="text-gray-700 hover:text-primary transition-colors"
         >
           Browse Projects
         </a>
-        <div class="space-y-4">
-          <div class="font-medium text-gray-900">For Investors</div>
-          <div class="pl-4 space-y-3">
-            <a
-              routerLink="/how-it-works"
-              class="block text-gray-700 hover:text-primary transition-colors"
-              (click)="toggleMenu()"
-            >
-              How It Works
-            </a>
-            <a
-              routerLink="/investment-guide"
-              class="block text-gray-700 hover:text-primary transition-colors"
-              (click)="toggleMenu()"
-            >
-              Investment Guide
-            </a>
-            <a
-              routerLink="/success-stories"
-              class="block text-gray-700 hover:text-primary transition-colors"
-              (click)="toggleMenu()"
-            >
-              Success Stories
-            </a>
-          </div>
+
+        <!-- For Investors Dropdown -->
+        <div class="relative" [matMenuTriggerFor]="investorsMenu">
+          <button
+            class="flex items-center text-gray-700 hover:text-primary transition-colors"
+          >
+            For Investors
+            <mat-icon class="ml-1 scale-75">expand_more</mat-icon>
+          </button>
         </div>
-        <div class="space-y-4">
-          <div class="font-medium text-gray-900">For Businesses</div>
-          <div class="pl-4 space-y-3">
-            <a
-              routerLink="/raise-capital"
-              class="block text-gray-700 hover:text-primary transition-colors"
-              (click)="toggleMenu()"
-            >
-              Raise Capital
-            </a>
-            <a
-              routerLink="/business-resources"
-              class="block text-gray-700 hover:text-primary transition-colors"
-              (click)="toggleMenu()"
-            >
-              Resources
-            </a>
-            <a
-              routerLink="/pricing"
-              class="block text-gray-700 hover:text-primary transition-colors"
-              (click)="toggleMenu()"
-            >
-              Pricing
-            </a>
-          </div>
+        <mat-menu #investorsMenu="matMenu">
+          <button mat-menu-item routerLink="/how-it-works">How It Works</button>
+          <button mat-menu-item routerLink="/investment-guide">
+            Investment Guide
+          </button>
+          <button mat-menu-item routerLink="/success-stories">
+            Success Stories
+          </button>
+        </mat-menu>
+
+        <!-- For Businesses Dropdown -->
+        <div class="relative" [matMenuTriggerFor]="businessesMenu">
+          <button
+            class="flex items-center text-gray-700 hover:text-primary transition-colors"
+          >
+            For Businesses
+            <mat-icon class="ml-1 scale-75">expand_more</mat-icon>
+          </button>
         </div>
+        <mat-menu #businessesMenu="matMenu">
+          <button mat-menu-item routerLink="/raise-capital">
+            Raise Capital
+          </button>
+          <button mat-menu-item routerLink="/business-resources">
+            Resources
+          </button>
+          <button mat-menu-item routerLink="/pricing">Pricing</button>
+        </mat-menu>
+
         <a
           routerLink="/about"
-          class="text-gray-700 hover:text-primary transition-colors text-lg"
-          (click)="toggleMenu()"
+          class="text-gray-700 hover:text-primary transition-colors"
         >
           About Us
         </a>
       </nav>
 
-      <div class="mt-auto pt-6 border-t border-gray-200">
-        <ng-container *ngIf="isLoggedIn; else mobileLoggedOut">
-          <div class="space-y-4">
-            <div class="flex items-center space-x-3">
-              <div
-                class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden"
-              >
-                <mat-icon class="text-gray-600">account_circle</mat-icon>
-              </div>
-              <div>
-                <div class="font-medium">{{ userName }}</div>
-                <a
-                  routerLink="/profile"
-                  class="text-sm text-primary"
-                  (click)="toggleMenu()"
+      <!-- Search, Auth Buttons, User Menu (Desktop) -->
+      <div class="hidden md:flex items-center space-x-4">
+        <ng-container *ngIf="isLoggedIn; else loggedOut">
+          <div class="relative" [matMenuTriggerFor]="userMenu">
+            <button mat-button class="flex items-center gap-2 group">
+              <!-- Avatar + Name wrapper -->
+              <div class="flex items-center gap-2">
+                <div
+                  class="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden"
                 >
-                  View Profile
-                </a>
+                  <mat-icon
+                    class="text-gray-600 group-hover:text-primary-600 transition duration-200"
+                  >
+                    account_circle
+                  </mat-icon>
+                </div>
+                <span
+                  class="font-medium text-black group-hover:text-primary-600 transition duration-200"
+                >
+                  {{ userName }}
+                </span>
               </div>
-            </div>
-            <div class="space-y-3">
-              <a *ngIf="userRole === 'User'"
-                routerLink="/UpgradeRole"
-                class="block text-green-600 hover:text-green-700 transition-colors"
-                (click)="toggleMenu()">
-                Upgrade Account
-              </a>
-              <a
-                *ngIf="getRole() !== 'user'"
-                (click)="goToDashboard()"
-                class="block text-gray-700 hover:text-primary transition-colors"
-                (click)="toggleMenu()"
+              <!-- Chevron Icon -->
+              <mat-icon
+                class="scale-90 text-gray-500 group-hover:text-primary-600 transition duration-200"
               >
-                Dashboard
-              </a>
-              <a
-                *ngIf="getRole() === 'investor'"
-                routerLink="/investments"
-                class="block text-gray-700 hover:text-primary transition-colors"
-                (click)="toggleMenu()"
-              >
-                My Investments
-              </a>
-              <!-- <a
-                routerLink="/messages"
-                class="block text-gray-700 hover:text-primary transition-colors"
-                (click)="toggleMenu()"
-              >
-                Messages
-              </a>
-              <a
-                routerLink="/settings"
-                class="block text-gray-700 hover:text-primary transition-colors"
-                (click)="toggleMenu()"
-              >
-                Settings
-              </a> -->
-              <button
-                class="text-red-600 hover:text-red-700 transition-colors"
-                (click)="onLogout(); toggleMenu()"
-              >
-                Sign Out
-              </button>
-            </div>
+                expand_more
+              </mat-icon>
+            </button>
           </div>
+          <mat-menu #userMenu="matMenu">
+            <button
+              mat-menu-item
+              *ngIf="userRole === 'User'"
+              routerLink="/UpgradeRole"
+            >
+              <mat-icon class="text-green-600">upgrade</mat-icon>
+              <span class="text-green-600">Upgrade Account</span>
+            </button>
+
+            <button
+              mat-menu-item
+              *ngIf="userRole === 'User' || userRole === 'businessOwner'"
+              routerLink="/UpgradeRole"
+            >
+              <mat-icon>dashboard</mat-icon>
+              <span>Dashboard</span>
+            </button>
+            <button mat-menu-item *ngIf="userRole === 'Investor'">
+              <mat-icon>trending_up</mat-icon>
+              <span>My Investments</span>
+            </button>
+            <button mat-menu-item (click)="onLogout()">
+              <mat-icon class="text-red-600">logout</mat-icon>
+              <span class="text-red-600">Sign Out</span>
+            </button>
+          </mat-menu>
         </ng-container>
 
-        <ng-template #mobileLoggedOut>
-          <div class="flex flex-col space-y-3">
+        <ng-template #loggedOut>
+          <div class="flex items-center gap-4">
             <button
-              mat-raised-button
-              color="primary"
-              (click)="loginClick.emit(); toggleMenu()"
+              mat-button
+              routerLink="/auth"
+              (click)="loginClick.emit()"
+              class="text-gray-700 hover:text-primary-600 transition"
             >
               Log In
             </button>
             <button
-              mat-stroked-button
-              (click)="registerClick.emit(); toggleMenu()"
+              mat-raised-button
+              color="primary"
+              routerLink="/auth"
+              (click)="registerClick.emit()"
             >
               Register
             </button>
           </div>
         </ng-template>
       </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        class="md:hidden text-gray-700 focus:outline-none"
+        (click)="toggleMenu()"
+      >
+        <mat-icon *ngIf="isMenuOpen">close</mat-icon>
+        <mat-icon *ngIf="!isMenuOpen">menu</mat-icon>
+      </button>
     </div>
-  </div>
-</header>
+
+    <!-- Mobile Menu -->
+    <div
+      class="fixed inset-0 top-20 bg-white z-40 md:hidden transition-transform duration-300 ease-in-out"
+      [class.translate-x-0]="isMenuOpen"
+      [class.translate-x-full]="!isMenuOpen"
+    >
+      <div class="container mx-auto px-4 py-6 flex flex-col h-full">
+        <div class="flex justify-between items-center mb-6">
+          <div class="text-lg font-medium">Menu</div>
+          <button class="text-gray-700 hover:text-primary transition-colors">
+            <mat-icon class="scale-90">search</mat-icon>
+          </button>
+        </div>
+
+        <nav class="flex flex-col space-y-6">
+          <a
+            routerLink="/projects"
+            class="text-gray-700 hover:text-primary transition-colors text-lg"
+            (click)="toggleMenu()"
+          >
+            Browse Projects
+          </a>
+          <div class="space-y-4">
+            <div class="font-medium text-gray-900">For Investors</div>
+            <div class="pl-4 space-y-3">
+              <a
+                routerLink="/how-it-works"
+                class="block text-gray-700 hover:text-primary transition-colors"
+                (click)="toggleMenu()"
+              >
+                How It Works
+              </a>
+              <a
+                routerLink="/investment-guide"
+                class="block text-gray-700 hover:text-primary transition-colors"
+                (click)="toggleMenu()"
+              >
+                Investment Guide
+              </a>
+              <a
+                routerLink="/success-stories"
+                class="block text-gray-700 hover:text-primary transition-colors"
+                (click)="toggleMenu()"
+              >
+                Success Stories
+              </a>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="font-medium text-gray-900">For Businesses</div>
+            <div class="pl-4 space-y-3">
+              <a
+                routerLink="/raise-capital"
+                class="block text-gray-700 hover:text-primary transition-colors"
+                (click)="toggleMenu()"
+              >
+                Raise Capital
+              </a>
+              <a
+                routerLink="/business-resources"
+                class="block text-gray-700 hover:text-primary transition-colors"
+                (click)="toggleMenu()"
+              >
+                Resources
+              </a>
+              <a
+                routerLink="/pricing"
+                class="block text-gray-700 hover:text-primary transition-colors"
+                (click)="toggleMenu()"
+              >
+                Pricing
+              </a>
+            </div>
+          </div>
+          <a
+            routerLink="/about"
+            class="text-gray-700 hover:text-primary transition-colors text-lg"
+            (click)="toggleMenu()"
+          >
+            About Us
+          </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-gray-200">
+          <ng-container *ngIf="isLoggedIn; else mobileLoggedOut">
+            <div class="space-y-4">
+              <div class="flex items-center space-x-3">
+                <div
+                  class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden"
+                >
+                  <mat-icon class="text-gray-600">account_circle</mat-icon>
+                </div>
+                <div>
+                  <div class="font-medium">{{ userName }}</div>
+                  <a
+                    routerLink="/profile"
+                    class="text-sm text-primary"
+                    (click)="toggleMenu()"
+                  >
+                    View Profile
+                  </a>
+                </div>
+              </div>
+              <div class="space-y-3">
+                <a
+                  *ngIf="userRole === 'User'"
+                  routerLink="/UpgradeRole"
+                  class="block text-green-600 hover:text-green-700 transition-colors"
+                  (click)="toggleMenu()"
+                >
+                  Upgrade Account
+                </a>
+                <a
+                  *ngIf="userRole !== 'User'"
+                  (click)="goToDashboard()"
+                  class="block text-gray-700 hover:text-primary transition-colors"
+                  (click)="toggleMenu()"
+                >
+                  Dashboard
+                </a>
+                <a
+                  *ngIf="userRole === 'Investor'"
+                  routerLink="/investments"
+                  class="block text-gray-700 hover:text-primary transition-colors"
+                  (click)="toggleMenu()"
+                >
+                  My Investments
+                </a>
+                <button
+                  class="text-red-600 hover:text-red-700 transition-colors"
+                  (click)="onLogout(); toggleMenu()"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #mobileLoggedOut>
+            <div class="flex flex-col space-y-3">
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="loginClick.emit(); toggleMenu()"
+              >
+                Log In
+              </button>
+              <button
+                mat-stroked-button
+                (click)="registerClick.emit(); toggleMenu()"
+              >
+                Register
+              </button>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </header>
+</ng-container>

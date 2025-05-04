@@ -30,11 +30,8 @@ export class AuthService {
   /**
    * Observable stream of the current authenticated user (or null if not logged in)
    */
-  public userSubject = new BehaviorSubject<UserDetails | null>(
-    this.getCurrentUser()
-  );
-  public user$: Observable<UserDetails | null> =
-    this.userSubject.asObservable();
+  private userSubject = new BehaviorSubject<UserDetails | null>(null);
+  user$ = this.userSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -162,8 +159,7 @@ export class AuthService {
       sessionStorage.removeItem('currentUser');
       // Emit null to indicate no user is logged in
       this.userSubject.next(null);
-      // Navigate to login screen
-      this.router.navigate(['/auth']);
+      this.isLoggedInSubject.next(false);
     }
   }
 

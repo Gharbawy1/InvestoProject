@@ -1,4 +1,8 @@
-<form [formGroup]="form" (ngSubmit)="submit()" class="p-6 space-y-8 animate-fade-in">
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  class="p-6 space-y-8 animate-fade-in"
+>
   <div class="mb-6 text-center">
     <h2 class="text-2xl font-bold text-gray-900">Investor Verification</h2>
     <p class="text-sm text-gray-500 mt-1">
@@ -7,15 +11,39 @@
   </div>
 
   <!-- Status Messages -->
-  <div *ngIf="errorMsg || success" class="p-4 rounded-lg flex items-start space-x-3 border animate-slide-in"
-    [class.bg-green-50]="success" [class.bg-red-50]="errorMsg"
-    [class.border-green-200]="success" [class.border-red-200]="errorMsg">
-    <svg [class]="success ? 'text-green-600' : 'text-red-600'" class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-      <path *ngIf="success" fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-      <path *ngIf="errorMsg" fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+  <div
+    *ngIf="errorMsg || success"
+    class="p-4 rounded-lg flex items-start space-x-3 border animate-slide-in"
+    [class.bg-green-50]="success"
+    [class.bg-red-50]="errorMsg"
+    [class.border-green-200]="success"
+    [class.border-red-200]="errorMsg"
+  >
+    <svg
+      [class]="success ? 'text-green-600' : 'text-red-600'"
+      class="w-5 h-5 flex-shrink-0 mt-0.5"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+    >
+      <path
+        *ngIf="success"
+        fill-rule="evenodd"
+        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+        clip-rule="evenodd"
+      />
+      <path
+        *ngIf="errorMsg"
+        fill-rule="evenodd"
+        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+        clip-rule="evenodd"
+      />
     </svg>
-    <p class="text-sm flex-1" [class.text-green-700]="success" [class.text-red-700]="errorMsg">
-      {{ success ? 'Verification submitted successfully!' : errorMsg }}
+    <p
+      class="text-sm flex-1"
+      [class.text-green-700]="success"
+      [class.text-red-700]="errorMsg"
+    >
+      {{ success ? "Verification submitted successfully!" : errorMsg }}
     </p>
   </div>
 
@@ -24,12 +52,29 @@
     <!-- Risk Tolerance -->
     <div class="flex flex-col gap-1.5">
       <label class="text-sm font-medium text-gray-700">Risk Tolerance</label>
-      <input formControlName="RiskTolerance" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input" placeholder="Enter your risk tolerance">
+      <input
+        formControlName="RiskTolerance"
+        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input"
+        placeholder="Enter your risk tolerance"
+      />
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('RiskTolerance')?.errors && form.get('RiskTolerance')?.touched" 
-             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="
+            form.get('RiskTolerance')?.errors &&
+            form.get('RiskTolerance')?.touched
+          "
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
           <span>Risk tolerance is required</span>
         </div>
@@ -39,17 +84,30 @@
     <!-- Investment Goals -->
     <div class="flex flex-col gap-1.5">
       <label class="text-sm font-medium text-gray-700">Investment Goals</label>
-      <textarea 
-        formControlName="InvestmentGoals" 
+      <textarea
+        formControlName="InvestmentGoals"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input"
         placeholder="Describe your investment goals"
         rows="3"
       ></textarea>
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('InvestmentGoals')?.errors && form.get('InvestmentGoals')?.touched" 
-            class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="
+            form.get('InvestmentGoals')?.errors &&
+            form.get('InvestmentGoals')?.touched
+          "
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
           <span>Investment goals are required</span>
         </div>
@@ -57,18 +115,33 @@
     </div>
 
     <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-medium text-gray-700">Accreditation Status</label>
+      <label class="text-sm font-medium text-gray-700"
+        >Accreditation Status</label
+      >
       <input
         type="text"
         formControlName="AccreditationStatus"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input"
         placeholder="Enter your accreditation status"
-      >
+      />
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('AccreditationStatus')?.errors && form.get('AccreditationStatus')?.touched" 
-             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="
+            form.get('AccreditationStatus')?.errors &&
+            form.get('AccreditationStatus')?.touched
+          "
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
           <span>Accreditation status is required</span>
         </div>
@@ -77,20 +150,35 @@
 
     <!-- National ID -->
     <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-medium text-gray-700">National ID Number</label>
-      <input 
-        formControlName="NationalID" 
+      <label class="text-sm font-medium text-gray-700"
+        >National ID Number</label
+      >
+      <input
+        formControlName="NationalID"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input"
         placeholder="Enter 14-digit national ID"
         inputmode="numeric"
         (keypress)="restrictToNumbers($event)"
         maxlength="14"
-      >
+      />
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('NationalID')?.errors && (form.get('NationalID')?.touched || form.submitted)" 
-             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="
+            form.get('NationalID')?.errors &&
+            (form.get('NationalID')?.touched || form.submitted)
+          "
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
           <span>{{ getNationalIDErrors() }}</span>
         </div>
@@ -101,19 +189,34 @@
   <!-- Investment Range -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-medium text-gray-700">Minimum Investment</label>
-      <input 
-        type="number" 
-        formControlName="MinInvestmentAmount" 
+      <label class="text-sm font-medium text-gray-700"
+        >Minimum Investment</label
+      >
+      <input
+        type="number"
+        formControlName="MinInvestmentAmount"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition-input"
         placeholder="Minimum Investment Amount"
         (blur)="validateInvestmentRange()"
-      >
+      />
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('MinInvestmentAmount')?.errors && form.get('MinInvestmentAmount')?.touched" 
-             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="
+            form.get('MinInvestmentAmount')?.errors &&
+            form.get('MinInvestmentAmount')?.touched
+          "
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
           <span>Minimum Investment Amount is required</span>
         </div>
@@ -121,28 +224,54 @@
     </div>
 
     <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-medium text-gray-700">Maximum Investment</label>
-      <input 
-        type="number" 
-        formControlName="MaxInvestmentAmount" 
+      <label class="text-sm font-medium text-gray-700"
+        >Maximum Investment</label
+      >
+      <input
+        type="number"
+        formControlName="MaxInvestmentAmount"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition-input"
         placeholder="Maximum Investment Amount"
         (blur)="validateInvestmentRange()"
-      >
+      />
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('MaxInvestmentAmount')?.errors && form.get('MaxInvestmentAmount')?.touched" 
-             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="
+            form.get('MaxInvestmentAmount')?.errors &&
+            form.get('MaxInvestmentAmount')?.touched
+          "
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
           <span>Maximum Investment Amount is required</span>
         </div>
       </div>
     </div>
-    <div *ngIf="form.hasError('minGreaterThanMax')" class="p-4 bg-red-50 border border-red-200 rounded-lg animate-slide-in">
+    <div
+      *ngIf="form.hasError('minGreaterThanMax')"
+      class="p-4 bg-red-50 border border-red-200 rounded-lg animate-slide-in"
+    >
       <div class="flex items-center text-red-600 text-sm space-x-1">
-        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <svg
+          class="w-4 h-4 flex-shrink-0"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+            clip-rule="evenodd"
+          />
         </svg>
         <span>Minimum investment must be less than maximum investment</span>
       </div>
@@ -153,18 +282,28 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <div class="flex flex-col gap-1.5">
       <label class="text-sm font-medium text-gray-700">Net Worth</label>
-      <input 
-        type="number" 
-        formControlName="NetWorth" 
+      <input
+        type="number"
+        formControlName="NetWorth"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition-input"
         title="Enter your net worth"
         placeholder="Net Worth"
-      >
+      />
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('NetWorth')?.errors && form.get('NetWorth')?.touched" 
-             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="form.get('NetWorth')?.errors && form.get('NetWorth')?.touched"
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
           <span>Net Worth is required</span>
         </div>
@@ -173,18 +312,31 @@
 
     <div class="flex flex-col gap-1.5">
       <label class="text-sm font-medium text-gray-700">Annual Income</label>
-      <input 
+      <input
         type="number"
-        formControlName="AnnualIncome" 
+        formControlName="AnnualIncome"
         class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition-input"
         title="Enter your annual income"
         placeholder="Annual Income"
-      >
+      />
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('AnnualIncome')?.errors && form.get('AnnualIncome')?.touched" 
-             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="
+            form.get('AnnualIncome')?.errors &&
+            form.get('AnnualIncome')?.touched
+          "
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
           <span>Annual Income is required</span>
         </div>
@@ -195,133 +347,291 @@
   <div class="space-y-6">
     <!-- ID Front Image -->
     <div class="flex flex-col gap-2 transition-input">
-      <label class="text-sm font-medium text-gray-700">Government Issued ID (Front)</label>
+      <label class="text-sm font-medium text-gray-700"
+        >Government Issued ID (Front)</label
+      >
       <div class="relative group">
-        <input #frontFileInput type="file" (change)="onFileSelect($event, 'NationalIDImageFrontURL')" accept=".jpg,.jpeg,.png,.pdf" class="hidden" title="Upload Government Issued ID (Front)" />
-        <div (click)="frontFileInput.click()"
+        <input
+          #frontFileInput
+          type="file"
+          (change)="onFileSelect($event, 'NationalIDImageFrontURL')"
+          accept=".jpg,.jpeg,.png,.pdf"
+          class="hidden"
+          title="Upload Government Issued ID (Front)"
+        />
+        <div
+          (click)="frontFileInput.click()"
           class="w-full min-h-[120px] rounded-lg border-2 border-dashed flex flex-col items-center justify-center p-6 transition-all cursor-pointer hover:scale-[1.005]"
-          [class.border-gray-200]="!form.get('NationalIDImageFrontURL')?.invalid"
+          [class.border-gray-200]="
+            !form.get('NationalIDImageFrontURL')?.invalid
+          "
           [class.border-red-300]="form.get('NationalIDImageFrontURL')?.invalid"
           [class.bg-gray-50]="!form.get('NationalIDImageFrontURL')?.invalid"
-          [class.bg-red-50]="form.get('NationalIDImageFrontURL')?.invalid">
-          <svg class="w-8 h-8 text-gray-400 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          [class.bg-red-50]="form.get('NationalIDImageFrontURL')?.invalid"
+        >
+          <svg
+            class="w-8 h-8 text-gray-400 mb-3 animate-pulse"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
           </svg>
           <div class="text-center">
             <p class="text-sm text-gray-600">
               <span class="font-medium text-gray-900">Click to upload</span>
               or drag and drop
             </p>
-            <p class="text-xs text-gray-500 mt-1">JPEG, PNG, or PDF (max 5MB)</p>
+            <p class="text-xs text-gray-500 mt-1">
+              JPEG, PNG, or PDF (max 5MB)
+            </p>
           </div>
-          <div *ngIf="form.get('NationalIDImageFrontURL')?.value" class="mt-3 animate-fade-in">
-            <span class="bg-gray-100 px-2 py-1 rounded-md text-xs font-medium text-gray-700">
-              {{ form.get('NationalIDImageFrontURL')?.value.name || 'Front ID uploaded' }}
+          <div
+            *ngIf="form.get('NationalIDImageFrontURL')?.value"
+            class="mt-3 animate-fade-in"
+          >
+            <span
+              class="bg-gray-100 px-2 py-1 rounded-md text-xs font-medium text-gray-700"
+            >
+              {{
+                form.get("NationalIDImageFrontURL")?.value.name ||
+                  "Front ID uploaded"
+              }}
             </span>
           </div>
         </div>
       </div>
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('NationalIDImageFrontURL')?.touched && form.get('NationalIDImageFrontURL')?.errors" 
-             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="
+            form.get('NationalIDImageFrontURL')?.touched &&
+            form.get('NationalIDImageFrontURL')?.errors
+          "
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
-          <span>{{ getFileError('NationalIDImageFrontURL') }}</span>
+          <span>{{ getFileError("NationalIDImageFrontURL") }}</span>
         </div>
       </div>
     </div>
 
     <!-- ID Back Image -->
     <div class="flex flex-col gap-2 transition-input">
-      <label class="text-sm font-medium text-gray-700">Government Issued ID (Back)</label>
+      <label class="text-sm font-medium text-gray-700"
+        >Government Issued ID (Back)</label
+      >
       <div class="relative group">
-        <input #backFileInput type="file" (change)="onFileSelect($event, 'NationalIDImageBackURL')" accept=".jpg,.jpeg,.png,.pdf" class="hidden" title="Upload Government Issued ID (Back)" />
-        <div (click)="backFileInput.click()"
+        <input
+          #backFileInput
+          type="file"
+          (change)="onFileSelect($event, 'NationalIDImageBackURL')"
+          accept=".jpg,.jpeg,.png,.pdf"
+          class="hidden"
+          title="Upload Government Issued ID (Back)"
+        />
+        <div
+          (click)="backFileInput.click()"
           class="w-full min-h-[120px] rounded-lg border-2 border-dashed flex flex-col items-center justify-center p-6 transition-all cursor-pointer hover:scale-[1.005]"
           [class.border-gray-200]="!form.get('NationalIDImageBackURL')?.invalid"
           [class.border-red-300]="form.get('NationalIDImageBackURL')?.invalid"
           [class.bg-gray-50]="!form.get('NationalIDImageBackURL')?.invalid"
-          [class.bg-red-50]="form.get('NationalIDImageBackURL')?.invalid">
-          <svg class="w-8 h-8 text-gray-400 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          [class.bg-red-50]="form.get('NationalIDImageBackURL')?.invalid"
+        >
+          <svg
+            class="w-8 h-8 text-gray-400 mb-3 animate-pulse"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
           </svg>
           <div class="text-center">
             <p class="text-sm text-gray-600">
               <span class="font-medium text-gray-900">Click to upload</span>
               or drag and drop
             </p>
-            <p class="text-xs text-gray-500 mt-1">JPEG, PNG, or PDF (max 5MB)</p>
+            <p class="text-xs text-gray-500 mt-1">
+              JPEG, PNG, or PDF (max 5MB)
+            </p>
           </div>
-          <div *ngIf="form.get('NationalIDImageBackURL')?.value" class="mt-3 animate-fade-in">
-            <span class="bg-gray-100 px-2 py-1 rounded-md text-xs font-medium text-gray-700">
-              {{ form.get('NationalIDImageBackURL')?.value.name || 'Back ID uploaded' }}
+          <div
+            *ngIf="form.get('NationalIDImageBackURL')?.value"
+            class="mt-3 animate-fade-in"
+          >
+            <span
+              class="bg-gray-100 px-2 py-1 rounded-md text-xs font-medium text-gray-700"
+            >
+              {{
+                form.get("NationalIDImageBackURL")?.value.name ||
+                  "Back ID uploaded"
+              }}
             </span>
           </div>
         </div>
       </div>
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('NationalIDImageBackURL')?.touched && form.get('NationalIDImageBackURL')?.errors" 
-             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="
+            form.get('NationalIDImageBackURL')?.touched &&
+            form.get('NationalIDImageBackURL')?.errors
+          "
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
-          <span>{{ getFileError('NationalIDImageBackURL') }}</span>
+          <span>{{ getFileError("NationalIDImageBackURL") }}</span>
         </div>
       </div>
     </div>
- 
+
     <div class="flex flex-col gap-2 transition-input">
       <label class="text-sm font-medium text-gray-700">Profile Picture</label>
       <div class="relative group">
-        <input #profilePictureFileInput type="file" (change)="onFileSelect($event, 'ProfilePictureURL')" accept=".jpg,.jpeg,.png,.pdf" class="hidden" title="Upload Profile Picture" />
-        <div (click)="profilePictureFileInput.click()"
+        <input
+          #profilePictureFileInput
+          type="file"
+          (change)="onFileSelect($event, 'ProfilePictureURL')"
+          accept=".jpg,.jpeg,.png,.pdf"
+          class="hidden"
+          title="Upload Profile Picture"
+        />
+        <div
+          (click)="profilePictureFileInput.click()"
           class="w-full min-h-[120px] rounded-lg border-2 border-dashed flex flex-col items-center justify-center p-6 transition-all cursor-pointer hover:scale-[1.005]"
           [class.border-gray-200]="!form.get('ProfilePictureURL')?.invalid"
           [class.border-red-300]="form.get('ProfilePictureURL')?.invalid"
           [class.bg-gray-50]="!form.get('ProfilePictureURL')?.invalid"
-          [class.bg-red-50]="form.get('ProfilePictureURL')?.invalid">
-          <svg class="w-8 h-8 text-gray-400 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          [class.bg-red-50]="form.get('ProfilePictureURL')?.invalid"
+        >
+          <svg
+            class="w-8 h-8 text-gray-400 mb-3 animate-pulse"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
           </svg>
           <div class="text-center">
             <p class="text-sm text-gray-600">
               <span class="font-medium text-gray-900">Click to upload</span>
               or drag and drop
             </p>
-            <p class="text-xs text-gray-500 mt-1">JPEG, PNG, or PDF (max 5MB)</p>
+            <p class="text-xs text-gray-500 mt-1">
+              JPEG, PNG, or PDF (max 5MB)
+            </p>
           </div>
-          <div *ngIf="form.get('ProfilePictureURL')?.value" class="mt-3 animate-fade-in">
-            <span class="bg-gray-100 px-2 py-1 rounded-md text-xs font-medium text-gray-700">
-              {{ form.get('ProfilePictureURL')?.value.name || 'Profile Picture uploaded' }}
+          <div
+            *ngIf="form.get('ProfilePictureURL')?.value"
+            class="mt-3 animate-fade-in"
+          >
+            <span
+              class="bg-gray-100 px-2 py-1 rounded-md text-xs font-medium text-gray-700"
+            >
+              {{
+                form.get("ProfilePictureURL")?.value.name ||
+                  "Profile Picture uploaded"
+              }}
             </span>
           </div>
-        </div>      
+        </div>
       </div>
       <div class="min-h-[20px]">
-        <div *ngIf="form.get('ProfilePictureURL')?.touched && form.get('ProfilePictureURL')?.errors" 
-             class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in">
-          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        <div
+          *ngIf="
+            form.get('ProfilePictureURL')?.touched &&
+            form.get('ProfilePictureURL')?.errors
+          "
+          class="flex items-center text-red-600 text-sm space-x-1 animate-slide-in"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
           </svg>
-          <span>{{ getFileError('ProfilePictureURL') }}</span>
+          <span>{{ getFileError("ProfilePictureURL") }}</span>
         </div>
       </div>
     </div>
   </div>
 
-  <button type="submit" [disabled]="form.invalid || loading"
+  <button
+    type="submit"
+    [disabled]="form.invalid || loading"
     class="w-full text-sm font-medium py-2 rounded-md transition flex items-center justify-center cursor-pointer transition-button hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
     [class.bg-gray-900]="!loading"
     [class.text-white]="!loading"
-    [class.hover:bg-gray-800]="!loading">
+    [class.hover:bg-gray-800]="!loading"
+  >
     <span *ngIf="!loading">Upgrade to Investor</span>
     <span *ngIf="loading" class="flex items-center">
-      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      <svg
+        class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
       </svg>
       Processing...
     </span>
   </button>
+  <button-component
+    [variant]="'outline'"
+    (click)="goBack()"
+    class="mt-2 w-full"
+  >
+    Back
+  </button-component>
 </form>

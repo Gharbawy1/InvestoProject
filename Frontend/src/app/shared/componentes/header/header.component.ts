@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { UserDetails } from '../../../core/interfaces/UserDetails';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { stat } from 'fs';
+import { combineLatest, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -28,7 +29,8 @@ import { stat } from 'fs';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  isLoggedIn = false;
+  private destroy$ = new Subject<void>();
+  isLoggedIn: boolean = false;
   userName: string = '';
   userRole: string = '';
 
@@ -40,33 +42,35 @@ export class HeaderComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.authService.isLoggedIn$.subscribe((status) => {
-      this.isLoggedIn = status;
-      if (status) {
-        this.authService.user$.subscribe((user) => {
-          this.userName = user?.firstName || 'User';
-          this.userRole = user?.role || '';
-        });
-      } else {
-        this.userName = '';
-        this.userRole = '';
-      }
-    });
+    combineLatest([this.authService.isLoggedIn$, this.authService.user$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([isLoggedIn, user]) => {
+        this.isLoggedIn = isLoggedIn;
+
+        if (isLoggedIn && user) {
+          this.userName = user.firstName || 'User';
+          this.userRole = user.role || '';
+        } else {
+          this.userName = '';
+          this.userRole = '';
+        }
+      });
   }
 
-  getRole(): string | undefined {
-    return this.authService.getCurrentUser()?.role.toLowerCase();
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   goToDashboard() {
-    switch (this.getRole()) {
-      case 'investor':
+    switch (this.userRole) {
+      case 'Investor':
         this.router.navigate(['/InvestorDashboard']);
         break;
-      case 'businessowner':
+      case 'businessOwner':
         this.router.navigate(['/BusinessDashboard']);
         break;
-      case 'user':
+      case 'User':
         this.router.navigate(['/UpgradeRole']);
         break;
       default:
@@ -81,5 +85,6 @@ export class HeaderComponent implements OnInit {
 
   onLogout() {
     this.authService.logout();
+    this.router.navigate(['/LandingPage']);
   }
 }
