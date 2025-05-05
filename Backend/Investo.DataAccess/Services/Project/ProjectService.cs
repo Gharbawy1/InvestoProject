@@ -22,7 +22,7 @@ namespace Investo.DataAccess.Services.Project
         private readonly IOfferService _offerService;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
-        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService, IBusinessOwnerRepository businessOwnerRepository, IOfferService offerService, IMapper mapper, UserManager<ApplicationUser> userManager)
+        public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService, IBusinessOwnerRepository businessOwnerRepository, IOfferService offerService, IMapper mapper, UserManager<ApplicationUser> userManager, IOfferRepository offerRepository)
         {
             _projectRepository = projectRepository;
             _imageLoadService = imageLoadService;
@@ -156,10 +156,11 @@ namespace Investo.DataAccess.Services.Project
             var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
             var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == id)?.RaisedFund ?? 0;
 
-            var MappedProjectReadDto = _mapper.Map<ProjectReadDto>(project);
+            var mappedProjectReadDto = _mapper.Map<ProjectReadDto>(project);
+            mappedProjectReadDto.InvestorsCount = await _projectRepository.GetInvestorsCountByProjectIdAsync(id);
             return new ValidationResult<ProjectReadDto>
             {
-                Data = MappedProjectReadDto,
+                Data = mappedProjectReadDto,
                 ErrorMessage = null,
                 IsValid = true
             };
@@ -295,6 +296,37 @@ namespace Investo.DataAccess.Services.Project
             };
         }
 
+        public async Task<ValidationResult<int>> GetInvestorsCountByProjectIdAsync(int projectId)
+        {
+            var project = await _projectRepository.GetById(projectId);
+            if (project == null)
+            {
+                return new ValidationResult<int>
+                {
+                    Data = 0,
+                    IsValid = false,
+                    ErrorMessage = $"Project with ID: {projectId} not found."
+                };
+            }
 
+            var count = await _projectRepository.GetInvestorsCountByProjectIdAsync(projectId);
+
+            if (count == 0)
+            {
+                return new ValidationResult<int>
+                {
+                    Data = 0,
+                    IsValid = false,
+                    ErrorMessage = $"No investors found for project ID: {projectId}"
+                };
+            }
+
+            return new ValidationResult<int>
+            {
+                Data = count,
+                IsValid = true,
+                ErrorMessage = null
+            };
+        }
     }
 }

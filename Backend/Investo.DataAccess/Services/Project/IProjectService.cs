@@ -21,5 +21,7 @@ namespace Investo.DataAccess.Services.Project
         Task<ValidationResult<ProjectStatusUpdateDto>> GetProjectStatusByOwnerIdAsync(string OwnerId);
         Task<ValidationResult<IEnumerable<ProjectRequestReviewDto>>> GetProjectRequestsByStatusAsync(ProjectStatus status);
         Task<ValidationResult<ProjectReadDto>> GetProjectForCurrentBusinessOwnerAsync(string businessOwnerId);
+        Task<ValidationResult<int>> GetInvestorsCountByProjectIdAsync(int projectId);
+
     }
 }
