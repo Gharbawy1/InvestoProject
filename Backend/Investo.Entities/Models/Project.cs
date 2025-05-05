@@ -24,6 +24,9 @@ namespace Investo.Entities.Models
         public string FundingExchange { get; set; }
         //public List<string> AdditionalNeeds { get; set; } // Multiple entries
 
+        public string ArticlesOfAssociationUrl { get; set; }
+        public string CommercialRegistryCertificateUrl { get; set; }
+        public string TextCardUrl { get; set; }
         public ProjectStatus Status { get; set; } = ProjectStatus.Pending;
         
         public string ProjectVision { get; set; }

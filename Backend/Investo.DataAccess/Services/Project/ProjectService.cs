@@ -35,6 +35,9 @@ namespace Investo.DataAccess.Services.Project
         public async Task<ValidationResult<ProjectReadDto>> CreateProject(ProjectCreateUpdateDto dto)
         {
             string imageUrl = null;
+            string articlesUrl = null;
+            string registryUrl = null;
+            string textCardUrl = null;
 
             if (dto.ProjectImage != null && dto.ProjectImage.Length > 0)
             {
@@ -50,6 +53,23 @@ namespace Investo.DataAccess.Services.Project
                 IsValid = false
             };
 
+            if (dto.ArticlesOfAssociation != null && dto.ArticlesOfAssociation.Length > 0)
+            {
+                articlesUrl = await _imageLoadService.Upload(dto.ArticlesOfAssociation);
+            }
+
+            if (dto.CommercialRegistryCertificate != null && dto.CommercialRegistryCertificate.Length > 0)
+            {
+                registryUrl = await _imageLoadService.Upload(dto.CommercialRegistryCertificate);
+            }
+
+            if (dto.TextCard != null && dto.TextCard.Length > 0)
+            {
+                textCardUrl = await _imageLoadService.Upload(dto.TextCard);
+            } 
+
+
+
             var hasProject = await _projectRepository.HasProjectForOwner(dto.OwnerId);
             if (hasProject) return new ValidationResult<ProjectReadDto>
             {
@@ -60,6 +80,9 @@ namespace Investo.DataAccess.Services.Project
 
             var project =_mapper.Map<Entities.Models.Project>(dto);
             project.ProjectImageURL = imageUrl;
+            project.ArticlesOfAssociationUrl = articlesUrl;
+            project.CommercialRegistryCertificateUrl = registryUrl;
+            project.TextCardUrl = textCardUrl;
 
 
             await _projectRepository.Create(project);
@@ -328,5 +351,34 @@ namespace Investo.DataAccess.Services.Project
                 ErrorMessage = null
             };
         }
+
+        public async Task<ValidationResult<ProjecetDocumentsDto>> GetProjectDocuments(int projectId)
+        {
+            var project = await _projectRepository.GetById(projectId);
+
+            if (project == null)
+            {
+                return new ValidationResult<ProjecetDocumentsDto>
+                {
+                    IsValid = false,
+                    ErrorMessage = "Project not found",
+                    Data = null
+                };
+            }
+
+            var documentsDto = new ProjecetDocumentsDto
+            {
+                ArticlesOfAssociationUrl = project.ArticlesOfAssociationUrl,
+                CommercialRegistryCertificateUrl = project.CommercialRegistryCertificateUrl,
+                TextCardUrl = project.TextCardUrl
+            };
+
+            return new ValidationResult<ProjecetDocumentsDto>
+            {
+                IsValid = true,
+                Data = documentsDto
+            };
+        }
+
     }
 }
