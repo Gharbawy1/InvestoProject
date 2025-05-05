@@ -20,7 +20,6 @@ namespace Investo.DataAccess.Services.Project
         private readonly IImageLoadService _imageLoadService;
         private readonly IBusinessOwnerRepository _businessOwnerRepository;
         private readonly IOfferService _offerService;
-        private readonly IOfferRepository _offerRepository;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         public ProjectService(IProjectRepository projectRepository, IImageLoadService imageLoadService, IBusinessOwnerRepository businessOwnerRepository, IOfferService offerService, IMapper mapper, UserManager<ApplicationUser> userManager, IOfferRepository offerRepository)
@@ -31,7 +30,6 @@ namespace Investo.DataAccess.Services.Project
             _offerService = offerService;
             this._mapper = mapper;
             _userManager = userManager;
-            _offerRepository = offerRepository;
         }
 
         public async Task<ValidationResult<ProjectReadDto>> CreateProject(ProjectCreateUpdateDto dto)
@@ -158,10 +156,11 @@ namespace Investo.DataAccess.Services.Project
             var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
             var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == id)?.RaisedFund ?? 0;
 
-            var MappedProjectReadDto = _mapper.Map<ProjectReadDto>(project);
+            var mappedProjectReadDto = _mapper.Map<ProjectReadDto>(project);
+            mappedProjectReadDto.InvestorsCount = await _projectRepository.GetInvestorsCountByProjectIdAsync(id);
             return new ValidationResult<ProjectReadDto>
             {
-                Data = MappedProjectReadDto,
+                Data = mappedProjectReadDto,
                 ErrorMessage = null,
                 IsValid = true
             };
@@ -310,7 +309,7 @@ namespace Investo.DataAccess.Services.Project
                 };
             }
 
-            var count = await _offerRepository.GetInvestorsCountByProjectIdAsync(projectId);
+            var count = await _projectRepository.GetInvestorsCountByProjectIdAsync(projectId);
 
             if (count == 0)
             {
