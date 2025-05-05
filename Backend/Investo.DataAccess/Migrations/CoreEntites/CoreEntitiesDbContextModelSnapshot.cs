@@ -203,8 +203,16 @@ namespace Investo.DataAccess.Migrations.CoreEntites
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ArticlesOfAssociationUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte>("CategoryId")
                         .HasColumnType("tinyint");
+
+                    b.Property<string>("CommercialRegistryCertificateUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CurrentVision")
                         .IsRequired()
@@ -257,6 +265,10 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("TextCardUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
