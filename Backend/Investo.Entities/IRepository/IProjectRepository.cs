@@ -26,7 +26,6 @@ namespace Investo.Entities.IRepository
         // IProjectRepository.cs
         Task<int> GetInvestorsCountByProjectIdAsync(int projectId);
       
-            Task<Project?> GetProjectById(int id);
         
 
 

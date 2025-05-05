@@ -90,13 +90,6 @@ namespace Investo.DataAccess.Repository
                 .CountAsync();
         }
 
-        public async Task<Project?> GetProjectById(int id)
-        {
-            return await _context.Projects
-                .Include(p => p.Category)
-                .Include(p => p.Owner)
-                    .ThenInclude(o => o.PersonInfo)
-                .FirstOrDefaultAsync(p => p.Id == id);
-        }
+        
     }
 }
