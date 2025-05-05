@@ -23,6 +23,8 @@ namespace Investo.Entities.IRepository
         //Task<IEnumerable<Project>> GetAcceptedProjectRequestsAsync();
         //Task<IEnumerable<Project>> GetRejectedProjectRequestsAsync();
         Task<bool> HasProjectForOwner(string ownerId);
-
+        // IProjectRepository.cs
+        Task<int> GetInvestorsCountByProjectIdAsync(int projectId);
+    
     }
 }
