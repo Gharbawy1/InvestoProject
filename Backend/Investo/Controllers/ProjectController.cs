@@ -255,8 +255,10 @@ namespace Investo.Presentation.Controllers
             }
             return Ok(project);
         }
-
-        [HttpGet("projects/{projectId}/investors/count")]
+        ///<summary>
+        /// Get Investory Count that participated or invested in project
+        ///<summary>
+        [HttpGet("GetNumberOfInvestorsForProject/{projectId}")]
         public async Task<IActionResult> GetInvestorsCountByProjectId(int projectId)
         {
             var result = await _projectService.GetInvestorsCountByProjectIdAsync(projectId);
