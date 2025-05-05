@@ -322,6 +322,38 @@ namespace Investo.DataAccess.Services.Offers
             };
         }
 
+        public async Task<ValidationResult<int>> GetInvestorsCountByProjectIdAsync(int projectId)
+        {
+            var project = await _projectRepository.GetById(projectId);
+            if (project == null)
+            {
+                return new ValidationResult<int>
+                {
+                    Data = 0,
+                    IsValid = false,
+                    ErrorMessage = $"Project with ID: {projectId} not found."
+                };
+            }
+
+            var count = await _offerRepository.GetInvestorsCountByProjectIdAsync(projectId);
+
+            if (count == 0)
+            {
+                return new ValidationResult<int>
+                {
+                    Data = 0,
+                    IsValid = false,
+                    ErrorMessage = $"No investors found for project ID: {projectId}"
+                };
+            }
+
+            return new ValidationResult<int>
+            {
+                Data = count,
+                IsValid = true,
+                ErrorMessage = null
+            };
+        }
     }
 
 }

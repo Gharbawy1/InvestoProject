@@ -142,5 +142,13 @@ namespace Investo.DataAccess.Repository
         })
         .ToListAsync();
         }
+
+        public async Task<int> GetInvestorsCountByProjectIdAsync(int projectId)
+        {
+            return await _context.Offers
+                .Where(o => o.ProjectId == projectId && o.InvestorId != null && o.Status == OfferStatus.Accepted)
+                .Select(o => o.InvestorId)
+                .CountAsync();
+        }
     }
 }
