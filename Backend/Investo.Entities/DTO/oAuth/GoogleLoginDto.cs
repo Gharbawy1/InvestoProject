@@ -13,7 +13,7 @@ namespace Investo.Entities.DTO.oAuth
         public string IdToken { get; set; }
         [Required]
         [RegularExpression("^(User|Investor|BusinessOwner)$", ErrorMessage = "Role must be User, Investor, or BusinessOwner")]
-        public string Role {  get; set; }
+        public string? Role {  get; set; }
         public InvestorDataDto? InvestorData { get; set; }
         public BusinessOwnerDataDto? BusinessOwnerData { get; set; }
     }

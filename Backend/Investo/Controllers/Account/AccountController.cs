@@ -8,7 +8,6 @@ using Investo.Entities.DTO.Account.InvestorDto;
 using Investo.Entities.DTO.Account.Profile;
 using Investo.Entities.DTO.Account.UserDto;
 using Investo.Entities.DTO.Account.UsersProfile;
-using Investo.Entities.DTO.Account.UsersProfile;
 using Investo.Entities.DTO.oAuth;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -64,6 +63,7 @@ namespace Investo.Presentation.Controllers.Account
 
                 var appUser = new ApplicationUser
                 {
+                    UserName = "Temp",
                     FirstName = registerDto.FirstName,
                     LastName = registerDto.LastName,
                     BirthDate = registerDto.BirthDate,
@@ -71,20 +71,17 @@ namespace Investo.Presentation.Controllers.Account
                     Email = registerDto.Email,
                     PhoneNumber = registerDto.PhoneNumber,
                 };
-
-                // Make the UserName = FirstName+LastName+ID
-                appUser.UserName = registerDto.FirstName + registerDto.LastName;
-
                 var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
+
                 if (!createdUser.Succeeded)
                 {
                     var errors = new List<IdentityError>();
                     errors.AddRange(createdUser.Errors);
                     return StatusCode(500, errors);
                 }
-
-
-
+                // Make the UserName = FirstName+LastName+ID
+                appUser.UserName = (registerDto.FirstName + registerDto.LastName+ new string(appUser.Id.Take(8).ToArray())).Trim();
+                await _userManager.UpdateAsync(appUser);
 
                 await _userManager.AddToRoleAsync(appUser, "User");
                 var userRoles = await _userManager.GetRolesAsync(appUser);
@@ -150,6 +147,7 @@ namespace Investo.Presentation.Controllers.Account
                         NationalIDImageFrontURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageFrontURL),
                         NationalIDImageBackURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageBackURL),
                     },
+                    UserName = "Temp",
                     FirstName = investorRegisterDto.FirstName,
                     LastName = investorRegisterDto.LastName,
                     BirthDate = investorRegisterDto.BirthDate,
@@ -158,9 +156,6 @@ namespace Investo.Presentation.Controllers.Account
                     PhoneNumber = investorRegisterDto.PhoneNumber,
                 };
 
-                // Make the UserName = FirstName+LastName+ID
-                InvestoUser.UserName = investorRegisterDto.FirstName + investorRegisterDto.LastName;
-
                 var createdUser = await _userManager.CreateAsync(InvestoUser, investorRegisterDto.Password);
                 if (!createdUser.Succeeded)
                 {
@@ -168,8 +163,9 @@ namespace Investo.Presentation.Controllers.Account
                     errors.AddRange(createdUser.Errors);
                     return StatusCode(500, errors);
                 }
-
-
+                // Make the UserName = FirstName+LastName+ID
+                InvestoUser.UserName = (InvestoUser.FirstName + InvestoUser.LastName + new string(InvestoUser.Id.Take(8).ToArray())).Trim();
+                await _userManager.UpdateAsync(InvestoUser);
 
                 await _userManager.AddToRoleAsync(InvestoUser, "Investor");
                 var userRoles = await _userManager.GetRolesAsync(InvestoUser);
@@ -230,6 +226,7 @@ namespace Investo.Presentation.Controllers.Account
                 };
                 var BoUser = new BusinessOwner
                 {
+                    UserName = "Temp",
                     PersonInfo = PersonInfo,
                     FirstName = boRegisterDto.FirstName,
                     LastName = boRegisterDto.LastName,
@@ -238,9 +235,7 @@ namespace Investo.Presentation.Controllers.Account
                     Email = boRegisterDto.Email,
                     PhoneNumber = boRegisterDto.PhoneNumber,
                 };
-                // Make the UserName = FirstName+LastName+ID
-                BoUser.UserName = boRegisterDto.FirstName + boRegisterDto.LastName;
-
+                
                 var createdUser = await _userManager.CreateAsync(BoUser, boRegisterDto.Password);
                 if (!createdUser.Succeeded)
                 {
@@ -248,8 +243,9 @@ namespace Investo.Presentation.Controllers.Account
                     errors.AddRange(createdUser.Errors);
                     return StatusCode(500, errors);
                 }
-
-
+                // Make the UserName = FirstName+LastName+ID
+                BoUser.UserName = (BoUser.FirstName + BoUser.LastName + new string(BoUser.Id.Take(8).ToArray())).Trim();
+                await _userManager.UpdateAsync(BoUser);
 
 
                 await _userManager.AddToRoleAsync(BoUser, "BusinessOwner");
