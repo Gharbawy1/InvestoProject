@@ -89,5 +89,7 @@ namespace Investo.DataAccess.Repository
                 .Select(o => o.InvestorId)
                 .CountAsync();
         }
+
+        
     }
 }

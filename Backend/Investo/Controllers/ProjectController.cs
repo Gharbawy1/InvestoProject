@@ -1,6 +1,9 @@
-﻿using Investo.DataAccess.Services.Interfaces;
+﻿using AutoMapper;
+using Investo.DataAccess.Migrations.CoreEntites;
+using Investo.DataAccess.Services.Interfaces;
 using Investo.DataAccess.Services.Project;
 using Investo.Entities.DTO.Project;
+using Investo.Entities.IRepository;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,14 +21,18 @@ namespace Investo.Presentation.Controllers
     {
         private readonly IProjectService _projectService;
         private readonly ICategoryService _categoryService;
+        private readonly IProjectRepository _projectRepository;
+        private readonly IMapper _mapper;
 
         private new List<string> _allowedExtenstions = new List<string> { ".jpg", ".png", ".jpeg" };
         private long _maxAllowedImageSize = 3 * 1048576;
 
-        public ProjectController(IProjectService projectService, ICategoryService categoryService)
+        public ProjectController(IProjectService projectService, ICategoryService categoryService, IMapper mapper, IProjectRepository projectRepository)
         {
             _projectService = projectService;
             _categoryService = categoryService;
+            _mapper = mapper;
+            _projectRepository = projectRepository;
         }
 
         // GET api/projects
@@ -281,6 +288,39 @@ namespace Investo.Presentation.Controllers
                 ErrorMessage = null
             });
         }
+        [HttpGet("GetDocuments/{projectId}")]
+        public async Task<IActionResult> GetProjectDocuments(int projectId)
+        {
+            var result = await _projectService.GetProjectDocuments(projectId);
+
+            if (!result.IsValid)
+            {
+                if (result.Data == null)
+                {
+                    return NotFound(new ValidationResult<ProjecetDocumentsDto>
+                    {
+                        Data = null,
+                        IsValid = false,
+                        ErrorMessage = result.ErrorMessage
+                    });
+                }
+
+                return BadRequest(new ValidationResult<ProjecetDocumentsDto>
+                {
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = result.ErrorMessage
+                });
+            }
+
+            return Ok(new ValidationResult<ProjecetDocumentsDto>
+            {
+                Data = result.Data,
+                IsValid = true,
+                ErrorMessage = null
+            });
+        }
+
 
 
     }

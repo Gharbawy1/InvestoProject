@@ -25,6 +25,9 @@ namespace Investo.Entities.IRepository
         Task<bool> HasProjectForOwner(string ownerId);
         // IProjectRepository.cs
         Task<int> GetInvestorsCountByProjectIdAsync(int projectId);
-    
+      
+        
+
+
     }
 }
