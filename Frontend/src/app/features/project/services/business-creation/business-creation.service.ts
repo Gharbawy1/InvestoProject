@@ -19,9 +19,9 @@ export class BusinessCreationService {
     // Split camelCase into words and capitalize each word
     return key
       .replace(/([a-z])([A-Z])/g, '$1 $2') // Split camelCase into separate words
-      .split(' ')                           // Split into array of words
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join('');                           // Join words without spaces
+      .split(' ') // Split into array of words
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(''); // Join words without spaces
   }
 
   /** Build a FormData by remapping each property to PascalCase */

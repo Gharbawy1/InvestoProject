@@ -23,7 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     RouterModule,
     AutoFocusDirective,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './business-creation.component.html',
   styleUrls: ['./business-creation.component.css'],
@@ -34,8 +34,12 @@ export class BusinessCreationComponent implements OnInit {
   // AuthService to retrieve current logged-in user data
   private authService = inject(AuthService);
 
-  // File object for the selected project image
+  // File object for the selected image
   businessImageFile: File | null = null;
+  articalOfAssociationFile: File | null = null;
+  commercialRegistrationFile: File | null = null;
+  taxCardFile: File | null = null;
+
   // Flag to detect if form has been submitted (for displaying validation messages)
   formSubmitted = false;
   // Loading state for form submission
@@ -54,7 +58,7 @@ export class BusinessCreationComponent implements OnInit {
   blockMessage = '';
   navigationPath: string[] = ['/'];
   navigationButtonText = 'Go home';
-  isChecking = true;  
+  isChecking = true;
 
   constructor(
     private businessCreationService: BusinessCreationService,
@@ -68,6 +72,9 @@ export class BusinessCreationComponent implements OnInit {
       projectLocation: ['', Validators.required],
       fundingGoal: [0, [Validators.required, Validators.min(10000)]],
       projectImage: [null, [Validators.required]],
+      articlesOfAssociation: [null, [Validators.required]],
+      commercialRegistryCertificate: [null, [Validators.required]],
+      taxCard: [null, [Validators.required]],
       fundingExchange: ['', [Validators.required]],
       projectVision: ['', [Validators.required, Validators.minLength(100)]],
       projectStory: ['', [Validators.required, Validators.minLength(200)]],
@@ -100,7 +107,11 @@ export class BusinessCreationComponent implements OnInit {
         .pipe(take(1))
         .subscribe({
           next: (resp) => {
-            if (resp.isValid && resp.data && resp.data.ownerId === this.ownerId) {
+            if (
+              resp.isValid &&
+              resp.data &&
+              resp.data.ownerId === this.ownerId
+            ) {
               this.blockAccess(
                 'You already have a project!',
                 ['/BusinessDashboard'],
@@ -144,29 +155,54 @@ export class BusinessCreationComponent implements OnInit {
     });
   }
 
-  private blockAccess(
-    message: string,
-    path: string[],
-    buttonText = 'Go home'
-  ) {
+  private blockAccess(message: string, path: string[], buttonText = 'Go home') {
     this.blockMessage = message;
     this.navigationPath = path;
     this.navigationButtonText = buttonText;
-    this.businessForm.disable(); 
+    this.businessForm.disable();
   }
 
   /**
    * Handles file input change event to capture the selected image
    */
-  onImageSelected(event: Event) {
+
+  onFileSelected(
+    event: Event,
+    formControlName: string,
+    fileFieldName: string
+  ): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
 
     if (file) {
-      this.businessForm.patchValue({ projectImage: file });
-      this.businessForm.get('projectImage')?.updateValueAndValidity();
-      this.businessImageFile = file;
+      this.businessForm.patchValue({ [fileFieldName]: file });
+      this.businessForm.get(formControlName)?.updateValueAndValidity();
+      (this as any)[fileFieldName] = file;
     }
+  }
+
+  onImageSelected(event: Event) {
+    this.onFileSelected(event, 'projectImage', 'businessImageFile');
+  }
+
+  onAssertionSelected(event: Event) {
+    this.onFileSelected(
+      event,
+      'articlesOfAssociation',
+      'articalOfAssociationFile'
+    );
+  }
+
+  onComercialSelected(event: Event) {
+    this.onFileSelected(
+      event,
+      'commercialRegistryCertificate',
+      'commercialRegistrationFile'
+    );
+  }
+
+  onTaxCardSelected(event: Event) {
+    this.onFileSelected(event, 'taxCard', 'taxCardFile');
   }
 
   /**
@@ -176,7 +212,13 @@ export class BusinessCreationComponent implements OnInit {
     this.formSubmitted = true;
     this.businessForm.markAllAsTouched();
 
-    if (this.businessForm.invalid || !this.businessImageFile) {
+    if (
+      this.businessForm.invalid ||
+      !this.businessImageFile ||
+      !this.articalOfAssociationFile ||
+      !this.commercialRegistrationFile ||
+      !this.taxCardFile
+    ) {
       return;
     }
 

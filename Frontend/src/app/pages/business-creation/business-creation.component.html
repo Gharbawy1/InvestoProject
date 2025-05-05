@@ -7,8 +7,10 @@
 </div>
 
 <!-- 2) Blocked UI -->
-<div *ngIf="!isChecking && blockMessage" 
-     class="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm">
+<div
+  *ngIf="!isChecking && blockMessage"
+  class="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm"
+>
   <div class="min-h-screen flex items-center justify-center p-6">
     <div class="max-w-md w-full space-y-6 text-center">
       <div class="flex justify-center">
@@ -29,7 +31,10 @@
   </div>
 </div>
 
-<div *ngIf="!isChecking && !blockMessage" class="container mx-auto py-10 px-4 max-w-4xl bg-white">
+<div
+  *ngIf="!isChecking && !blockMessage"
+  class="container mx-auto py-10 px-4 max-w-4xl bg-white"
+>
   <div class="mb-8 text-center animate-fade-in">
     <h1 class="text-2xl font-bold text-gray-900 mb-2">
       Create Business Profile
@@ -244,6 +249,148 @@
           </div>
         </div>
 
+        <!-- Articles of Association -->
+        <div class="flex flex-col gap-0.5 form-group">
+          <label class="text-sm font-medium">Articles of Association*</label>
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors hover:border-gray-400"
+          >
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onAssertionSelected($event)"
+              hidden
+              #assertionImageInput
+              hidden
+              required
+            />
+            <button
+              type="button"
+              class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
+              (click)="assertionImageInput.click()"
+            >
+              Upload Articles of assosiation
+            </button>
+            <div class="min-h-[20px]">
+              <div
+                *ngIf="
+                  businessForm.get('articlesOfAssociation')?.invalid &&
+                  (businessForm.get('articlesOfAssociation')?.touched ||
+                    formSubmitted)
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                * Please upload a Articles of assosiation
+              </div>
+            </div>
+            <p
+              class="text-sm text-gray-500 mt-2"
+              *ngIf="!articalOfAssociationFile"
+            >
+              Recommended size: 1200x800px (JPEG or PNG)
+            </p>
+            <div
+              class="text-sm text-green-600 mt-2"
+              *ngIf="articalOfAssociationFile"
+            >
+              {{ articalOfAssociationFile.name }} uploaded
+            </div>
+          </div>
+        </div>
+
+        <!-- Commercial Registry Certificate -->
+        <div class="flex flex-col gap-0.5 form-group">
+          <label class="text-sm font-medium"
+            >Commercial Registry Certificate *</label
+          >
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors hover:border-gray-400"
+          >
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onComercialSelected($event)"
+              hidden
+              #comercialImageInput
+              hidden
+              required
+            />
+            <button
+              type="button"
+              class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
+              (click)="comercialImageInput.click()"
+            >
+              Upload Commercial Registry Certificate
+            </button>
+            <div class="min-h-[20px]">
+              <div
+                *ngIf="
+                  businessForm.get('commercialRegistryCertificate')?.invalid &&
+                  (businessForm.get('commercialRegistryCertificate')?.touched ||
+                    formSubmitted)
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                * Please upload a Commercial Registry Certificate
+              </div>
+            </div>
+            <p
+              class="text-sm text-gray-500 mt-2"
+              *ngIf="!commercialRegistrationFile"
+            >
+              Recommended size: 1200x800px (JPEG or PNG)
+            </p>
+            <div
+              class="text-sm text-green-600 mt-2"
+              *ngIf="commercialRegistrationFile"
+            >
+              {{ commercialRegistrationFile.name }} uploaded
+            </div>
+          </div>
+        </div>
+
+        <!-- Tax Card -->
+        <div class="flex flex-col gap-0.5 form-group">
+          <label class="text-sm font-medium">Tax Card*</label>
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors hover:border-gray-400"
+          >
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onTaxCardSelected($event)"
+              hidden
+              #taxCardInput
+              hidden
+              required
+            />
+            <button
+              type="button"
+              class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
+              (click)="taxCardInput.click()"
+            >
+              Upload Tax Card
+            </button>
+            <div class="min-h-[20px]">
+              <div
+                *ngIf="
+                  businessForm.get('taxCard')?.invalid &&
+                  (businessForm.get('taxCard')?.touched || formSubmitted)
+                "
+                class="text-red-500 text-sm mt-1"
+              >
+                * Please upload a business image
+              </div>
+            </div>
+            <p class="text-sm text-gray-500 mt-2" *ngIf="!taxCardFile">
+              Recommended size: 1200x800px (JPEG or PNG)
+            </p>
+            <div class="text-sm text-green-600 mt-2" *ngIf="taxCardFile">
+              {{ taxCardFile.name }} uploaded
+            </div>
+          </div>
+        </div>
+
         <!-- Business Details -->
         <div class="space-y-6">
           <!-- funding terms -->
@@ -377,7 +524,7 @@
           </div>
         </div>
 
-        <button 
+        <button
           type="submit"
           [disabled]="isLoading || businessForm.invalid"
           class="w-full text-sm font-medium py-2.5 rounded-md transition flex items-center justify-center cursor-pointer transition-button button-hover"
