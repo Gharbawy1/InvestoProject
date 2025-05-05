@@ -26,7 +26,7 @@ export class OfferComponent implements OnInit {
     profitShare: 0,
     offerTerms: '',
     projectId: 0,
-    investorId: ''
+    investorId: '',
   };
 
   private destroy$ = new Subject<void>();
@@ -60,7 +60,7 @@ export class OfferComponent implements OnInit {
       return;
     }
     if (user.role !== 'Investor') {
-      if(user.role === 'User'){
+      if (user.role === 'User') {
         this.blockAccess({
           message: 'You must upgrade to the Investor role to submit offers.',
           path: ['/UpgradeRole'],
@@ -78,11 +78,14 @@ export class OfferComponent implements OnInit {
     this.offer.investorId = user.id;
 
     this.projectCtx.project$
-    .pipe(
-      takeUntil(this.destroy$),
-      filter((p): p is IBusinessDetails => !!p),
-      take(1),
-      timeout({ first: 5000, with: () => throwError(() => new Error('Project load timeout')) })
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((p): p is IBusinessDetails => !!p),
+        take(1),
+        timeout({
+          first: 5000,
+          with: () => throwError(() => new Error('Project load timeout')),
+        })
       )
       .subscribe({
         next: (p) => {
@@ -97,7 +100,7 @@ export class OfferComponent implements OnInit {
         error: (err) => {
           this.errorMessage = err.message || 'No project selected.';
           this.canSubmit = false;
-        }
+        },
       });
   }
 
@@ -114,19 +117,24 @@ export class OfferComponent implements OnInit {
   }
 
   private ensureSingleOffer(projectId: number, investorId: string) {
-    this.offerSvc.getCurrentUserOffers().pipe(take(1)).subscribe({
+    this.offerSvc
+      .getCurrentUserOffers()
+      .pipe(take(1))
+      .subscribe({
         next: (offers) => {
           console.log('→ offers array:', offers);
           console.log('→ projectId:', projectId, 'investorId:', investorId);
           console.log(
             '→ offer.projectId values:',
-            offers.map(o => o.projectId),
+            offers.map((o) => o.projectId),
             'offer.investorId values:',
-            offers.map(o => o.investorId)
+            offers.map((o) => o.investorId)
           );
           console.log(
             '→ hasExisting?',
-            offers.some(o => o.projectId === projectId && o.investorId === investorId)
+            offers.some(
+              (o) => o.projectId === projectId && o.investorId === investorId
+            )
           );
           const hasExisting = offers.some(
             (o) => o.projectId === projectId && o.investorId === investorId
@@ -179,8 +187,9 @@ export class OfferComponent implements OnInit {
 
   private handleSuccess() {
     this.isLoading = false;
-    this.successMessage = 'Offer submitted successfully!';
-    setTimeout(() => this.router.navigate(['/Payment']), 2000);
+    this.successMessage =
+      'Offer sent to bussiness owner successfully and waiting for approval!';
+    alert(this.successMessage);
   }
 
   private handleError(error: any) {

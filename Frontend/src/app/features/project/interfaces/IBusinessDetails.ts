@@ -8,5 +8,5 @@ export interface IBusinessDetails
   ownerId: string;
   ownerName: string;
   raisedFunds: number;
-  NOInvestors: number;
+  investorsCount: number;
 }

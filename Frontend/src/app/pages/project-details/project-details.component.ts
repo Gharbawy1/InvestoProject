@@ -50,7 +50,6 @@ export class ProjectDetailsComponent implements OnInit {
       .subscribe({
         next: ({ projectData }) => {
           if (!projectData) return;
-          console.log('Project data:', projectData);
           this.project = projectData;
           this.owner = projectData.ownerName;
           this.isProjectOwner = this.authService.getUserId() === this.owner?.id;
@@ -58,13 +57,15 @@ export class ProjectDetailsComponent implements OnInit {
           if (this.status === 'Pending' || this.status === 'rejected') {
             if (this.isProjectOwner) {
               this.blockAccess({
-                message: 'This project is under review or unavailable. Please check back later.',
+                message:
+                  'This project is under review or unavailable. Please check back later.',
                 path: ['/BusinessDashboard'],
                 buttonText: 'Go to Dashboard',
               });
             } else {
               this.blockAccess({
-                message: 'This project is under review or unavailable. Please check back later.',
+                message:
+                  'This project is under review or unavailable. Please check back later.',
                 path: ['/'],
                 buttonText: 'Go Home',
               });
@@ -83,7 +84,11 @@ export class ProjectDetailsComponent implements OnInit {
     });
   }
 
-  blockAccess(config: { message: string; path: string[]; buttonText?: string }) {
+  blockAccess(config: {
+    message: string;
+    path: string[];
+    buttonText?: string;
+  }) {
     this.blockMessage = config.message;
     this.navigationPath = config.path;
     this.navigationButtonText = config.buttonText || 'Go home';
@@ -173,7 +178,8 @@ export class ProjectDetailsComponent implements OnInit {
 
   /** number of investor */
   get numOfInvestors(): number {
-    return 4;
+    console.log(this.project?.investorsCount);
+    return this.project?.investorsCount || 0;
   }
 
   /** project team */
