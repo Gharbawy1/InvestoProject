@@ -107,8 +107,8 @@
 
             <button
               mat-menu-item
-              *ngIf="userRole === 'User' || userRole === 'businessOwner'"
-              routerLink="/UpgradeRole"
+              *ngIf="userRole === 'User' || userRole === 'BusinessOwner'"
+              (click)="goToDashboard()"
             >
               <mat-icon>dashboard</mat-icon>
               <span>Dashboard</span>

@@ -67,7 +67,7 @@ export class HeaderComponent implements OnInit {
       case 'Investor':
         this.router.navigate(['/InvestorDashboard']);
         break;
-      case 'businessOwner':
+      case 'BusinessOwner':
         this.router.navigate(['/BusinessDashboard']);
         break;
       case 'User':
