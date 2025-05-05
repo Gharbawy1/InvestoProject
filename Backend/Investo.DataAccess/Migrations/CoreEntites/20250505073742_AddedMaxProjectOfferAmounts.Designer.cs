@@ -4,6 +4,7 @@ using Investo.DataAccess.ApplicationContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Investo.DataAccess.Migrations.CoreEntites
 {
     [DbContext(typeof(CoreEntitiesDbContext))]
-    partial class CoreEntitiesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250505073742_AddedMaxProjectOfferAmounts")]
+    partial class AddedMaxProjectOfferAmounts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,6 +255,9 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                     b.Property<string>("Goals")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("MaxOfferAmount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("OwnerId")
                         .IsRequired()
