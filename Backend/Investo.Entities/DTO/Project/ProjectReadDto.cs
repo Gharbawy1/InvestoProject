@@ -27,6 +27,10 @@ namespace Investo.Entities.DTO.Project
         public string OwnerName { get; set; }
         public string OwnerId { get; set; }
         public decimal RaisedFund {  get; set; }
+        public string ArticlesOfAssociation { get; set; }
+        public string CommercialRegistryCertificate { get; set; }
+        public string TextCard { get; set; }
+        public int InvestorsCount {  get; set; }
     }
 
 }
