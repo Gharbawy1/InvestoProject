@@ -5,6 +5,9 @@ export interface IBusiness {
   projectLocation: string;
   fundingGoal: number;
   projectImage: File;
+  articlesOfAssociation: File;
+  commercialRegistryCertificate: File;
+  taxCard: File;
   fundingExchange: string;
   projectVision: string;
   projectStory: string;
