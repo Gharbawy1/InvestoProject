@@ -4,7 +4,11 @@ import { map, Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment.development';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { IOffer } from '../../interfaces/ioffer';
-import { ArrayApiResponse, ObjectApiResponse } from '../../../../core/interfaces/ApiResponse';
+import {
+  ArrayApiResponse,
+  ObjectApiResponse,
+} from '../../../../core/interfaces/ApiResponse';
+import { IOfferProfile } from '../../interfaces/IOfferProfile';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +16,7 @@ import { ArrayApiResponse, ObjectApiResponse } from '../../../../core/interfaces
 export class OfferService {
   private createOfferUrl: string = `${environment.baseApi}${environment.offer.create}`;
   private getOffersUrl: string = `${environment.baseApi}${environment.offer.getAllForCurrentUser}`;
+  private getOffersByProjectId: string = `${environment.baseApi}${environment.offer.getOfferByProjectId}`;
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
@@ -23,7 +28,7 @@ export class OfferService {
     return this.http
       .post<ObjectApiResponse<IOffer>>(this.createOfferUrl, offer)
       .pipe(
-        map(resp => {
+        map((resp) => {
           if (!resp.isValid) {
             throw new Error(resp.errorMessage || 'Failed to create offer');
           }
@@ -34,25 +39,31 @@ export class OfferService {
 
   /** fetch all offers made by the logged-in user */
   getCurrentUserOffers(): Observable<IOffer[]> {
-    return this.http
-      .get<ArrayApiResponse<IOffer>>(this.getOffersUrl)
-      .pipe(
-        map(resp => {
-          if (!resp.isValid) {
-            throw new Error(resp.errorMessage || 'Failed to load offers');
-          }
-          return resp.data;
-        })
-      );
+    return this.http.get<ArrayApiResponse<IOffer>>(this.getOffersUrl).pipe(
+      map((resp) => {
+        if (!resp.isValid) {
+          throw new Error(resp.errorMessage || 'Failed to load offers');
+        }
+        return resp.data;
+      })
+    );
+  }
+
+  getOfferByProjectId(id: number): Observable<IOfferProfile[]> {
+    return this.http.get<IOfferProfile[]>(`${this.getOffersByProjectId}/${id}`);
+  }
+
+  changeOfferStatus(offerId: number, status: string): Observable<any> {
+    return this.http.post(
+      `${environment.baseApi}${environment.offer.BusinessOwnerAnswer(offerId)}`,
+      { status }
+    );
   }
 
   /*getAllOffers(): Observable<IOffer[]> {
     return this.http.get<IOffer[]>(this.apiUrl);
   }
 
-  getOfferById(id: number): Observable<IOffer> {
-    return this.http.get<IOffer>(`${this.apiUrl}/${id}`);
-  }
 
   updateOffer(id: number, offer: Partial<IOffer>): Observable<IOffer> {
     return this.http.patch<IOffer>(`${this.apiUrl}/${id}`, offer);

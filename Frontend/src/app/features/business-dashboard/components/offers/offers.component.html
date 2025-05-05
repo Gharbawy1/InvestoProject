@@ -1,0 +1,40 @@
+<div class="grid gap-4 md:grid-cols-2">
+  <ng-container *ngIf="offers.length; else noOffers">
+    <div *ngFor="let offer of offers" class="p-4 mb-4 bg-white rounded shadow">
+      <div class="flex justify-between items-center">
+        <div>
+          <p>
+            <strong>Investor:</strong> {{ offer.investor.firstName }}
+            {{ offer.investor.lastName }}
+          </p>
+          <p><strong>Amount:</strong> ${{ offer.offerAmount }}</p>
+          <p><strong>Status:</strong> {{ offer.status }}</p>
+        </div>
+
+        <div class="flex gap-2">
+          <button
+            class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-4 rounded"
+            (click)="acceptOffer(offer.offerId)"
+            [disabled]="offer.status !== 'Pending'"
+          >
+            Accept
+          </button>
+
+          <button
+            class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-4 rounded"
+            (click)="rejectOffer(offer.offerId)"
+            [disabled]="offer.status !== 'Pending'"
+          >
+            Reject
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #noOffers>
+    <p class="text-center text-gray-500 col-span-full">
+      No offers received yet.
+    </p>
+  </ng-template>
+</div>

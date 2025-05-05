@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatsCardsComponent } from '../../features/business-dashboard/components/stats-cards/stats-cards.component';
 import { OverviewTabComponent } from '../../features/business-dashboard/components/overview-tab/overview-tab.component';
@@ -12,6 +12,9 @@ import { PerformanceChartComponent } from '../../features/business-dashboard/com
 import { ProjectManagementComponent } from '../../features/business-dashboard/components/project-management/project-management.component';
 import { DocumentCenterComponent } from '../../features/business-dashboard/components/document-center/document-center.component';
 import { CommunicationHubComponent } from '../../features/business-dashboard/components/communication-hub/communication-hub.component';
+import { OffersComponent } from '../../features/business-dashboard/components/offers/offers.component';
+import { IOfferProfile } from '../../features/project/interfaces/IOfferProfile';
+import { OfferService } from '../../features/project/services/offer/offer.service';
 
 // Interface representing an active project
 interface ActiveProject {
@@ -37,6 +40,7 @@ interface ActiveProject {
     ProjectManagementComponent,
     DocumentCenterComponent,
     CommunicationHubComponent,
+    OffersComponent,
   ],
   templateUrl: './business-dashboard.component.html',
   styleUrls: ['./business-dashboard.component.css'],
@@ -44,18 +48,21 @@ interface ActiveProject {
 export class BusinessDashboardComponent implements OnInit {
   // Business & Dashboard Details
   businessName = 'Green City Ventures';
-  businessId = 'BUS123456';
+  businessId: number = 1;
   activeTab = 0; // Keeps track of the currently active tab (Overview, Projects, etc.)
   userInitials: string = ''; // Stores user initials for the profile avatar
   isDropdownOpen = false; // Controls the visibility of the profile dropdown
   hasNotifications = true; // Flag to indicate if there are any notifications
   notificationCount: number = 3; // Number of notifications to display
-
+  offers: IOfferProfile[] = [];
+  offersCount: number = 0;
   /**
    * setUserInitials
    * Sets the user's initials based on their full name.
    * @param fullName - The full name of the user.
    */
+
+  offerService: OfferService = Inject(OfferService);
   setUserInitials(fullName: string): void {
     if (fullName) {
       const nameParts = fullName.split(' ');
@@ -83,17 +90,18 @@ export class BusinessDashboardComponent implements OnInit {
     { id: 'management', label: 'Management' },
     { id: 'documents', label: 'Documents' },
     { id: 'communication', label: 'Communication' },
-    { id: 'tabs', label: 'Overview Tabs' }
+    { id: 'tabs', label: 'Overview Tabs' },
+    { id: 'Off', label: 'Overview Tabs' },
   ];
   activeSection = 'stats';
 
-  // Tabs for navigation, contributed by Bob Johnson
+  // Tabs for navigation
   tabs = [
     { label: 'Overview' },
     { label: 'Projects' },
     { label: 'Messages' },
     { label: 'Notifications' },
-    { label: 'Calendar' }
+    { label: 'Calendar' },
   ];
 
   // Project creation properties
@@ -107,7 +115,7 @@ export class BusinessDashboardComponent implements OnInit {
     status: 'Active',
     // Deadline set to 30 days from the current date.
     deadline: new Date(new Date().setDate(new Date().getDate() + 30)),
-    businessName: this.businessName
+    businessName: this.businessName,
   };
 
   /**
@@ -123,10 +131,19 @@ export class BusinessDashboardComponent implements OnInit {
     if (this.lastProjectCreatedDate) {
       // Calculate the next available date for project creation: 1 month after the last project was created.
       this.nextProjectAvailableDate = new Date(this.lastProjectCreatedDate);
-      this.nextProjectAvailableDate.setMonth(this.nextProjectAvailableDate.getMonth() + 1);
+      this.nextProjectAvailableDate.setMonth(
+        this.nextProjectAvailableDate.getMonth() + 1
+      );
     }
     // Check if the user is eligible to create a new project.
     this.checkProjectCreationEligibility();
+
+    this.offerService
+      .getOfferByProjectId(this.businessId)
+      .subscribe((offers) => {
+        this.offers = offers;
+        this.offersCount = offers.length;
+      });
   }
 
   /**

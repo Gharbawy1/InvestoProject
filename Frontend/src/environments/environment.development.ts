@@ -1,4 +1,4 @@
-import { stat } from "node:fs";
+import { stat } from 'node:fs';
 
 export const environment = {
   production: false,
