@@ -309,6 +309,8 @@ namespace Investo.DataAccess.Services.Project
                 ProjectLocation = project.ProjectLocation,
                 Subtitle= project.Subtitle,
                 RaisedFund = raisedFund,
+                InvestorsCount = await _projectRepository.GetInvestorsCountByProjectIdAsync(project.Id)
+
             };
 
             return new ValidationResult<ProjectReadDto>
