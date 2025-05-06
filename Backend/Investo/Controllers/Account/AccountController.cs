@@ -9,7 +9,6 @@ using Investo.Entities.DTO.Account.InvestorDto;
 using Investo.Entities.DTO.Account.Profile;
 using Investo.Entities.DTO.Account.UserDto;
 using Investo.Entities.DTO.Account.UsersProfile;
-using Investo.Entities.DTO.Account.UsersProfile;
 using Investo.Entities.DTO.oAuth;
 using Investo.Entities.IRepository;
 using Investo.Entities.Models;
@@ -19,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Investo.Presentation.Controllers.Account
@@ -76,6 +76,7 @@ namespace Investo.Presentation.Controllers.Account
 
                 var appUser = new ApplicationUser
                 {
+                    UserName = Guid.NewGuid().ToString(),
                     FirstName = registerDto.FirstName,
                     LastName = registerDto.LastName,
                     BirthDate = registerDto.BirthDate,
@@ -83,20 +84,17 @@ namespace Investo.Presentation.Controllers.Account
                     Email = registerDto.Email,
                     PhoneNumber = registerDto.PhoneNumber,
                 };
-
-                // Make the UserName = FirstName+LastName+ID
-                appUser.UserName = registerDto.FirstName + registerDto.LastName;
-
                 var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
+
                 if (!createdUser.Succeeded)
                 {
                     var errors = new List<IdentityError>();
                     errors.AddRange(createdUser.Errors);
                     return StatusCode(500, errors);
                 }
-
-
-
+                // Make the UserName = FirstName+LastName+ID
+                appUser.UserName = (registerDto.FirstName + registerDto.LastName+ new string(appUser.Id.Take(8).ToArray())).Trim();
+                await _userManager.UpdateAsync(appUser);
 
                 await _userManager.AddToRoleAsync(appUser, "User");
                 var userRoles = await _userManager.GetRolesAsync(appUser);
@@ -150,7 +148,6 @@ namespace Investo.Presentation.Controllers.Account
                 {
                     AccreditationStatus = investorRegisterDto.AccreditationStatus,
                     RiskTolerance = investorRegisterDto.RiskTolerance,
-                    ProfilePictureURL = await _imageLoadService.Upload(investorRegisterDto.ProfilePictureURL),
                     NetWorth = investorRegisterDto.NetWorth,
                     MinInvestmentAmount = investorRegisterDto.MinInvestmentAmount,
                     MaxInvestmentAmount = investorRegisterDto.MaxInvestmentAmount,
@@ -163,6 +160,7 @@ namespace Investo.Presentation.Controllers.Account
                         NationalIDImageFrontURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageFrontURL),
                         NationalIDImageBackURL = await _imageLoadService.Upload(investorRegisterDto.NationalIDImageBackURL),
                     },
+                    UserName = Guid.NewGuid().ToString(),
                     FirstName = investorRegisterDto.FirstName,
                     LastName = investorRegisterDto.LastName,
                     BirthDate = investorRegisterDto.BirthDate,
@@ -171,9 +169,6 @@ namespace Investo.Presentation.Controllers.Account
                     PhoneNumber = investorRegisterDto.PhoneNumber,
                 };
 
-                // Make the UserName = FirstName+LastName+ID
-                InvestoUser.UserName = investorRegisterDto.FirstName + investorRegisterDto.LastName;
-
                 var createdUser = await _userManager.CreateAsync(InvestoUser, investorRegisterDto.Password);
                 if (!createdUser.Succeeded)
                 {
@@ -181,8 +176,9 @@ namespace Investo.Presentation.Controllers.Account
                     errors.AddRange(createdUser.Errors);
                     return StatusCode(500, errors);
                 }
-
-
+                // Make the UserName = FirstName+LastName+ID
+                InvestoUser.UserName = (InvestoUser.FirstName + InvestoUser.LastName + new string(InvestoUser.Id.Take(8).ToArray())).Trim();
+                await _userManager.UpdateAsync(InvestoUser);
 
                 await _userManager.AddToRoleAsync(InvestoUser, "Investor");
                 var userRoles = await _userManager.GetRolesAsync(InvestoUser);
@@ -243,8 +239,8 @@ namespace Investo.Presentation.Controllers.Account
                 };
                 var BoUser = new BusinessOwner
                 {
+                    UserName = Guid.NewGuid().ToString(),
                     PersonInfo = PersonInfo,
-                    ProfilePictureURL = await _imageLoadService.Upload(boRegisterDto.ProfilePictureURL),
                     FirstName = boRegisterDto.FirstName,
                     LastName = boRegisterDto.LastName,
                     BirthDate = boRegisterDto.BirthDate,
@@ -252,9 +248,7 @@ namespace Investo.Presentation.Controllers.Account
                     Email = boRegisterDto.Email,
                     PhoneNumber = boRegisterDto.PhoneNumber,
                 };
-                // Make the UserName = FirstName+LastName+ID
-                BoUser.UserName = boRegisterDto.FirstName + boRegisterDto.LastName;
-
+                
                 var createdUser = await _userManager.CreateAsync(BoUser, boRegisterDto.Password);
                 if (!createdUser.Succeeded)
                 {
@@ -262,8 +256,9 @@ namespace Investo.Presentation.Controllers.Account
                     errors.AddRange(createdUser.Errors);
                     return StatusCode(500, errors);
                 }
-
-
+                // Make the UserName = FirstName+LastName+ID
+                BoUser.UserName = (BoUser.FirstName + BoUser.LastName + new string(BoUser.Id.Take(8).ToArray())).Trim();
+                await _userManager.UpdateAsync(BoUser);
 
 
                 await _userManager.AddToRoleAsync(BoUser, "BusinessOwner");
@@ -684,7 +679,6 @@ namespace Investo.Presentation.Controllers.Account
                         Bio = investor.Bio,
                         Address = investor.Address,
                         PhoneNumber = investor.PhoneNumber,
-                        Roles = roles,
                         RiskTolerance = investor.RiskTolerance,
                         InvestmentGoals = investor.InvestmentGoals,
                         MinInvestmentAmount = investor.MinInvestmentAmount,
@@ -692,8 +686,6 @@ namespace Investo.Presentation.Controllers.Account
                         AccreditationStatus = investor.AccreditationStatus,
                         NetWorth = investor.NetWorth,
                         AnnualIncome = investor.AnnualIncome,
-                        NationalID = investor.PersonInfo.NationalID,
-                        
                     };
                     return Ok(investorDto);
                 }
@@ -714,8 +706,6 @@ namespace Investo.Presentation.Controllers.Account
                         Bio = businessOwner.Bio,
                         Address = businessOwner.Address,
                         PhoneNumber = businessOwner.PhoneNumber,
-                        Roles = roles,
-                        NationalID = businessOwner.PersonInfo.NationalID,                       
                     };
                     return Ok(businessOwnerDto);
                 }
@@ -734,7 +724,6 @@ namespace Investo.Presentation.Controllers.Account
                     Bio = user.Bio,
                     Address = user.Address,
                     PhoneNumber = user.PhoneNumber,
-                    Roles = roles
                 };
                 return Ok(userDto);
             }
@@ -795,6 +784,113 @@ namespace Investo.Presentation.Controllers.Account
             return BadRequest("Email verification failed");
         }
 
+
+        /// <summary>
+        /// Retrieves the profile of a user by their ID.
+        /// </summary>
+        /// <param name="id">The ID of the user whose profile is to be retrieved.</param>
+        /// <returns>
+        /// Returns a UserProfileDto, InvestorProfileDto, or BusinessOwnerProfileDto based on the user type.
+        /// If the user is not found, returns 404 (Not Found).
+        /// </returns>
+        /// <remarks>
+        /// Requires authentication. Returns profile details specific to the user's role (User, Investor, or BusinessOwner).
+        /// </remarks>
+        [HttpGet("profile/{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetUserProfileById(string id)
+        {
+            try
+            {
+                // جلب المستخدم بناءً على الـ ID
+                var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return NotFound(new ValidationResult<string>
+                    {
+                        IsValid = false,
+                        ErrorMessage = "المستخدم غير موجود"
+                    });
+                }
+
+                // جلب الـ Roles بتاع المستخدم
+                var roles = await _userManager.GetRolesAsync(user);
+
+                // لو المستخدم Investor
+                if (user is Investor investor)
+                {
+                    var investorDto = new InvestorProfileDto
+                    {
+                        UserName = investor.UserName,
+                        Email = investor.Email,
+                        FirstName = investor.FirstName,
+                        LastName = investor.LastName,
+                        BirthDate = investor.BirthDate,
+                        RegistrationDate = investor.RegistrationDate,
+                        ProfilePictureURL = investor.ProfilePictureURL,
+                        Bio = investor.Bio,
+                        Address = investor.Address,
+                        PhoneNumber = investor.PhoneNumber,
+                        RiskTolerance = investor.RiskTolerance,
+                        InvestmentGoals = investor.InvestmentGoals,
+                        MinInvestmentAmount = investor.MinInvestmentAmount,
+                        MaxInvestmentAmount = investor.MaxInvestmentAmount,
+                        AccreditationStatus = investor.AccreditationStatus,
+                        NetWorth = investor.NetWorth,
+                        AnnualIncome = investor.AnnualIncome,
+                        
+                    };
+                    return Ok(investorDto);
+                }
+
+                // لو المستخدم BusinessOwner
+                if (user is BusinessOwner businessOwner)
+                {
+                    var businessOwnerDto = new BusinessOwnerProfileDto
+                    {
+                        Id = businessOwner.Id,
+                        UserName = businessOwner.UserName,
+                        Email = businessOwner.Email,
+                        FirstName = businessOwner.FirstName,
+                        LastName = businessOwner.LastName,
+                        BirthDate = businessOwner.BirthDate,
+                        RegistrationDate = businessOwner.RegistrationDate,
+                        ProfilePictureURL = businessOwner.ProfilePictureURL,
+                        Bio = businessOwner.Bio,
+                        Address = businessOwner.Address,
+                        PhoneNumber = businessOwner.PhoneNumber,
+                    };
+                    return Ok(businessOwnerDto);
+                }
+
+                // لو المستخدم ApplicationUser عادي
+                var userDto = new UserProfileDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    BirthDate = user.BirthDate,
+                    RegistrationDate = user.RegistrationDate,
+                    ProfilePictureURL = user.ProfilePictureURL,
+                    Bio = user.Bio,
+                    Address = user.Address,
+                    PhoneNumber = user.PhoneNumber,
+                };
+                return Ok(userDto);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                var errorMessages = new List<string>
+                {
+                    "حدث خطأ أثناء استرجاع ملف المستخدم",
+                    $"تفاصيل الخطأ: {errorDetails}"
+                };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
+        }
     }
 
 }

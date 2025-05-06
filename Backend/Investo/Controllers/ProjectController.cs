@@ -1,11 +1,16 @@
-﻿using Investo.DataAccess.Services.Interfaces;
+﻿using AutoMapper;
+using Investo.DataAccess.Migrations.CoreEntites;
+using Investo.DataAccess.Services.Interfaces;
 using Investo.DataAccess.Services.Project;
 using Investo.Entities.DTO.Project;
+using Investo.Entities.IRepository;
 using Investo.Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Investo.Presentation.Controllers
@@ -16,14 +21,18 @@ namespace Investo.Presentation.Controllers
     {
         private readonly IProjectService _projectService;
         private readonly ICategoryService _categoryService;
+        private readonly IProjectRepository _projectRepository;
+        private readonly IMapper _mapper;
 
-        private new List<string> _allowedExtenstions = new List<string> { ".jpg", ".png",".jpeg" };
+        private new List<string> _allowedExtenstions = new List<string> { ".jpg", ".png", ".jpeg" };
         private long _maxAllowedImageSize = 3 * 1048576;
 
-        public ProjectController(IProjectService projectService,ICategoryService categoryService)
+        public ProjectController(IProjectService projectService, ICategoryService categoryService, IMapper mapper, IProjectRepository projectRepository)
         {
             _projectService = projectService;
             _categoryService = categoryService;
+            _mapper = mapper;
+            _projectRepository = projectRepository;
         }
 
         // GET api/projects
@@ -89,7 +98,7 @@ namespace Investo.Presentation.Controllers
             catch (Exception ex)
             {
                 return NotFound(ex.Message);
-            } 
+            }
 
         }
 
@@ -105,7 +114,7 @@ namespace Investo.Presentation.Controllers
                 if (dto.ProjectImage != null)
                 {
                     var extension = Path.GetExtension(dto.ProjectImage.FileName).ToLower();
-                   
+
                     if (!_allowedExtenstions.Contains(extension))
                         return BadRequest("Only .png, .jpg, and .jpeg images are allowed!");
 
@@ -116,7 +125,7 @@ namespace Investo.Presentation.Controllers
                 if (!IsValidCategory) return BadRequest("Invalid Category Id");
 
 
-                var UpdatedProject = await _projectService.UpdateProject(id,dto);
+                var UpdatedProject = await _projectService.UpdateProject(id, dto);
                 return Ok(UpdatedProject);
             }
             catch (Exception ex)
@@ -127,7 +136,7 @@ namespace Investo.Presentation.Controllers
 
         // DELETE: api/project/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProject ([FromRoute] int id)
+        public async Task<IActionResult> DeleteProject([FromRoute] int id)
         {
             try
             {
@@ -148,7 +157,7 @@ namespace Investo.Presentation.Controllers
         /// </summary>
         // GET: api/project/review/{projectId}
         [HttpGet("review/{projectId}")]
-        public async Task<IActionResult> GetProjectRequestForReview([FromRoute]int projectId) // for admin
+        public async Task<IActionResult> GetProjectRequestForReview([FromRoute] int projectId) // for admin
         {
             var project = await _projectService.GetProjectReviewDtoByIdAsync(projectId);
             if (project == null)
@@ -177,7 +186,7 @@ namespace Investo.Presentation.Controllers
         /// </summary>
         // GET: api/project/status/owner/{ownerId}
         [HttpGet("status/owner/{ownerId}")]
-        public async Task<IActionResult> GetProjectStatus([FromRoute]string ownerId)// for both admin and BO
+        public async Task<IActionResult> GetProjectStatus([FromRoute] string ownerId)// for both admin and BO
         {
             var statusDto = await _projectService.GetProjectStatusByOwnerIdAsync(ownerId);
             if (statusDto == null)
@@ -198,7 +207,7 @@ namespace Investo.Presentation.Controllers
                 // نحوّل الـ string لـ ProjectStatus
                 if (!Enum.TryParse<ProjectStatus>(status, true, out var projectStatus))
                 {
-                    return BadRequest("الـ Status غلط! لازم يكون Pending, Accepted, أو Rejected."); 
+                    return BadRequest("الـ Status غلط! لازم يكون Pending, Accepted, أو Rejected.");
                 }
 
                 var requests = await _projectService.GetProjectRequestsByStatusAsync(projectStatus);
@@ -220,6 +229,101 @@ namespace Investo.Presentation.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
             }
         }
+
+        ///<summary>
+        /// Get project for authnticated user "must be authnticated"
+        ///<summary>
+        [HttpGet("get-project-for-currentUser")]
+        [Authorize]
+        public async Task<IActionResult> GetProjectForCurrentUser()
+        {
+            var project = new ValidationResult<ProjectReadDto>();
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                project = await _projectService.GetProjectForCurrentBusinessOwnerAsync(userId);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                var errorMessages = new List<string>
+                {
+                    "فيه مشكلة وإحنا بنحاول نجيب طلبات المشاريع",
+                    $"الرسالة: {errorDetails}"
+                };
+                return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
+            }
+            return Ok(project);
+        }
+        ///<summary>
+        /// Get Investory Count that participated or invested in project
+        ///<summary>
+        [HttpGet("GetNumberOfInvestorsForProject/{projectId}")]
+        public async Task<IActionResult> GetInvestorsCountByProjectId(int projectId)
+        {
+            var result = await _projectService.GetInvestorsCountByProjectIdAsync(projectId);
+
+            if (!result.IsValid)
+            {
+                if (result.Data == null)
+                {
+                    return NotFound(new ValidationResult<int?>
+                    {
+                        Data = null, 
+                        IsValid = false,
+                        ErrorMessage = result.ErrorMessage
+                    });
+                }
+
+                return BadRequest(new ValidationResult<int?>
+                {
+                    Data = 0,
+                    IsValid = false,
+                    ErrorMessage = result.ErrorMessage
+                });
+            }
+
+            return Ok(new ValidationResult<int?>
+            {
+                Data = result.Data,
+                IsValid = true,
+                ErrorMessage = null
+            });
+        }
+        [HttpGet("GetDocuments/{projectId}")]
+        public async Task<IActionResult> GetProjectDocuments(int projectId)
+        {
+            var result = await _projectService.GetProjectDocuments(projectId);
+
+            if (!result.IsValid)
+            {
+                if (result.Data == null)
+                {
+                    return NotFound(new ValidationResult<ProjecetDocumentsDto>
+                    {
+                        Data = null,
+                        IsValid = false,
+                        ErrorMessage = result.ErrorMessage
+                    });
+                }
+
+                return BadRequest(new ValidationResult<ProjecetDocumentsDto>
+                {
+                    Data = null,
+                    IsValid = false,
+                    ErrorMessage = result.ErrorMessage
+                });
+            }
+
+            return Ok(new ValidationResult<ProjecetDocumentsDto>
+            {
+                Data = result.Data,
+                IsValid = true,
+                ErrorMessage = null
+            });
+        }
+
+
 
     }
 }

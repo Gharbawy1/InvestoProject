@@ -24,6 +24,9 @@ using FluentEmail.Core;
 using FluentEmail.Smtp;
 using Investo.DataAccess.Services.EmailVerification;
 using Investo.DataAccess.Services.Investors;
+using Investo.DataAccess.Hubs;
+using Investo.DataAccess.Services.Notifications;
+using Stripe;
 
 namespace Investo
 {
@@ -38,6 +41,7 @@ namespace Investo
             builder.Services.AddControllers();
 
             builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddSignalR();
 
             // Active Model State
             builder.Services.AddControllers().ConfigureApiBehaviorOptions(
@@ -54,7 +58,7 @@ namespace Investo
             builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 
             builder.Services.AddScoped<IImageLoadService, CloudinaryImageLoadService>();
-            builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<ITokenService, DataAccess.Services.Token.TokenService>();
             builder.Services.AddAutoMapper(typeof (Program));
 
             builder.Services.AddScoped<IBusinessOwnerRepository, BusinessOwnerRepository>();
@@ -67,6 +71,13 @@ namespace Investo
             builder.Services.AddScoped<IInvestorRepository, InvestorRepository>();
             builder.Services.AddScoped<IInvestorService, InvestorService>();
 
+            builder.Services.AddScoped<INotificationRepository,NotificationRepository>();
+            builder.Services.AddScoped<NotificationService>();
+
+            //Stripe configuration
+            //Retrieve the Stripe API keys from appsettings.json
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
             {
@@ -99,15 +110,30 @@ namespace Investo
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]))
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationHub"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins", builder => 
                 {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
+                    builder
+                        .SetIsOriginAllowed(origin => true) // يخلي أي origin مسموح مؤقتًا
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials(); // مهم لو بتستخدم Google login أو SignalR
                 });
             });
 
@@ -185,9 +211,12 @@ namespace Investo
 
             app.UseHttpsRedirection();
 
+
             app.UseCors("AllowAllOrigins");
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapHub<NotificationHub>("/notificationHub");
 
 
             app.MapControllers();

@@ -56,6 +56,7 @@ namespace Investo.DataAccess.Repository
         public async Task<Project> GetByOwnerIdAsync(string ownerId)
         {
             return await _context.Projects
+                .Include(p=>p.Category)
                 .Include(p => p.Owner)       // Include Owner if you need BusinessOwner data
                 .FirstOrDefaultAsync(p => p.OwnerId == ownerId);
         }
@@ -81,6 +82,13 @@ namespace Investo.DataAccess.Repository
         {
             return await _context.Projects.AnyAsync(p => p.OwnerId == ownerId);
         }
+        public async Task<int> GetInvestorsCountByProjectIdAsync(int projectId)
+        {
+            return await _context.Offers
+                .Where(o => o.ProjectId == projectId && o.InvestorId != null && o.Status == OfferStatus.Accepted)
+                .Select(o => o.InvestorId)
+                .CountAsync();
+        }
 
         public async Task<decimal> GetProjectRaisedFundAmount(int projectId)
         {
@@ -98,6 +106,7 @@ namespace Investo.DataAccess.Repository
                 .Select(p => p.FundingGoal)
                 .FirstOrDefaultAsync();
         }
+
 
     }
 }

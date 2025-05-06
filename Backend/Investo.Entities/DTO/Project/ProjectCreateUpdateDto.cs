@@ -26,5 +26,9 @@ namespace Investo.Entities.DTO.Project
         public string Goals { get; set; }
         public byte CategoryId { get; set; }
         public string OwnerId { get; set; }
+
+        public IFormFile? ArticlesOfAssociation { get; set; }
+        public IFormFile? CommercialRegistryCertificate { get; set; }
+        public IFormFile? TextCard { get; set; }
     }
 }
