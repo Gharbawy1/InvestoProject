@@ -16,6 +16,9 @@ namespace Investo.Entities.DTO.Offer
         public DateTime ExpirationDate { get; set; }
         public string Status { get; set; } = string.Empty;
         public string InvestmentType {  get; set; } = string.Empty;
+        public string OfferTerms { get; set; }
+        public decimal? EquityPercentage { get; set; }
+        public decimal? ProfitShare { get; set; }
 
         public int ProjectId { get; set; }
 
