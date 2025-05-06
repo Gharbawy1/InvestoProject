@@ -182,9 +182,6 @@ namespace Investo.DataAccess.Services.Project
             }
 
             var mappedProjectReadDto = _mapper.Map<ProjectReadDto>(project);
-
-
-            var mappedProjectReadDto = _mapper.Map<ProjectReadDto>(project);
             mappedProjectReadDto.InvestorsCount = await _projectRepository.GetInvestorsCountByProjectIdAsync(id);
 
             return new ValidationResult<ProjectReadDto>
@@ -295,8 +292,6 @@ namespace Investo.DataAccess.Services.Project
                     ErrorMessage = "مفيش مشروع مرتبط بالمستخدم ده"
                 };
             }
-            var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
-            var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == project.Id)?.RaisedFund ?? 0;
             
             var mappedProject = new ProjectReadDto
             {
@@ -315,7 +310,7 @@ namespace Investo.DataAccess.Services.Project
                 Status = project.Status.ToString(),
                 ProjectLocation = project.ProjectLocation,
                 Subtitle= project.Subtitle,
-                RaisedFund = raisedFund,
+                RaisedFund = project.RaisedFund,
                 InvestorsCount = await _projectRepository.GetInvestorsCountByProjectIdAsync(project.Id)
 
             };

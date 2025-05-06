@@ -325,10 +325,7 @@ namespace Investo.DataAccess.Services.Offers
 
 
 
-        public async Task<IEnumerable<ProjectRaisedFundDto>> GetProjectsRaisedFundsAsync()
-        {
-            return await _offerRepository.GetOffersAmountForProjectAsync();
-        }
+        
 
         public async Task<ValidationResult<List<ReadOfferDto>>> GetAcceptedOffersByInvestorId(string investorId)
         {
