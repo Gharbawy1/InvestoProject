@@ -778,6 +778,22 @@ namespace Investo.Presentation.Controllers.Account
                 return StatusCode(500, new { Message = "An error occurred", Details = ex.Message });
             }
         }
+
+        [HttpGet("verify-email")]
+        public async Task<IActionResult> VerifyEmail(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound("User not found");
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return Ok("Email verified successfully");
+            }
+
+            return BadRequest("Email verification failed");
+        }
+
     }
 
 }

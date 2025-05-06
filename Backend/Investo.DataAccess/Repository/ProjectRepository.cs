@@ -82,5 +82,22 @@ namespace Investo.DataAccess.Repository
             return await _context.Projects.AnyAsync(p => p.OwnerId == ownerId);
         }
 
+        public async Task<decimal> GetProjectRaisedFundAmount(int projectId)
+        {
+            return await _context.Projects
+                .Where(p => p.Id == projectId)
+                .Select(p => p.RaisedFund)
+                .FirstOrDefaultAsync();
+        }
+
+
+        public async Task<decimal> GetProjectFundingGoal(int projectId)
+        {
+            return await _context.Projects
+                .Where(p => p.Id == projectId)
+                .Select(p => p.FundingGoal)
+                .FirstOrDefaultAsync();
+        }
+
     }
 }

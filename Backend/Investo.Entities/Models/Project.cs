@@ -32,6 +32,7 @@ namespace Investo.Entities.Models
         public string ProjectStory { get; set; }
         public string CurrentVision { get; set; }
         public string Goals { get; set; }
+        public decimal RaisedFund { get; set; } = 0m;
         //public byte[] BankAccountInformation { get; set; }// the bank account that money will be transferred to
 
         // Relationships

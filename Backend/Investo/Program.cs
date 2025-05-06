@@ -23,6 +23,7 @@ using System.Net;
 using FluentEmail.Core;
 using FluentEmail.Smtp;
 using Investo.DataAccess.Services.EmailVerification;
+using Investo.DataAccess.Services.Investors;
 
 namespace Investo
 {
@@ -62,6 +63,9 @@ namespace Investo
 
             builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
             builder.Services.AddScoped<IEmailServiceRepository, EmailServiceRepository>();
+
+            builder.Services.AddScoped<IInvestorRepository, InvestorRepository>();
+            builder.Services.AddScoped<IInvestorService, InvestorService>();
 
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
