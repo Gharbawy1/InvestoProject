@@ -26,7 +26,8 @@ namespace Investo.Entities.DTO.Project
         public string CategoryName { get; set; }
         public string OwnerName { get; set; }
         public string OwnerId { get; set; }
-        public decimal RaisedFund {  get; set; }
+        public decimal RaisedFund {  get; set; }    
+        public int InvestorsCount {  get; set; }
     }
 
 }

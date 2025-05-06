@@ -18,6 +18,9 @@ namespace Investo.DataAccess.Services.Offers
         Task<ValidationResult<List<ReadOfferDto>>> GetOffersByProjectId(int projectId);
         Task<ValidationResult<ReadOfferDto>> RespondToOfferAsync(int offerId, string responseStatus);
         Task<ValidationResult<IEnumerable<ReadOfferDto>>> GetOffersForCurrentUser(string userId, string userRole);
+        Task<IEnumerable<ProjectRaisedFundDto>> GetProjectsRaisedFundsAsync();
+        Task<ValidationResult<List<ReadOfferDto>>> GetAcceptedOffersByInvestorId(string investorId); // Get Accepted Offers  
+
     }
 
 }

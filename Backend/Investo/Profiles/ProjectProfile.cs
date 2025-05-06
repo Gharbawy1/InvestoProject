@@ -51,6 +51,11 @@ namespace Investo.Presentation.Profiles
                 .ForMember(dest => dest.NationalIDImageFrontURL, opt => opt.MapFrom(src => src.Owner != null ? src.Owner.PersonInfo.NationalIDImageFrontURL : null))
                 .ForMember(dest => dest.NationalIDImageBackURL, opt => opt.MapFrom(src => src.Owner != null ? src.Owner.PersonInfo.NationalIDImageBackURL : null));
 
+                CreateMap<Project, ProjecetDocumentsDto>()
+                .ForMember(dest => dest.ArticlesOfAssociationUrl, opt => opt.MapFrom(src => src.ArticlesOfAssociationUrl))
+                .ForMember(dest => dest.CommercialRegistryCertificateUrl, opt => opt.MapFrom(src => src.CommercialRegistryCertificateUrl))
+                .ForMember(dest => dest.TextCardUrl, opt => opt.MapFrom(src => src.TextCardUrl));
+
 
         }
 

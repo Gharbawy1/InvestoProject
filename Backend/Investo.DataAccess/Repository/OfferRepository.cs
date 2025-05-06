@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Investo.DataAccess.ApplicationContext;
+using Investo.Entities.DTO.Offer;
 using Investo.Entities.DTO.Project;
 using Investo.Entities.IRepository;
 using Investo.Entities.Models;
@@ -102,8 +103,32 @@ namespace Investo.DataAccess.Repository
                 .Include(o => o.Project)
                 .ToListAsync();
         }
-        
+
+
+        public async Task<decimal> GetOfferAmountAsync(int offerId)
+        {
+            return await _context.Offers.Where(o => o.Id == offerId).Select(o => o.OfferAmount).FirstOrDefaultAsync();
+        }
+
+
+        public async Task<List<ReadOfferDto>> GetAcceptedOffersByInvestorIdAsync(string InvestorId)
+        {
+            return await _context.Offers
+        .Where(o => o.InvestorId == InvestorId && o.Status == OfferStatus.Accepted)
+        .Select(o => new ReadOfferDto
+        {
+            OfferId = o.Id,
+            OfferAmount = o.OfferAmount,
+            ProjectId = o.ProjectId,
+            InvestorId = o.InvestorId,
+            Status = o.Status.ToString(),
+            InvestmentType = o.InvestmentType.ToString(),
+            ExpirationDate = o.ExpirationDate,
+            OfferDate = o.OfferDate
+            
+        })
+        .ToListAsync();
+        }
+
     }
-
-
 }

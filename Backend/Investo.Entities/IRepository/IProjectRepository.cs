@@ -19,12 +19,14 @@ namespace Investo.Entities.IRepository
         Task<List<Project>> GetProjectsByCategory(byte CategoryId);
         Task<IEnumerable<Project>> GetProjectRequestsByStatusAsync(ProjectStatus status);
 
-        //Task<IEnumerable<Project>> GetPendingProjectRequestsAsync();
-        //Task<IEnumerable<Project>> GetAcceptedProjectRequestsAsync();
-        //Task<IEnumerable<Project>> GetRejectedProjectRequestsAsync();
+        
         Task<bool> HasProjectForOwner(string ownerId);
         Task<decimal> GetProjectRaisedFundAmount(int Id);
         Task<decimal> GetProjectFundingGoal(int Id);
+        Task<int> GetInvestorsCountByProjectIdAsync(int projectId);
+      
+        
+
 
     }
 }
