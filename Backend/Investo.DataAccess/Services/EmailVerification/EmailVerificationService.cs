@@ -39,7 +39,7 @@ namespace Investo.DataAccess.Services.EmailVerification
 
             await _tokenRepo.AddTokenAsync(tokenEntity);
 
-            var verificationUrl = $"https://yourdomain.com/api/account/verify-email?token={token}";
+            var verificationUrl = $"https://investo.runasp.net/api/account/verify-email?userId={user.Id}&token={token}";
 
             await _fluentEmail
                 .To(user.Email)

@@ -786,6 +786,7 @@ namespace Investo.Presentation.Controllers.Account
             if (user == null) return NotFound("User not found");
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
+            var ConfiremEmail = await _emailverificationService.VerifyEmailAsync(token);
             if (result.Succeeded)
             {
                 return Ok("Email verified successfully");
