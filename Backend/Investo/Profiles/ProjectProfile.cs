@@ -12,17 +12,19 @@ namespace Investo.Presentation.Profiles
                 .ForMember(dest => dest.ProjectImageUrl, opt => opt.MapFrom(src => src.ProjectImageURL))
                 .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.Owner.FirstName + " " + src.Owner.LastName))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+                .ForMember(dest => dest.RaisedFund, opt => opt.MapFrom(src => src.RaisedFund));
 
             CreateMap<ProjectCreateUpdateDto, Project>()
                 .ForMember(dest => dest.ProjectImageURL, opt => opt.Ignore()) // هنسيبها مؤقتًا ونحطها يدوي بعد الماب
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => ProjectStatus.Pending)); // مباشرة نعينه Pending
 
             CreateMap<Entities.Models.Project, ProjectCardDetailsDto>()
-                .ForMember(dest => dest.ProjectImageUrl, opt => opt.MapFrom(src => src.ProjectImageURL))
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-                .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.Owner.FirstName + " " + src.Owner.LastName))
-                .ForMember(dest => dest.raisedFunds, opt => opt.Ignore()); // raisedFunds دي هتملاها يدوي
+            .ForMember(dest => dest.ProjectImageUrl, opt => opt.MapFrom(src => src.ProjectImageURL))
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+            .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.Owner.FirstName + " " + src.Owner.LastName))
+            .ForMember(dest => dest.raisedFunds, opt => opt.MapFrom(src => src.RaisedFund));
+
 
             CreateMap<Entities.Models.Project, ProjectCardDetailsDto>()
                 .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.Owner.FirstName + " " + src.Owner.LastName))

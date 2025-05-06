@@ -1,4 +1,5 @@
-﻿using Investo.DataAccess.Services.Image_Loading;
+﻿using Investo.DataAccess.Services.EmailVerification;
+using Investo.DataAccess.Services.Image_Loading;
 using Investo.DataAccess.Services.OAuth;
 using Investo.DataAccess.Services.Token;
 using Investo.Entities.DTO.Account;
@@ -9,6 +10,7 @@ using Investo.Entities.DTO.Account.Profile;
 using Investo.Entities.DTO.Account.UserDto;
 using Investo.Entities.DTO.Account.UsersProfile;
 using Investo.Entities.DTO.oAuth;
+using Investo.Entities.IRepository;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,8 +33,17 @@ namespace Investo.Presentation.Controllers.Account
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IImageLoadService _imageLoadService;
         private readonly IAuthGoogleService _authGoogleService;
+        private readonly IEmailVerificationService _emailverificationService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, ITokenService tokenService, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IImageLoadService imageLoadService, IAuthGoogleService authGoogleService)
+
+        public AccountController(UserManager<ApplicationUser> userManager,
+            ITokenService tokenService,
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration,
+            IImageLoadService imageLoadService,
+            IAuthGoogleService authGoogleService,
+            IEmailVerificationService emailServiceRepository)
         {
             _userManager = userManager;
             _tokenService = tokenService;
@@ -40,6 +51,7 @@ namespace Investo.Presentation.Controllers.Account
             _roleManager = roleManager;
             _imageLoadService = imageLoadService;
             _authGoogleService = authGoogleService;
+            _emailverificationService = emailServiceRepository;
             //_authGoogleService = authGoogleService;
             // _emailSender = emailSender;
         }
@@ -98,7 +110,7 @@ namespace Investo.Presentation.Controllers.Account
                     UserId = appUser.Id,
                     PhoneNumber = appUser.PhoneNumber
                 };
-
+                await _emailverificationService.SendVerificationEmailAsync(appUser);
                 return Ok(rgDto);
             }
             catch (Exception ex)
@@ -755,6 +767,23 @@ namespace Investo.Presentation.Controllers.Account
                 return StatusCode(500, new { Message = "An error occurred", Details = ex.Message });
             }
         }
+
+        [HttpGet("verify-email")]
+        public async Task<IActionResult> VerifyEmail(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound("User not found");
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var ConfiremEmail = await _emailverificationService.VerifyEmailAsync(token);
+            if (result.Succeeded)
+            {
+                return Ok("Email verified successfully");
+            }
+
+            return BadRequest("Email verification failed");
+        }
+
 
         /// <summary>
         /// Retrieves the profile of a user by their ID.

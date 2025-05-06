@@ -127,10 +127,6 @@ namespace Investo.DataAccess.Services.Project
 
             await _projectRepository.Update(project);
 
-            var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
-
-            var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == id)?.RaisedFund ?? 0;
-
             var MappedprojectReadDto = _mapper.Map<ProjectReadDto>(project);
 
             return new ValidationResult<ProjectReadDto>
@@ -154,40 +150,51 @@ namespace Investo.DataAccess.Services.Project
         public async Task<ValidationResult<IEnumerable<ProjectCardDetailsDto>>> GetAllProjects()
         {
             var projects = await _projectRepository.GetAll();
-            var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
-            var ListOfProjectCardDetails = new List<ProjectCardDetailsDto>();
+            var projectCardList = new List<ProjectCardDetailsDto>();
 
-            foreach(var project in projects)
+            foreach (var project in projects)
             {
                 var projectCard = _mapper.Map<ProjectCardDetailsDto>(project);
-                projectCard.raisedFunds = raisedFunds.FirstOrDefault(rf => rf.ProjectId == project.Id)?.RaisedFund ?? 0;
-                ListOfProjectCardDetails.Add(projectCard);
+                // Use MaxOfferAmount directly instead of calculating from Offers table
+                projectCard.raisedFunds = project.RaisedFund;
+                projectCardList.Add(projectCard);
             }
             return new ValidationResult<IEnumerable<ProjectCardDetailsDto>>
             {
-                Data = ListOfProjectCardDetails,
+                Data = projectCardList,
                 ErrorMessage = null,
                 IsValid = true
             };
-        } // auto mapper Done
+        }
+        // auto mapper Done
 
         public async Task<ValidationResult<ProjectReadDto>> GetProjectById(int id)
         {
             var project = await _projectRepository.GetById(id);
-            if (project == null) return null;
+            if (project == null)
+            {
+                return new ValidationResult<ProjectReadDto>
+                {
+                    Data = null,
+                    ErrorMessage = $"Project with ID {id} not found.",
+                    IsValid = false
+                };
+            }
 
-            var raisedFunds = await _offerService.GetProjectsRaisedFundsAsync();
-            var raisedFund = raisedFunds.FirstOrDefault(rf => rf.ProjectId == id)?.RaisedFund ?? 0;
+            var mappedProjectReadDto = _mapper.Map<ProjectReadDto>(project);
+
 
             var mappedProjectReadDto = _mapper.Map<ProjectReadDto>(project);
             mappedProjectReadDto.InvestorsCount = await _projectRepository.GetInvestorsCountByProjectIdAsync(id);
+
             return new ValidationResult<ProjectReadDto>
             {
                 Data = mappedProjectReadDto,
                 ErrorMessage = null,
                 IsValid = true
             };
-        } // auto mapper Done
+        }
+        // auto mapper Done
 
         public async Task<ValidationResult<ProjectRequestReviewDto>> GetProjectReviewDtoByIdAsync(int id)
         {

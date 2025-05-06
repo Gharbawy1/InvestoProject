@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Investo.DataAccess.Services.Investors;
 using Investo.Entities.DTO.Offer;
 using Investo.Entities.DTO.Project;
 using Investo.Entities.IRepository;
 using Investo.Entities.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis;
 
 namespace Investo.DataAccess.Services.Offers
 {
@@ -17,14 +19,16 @@ namespace Investo.DataAccess.Services.Offers
         private readonly IOfferRepository _offerRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IProjectRepository _projectRepository;
+        private readonly IInvestorService _investorService;
         private readonly IMapper _mapper;
 
-        public OfferService(IOfferRepository offerRepository, UserManager<ApplicationUser> userManager, IProjectRepository projectRepository, IMapper mapper)
+        public OfferService(IOfferRepository offerRepository, UserManager<ApplicationUser> userManager, IProjectRepository projectRepository, IMapper mapper, IInvestorService investorService)
         {
             _offerRepository = offerRepository;
             _userManager = userManager;
             _projectRepository = projectRepository;
             _mapper = mapper;
+            _investorService = investorService;
         }
 
         public async Task<ValidationResult<ReadOfferDto>> CreateOfferAsync(CreateOrUpdateOfferDto dto)
@@ -40,31 +44,54 @@ namespace Investo.DataAccess.Services.Offers
                 };
             }
 
-            var IsValidProject = await _projectRepository.GetById(dto.ProjectId);
-            if (IsValidProject == null)
+            var project = await _projectRepository.GetById(dto.ProjectId);
+            if (project == null)
             {
                 return new ValidationResult<ReadOfferDto>
                 {
                     Data = new ReadOfferDto(),
-                    ErrorMessage = $"Project associated with the given Offer with Id : {dto.ProjectId} not found",
+                    ErrorMessage = $"Project associated with the given Offer with Id: {dto.ProjectId} not found",
                     IsValid = false
                 };
             }
 
-            var isOfferAlreadyExists = await _offerRepository.HasInvestorMadeOfferForProject(dto.InvestorId, dto.ProjectId);
-            if (isOfferAlreadyExists)
+            var hasExistingOffer = await _offerRepository.HasInvestorMadeOfferForProject(dto.InvestorId, dto.ProjectId);
+            if (hasExistingOffer)
             {
                 return new ValidationResult<ReadOfferDto>
                 {
                     Data = new ReadOfferDto(),
-                    ErrorMessage = $"Investor with Name : {IsInvestorFound.FirstName} has already made an offer for this project.",
+                    ErrorMessage = $"Investor with Name: {IsInvestorFound.FirstName} has already made an offer for this project.",
                     IsValid = false
                 };
             }
 
+            var currentMaxOfferAmount = await _projectRepository.GetProjectRaisedFundAmount(dto.ProjectId);
+            var fundingGoal = await _projectRepository.GetProjectFundingGoal(dto.ProjectId);
+
+            var InvestorMaxValue = await _investorService.GetInvestmentMaxValue(dto.InvestorId);
+            if (dto.OfferAmount >= InvestorMaxValue)
+            {
+                return new ValidationResult<ReadOfferDto>
+                {
+                    Data = new ReadOfferDto(),
+                    ErrorMessage = "Offer exceeds max Investment amount for Investor.",
+                    IsValid = false
+                };
+            }
+
+            if (currentMaxOfferAmount + dto.OfferAmount >= fundingGoal)
+            {
+                return new ValidationResult<ReadOfferDto>
+                {
+                    Data = new ReadOfferDto(),
+                    ErrorMessage = "Offer exceeds the project’s funding goal.",
+                    IsValid = false
+                };
+            }
+            
             var offerEntity = new Entities.Models.Offer
             {
-
                 OfferAmount = dto.OfferAmount,
                 InvestmentType = Enum.Parse<InvestmentType>(dto.InvestmentType, ignoreCase: true),
                 EquityPercentage = dto.EquityPercentage,
@@ -192,9 +219,6 @@ namespace Investo.DataAccess.Services.Offers
             };
         }
     
-
-
-
         public async Task<ValidationResult<ReadOfferDto>> RespondToOfferAsync(int offerId, string responseStatus)
         {
             var offer = await _offerRepository.GetById(offerId);
@@ -228,6 +252,22 @@ namespace Investo.DataAccess.Services.Offers
                     IsValid = false,
                     ErrorMessage = $"The offer is already in the {offer.Status} status."
                 };
+            }
+            if (status == OfferStatus.Accepted && offer.Status != OfferStatus.Accepted)
+            {
+                var project = await _projectRepository.GetById(offer.ProjectId);
+                if (project == null)
+                {
+                    return new ValidationResult<ReadOfferDto>
+                    {
+                        Data = null,
+                        IsValid = false,
+                        ErrorMessage = "Associated project not found."
+                    };
+                }
+
+                project.RaisedFund += offer.OfferAmount;
+                await _projectRepository.Update(project);
             }
 
             offer.Status = status;
@@ -284,6 +324,7 @@ namespace Investo.DataAccess.Services.Offers
         }
 
 
+
         public async Task<IEnumerable<ProjectRaisedFundDto>> GetProjectsRaisedFundsAsync()
         {
             return await _offerRepository.GetOffersAmountForProjectAsync();
@@ -321,6 +362,7 @@ namespace Investo.DataAccess.Services.Offers
                 ErrorMessage = null
             };
         }
+
 
     }
 

@@ -4,6 +4,7 @@ using Investo.DataAccess.ApplicationContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Investo.DataAccess.Migrations.CoreEntites
 {
     [DbContext(typeof(CoreEntitiesDbContext))]
-    partial class CoreEntitiesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250505132851_ChangedMaxAmountToRaisedFundProperty")]
+    partial class ChangedMaxAmountToRaisedFundProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,16 +238,8 @@ namespace Investo.DataAccess.Migrations.CoreEntites
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ArticlesOfAssociationUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<byte>("CategoryId")
                         .HasColumnType("tinyint");
-
-                    b.Property<string>("CommercialRegistryCertificateUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CurrentVision")
                         .IsRequired()
@@ -300,10 +295,6 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("TextCardUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -103,19 +103,6 @@ namespace Investo.DataAccess.Repository
                 .Include(o => o.Project)
                 .ToListAsync();
         }
-        public async Task<IEnumerable<ProjectRaisedFundDto>> GetOffersAmountForProjectAsync()
-        {
-            return await _context.Offers
-        .Where(o => o.Status == OfferStatus.Accepted)
-        .GroupBy(o => o.ProjectId)
-        .Select(g => new ProjectRaisedFundDto
-        {
-            ProjectId = g.Key,
-            RaisedFund = g.Sum(o => o.OfferAmount)
-        })
-        .ToListAsync();
-
-        }
 
 
         public async Task<decimal> GetOfferAmountAsync(int offerId)

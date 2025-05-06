@@ -51,6 +51,8 @@ namespace Investo.DataAccess.ApplicationContext
         // User Types
         public DbSet<Investor> Investors { get; set; }
         public DbSet<BusinessOwner> BusinessOwners { get; set; }
+        public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
+
 
     }
 }

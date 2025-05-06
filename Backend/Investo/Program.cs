@@ -18,6 +18,12 @@ using Investo.DataAccess.Services.Token;
 using Investo.DataAccess.Services.Offers;
 using System.Reflection;
 using Investo.DataAccess.Services.OAuth;
+using System.Net.Mail;
+using System.Net;
+using FluentEmail.Core;
+using FluentEmail.Smtp;
+using Investo.DataAccess.Services.EmailVerification;
+using Investo.DataAccess.Services.Investors;
 using Investo.DataAccess.Hubs;
 using Investo.DataAccess.Services.Notifications;
 using Stripe;
@@ -58,6 +64,12 @@ namespace Investo
             builder.Services.AddScoped<IBusinessOwnerRepository, BusinessOwnerRepository>();
 
             builder.Services.AddScoped<IAuthGoogleService, AuthGoogleService>();
+
+            builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+            builder.Services.AddScoped<IEmailServiceRepository, EmailServiceRepository>();
+
+            builder.Services.AddScoped<IInvestorRepository, InvestorRepository>();
+            builder.Services.AddScoped<IInvestorService, InvestorService>();
 
             builder.Services.AddScoped<INotificationRepository,NotificationRepository>();
             builder.Services.AddScoped<NotificationService>();
@@ -170,6 +182,18 @@ namespace Investo
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("ProdCS"),
                     x => x.MigrationsHistoryTable("__EFMigrationsHistory", "RealTime")));
+
+
+            var emailSettings = builder.Configuration.GetSection("EmailSettings").Get<Presentation.EmailSettings>();
+
+            builder.Services
+                .AddFluentEmail(emailSettings.FromEmail)
+                .AddSmtpSender(new SmtpClient(emailSettings.SmtpServer)
+                {
+                    Port = emailSettings.SmtpPort,
+                    Credentials = new NetworkCredential(emailSettings.Username, emailSettings.Password),
+                    EnableSsl = emailSettings.EnableSsl
+                });
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
