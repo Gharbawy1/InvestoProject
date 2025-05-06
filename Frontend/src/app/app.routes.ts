@@ -111,6 +111,10 @@ export const routes: Routes = [
         .then(m => m.upgradeRoutes)
   },
   {
+    path: 'UserProfile',
+    loadComponent: () => import('./pages/user-profile/user-profile.component').then(m => m.UserProfileComponent)
+  },
+  {
     path: 'error',
     component: ErrorPageComponent,
   },

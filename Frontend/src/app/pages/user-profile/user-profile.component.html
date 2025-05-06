@@ -1,0 +1,74 @@
+<div class="max-w-4xl mx-auto px-4 py-8">
+  <!-- Profile Header -->
+  <div class="text-center mb-12 space-y-6">
+    <div class="relative inline-block group">
+      <div class="relative rounded-full transition-all duration-300 hover:scale-105">
+        <img 
+          *ngIf="profile"
+          [src]="profile.profilePictureURL" 
+          class="w-48 h-48 rounded-full border-4 border-white shadow-2xl object-cover hover:shadow-3xl transition-all duration-300"
+          alt="Profile"
+        >
+        <div class="absolute inset-0 rounded-full bg-gradient-to-t from-blue-600/20 via-transparent group-hover:from-blue-600/30 transition-all duration-300"></div>
+      </div>
+      
+      <label class="absolute -bottom-2 -right-2 bg-gradient-to-br from-blue-600 to-blue-700 p-3 rounded-full shadow-lg cursor-pointer hover:scale-110 transition-transform duration-200 group">
+        <input 
+          type="file" 
+          hidden 
+          accept="image/*"
+          (change)="onFileSelected($event)"
+        >
+        <div class="relative">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md">
+            Update photo
+            <span class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></span>
+          </span>
+        </div>
+      </label>
+    </div>
+
+    <!-- Name and Verification Badge -->
+    <div class="space-y-2">
+      <h1 *ngIf="profile" class="text-3xl font-bold text-gray-900 tracking-tight">
+        {{ profile.firstName }} {{ profile.lastName }}
+        <span *ngIf="isProfileComplete()" class="ml-2 bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded-full">
+          Verified
+        </span>
+      </h1>
+      <p *ngIf="profile" class="text-lg text-gray-600 font-medium">
+        {{ profile.roles && profile.roles.length ? profile.roles.join(', ') : 'Member' }}
+      </p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="profileImageError" class="mx-auto max-w-md px-4 py-3 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2">
+      <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+      </svg>
+      <span class="text-red-600 text-sm font-medium">{{ profileImageError }}</span>
+    </div>
+  </div>
+
+  <!-- Profile Info Card -->
+  <app-user-info-card
+    title="Your Profile"
+    [data]="displayData"
+    (editClicked)="openEdit()">
+  </app-user-info-card>
+
+  <!-- Edit Modal -->
+  <app-profile-edit-modal
+    *ngIf="activeModal === 'edit'"
+    [fields]="editableFields"
+    [initialData]="profile"
+    [modalTitle]="'Profile Details'"
+    [saveStatus]="saveStatus"
+    (save)="handleSave($event)"
+    (cancel)="cancelEdit()">
+  </app-profile-edit-modal>
+</div>
