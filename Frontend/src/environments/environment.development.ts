@@ -67,4 +67,8 @@ export const environment = {
     getAll: '/Document',
     getByUser: '/Document/get-documents-by-user',
   },
+
+  payment: {
+    createCheckoutSession: '/Stripe/create-checkout-session',
+  },
 };

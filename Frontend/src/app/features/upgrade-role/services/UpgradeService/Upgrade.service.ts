@@ -19,7 +19,6 @@ export class UpgradeService {
   }
 
   upgradeToBusinessOwner(formData: FormData): Observable<UpgradeResponse> {
-    debugger;
     for (const [key, value] of formData) {
       console.log(`${key}:`, value);
     }

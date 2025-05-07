@@ -279,7 +279,6 @@ export class AuthService {
    * @param response - Google callback containing auth code.
    */
   handleGoogleLogin(data: FormData): Observable<any> {
-    debugger;
     for (const [key, value] of data.entries()) {
       console.log(`${key}:`, value);
       if (value instanceof FormData) {
@@ -295,7 +294,6 @@ export class AuthService {
       )
       .pipe(
         catchError((error) => {
-          debugger;
           console.error('Error logging in with Google:', error);
           return throwError(() => error);
         })

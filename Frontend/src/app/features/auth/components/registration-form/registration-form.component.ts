@@ -83,11 +83,9 @@ export class RegistrationFormComponent {
         const formData = new FormData();
         formData.append('IdToken', this.googleRegister.IdToken);
         formData.append('Role', this.googleRegister.Role);
-        debugger;
         this.authService.handleGoogleLogin(formData).subscribe({
           next: (response) => {
             console.log(response);
-            debugger;
             window.location.reload();
           },
           error: (error) => {
@@ -183,7 +181,6 @@ export class RegistrationFormComponent {
 
   loginWithGoogle() {
     this.isGoogleLogin = true;
-    debugger;
     this.googleAuthService.initializeGoogleSignIn((response: any) => {
       if (response.credential) {
         const IdToken = response.credential;
