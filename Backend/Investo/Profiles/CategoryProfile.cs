@@ -9,6 +9,9 @@ namespace Investo.Presentation.Profiles
         public CategoryProfile()
         {
             CreateMap<Category, CategoryDTO>();
+            CreateMap<CreateCategoryDto, Category>();
+            CreateMap<UpdateCategoryDto, Category>();
+
         }
     }
 }
