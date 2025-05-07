@@ -57,10 +57,6 @@ export const routes: Routes = [
             './features/project/components/payment-page/payment-page.component'
           ).then((m) => m.PaymentPageComponent),
       },
-      {
-        path: 'error',
-        component: ErrorPageComponent,
-      },
     ],
   },
   {
@@ -72,6 +68,22 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/auth-model/auth-model.component').then(
             (m) => m.AuthModelComponent
+          ),
+      },
+      {
+        path: 'error',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./shared/componentes/error/error.component').then(
+            (m) => m.ErrorComponent
+          ),
+      },
+      {
+        path: 'success',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./shared/componentes/success/success.component').then(
+            (m) => m.SuccessComponent
           ),
       },
     ],
@@ -107,16 +119,25 @@ export const routes: Routes = [
   {
     path: 'UpgradeRole',
     loadChildren: () =>
-      import('./features/upgrade-role/routes')
-        .then(m => m.upgradeRoutes)
+      import('./features/upgrade-role/routes').then((m) => m.upgradeRoutes),
   },
   {
     path: 'UserProfile',
-    loadComponent: () => import('./pages/user-profile/user-profile.component').then(m => m.UserProfileComponent)
+    loadComponent: () =>
+      import('./pages/user-profile/user-profile.component').then(
+        (m) => m.UserProfileComponent
+      ),
   },
   {
     path: 'error',
     component: ErrorPageComponent,
+  },
+  {
+    path: 'OfferPay',
+    loadComponent: () =>
+      import(
+        './features/investor-dashboard/components/offers/offers.component'
+      ).then((m) => m.OffersComponent),
   },
   {
     path: '**',

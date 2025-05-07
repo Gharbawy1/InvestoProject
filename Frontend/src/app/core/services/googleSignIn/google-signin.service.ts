@@ -27,7 +27,7 @@ export class GoogleAuthService {
         client_id: environment.googleClientId,
         callback: callback,
       });
-
+      console.log('Google sign-in script loaded.');
       (window as any).google.accounts.id.prompt();
     };
 

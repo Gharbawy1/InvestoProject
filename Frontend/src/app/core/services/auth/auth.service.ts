@@ -101,6 +101,26 @@ export class AuthService {
       );
   }
 
+  createCurrentUser(response: any, rememberMe: any) {
+    debugger;
+    if (isPlatformBrowser(this.platformId)) {
+      // Store JWT token
+      this.storeToken(response.token, rememberMe);
+      const user = {
+        id: response.userId,
+        firstName: response.userName,
+        role: response.roles[0] || 'User',
+      };
+      // Store serialized user object
+      this.storeUserData('currentUser', user, rememberMe);
+      console.log(user);
+      debugger;
+      // Emit new user value to all subscribers
+      // this.userSubject.next(user);
+      this.isLoggedInSubject.next(true);
+    }
+  }
+
   /**
    * Sends password reset link to user email.
    * @param email - User email.
@@ -295,7 +315,6 @@ export class AuthService {
       )
       .pipe(
         catchError((error) => {
-          debugger;
           console.error('Error logging in with Google:', error);
           return throwError(() => error);
         })
