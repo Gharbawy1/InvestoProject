@@ -116,6 +116,8 @@ export class RegistrationFormComponent {
         const formData = new FormData();
         formData.append('IdToken', this.googleRegister.IdToken);
         formData.append('Role', this.googleRegister.Role);
+        console.log(this.googleRegister.Role);
+        debugger;
         if (this.googleRegister.BusinessOwnerData) {
           for (const [
             key,
@@ -127,6 +129,7 @@ export class RegistrationFormComponent {
         this.authService.handleGoogleLogin(formData).subscribe({
           next: (response) => {
             this.authService.createCurrentUser(response, true);
+            this.router.navigate(['/Home']);
           },
           error: (error) => {
             console.error('Error occurred:', error);
@@ -162,6 +165,7 @@ export class RegistrationFormComponent {
       this.authService.handleGoogleLogin(formData).subscribe({
         next: (response) => {
           this.authService.createCurrentUser(response, true);
+          this.router.navigate(['/Home']);
         },
         error: (error) => {
           console.error('Error occurred:', error);
@@ -208,27 +212,6 @@ export class RegistrationFormComponent {
     fileData.forEach((value, key) => {
       formData.append(key, value);
     });
-
-    return formData;
-  }
-
-  private googleRegisterToFormData(googleRegister: GoogleRegister): FormData {
-    const formData = new FormData();
-
-    formData.append('IdToken', googleRegister.IdToken);
-    formData.append('Role', googleRegister.Role);
-
-    if (googleRegister.InvestorData) {
-      for (const [key, value] of googleRegister.InvestorData.entries()) {
-        formData.append(`InvestorData.${key}`, value);
-      }
-    }
-
-    if (googleRegister.BusinessOwnerData) {
-      for (const [key, value] of googleRegister.BusinessOwnerData.entries()) {
-        formData.append(`BusinessOwnerData.${key}`, value);
-      }
-    }
 
     return formData;
   }
