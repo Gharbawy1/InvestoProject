@@ -28,9 +28,10 @@ namespace Investo.DataAccess.Repository
 
         public async Task<EmailVerificationToken?> GetTokenByTokenAsync(string token)
         {
-            return await _context.EmailVerificationTokens
+             return await _context.EmailVerificationTokens
+                .Where(t => t.Token == token)
                 .Include(t => t.User)
-                .FirstOrDefaultAsync(t => t.Token == token && !t.IsUsed && t.ExpiresAt > DateTime.UtcNow);
+                .FirstOrDefaultAsync(); 
         }
 
 

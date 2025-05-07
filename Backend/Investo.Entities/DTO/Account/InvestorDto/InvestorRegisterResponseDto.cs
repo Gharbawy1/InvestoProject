@@ -16,6 +16,8 @@ namespace Investo.Entities.DTO.Account.InvestorDto
         public IList<string> Roles { get; set; }
         public string UserId { get; set; }
         public string PhoneNumber { get; set; }
+        public bool IsEmailConfirmed { get; set; }
+        
     }
     // TODO : Complete the Business Owner DTO for regiestration 
     // TODO : Separate the registration for BO,Investor endpoints => /api/account/register-investor , /api/account/register-bo

@@ -17,29 +17,33 @@ namespace Investo.DataAccess.Services.EmailVerification
     {
         private readonly IFluentEmail _fluentEmail;
         private readonly IEmailServiceRepository _tokenRepo;
+        private readonly UserManager<ApplicationUser> _userManager;
+
         public EmailVerificationService(
             IFluentEmail fluentEmail,
-            IEmailServiceRepository tokenRepo)
+            IEmailServiceRepository tokenRepo,
+            UserManager<ApplicationUser> userManager)
         {
             _fluentEmail = fluentEmail;
             _tokenRepo = tokenRepo;
+            _userManager = userManager;
         }
 
         public async Task SendVerificationEmailAsync(ApplicationUser user)
         {
-            var token = Guid.NewGuid().ToString();
-
+            //var token = Guid.NewGuid().ToString();
+            var generatedConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var tokenEntity = new EmailVerificationToken
             {
-                Token = token,
+                Token = generatedConfirmationToken,
                 UserId = user.Id,
                 CreatedAt = DateTime.UtcNow,
                 ExpiresAt = DateTime.UtcNow.AddHours(24)
             };
 
             await _tokenRepo.AddTokenAsync(tokenEntity);
-
-            var verificationUrl = $"https://investo.runasp.net/api/account/verify-email?userId={user.Id}&token={token}";
+            var encodedToken = Uri.EscapeDataString(generatedConfirmationToken);
+            var verificationUrl = $"https://investo.runasp.net/api/account/verify-email?userId={user.Id}&token={encodedToken}";
 
             await _fluentEmail
                 .To(user.Email)
@@ -48,17 +52,19 @@ namespace Investo.DataAccess.Services.EmailVerification
                 .SendAsync();
         }
 
-        public async Task<bool> VerifyEmailAsync(string token)
+        public async Task<bool> VerifyEmailAsync(ApplicationUser applicationUser,string token)
         {
             var tokenEntity = await _tokenRepo.GetTokenByTokenAsync(token);
 
             if (tokenEntity == null) return false;
 
+            var result = await _userManager.ConfirmEmailAsync(applicationUser, token);
+            if (!result.Succeeded)
+            {
+                return false;
+            }
             tokenEntity.IsUsed = true;
-            tokenEntity.User.EmailConfirmed = true;
-
-            await _tokenRepo.SaveChangesAsync(); 
-
+            await _tokenRepo.SaveChangesAsync();
             return true;
         }
 

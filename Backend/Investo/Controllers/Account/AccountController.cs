@@ -52,8 +52,7 @@ namespace Investo.Presentation.Controllers.Account
             _imageLoadService = imageLoadService;
             _authGoogleService = authGoogleService;
             _emailverificationService = emailServiceRepository;
-            //_authGoogleService = authGoogleService;
-            // _emailSender = emailSender;
+            
         }
 
         [HttpPost("register-User")]
@@ -192,8 +191,10 @@ namespace Investo.Presentation.Controllers.Account
                     Token = await _tokenService.CreateToken(InvestoUser),
                     Roles = userRoles,
                     UserId = InvestoUser.Id,
-                    PhoneNumber = InvestoUser.PhoneNumber
+                    PhoneNumber = InvestoUser.PhoneNumber,
+                    IsEmailConfirmed = InvestoUser.EmailConfirmed
                 };
+                await _emailverificationService.SendVerificationEmailAsync(InvestoUser);
 
                 return Ok(rgDto);
             }
@@ -273,8 +274,10 @@ namespace Investo.Presentation.Controllers.Account
                     Token = await _tokenService.CreateToken(BoUser),
                     Roles = userRoles,
                     UserId = BoUser.Id,
-                    PhoneNumber = BoUser.PhoneNumber
+                    PhoneNumber = BoUser.PhoneNumber,
+                    IsEmailConfirmed = BoUser.EmailConfirmed
                 };
+                await _emailverificationService.SendVerificationEmailAsync(BoUser);
 
                 return Ok(rgDto);
             }
@@ -401,7 +404,7 @@ namespace Investo.Presentation.Controllers.Account
                     PhoneNumber = user.PhoneNumber,
                     UserName = user.UserName,
                     PasswordHash = user.PasswordHash,
-
+                    EmailConfirmed = user.EmailConfirmed,
                 };
 
                 // نحذف اليوزر القديم من الداتابيز
@@ -517,7 +520,9 @@ namespace Investo.Presentation.Controllers.Account
                     Token = await _tokenService.CreateToken(BusinessOwner),
                     Roles = userRoles,
                     UserId = BusinessOwner.Id,
-                    PhoneNumber = BusinessOwner.PhoneNumber
+                    PhoneNumber = BusinessOwner.PhoneNumber,
+                    IsEmailConfirmed = BusinessOwner.EmailConfirmed
+                    
                 };
 
                 return Ok(response);
@@ -774,9 +779,9 @@ namespace Investo.Presentation.Controllers.Account
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return NotFound("User not found");
 
-            var result = await _userManager.ConfirmEmailAsync(user, token);
-            var ConfiremEmail = await _emailverificationService.VerifyEmailAsync(token);
-            if (result.Succeeded)
+            var decodedToken = Uri.UnescapeDataString(token);
+            var IsEmailConfirmed = await _emailverificationService.VerifyEmailAsync(user, decodedToken);
+            if (IsEmailConfirmed)
             {
                 return Ok("Email verified successfully");
             }

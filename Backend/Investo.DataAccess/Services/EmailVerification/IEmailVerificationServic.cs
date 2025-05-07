@@ -10,7 +10,7 @@ namespace Investo.DataAccess.Services.EmailVerification
     public interface IEmailVerificationService
     {
         Task SendVerificationEmailAsync(ApplicationUser user);
-        Task<bool> VerifyEmailAsync(string token);
+        Task<bool> VerifyEmailAsync(ApplicationUser applicationUser,string token);
     }
 
 }
