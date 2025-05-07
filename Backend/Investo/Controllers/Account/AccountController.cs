@@ -107,7 +107,8 @@ namespace Investo.Presentation.Controllers.Account
                     Token = await _tokenService.CreateToken(appUser),
                     Roles = userRoles,
                     UserId = appUser.Id,
-                    PhoneNumber = appUser.PhoneNumber
+                    PhoneNumber = appUser.PhoneNumber,
+                    IsEmailConfirmed = appUser.EmailConfirmed
                 };
                 await _emailverificationService.SendVerificationEmailAsync(appUser);
                 return Ok(rgDto);
@@ -780,6 +781,8 @@ namespace Investo.Presentation.Controllers.Account
             if (user == null) return NotFound("User not found");
 
             var decodedToken = Uri.UnescapeDataString(token);
+            Console.WriteLine($"Received Token: {token}");
+            Console.WriteLine($"Decoded Token: {decodedToken}");
             var IsEmailConfirmed = await _emailverificationService.VerifyEmailAsync(user, decodedToken);
             if (IsEmailConfirmed)
             {

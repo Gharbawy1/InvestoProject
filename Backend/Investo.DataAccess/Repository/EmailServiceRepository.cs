@@ -28,11 +28,24 @@ namespace Investo.DataAccess.Repository
 
         public async Task<EmailVerificationToken?> GetTokenByTokenAsync(string token)
         {
-             return await _context.EmailVerificationTokens
-                .Where(t => t.Token == token)
-                .Include(t => t.User)
-                .FirstOrDefaultAsync(); 
+            var getted = await _context.EmailVerificationTokens
+       .Where(t => t.Token == token)
+       .Include(t => t.User)
+       .FirstOrDefaultAsync();
+
+            if (token == getted.Token)
+            {
+                Console.WriteLine("token == getted");
+            }
+            else
+            {
+                Console.WriteLine(token + "==================\n");
+                Console.WriteLine(getted.Token + "==================\n");
+            }
+            return getted;
+
         }
+    
 
 
         public async Task RemoveTokenAsync(EmailVerificationToken token)
