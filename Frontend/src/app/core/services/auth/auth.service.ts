@@ -101,6 +101,26 @@ export class AuthService {
       );
   }
 
+  createCurrentUser(response: any, rememberMe: any) {
+    debugger;
+    if (isPlatformBrowser(this.platformId)) {
+      // Store JWT token
+      this.storeToken(response.token, rememberMe);
+      const user = {
+        id: response.userId,
+        firstName: response.userName,
+        role: response.roles[0] || 'User',
+      };
+      // Store serialized user object
+      this.storeUserData('currentUser', user, rememberMe);
+      console.log(user);
+      debugger;
+      // Emit new user value to all subscribers
+      // this.userSubject.next(user);
+      this.isLoggedInSubject.next(true);
+    }
+  }
+
   /**
    * Sends password reset link to user email.
    * @param email - User email.
@@ -279,6 +299,7 @@ export class AuthService {
    * @param response - Google callback containing auth code.
    */
   handleGoogleLogin(data: FormData): Observable<any> {
+    debugger;
     for (const [key, value] of data.entries()) {
       console.log(`${key}:`, value);
       if (value instanceof FormData) {

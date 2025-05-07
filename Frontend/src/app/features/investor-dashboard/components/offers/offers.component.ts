@@ -10,8 +10,8 @@ import { ButtonComponent } from '../../../../shared/componentes/button/button.co
   styleUrl: './offers.component.css',
 })
 export class OffersComponent {
-  projectId: string = '11';
-  offerId: string = '51';
+  projectId: number = 11;
+  offerId: number = 51;
   router = Inject(Router);
 
   /**

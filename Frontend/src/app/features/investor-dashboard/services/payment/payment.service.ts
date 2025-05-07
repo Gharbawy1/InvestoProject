@@ -9,7 +9,10 @@ import { Observable } from 'rxjs';
 export class PaymentService {
   constructor(private http: HttpClient) {}
 
-  createCheckoutSession(projectId: string, offerId: string) {
+  createCheckoutSession(
+    projectId: number,
+    offerId: number
+  ): Observable<{ sessionUrl: string }> {
     return this.http.post<{ sessionUrl: string }>(
       `${environment.baseApi}${environment.payment.createCheckoutSession}`,
       { projectId, offerId }

@@ -85,8 +85,8 @@ export class RegistrationFormComponent {
         formData.append('Role', this.googleRegister.Role);
         this.authService.handleGoogleLogin(formData).subscribe({
           next: (response) => {
-            console.log(response);
-            window.location.reload();
+            this.authService.createCurrentUser(response, true);
+            this.router.navigate(['/Home']);
           },
           error: (error) => {
             console.error('Error occurred:', error);
@@ -126,7 +126,7 @@ export class RegistrationFormComponent {
         }
         this.authService.handleGoogleLogin(formData).subscribe({
           next: (response) => {
-            window.location.reload();
+            this.authService.createCurrentUser(response, true);
           },
           error: (error) => {
             console.error('Error occurred:', error);
@@ -161,7 +161,7 @@ export class RegistrationFormComponent {
       }
       this.authService.handleGoogleLogin(formData).subscribe({
         next: (response) => {
-          window.location.reload();
+          this.authService.createCurrentUser(response, true);
         },
         error: (error) => {
           console.error('Error occurred:', error);
@@ -179,7 +179,7 @@ export class RegistrationFormComponent {
     }
   }
 
-  loginWithGoogle() {
+  registerWithGoogle() {
     this.isGoogleLogin = true;
     this.googleAuthService.initializeGoogleSignIn((response: any) => {
       if (response.credential) {
