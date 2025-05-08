@@ -16,6 +16,9 @@ import { OfferService } from '../../features/investor-dashboard/services/offers/
 import { IOfferProfile } from '../../features/project/interfaces/IOfferProfile';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { InvestmentsComponent } from '../../features/investor-dashboard/components/investments/investments.component';
+import { IRecomended } from '../../features/investor-dashboard/interfaces/recommended';
+import { forkJoin, map } from 'rxjs';
+import { RecommendedComponent } from '../../features/investor-dashboard/components/recommended/recommended.component';
 
 @Component({
   selector: 'investor-dashboard',
@@ -32,10 +35,10 @@ import { InvestmentsComponent } from '../../features/investor-dashboard/componen
     DashboardTabComponent,
     MatCardSubtitle,
     ButtonComponent,
-    ListItemComponent,
     ButtonComponent,
     OffersComponent,
     InvestmentsComponent,
+    RecommendedComponent,
   ],
   templateUrl: './investor-dashboard.component.html',
   styleUrls: ['./investor-dashboard.component.css'],
@@ -49,22 +52,69 @@ export class InvestorDashboardComponent implements OnInit {
   portfolioGrowth = 12.4;
 
   investments: IOfferProfile[] = [];
-  wishlist: Iinvestment[] = [];
-  opportunities: Iinvestment[] = [];
   offers: IOfferProfile[] = [];
+  recomended: IRecomended[] = [];
+  categories: number[] = [];
 
   ngOnInit(): void {
     const investorId = this.authService.getUserId();
+
+    // get all offers
     this.offersService.getOffersForCurrentUser().subscribe({
-      next: (data) => (this.offers = data.data),
-      error: (err) => console.error('Error fetching investments:', err),
+      next: (data) => {
+        this.offers = data.data;
+
+        // After fetching offers, process categories
+        this.getCategories();
+      },
+      error: (err) => console.error('Error fetching offers:', err),
     });
+
+    // get accepted offers
     this.offersService.getAcceptedOffers(investorId ?? '').subscribe({
-      next: (data) => (this.investments = data.data),
+      next: (data) => {
+        this.investments = data.data;
+        this.totalInvested = this.sumOfAmounts();
+      },
       error: (err) => console.error('Error fetching investments:', err),
     });
   }
 
+  getCategories() {
+    // Use a Set to ensure no duplicate categories
+    const uniqueCategories = new Set<number>();
+
+    this.offers.forEach((offer) => {
+      if (offer.status === 'Accepted') {
+        uniqueCategories.add(offer.categoryId);
+      }
+    });
+
+    // Fetch recommended projects based on unique categories
+    const categoryRequests = Array.from(uniqueCategories).map((categoryId) =>
+      this.offersService.getProjectByCategory(categoryId).pipe(
+        map((data) => data.data) // Extract data directly from response
+      )
+    );
+
+    // Combine all category requests
+    forkJoin(categoryRequests).subscribe({
+      next: (responses) => {
+        this.recomended = responses
+          .flat()
+          .filter((project) => project.status === 'Accepted');
+      },
+      error: (err) =>
+        console.error('Error fetching recommended projects:', err),
+    });
+  }
+
+  sumOfAmounts() {
+    return this.investments.reduce(
+      (total, investment) => total + investment.offerAmount,
+      0
+    );
+  }
   getStatusClass(status: string): string {
     switch (status) {
       case 'active':

@@ -5,9 +5,7 @@
       class="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
     >
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">
-          Welcome back, {{ userName }}
-        </h1>
+        <h1 class="text-2xl font-bold text-gray-900">Welcome back</h1>
         <p class="text-gray-600 mt-1">
           Here's what's happening with your investments today.
         </p>
@@ -20,20 +18,12 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       <dashboard-card
         title="Total Invested"
         [value]="totalInvested"
         [description]="'Across ' + activeInvestments + ' active investments'"
         [showCurrency]="true"
-      >
-      </dashboard-card>
-
-      <dashboard-card
-        title="Portfolio Growth"
-        [value]="'+' + portfolioGrowth + '%'"
-        description="Year-to-date performance"
-        valueColor="text-green-600"
       >
       </dashboard-card>
 
@@ -51,8 +41,7 @@
       [tabs]="[
         { label: 'My Investments', content: investmentsContent },
         { label: 'Offers', content: offersContent },
-        { label: 'Recommended', content: opportunitiesContent },
-        { label: 'Watchlist', content: watchlistContent }
+        { label: 'Recomended', content: recommendedContent }
       ]"
     ></dashboard-tab>
 
@@ -95,70 +84,21 @@
       </ng-template>
     </ng-template>
 
-    <!-- Template for Opportunities Tab -->
-    <ng-template #opportunitiesContent>
+    <!-- Tempalte for Offers Tab -->
+    <ng-template #recommendedContent>
       <mat-card-subtitle>
-        Projects that match your investment preferences
+        Monitor the progress of your current Offers
       </mat-card-subtitle>
-      <ng-template
-        [ngIf]="opportunities.length == 0"
-        [ngIfElse]="opportunitiesList"
-      >
+      <ng-template [ngIf]="recomended.length == 0" [ngIfElse]="recomendedList">
         <div class="text-center py-8">
-          <p class="text-gray-500">There are no opportunities at the moment</p>
+          <p class="text-gray-500">There are no recommended projects yet.</p>
           <button-component variant="outline" routerLink="/">
             Browse All Projects
           </button-component>
         </div>
       </ng-template>
-      <ng-template #opportunitiesList>
-        <div class="space-y-6 mt-5">
-          <div
-            *ngFor="let opportunitie of opportunities"
-            class="border rounded-lg p-4 hover:shadow-md transition-shadow"
-          >
-            <list-item
-              [projectName]="opportunitie.projectName"
-              [date]="opportunitie.date"
-              [amount]="opportunitie.amount"
-              [status]="opportunitie.status"
-              [progress]="opportunitie.progress"
-              [returnRate]="opportunitie.returnRate"
-            ></list-item>
-          </div>
-        </div>
-      </ng-template>
-    </ng-template>
-
-    <!-- Template for Watchlist Tab -->
-    <ng-template #watchlistContent>
-      <mat-card-subtitle> Projects you're keeping an eye on </mat-card-subtitle>
-      <ng-template [ngIf]="wishlist.length == 0" [ngIfElse]="wishList">
-        <div class="text-center py-8">
-          <p class="text-gray-500">
-            You haven't added any projects to your watchlist yet.
-          </p>
-          <button-component variant="outline" routerLink="/">
-            Browse Projects
-          </button-component>
-        </div>
-      </ng-template>
-      <ng-template #wishList>
-        <div class="space-y-6 mt-5">
-          <div
-            *ngFor="let wishlistItem of wishlist"
-            class="border rounded-lg p-4 hover:shadow-md transition-shadow"
-          >
-            <list-item
-              [projectName]="wishlistItem.projectName"
-              [date]="wishlistItem.date"
-              [amount]="wishlistItem.amount"
-              [status]="wishlistItem.status"
-              [progress]="wishlistItem.progress"
-              [returnRate]="wishlistItem.returnRate"
-            ></list-item>
-          </div>
-        </div>
+      <ng-template #recomendedList>
+        <app-recommended [recommends]="recomended"></app-recommended>
       </ng-template>
     </ng-template>
   </div>
