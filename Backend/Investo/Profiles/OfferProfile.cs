@@ -10,11 +10,12 @@ namespace Investo.Presentation.Profiles
         public OfferProfile()
         {
             CreateMap<Offer, ReadOfferDto>()
-                .ForMember(dest=>dest.ProjectId,opt=>opt.MapFrom(src=>src.Project.Id))
+                .ForMember(dest => dest.ProjectId, opt => opt.MapFrom(src => src.Project.Id))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
                 .ForMember(dest => dest.InvestmentType, opt => opt.MapFrom(src => src.InvestmentType.ToString()))
                 .ForMember(dest => dest.Investor, opt => opt.MapFrom(src => src.Investor))
-                .ForMember(dest => dest.OfferId, opt => opt.MapFrom(src => src.Id));
+                .ForMember(dest => dest.OfferId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Project.CategoryId));
 
             
             CreateMap<CreateOrUpdateOfferDto, Offer>()

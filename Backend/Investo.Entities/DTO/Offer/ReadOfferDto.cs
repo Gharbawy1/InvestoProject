@@ -20,6 +20,7 @@ namespace Investo.Entities.DTO.Offer
         public decimal? EquityPercentage { get; set; }
         public decimal? ProfitShare { get; set; }
 
+        public byte CategoryId { get; set; }
         public int ProjectId { get; set; }
 
         public string InvestorId { get; set; }
