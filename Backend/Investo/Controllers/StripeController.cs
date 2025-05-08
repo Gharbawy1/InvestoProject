@@ -69,15 +69,14 @@ namespace Investo.Presentation.Controllers
                                 ProductData = new SessionLineItemPriceDataProductDataOptions
                                 {
                                     Name = $"استثمار في {project.Data.ProjectTitle}"
-                                    
                                 }
                             },
                             Quantity = 1
                         }
                     },
                     Mode = "payment",
-                    SuccessUrl = "https://localhost:5500/success?session_id={CHECKOUT_SESSION_ID}",
-                    CancelUrl = "https://localhost:5500/cancel",
+                    SuccessUrl = "https://localhost:4200/success?session_id={CHECKOUT_SESSION_ID}",
+                    CancelUrl = "https://localhost:4200/cancel",
                     ClientReferenceId = user.Id,
                     Metadata = new Dictionary<string, string>
                     {
