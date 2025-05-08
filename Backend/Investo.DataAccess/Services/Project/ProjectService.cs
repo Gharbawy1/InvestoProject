@@ -123,6 +123,22 @@ namespace Investo.DataAccess.Services.Project
                 project.ProjectImageURL = await _imageLoadService.Upload(dto.ProjectImage);
             }
 
+            if (dto.ArticlesOfAssociation != null && dto.ArticlesOfAssociation.Length > 0)
+            {
+                project.ArticlesOfAssociationUrl = await _imageLoadService.Upload(dto.ArticlesOfAssociation);
+            }
+
+            if (dto.CommercialRegistryCertificate != null && dto.CommercialRegistryCertificate.Length > 0)
+            {
+                project.CommercialRegistryCertificateUrl = await _imageLoadService.Upload(dto.CommercialRegistryCertificate);
+            }
+
+            if (dto.TextCard != null && dto.TextCard.Length > 0)
+            {
+                project.TextCardUrl = await _imageLoadService.Upload(dto.TextCard);
+            }
+
+
             _mapper.Map(dto, project);// src,dest
 
             await _projectRepository.Update(project);
