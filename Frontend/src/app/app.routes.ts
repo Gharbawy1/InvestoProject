@@ -33,16 +33,7 @@ export const routes: Routes = [
             './pages/investor-dashboard/investor-dashboard.component'
           ).then((m) => m.InvestorDashboardComponent),
       },
-      {
-        path: 'AdminDashboard',
-        loadComponent: () =>
-          import('./pages/admin-dashboard/admin-dashboard.component').then(
-            (m) => m.AdminDashboardComponent
-          ),
-        resolve: {
-          projects: adminResolver,
-        },
-      },
+
       {
         path: 'BusinessCreation',
         loadComponent: () =>
@@ -138,6 +129,16 @@ export const routes: Routes = [
       import(
         './features/investor-dashboard/components/offers/offers.component'
       ).then((m) => m.OffersComponent),
+  },
+  {
+    path: 'AdminDashboard',
+    loadComponent: () =>
+      import('./pages/admin-dashboard/admin-dashboard.component').then(
+        (m) => m.AdminDashboardComponent
+      ),
+    resolve: {
+      projects: adminResolver,
+    },
   },
   {
     path: '**',
