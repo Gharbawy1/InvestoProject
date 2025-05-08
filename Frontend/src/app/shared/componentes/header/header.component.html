@@ -107,15 +107,11 @@
 
             <button
               mat-menu-item
-              *ngIf="userRole === 'User' || userRole === 'BusinessOwner'"
+              *ngIf="userRole === 'Investor' || userRole === 'BusinessOwner'"
               (click)="goToDashboard()"
             >
               <mat-icon>dashboard</mat-icon>
               <span>Dashboard</span>
-            </button>
-            <button mat-menu-item *ngIf="userRole === 'Investor'">
-              <mat-icon>trending_up</mat-icon>
-              <span>My Investments</span>
             </button>
             <button mat-menu-item (click)="onLogout()">
               <mat-icon class="text-red-600">logout</mat-icon>

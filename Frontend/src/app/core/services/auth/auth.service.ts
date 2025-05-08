@@ -109,12 +109,12 @@ export class AuthService {
       const user = {
         id: response.userId,
         firstName: response.userName,
-        role: response.roles[0] || 'User',
+        role: response.roles[0],
       };
-      // Store serialized user object
-      this.storeUserData('currentUser', user, rememberMe);
       console.log(user);
       debugger;
+      // Store serialized user object
+      this.storeUserData('currentUser', user, rememberMe);
       // Emit new user value to all subscribers
       // this.userSubject.next(user);
       this.isLoggedInSubject.next(true);

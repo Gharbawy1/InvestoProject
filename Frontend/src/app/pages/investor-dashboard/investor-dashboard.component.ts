@@ -6,14 +6,16 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardSubtitle, MatCardModule } from '@angular/material/card';
-import { InvestmentService } from '../../features/investor-dashboard/services/investment/investment-service.service';
-import { WatchlistService } from '../../features/investor-dashboard/services/watchlist/watchlist.service';
-import { OpportunitiesService } from '../../features/investor-dashboard/services/opportunities/opportunities.service';
 import { Iinvestment } from '../../features/investor-dashboard/interfaces/iinvestment';
 import { DashboardCardComponent } from '../../features/investor-dashboard/components/dashboard-card/dashboard-card.component';
 import { DashboardTabComponent } from '../../features/investor-dashboard/components/dashboard-tab/dashboard-tab.component';
 import { ListItemComponent } from '../../features/investor-dashboard/components/list-item/list-item.component';
 import { ButtonComponent } from '../../shared/componentes/button/button.component';
+import { OffersComponent } from '../../features/investor-dashboard/components/offers/offers.component';
+import { OfferService } from '../../features/investor-dashboard/services/offers/offer.service';
+import { IOfferProfile } from '../../features/project/interfaces/IOfferProfile';
+import { AuthService } from '../../core/services/auth/auth.service';
+import { InvestmentsComponent } from '../../features/investor-dashboard/components/investments/investments.component';
 
 @Component({
   selector: 'investor-dashboard',
@@ -32,40 +34,34 @@ import { ButtonComponent } from '../../shared/componentes/button/button.componen
     ButtonComponent,
     ListItemComponent,
     ButtonComponent,
+    OffersComponent,
+    InvestmentsComponent,
   ],
   templateUrl: './investor-dashboard.component.html',
   styleUrls: ['./investor-dashboard.component.css'],
 })
 export class InvestorDashboardComponent implements OnInit {
-  private investmentService = inject(InvestmentService);
-  private watchlistService = inject(WatchlistService);
-  private opportunitiesService = inject(OpportunitiesService);
-
+  private authService = inject(AuthService);
+  private offersService = inject(OfferService);
   userName = 'John Doe';
   totalInvested = 125000;
   activeInvestments = 5;
   portfolioGrowth = 12.4;
 
-  investments: Iinvestment[] = [];
+  investments: IOfferProfile[] = [];
   wishlist: Iinvestment[] = [];
   opportunities: Iinvestment[] = [];
+  offers: IOfferProfile[] = [];
 
   ngOnInit(): void {
-    const investorId = '1';
-
-    this.investmentService.getInvestmentsByInvestorId(investorId).subscribe({
-      next: (data) => (this.investments = data),
+    const investorId = this.authService.getUserId();
+    this.offersService.getOffersForCurrentUser().subscribe({
+      next: (data) => (this.offers = data.data),
       error: (err) => console.error('Error fetching investments:', err),
     });
-
-    this.watchlistService.getWatchlistByInvestorId(investorId).subscribe({
-      next: (data) => (this.wishlist = data),
-      error: (err) => console.error('Error fetching watchlist:', err),
-    });
-
-    this.opportunitiesService.getAvailableOpportunities().subscribe({
-      next: (data) => (this.opportunities = data),
-      error: (err) => console.error('Error fetching opportunities:', err),
+    this.offersService.getAcceptedOffers(investorId ?? '').subscribe({
+      next: (data) => (this.investments = data.data),
+      error: (err) => console.error('Error fetching investments:', err),
     });
   }
 

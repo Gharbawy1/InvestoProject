@@ -1,6 +1,80 @@
-<button-component
-  [variant]="'default'"
-  (click)="payNow()"
-  class="btn btn-success"
-  >Pay Now</button-component
+<div
+  *ngFor="let offer of offers"
+  class="p-6 border rounded-lg mb-6 shadow-sm hover:shadow-lg transition-shadow"
 >
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+    <!-- Investor Info -->
+    <div>
+      <strong>Investor:</strong> {{ offer.investor?.firstName }}
+      {{ offer.investor?.lastName }}
+    </div>
+
+    <!-- Status -->
+    <div>
+      <strong>Status:</strong>
+      <span
+        [ngClass]="{
+          'text-green-600': offer.status === 'Accepted',
+          'text-yellow-600': offer.status === 'Pending',
+          'text-red-600': offer.status === 'Rejected'
+        }"
+        class="font-medium"
+      >
+        {{ offer.status }}
+      </span>
+    </div>
+
+    <!-- Amount -->
+    <div>
+      <strong>Amount:</strong> ${{ offer.offerAmount | number : "1.0-0" }}
+    </div>
+
+    <!-- Investment Type -->
+    <div><strong>Investment Type:</strong> {{ offer.investmentType }}</div>
+
+    <!-- Equity Percentage -->
+    <div *ngIf="offer.investmentType === 'Equity'">
+      <strong>Equity %:</strong> {{ offer.equityPercentage }}%
+    </div>
+
+    <!-- Profit Share Percentage -->
+    <div *ngIf="offer.investmentType === 'ProfitShare'">
+      <strong>Profit Share %:</strong> {{ offer.profitShare }}%
+    </div>
+
+    <!-- Offer Terms -->
+    <div><strong>Offer Terms:</strong> {{ offer.offerTerms }}</div>
+
+    <!-- Offer Date -->
+    <div>
+      <strong>Offer Date:</strong> {{ offer.offerDate | date : "medium" }}
+    </div>
+
+    <!-- Expiration Date -->
+    <div>
+      <strong>Expires On:</strong> {{ offer.expirationDate | date : "medium" }}
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="mt-4 flex space-x-4">
+    <!-- Pay Now Button -->
+    <button-component
+      *ngIf="offer.status === 'Accepted'"
+      [variant]="'default'"
+      (click)="payNow(offer.projectId, offer.offerId)"
+      class="btn btn-success"
+    >
+      Pay Now
+    </button-component>
+
+    <!-- View Business Button -->
+    <button-component
+      [variant]="'outline'"
+      [routerLink]="['/ProjectDetails', offer.projectId, 'overview']"
+      class="btn btn-outline-primary"
+    >
+      View Business
+    </button-component>
+  </div>
+</div>
