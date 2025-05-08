@@ -2,6 +2,8 @@
 using Investo.DataAccess;
 using Investo.DataAccess.ApplicationContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Investo.DataAccess.Services.Categories;
 using Investo.DataAccess.Services.Interfaces;
 using Investo.DataAccess.Repository;
@@ -73,6 +75,11 @@ namespace Investo
 
             builder.Services.AddScoped<INotificationRepository,NotificationRepository>();
             builder.Services.AddScoped<NotificationService>();
+
+            builder.Services.AddDataProtection()
+                .PersistKeysToDbContext<CoreEntitiesDbContext>() // <-- هنا السحر
+                .SetApplicationName("Investo");
+
 
             //Stripe configuration
             //Retrieve the Stripe API keys from appsettings.json

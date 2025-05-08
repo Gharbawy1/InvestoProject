@@ -1,4 +1,5 @@
 ﻿using Investo.Entities.Models;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Investo.DataAccess.ApplicationContext
 {
-    public class CoreEntitiesDbContext:IdentityDbContext<ApplicationUser>
+    public class CoreEntitiesDbContext : IdentityDbContext<ApplicationUser>, IDataProtectionKeyContext
     {
         public CoreEntitiesDbContext(DbContextOptions<CoreEntitiesDbContext> options)
              : base(options)
@@ -52,6 +53,7 @@ namespace Investo.DataAccess.ApplicationContext
         public DbSet<Investor> Investors { get; set; }
         public DbSet<BusinessOwner> BusinessOwners { get; set; }
         public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } 
 
 
     }
