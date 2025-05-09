@@ -1,74 +1,163 @@
-<div class="max-w-4xl mx-auto px-4 py-8">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-8" *ngIf="profile">
   <!-- Profile Header -->
-  <div class="text-center mb-12 space-y-6">
-    <div class="relative inline-block group">
-      <div class="relative rounded-full transition-all duration-300 hover:scale-105">
-        <img 
-          *ngIf="profile"
-          [src]="profile.profilePictureURL" 
-          class="w-48 h-48 rounded-full border-4 border-white shadow-2xl object-cover hover:shadow-3xl transition-all duration-300"
-          alt="Profile"
-        >
-        <div class="absolute inset-0 rounded-full bg-gradient-to-t from-blue-600/20 via-transparent group-hover:from-blue-600/30 transition-all duration-300"></div>
+  <div class="text-center mb-16 space-y-10 relative">
+    <!-- Gradient Background Effect -->
+    <div class="absolute inset-x-0 top-0 h-96 bg-gradient-to-br from-blue-50/30 to-purple-50/20 -skew-y-3 -translate-y-32 -z-10"></div>
+
+    <!-- Avatar Section -->
+    <div class="relative inline-block group transform transition-all duration-300 hover:-translate-y-1">
+      <div class="relative inline-block group transform transition-all duration-300 hover:-translate-y-1">
+        <div class="avatar-wrapper relative w-48 h-48 rounded-full overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg hover:shadow-xl transition-all duration-300">
+          <!-- Loading Overlay -->
+          <div *ngIf="profileImageLoading" 
+               class="absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center rounded-full">
+            <mat-icon class="animate-spin text-blue-600 !w-12 !h-12">autorenew</mat-icon>
+          </div>
+      
+          <!-- Image Content -->
+          <ng-container *ngIf="profile.profilePictureURL && !profileImageError; else showIcon">
+            <img
+              [src]="profile.profilePictureURL"
+              class="object-cover w-full h-full transform transition-transform duration-300 group-hover:scale-105"
+              alt="{{ profile.firstName }}'s profile photo"
+              loading="lazy"
+            />
+          </ng-container>
+      
+          <!-- Fallback Icon -->
+          <ng-template #showIcon>
+            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100">
+              <mat-icon class="text-gray-500/80 !w-20 !h-20 transition-all duration-300 group-hover:text-gray-600">
+                account_circle
+              </mat-icon>
+            </div>
+          </ng-template>
+      
+          <!-- Hover Effect -->
+          <div class="absolute inset-0 rounded-full border-2 border-white/30 group-hover:border-blue-200/50 transition-all duration-300 pointer-events-none"></div>
+          
+          <!-- Inner Shadow -->
+          <div class="absolute inset-0 rounded-full shadow-inner-md"></div>
+        </div>
+      
+        <!-- Error Message -->
+        <div *ngIf="profileImageError" 
+             class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-red-500 text-sm flex items-center gap-1 mt-2 animate-fade-in">
+          <mat-icon class="!w-4 !h-4">error</mat-icon>
+          <span>Failed to load image</span>
+        </div>
       </div>
       
-      <label class="absolute -bottom-2 -right-2 bg-gradient-to-br from-blue-600 to-blue-700 p-3 rounded-full shadow-lg cursor-pointer hover:scale-110 transition-transform duration-200 group">
-        <input 
-          type="file" 
-          hidden 
-          accept="image/*"
-          (change)="onFileSelected($event)"
-        >
-        <div class="relative">
-          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-          <span class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md">
-            Update photo
-            <span class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></span>
-          </span>
+      <!-- Edit Photo Button -->
+      <label 
+        *ngIf="isCurrentUser"
+        class="absolute -bottom-2 -right-2 cursor-pointer group/button animate-fade-in"
+        aria-label="Update profile photo"
+      >
+        <div class="bg-white p-1.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 active:scale-95">
+          <div class="bg-gradient-to-br from-blue-600 to-blue-700 p-2 rounded-full relative flex items-center justify-center ring-4 ring-white">
+            <input 
+              type="file" 
+              hidden 
+              accept="image/*" 
+              (change)="onFileSelected($event)"
+              #fileInput
+            >
+            <mat-icon class="text-white !w-6 !h-6 transform transition-transform group-hover/button:scale-110">photo_camera</mat-icon>
+          </div>
         </div>
+        <!-- Hover tooltip -->
+        <span class="absolute -top-9 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2.5 py-1.5 rounded-lg opacity-0 group-hover/button:opacity-100 transition-opacity duration-200 shadow-md">
+          Change Photo
+          <svg class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 text-gray-800 w-3 h-3" fill="currentColor" viewBox="0 0 12 12">
+            <path d="M6 12L0 0h12L6 12z"/>
+          </svg>
+        </span>
       </label>
     </div>
 
-    <!-- Name and Verification Badge -->
-    <div class="space-y-2">
-      <h1 *ngIf="profile" class="text-3xl font-bold text-gray-900 tracking-tight">
-        {{ profile.firstName }} {{ profile.lastName }}
-        <span *ngIf="isProfileComplete()" class="ml-2 bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded-full">
-          Verified
+    <!-- Profile Info -->
+    <div class="space-y-6">
+      <div class="flex flex-col items-center gap-4">
+        <h1 class="text-4xl font-bold text-gray-900 tracking-tight drop-shadow-sm bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text">
+          {{ profile.firstName }} {{ profile.lastName }}
+        </h1>
+        <span 
+          *ngIf="isProfileComplete()" 
+          class="inline-flex items-center bg-gradient-to-br from-green-100 to-green-50 text-green-700 text-sm px-4 py-2 rounded-xl border border-green-100/80 shadow-sm hover:shadow-md transition-shadow duration-200"
+        >
+          <mat-icon class="!w-5 !h-5 mr-2 text-green-600">verified</mat-icon>
+          Verified Profile
         </span>
-      </h1>
-      <p *ngIf="profile" class="text-lg text-gray-600 font-medium">
-        {{ profile.roles && profile.roles.length ? profile.roles.join(', ') : 'Member' }}
-      </p>
+      </div>
+
+      <div class="flex items-center justify-center text-sm text-gray-600 space-x-2 bg-white/50 px-5 py-2.5 rounded-xl shadow-inner backdrop-blur-sm border border-gray-100/80">
+        <mat-icon class="!w-5 !h-5 text-gray-500">calendar_today</mat-icon>
+        <span class="font-medium">
+          Joined {{ profile.registrationDate | date:'MMM yyyy' }} 
+          <span class="text-gray-500 font-normal ml-1.5">({{ calculateMembershipDuration() }})</span>
+        </span>
+      </div>
     </div>
 
-    <!-- Error Message -->
-    <div *ngIf="profileImageError" class="mx-auto max-w-md px-4 py-3 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2">
-      <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-      </svg>
-      <span class="text-red-600 text-sm font-medium">{{ profileImageError }}</span>
+    <!-- Upload Status -->
+    <div 
+      *ngIf="profileImageError"
+      class="mx-auto max-w-md p-3.5 rounded-xl flex items-center gap-3 bg-red-50/90 border border-red-200 backdrop-blur-sm animate-fade-in shadow-sm"
+    >
+      <div class="bg-red-100 p-1.5 rounded-lg">
+        <mat-icon class="!w-5 !h-5 text-red-600">error_outline</mat-icon>
+      </div>
+      <span class="text-sm font-medium text-red-700">
+        {{ profileImageError }}
+      </span>
     </div>
   </div>
 
-  <!-- Profile Info Card -->
-  <app-user-info-card
-    title="Your Profile"
-    [data]="displayData"
-    (editClicked)="openEdit()">
-  </app-user-info-card>
+  <!-- Profile Content -->
+  <div class="space-y-10">
+    <!-- Personal Information Card -->
+    <app-user-info-card
+      *ngIf="personalData.length > 0"
+      title="Personal Information"
+      [data]="personalData"
+      [allowEdit]="isCurrentUser"
+      (editClicked)="openEdit()"
+      class="hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 border border-gray-100/90 bg-white/80 backdrop-blur-sm"
+    >
+    </app-user-info-card>
+
+    <!-- Investment Section -->
+    <ng-container *ngIf="hasInvestorData">
+      <app-user-info-card
+        *ngIf="investmentData.length > 0"
+        title="Investment Preferences"
+        [data]="investmentData"
+        [allowEdit]="false"
+        class="bg-gradient-to-br from-blue-50/30 to-purple-50/20 border border-blue-100/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+      >
+      </app-user-info-card>
+    </ng-container>
+  </div>
 
   <!-- Edit Modal -->
   <app-profile-edit-modal
     *ngIf="activeModal === 'edit'"
     [fields]="editableFields"
     [initialData]="profile"
-    [modalTitle]="'Profile Details'"
+    [modalTitle]="'Edit Profile'"
     [saveStatus]="saveStatus"
     (save)="handleSave($event)"
-    (cancel)="cancelEdit()">
+    (cancel)="cancelEdit()"
+    class="animate-modal-entrance"
+  >
   </app-profile-edit-modal>
+
+  <div 
+    *ngIf="saveStatus === 'success'"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-green-50 text-green-700 px-6 py-3 rounded-xl flex items-center gap-3 animate-fade-in shadow-lg border border-green-200"
+  >
+    <mat-icon class="!w-5 !h-5 text-green-600">check_circle</mat-icon>
+    <span class="font-medium">Profile updated successfully!</span>
+  </div>
 </div>

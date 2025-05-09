@@ -7,7 +7,7 @@ export interface IBusiness {
   projectImage: File;
   articlesOfAssociation: File;
   commercialRegistryCertificate: File;
-  taxCard: File;
+  textCard: File;
   fundingExchange: string;
   projectVision: string;
   projectStory: string;

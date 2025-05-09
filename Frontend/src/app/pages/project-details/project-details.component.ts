@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { tap } from 'rxjs';
 import { IBusinessDetails } from '../../features/project/interfaces/IBusinessDetails';
 import { UserDetails } from '../../core/interfaces/UserDetails';
+import { SafeEncoder } from '../../shared/utils/encoding';
 
 @Component({
   selector: 'app-project-details',
@@ -28,6 +29,7 @@ export class ProjectDetailsComponent implements OnInit {
   project?: IBusinessDetails;
   owner?: UserDetails;
   error?: string;
+  errorMessage?: string;
 
   activeTab: string = 'overview';
 
@@ -109,6 +111,24 @@ export class ProjectDetailsComponent implements OnInit {
     });
   }
 
+  navigateToOwnerProfile() {
+    try {
+      const id = this.project?.ownerId;
+      if (!id) {
+        console.error('No owner ID available');
+        this.errorMessage = 'Owner information not available';
+        return;
+      }
+  
+      const encodedId = SafeEncoder.encode(id);
+      this.router.navigate(['/profile', encodedId]);
+    } catch (error) {
+      console.error('Navigation failed:', error);
+      this.errorMessage = 'Could not navigate to profile. Please try again.';
+      setTimeout(() => this.errorMessage = undefined, 5000);
+    }
+  }
+
   // --- PROJECT FIELDS ---
 
   /** Project thumbnail URL */
@@ -138,7 +158,7 @@ export class ProjectDetailsComponent implements OnInit {
 
   /** current funding */
   get raisedFunds(): number {
-    return this.project?.raisedFunds || 0;
+    return this.project?.raisedFund || 0;
   }
 
   /** Funding terms */
@@ -178,7 +198,6 @@ export class ProjectDetailsComponent implements OnInit {
 
   /** number of investor */
   get numOfInvestors(): number {
-    console.log(this.project?.investorsCount);
     return this.project?.investorsCount || 0;
   }
 

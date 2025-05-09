@@ -1,0 +1,84 @@
+<div class="p-8 max-h-[90vh] overflow-y-auto">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6 pb-4 border-b">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-900">
+        {{ offer.investor.firstName }} {{ offer.investor.lastName }}'s Offer
+      </h2>
+      <p class="text-gray-500 mt-1">Submitted {{ offer.offerDate | date:'mediumDate' }}</p>
+    </div>
+    <button (click)="close()" class="text-gray-400 hover:text-gray-500">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Offer Details -->
+    <div class="space-y-6">
+      <div class="bg-gray-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center">
+          <mat-icon class="mr-2 text-blue-600">request_quote</mat-icon>
+          Offer Details
+        </h3>
+        <div class="space-y-3">
+          <div>
+            <label class="text-sm text-gray-500">Investment Type</label>
+            <p class="font-medium">{{ offer.investmentType }}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-500">Offer Amount</label>
+            <p class="font-medium">{{ offer.offerAmount | number:'1.2-2' }} LE</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-500">Offer Terms</label>
+            <p class="whitespace-pre-line">{{ offer.offerTerms }}</p>
+          </div>
+          <div>
+            <label class="text-sm text-gray-500">Equity Percentage</label>
+            <p class="font-medium">{{ offer.equityPercentage }}</p>
+          </div>
+        </div>
+        <div>
+          <label class="text-sm text-gray-500">Profit Share</label>
+          <p class="font-medium">{{ offer.profitShare }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Investor Details -->
+    <div class="space-y-6">
+      <div class="bg-gray-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center">
+          <mat-icon class="mr-2 text-green-600">person</mat-icon>
+          Investor Profile
+        </h3>
+        <div class="flex items-center mb-4">
+          <p class="font-medium text-lg">{{ offer.investor.firstName }} {{ offer.investor.lastName }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="mt-8 pt-6 border-t flex flex-col sm:flex-row justify-end gap-3">
+    <button (click)="close()"
+            class="px-6 py-2 text-gray-700 hover:bg-gray-100 rounded-lg order-last sm:order-first">
+      Close Review
+    </button>
+    <div class="flex flex-col sm:flex-row gap-3">
+      <button (click)="onStatusChange('Rejected')"
+              [disabled]="offer.status === 'Rejected'"
+              [disabled]="offer.status !== 'Pending'"
+              class="px-6 py-2 text-red-600 hover:bg-red-50 rounded-lg border disabled:opacity-50">
+        Reject Offer
+      </button>
+      <button (click)="onStatusChange('Accepted')"
+              [disabled]="offer.status === 'Accepted'"
+              [disabled]="offer.status !== 'Pending'"
+              class="px-6 py-2 text-white bg-green-600 hover:bg-green-700 rounded-lg disabled:opacity-50">
+        Accept Offer
+      </button>
+    </div>
+  </div>
+</div>

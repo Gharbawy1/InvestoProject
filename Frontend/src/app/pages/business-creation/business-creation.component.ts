@@ -1,11 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  Validators,
-  FormGroup,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { BusinessCreationService } from '../../features/project/services/business-creation/business-creation.service';
 import { AutoFocusDirective } from '../../shared/directives/auto-focus/auto-focus.directive';
@@ -15,6 +10,26 @@ import { CategoryService } from '../../features/project/services/category/catego
 import { IBusiness } from '../../features/project/interfaces/IBusiness';
 import { take } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+export function imageFileValidator(maxSize: number): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const file = control.value as File | null;
+    if (!file) {
+      return null;
+    }
+    if (!(file instanceof File)) {
+      return { invalidFile: true };
+    }
+    if (!file.type.startsWith('image/')) {
+      return { fileType: true };
+    }
+    if (file.size > maxSize) {
+      return { fileSize: true };
+    }
+    return null;
+  };
+}
 
 @Component({
   selector: 'app-business-creation',
@@ -36,8 +51,8 @@ export class BusinessCreationComponent implements OnInit {
 
   // File object for the selected image
   businessImageFile: File | null = null;
-  articalOfAssociationFile: File | null = null;
-  commercialRegistrationFile: File | null = null;
+  articlesOfAssociationFile: File | null = null;
+  commercialRegistryFile: File | null = null;
   taxCardFile: File | null = null;
 
   // Flag to detect if form has been submitted (for displaying validation messages)
@@ -67,20 +82,20 @@ export class BusinessCreationComponent implements OnInit {
   ) {
     // Initialize form with validators
     this.businessForm = this.fb.group({
-      projectTitle: ['', [Validators.required, Validators.minLength(5)]],
-      subtitle: ['', [Validators.required, Validators.maxLength(150)]],
-      projectLocation: ['', Validators.required],
-      fundingGoal: [0, [Validators.required, Validators.min(10000)]],
-      projectImage: [null, [Validators.required]],
-      articlesOfAssociation: [null, [Validators.required]],
-      commercialRegistryCertificate: [null, [Validators.required]],
-      taxCard: [null, [Validators.required]],
-      fundingExchange: ['', [Validators.required]],
-      projectVision: ['', [Validators.required, Validators.minLength(100)]],
-      projectStory: ['', [Validators.required, Validators.minLength(200)]],
-      currentVision: ['', Validators.required],
-      goals: ['', Validators.required],
-      categoryId: [0, [Validators.required, Validators.min(1)]],
+      ProjectTitle: ['', [Validators.required, Validators.minLength(5)]],
+      Subtitle: ['', [Validators.required, Validators.maxLength(150)]],
+      ProjectLocation: ['', Validators.required],
+      FundingGoal: [0, [Validators.required, Validators.min(10000)]],
+      FundingExchange: ['', [Validators.required]],
+      ProjectVision: ['', [Validators.required, Validators.minLength(100)]],
+      ProjectStory: ['', [Validators.required, Validators.minLength(200)]],
+      CurrentVision: ['', Validators.required],
+      Goals: ['', Validators.required],
+      CategoryId: [0, [Validators.required, Validators.min(1)]],
+      ProjectImage: [null, [Validators.required, imageFileValidator(MAX_FILE_SIZE)]],
+      ArticlesOfAssociation: [null, [Validators.required, imageFileValidator(MAX_FILE_SIZE)]],
+      CommercialRegistryCertificate: [null, [Validators.required, imageFileValidator(MAX_FILE_SIZE)]],
+      TextCard: [null, [Validators.required, imageFileValidator(MAX_FILE_SIZE)]],
     });
   }
 
@@ -144,7 +159,7 @@ export class BusinessCreationComponent implements OnInit {
       next: (response) => {
         this.categories = response.data;
         this.isLoadingCategories = false;
-        this.businessForm.get('categoryId')?.enable();
+        this.businessForm.get('CategoryId')?.enable();
       },
       error: (err) => {
         this.errorMessage =
@@ -175,34 +190,50 @@ export class BusinessCreationComponent implements OnInit {
     const file = input.files?.[0];
 
     if (file) {
-      this.businessForm.patchValue({ [fileFieldName]: file });
-      this.businessForm.get(formControlName)?.updateValueAndValidity();
+      this.businessForm.patchValue({ [formControlName]: file });
       (this as any)[fileFieldName] = file;
+    } else {
+      this.businessForm.patchValue({ [formControlName]: '' });
+      (this as any)[fileFieldName] = null;
     }
+    this.businessForm.get(formControlName)?.updateValueAndValidity();
+    const ctrl = this.businessForm.get(formControlName)!;
+    ctrl.markAsTouched();
   }
 
   onImageSelected(event: Event) {
-    this.onFileSelected(event, 'projectImage', 'businessImageFile');
-  }
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    this.businessImageFile = file;
+  
+    const ctrl = this.businessForm.get('ProjectImage')!;
+    ctrl.setValue(file);
+    ctrl.markAsTouched();
+    ctrl.updateValueAndValidity();
+  }  
 
   onAssertionSelected(event: Event) {
     this.onFileSelected(
       event,
-      'articlesOfAssociation',
-      'articalOfAssociationFile'
+      'ArticlesOfAssociation',
+      'articlesOfAssociationFile'
     );
   }
 
   onComercialSelected(event: Event) {
     this.onFileSelected(
       event,
-      'commercialRegistryCertificate',
-      'commercialRegistrationFile'
+      'CommercialRegistryCertificate',
+      'commercialRegistryFile'
     );
   }
 
   onTaxCardSelected(event: Event) {
-    this.onFileSelected(event, 'taxCard', 'taxCardFile');
+    this.onFileSelected(
+      event, 
+      'TextCard', 
+      'taxCardFile'
+    );
   }
 
   /**
@@ -212,13 +243,7 @@ export class BusinessCreationComponent implements OnInit {
     this.formSubmitted = true;
     this.businessForm.markAllAsTouched();
 
-    if (
-      this.businessForm.invalid ||
-      !this.businessImageFile ||
-      !this.articalOfAssociationFile ||
-      !this.commercialRegistrationFile ||
-      !this.taxCardFile
-    ) {
+    if (this.businessForm.invalid) { 
       return;
     }
 
@@ -227,21 +252,37 @@ export class BusinessCreationComponent implements OnInit {
     const formValues = this.businessForm.value;
 
     const biz: IBusiness = {
-      ...formValues,
+      projectTitle: formValues.ProjectTitle,
+      subtitle: formValues.Subtitle,
+      projectLocation: formValues.ProjectLocation,
+      fundingGoal: formValues.FundingGoal,
+      projectImage: formValues.ProjectImage,
+      articlesOfAssociation: formValues.ArticlesOfAssociation,
+      commercialRegistryCertificate: formValues.CommercialRegistryCertificate,
+      textCard: formValues.TextCard,
+      fundingExchange: formValues.FundingExchange,
+      projectVision: formValues.ProjectVision,
+      projectStory: formValues.ProjectStory,
+      currentVision: formValues.CurrentVision,
+      goals: formValues.Goals,
+      categoryId: formValues.CategoryId,
       ownerId: this.ownerId!,
     };
 
-    // Fire & forget via your new service method
     this.businessCreationService.createProject(biz).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.router.navigate(['/BusinessDashboard']);
-        this.businessForm.reset();
+      next: (response) => {
+        if (response.isValid) {
+          this.router.navigate(['/BusinessDashboard']);
+        } else {
+          this.errorMessage = response.errorMessage || 'Creation failed';
+          this.isLoading = false;
+        }
       },
       error: (err) => {
-        console.error('Create failed', err);
+        console.error('Project creation failed', err);
+        this.errorMessage = 'Server error, please try again later.';
         this.isLoading = false;
-      },
+      }
     });
   }
 
@@ -249,13 +290,13 @@ export class BusinessCreationComponent implements OnInit {
    * Returns current length of project vision text for UI feedback
    */
   get visionLength() {
-    return this.businessForm.controls['projectVision'].value.length;
+    return this.businessForm.controls['ProjectVision'].value.length;
   }
 
   /**
    * Returns current length of project story text for UI feedback
    */
   get storyLength() {
-    return this.businessForm.controls['projectStory'].value.length;
+    return this.businessForm.controls['ProjectStory'].value.length;
   }
 }

@@ -1,5 +1,5 @@
 export interface UserProfile {
-  id: string;
+  id: string | null;
   userName: string;
   email: string;
   firstName: string;
@@ -9,7 +9,15 @@ export interface UserProfile {
   profilePictureURL: string;
   bio: string | null;
   address: string | null;
-  phoneNumber: string | null;
-  roles: string[];
-  nationalID: string;
+  phoneNumber: string;
+}
+
+export interface invesorUserProfile extends UserProfile {
+  riskTolerance: string;
+  investmentGoals: string;
+  minInvestmentAmount: number;
+  maxInvestmentAmount: number;
+  accreditationStatus: string;
+  netWorth: number;
+  annualIncome: number;
 }

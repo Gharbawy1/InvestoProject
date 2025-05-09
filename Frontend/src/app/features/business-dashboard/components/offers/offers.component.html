@@ -1,40 +1,16 @@
-<div class="grid gap-4 md:grid-cols-2">
-  <ng-container *ngIf="offers.length; else noOffers">
-    <div *ngFor="let offer of offers" class="p-4 mb-4 bg-white rounded shadow">
-      <div class="flex justify-between items-center">
-        <div>
-          <p>
-            <strong>Investor:</strong> {{ offer.investor.firstName }}
-            {{ offer.investor.lastName }}
-          </p>
-          <p><strong>Amount:</strong> ${{ offer.offerAmount }}</p>
-          <p><strong>Status:</strong> {{ offer.status }}</p>
-        </div>
+<!-- Error Message -->
+<div *ngIf="error" class="text-red-600 text-center py-6">
+  {{ error }}
+</div>
 
-        <div class="flex gap-2">
-          <button
-            class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-4 rounded"
-            (click)="acceptOffer(offer.offerId)"
-            [disabled]="offer.status !== 'Pending'"
-          >
-            Accept
-          </button>
+<!-- Offers List -->
+<app-offer-approval-card
+  *ngIf="!isLoading && offers.length"
+  [offers]="offers">
+</app-offer-approval-card>
 
-          <button
-            class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-4 rounded"
-            (click)="rejectOffer(offer.offerId)"
-            [disabled]="offer.status !== 'Pending'"
-          >
-            Reject
-          </button>
-        </div>
-      </div>
-    </div>
-  </ng-container>
-
-  <ng-template #noOffers>
-    <p class="text-center text-gray-500 col-span-full">
-      No offers received yet.
-    </p>
-  </ng-template>
+<!-- No Offers -->
+<div *ngIf="!isLoading && !offers.length" class="text-center text-gray-500 py-6">
+  <mat-icon class="text-4xl text-gray-400 mb-2">search_off</mat-icon>
+  <p>No offers found.</p>
 </div>

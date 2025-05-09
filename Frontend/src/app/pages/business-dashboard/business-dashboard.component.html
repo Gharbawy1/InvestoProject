@@ -1,4 +1,21 @@
-<div class="min-h-screen bg-gray-50 flex flex-col mt-25">
+<div *ngIf="!activeProject && canCreateProject" class="flex-1 flex items-center justify-center p-35">
+  <div class="text-center max-w-md">
+    <mat-icon class="text-6xl text-gray-400 mb-4">business</mat-icon>
+    <h2 class="text-2xl font-semibold text-gray-900 mb-2">No Project Found</h2>
+    <p class="text-gray-600 mb-6">
+      You haven't created a business project yet. Start your journey by creating a new project 
+      to attract investors and manage your business growth.
+    </p>
+    <button 
+      (click)="onNewProject()"
+      class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
+    >
+      Create New Project
+    </button>
+  </div>
+</div>
+
+<div *ngIf="activeProject" class="min-h-screen bg-gray-50 flex flex-col mt-25">
   <!-- Header Section: Navigation, Logo, Project Info, Notifications, and Profile Dropdown -->
   <header class="bg-white shadow-sm border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -8,16 +25,12 @@
         <div class="flex items-center space-x-2 sm:space-x-4">
           <!-- Logo: SVG with hover effect -->
           <div class="flex-shrink-0">
-            <svg
-              class="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 hover:text-blue-700 transition-colors duration-200"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
+            <img 
+              [src]="activeProject.projectImageUrl || 'placeholder-image-url'"
+              [alt]="activeProject.projectTitle"
+              title="Project Image"
+              class="w-12 h-12 rounded-lg object-cover border-2 border-gray-200"
             >
-              <path
-                d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-              ></path>
-            </svg>
           </div>
 
           <!-- Project Info: Displays the project name and status -->
@@ -26,52 +39,31 @@
             <h1
               class="text-lg font-semibold text-gray-900 truncate max-w-[200px] sm:max-w-none"
             >
-              {{ activeProject.name || "No Active Project" }}
+              {{ activeProject.projectTitle || 'No Active Project' }}
             </h1>
             <div class="flex items-center space-x-3">
               <!-- Status Badge: Shows project status with dynamic styles -->
-              <span
+              <span *ngIf="activeProject"
                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                 [ngClass]="{
-                  'bg-green-100 text-green-800':
-                    activeProject.status === 'Active',
-                  'bg-yellow-100 text-yellow-800':
-                    activeProject.status === 'Pending',
-                  'bg-red-100 text-red-800': activeProject.status === 'Closed'
+                  'bg-green-100 text-green-800': activeProject.status === 'Accepted',
+                  'bg-yellow-100 text-yellow-800': activeProject.status === 'Pending',
+                  'bg-red-100 text-red-800': activeProject.status === 'Rejected'
                 }"
               >
-                <!-- Status Icon: Small circle with dynamic color -->
-                <svg
-                  class="-ml-0.5 mr-1.5 h-2 w-2"
-                  fill="currentColor"
-                  viewBox="0 0 8 8"
+                <svg class="-ml-0.5 mr-1.5 h-2 w-2"
+                  fill="currentColor" viewBox="0 0 8 8"
                   [ngClass]="{
-                    'text-green-400': activeProject.status === 'Active',
+                    'text-green-400': activeProject.status === 'Accepted',
                     'text-yellow-400': activeProject.status === 'Pending',
-                    'text-red-400': activeProject.status === 'Closed'
+                    'text-red-400': activeProject.status === 'Rejected'
                   }"
-                >
-                  <circle cx="4" cy="4" r="3" />
-                </svg>
-                {{ activeProject.status || "N/A" }}
+                ><circle cx="4" cy="4" r="3"/></svg>
+                {{ activeProject.status }}
+                <span *ngIf="activeProject.categoryName" class="ml-2 text-gray-600">
+                  • {{ activeProject.categoryName }}
+                </span>
               </span>
-              <!-- Deadline Display: Shows project deadline using Angular date pipe -->
-              <div class="flex items-center text-xs sm:text-sm text-gray-500">
-                <svg
-                  class="w-3 h-3 sm:w-4 sm:h-4 mr-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                <span>{{ activeProject.deadline | date : "MMM d, y" }}</span>
-              </div>
             </div>
           </div>
         </div>
@@ -80,23 +72,11 @@
         <div class="flex items-center space-x-2 sm:space-x-4">
           <!-- Notifications Button: Triggers display of notifications -->
           <button
-            class="p-1 sm:p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="p-1 sm:p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors duration-200 focus:outline-none"
             title="Notifications"
           >
             <!-- Icon-->
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              />
-            </svg>
+            <mat-icon>notifications</mat-icon>
             <!-- Notification Count: Dynamically updates-->
             <span
               *ngIf="notificationCount > 0"
@@ -105,97 +85,9 @@
               {{ notificationCount > 9 ? "9+" : notificationCount }}
             </span>
           </button>
-
-          <!-- Profile Dropdown: Provides access to settings and logout -->
-          <div class="relative">
-            <button
-              (click)="toggleDropdown()"
-              class="flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full"
-              aria-haspopup="true"
-              [attr.aria-expanded]="isDropdownOpen"
-            >
-              <div
-                class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center shadow-sm transition-all duration-200 hover:shadow-md ring-2 ring-white"
-              >
-                <!-- User Initials: Rendered dynamically-->
-                <span class="text-white font-medium text-sm sm:text-lg">{{
-                  userInitials
-                }}</span>
-              </div>
-            </button>
-
-            <!-- Dropdown Menu: Transition-enabled with settings and logout options -->
-            <div
-              *ngIf="isDropdownOpen"
-              class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50
-                      transform transition-all duration-150 ease-out origin-top
-                      {{
-                isDropdownOpen
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 -translate-y-2'
-              }}
-                      {{
-                isDropdownOpen ? 'pointer-events-auto' : 'pointer-events-none'
-              }}"
-            >
-              <div class="py-1" role="menu" aria-orientation="vertical">
-                <!-- Settings Link -->
-                <a
-                  href="/settings"
-                  class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  role="menuitem"
-                >
-                  <svg
-                    class="w-5 h-5 mr-3 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 001.066 2.573c-.94 1.543.826 3.31 2.37 2.37.996.608 2.296.07 2.572-1.065z"
-                    />
-                  </svg>
-                  Settings
-                </a>
-                <div class="border-t border-gray-100 my-1"></div>
-                <!-- Logout Link -->
-                <a
-                  href="/logout"
-                  class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                  role="menuitem"
-                >
-                  <svg
-                    class="w-5 h-5 mr-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                    />
-                  </svg>
-                  Logout
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
-    <!-- Dropdown Backdrop: Closes the dropdown when clicking outside -->
-    <div
-      class="fixed inset-0 z-40 transition-opacity duration-150"
-      [class.hidden]="!isDropdownOpen"
-      [class.opacity-0]="!isDropdownOpen"
-      [class.pointer-events-none]="!isDropdownOpen"
-      (click)="isDropdownOpen = false"
-    ></div>
   </header>
 
   <div class="flex flex-1 overflow-hidden">
@@ -241,41 +133,23 @@
 
       <!-- Dynamic Content Sections -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Overview Section -->
+        <section *ngIf="activeSection === 'overview'" class="animate-content-fade">
+          <app-overview
+            [project]="activeProject"
+          ></app-overview>
+        </section>
+
         <!-- Stats Section -->
         <section *ngIf="activeSection === 'stats'" class="animate-content-fade">
-          <app-stats-cards></app-stats-cards>
+          <app-stats-cards
+            [project]="activeProject"
+          ></app-stats-cards>
         </section>
 
-        <!-- Funding Section -->
-        <section
-          *ngIf="activeSection === 'funding'"
-          class="animate-content-fade"
-        >
-          <app-daily-funding-chart></app-daily-funding-chart>
-        </section>
-
-        <!-- Performance Section -->
-        <section
-          *ngIf="activeSection === 'performance'"
-          class="animate-content-fade"
-        >
-          <app-performance-chart></app-performance-chart>
-        </section>
-
-        <!-- Demographic Section -->
-        <section
-          *ngIf="activeSection === 'demographic'"
-          class="animate-content-fade"
-        >
-          <app-demographic-card></app-demographic-card>
-        </section>
-
-        <!-- Management Section -->
-        <section
-          *ngIf="activeSection === 'management'"
-          class="animate-content-fade"
-        >
-          <app-project-management></app-project-management>
+        <!-- Offers Section -->
+        <section *ngIf="activeSection === 'offers'" class="animate-content-fade">
+          <app-offers></app-offers>
         </section>
 
         <!-- Documents Section -->
@@ -283,93 +157,30 @@
           *ngIf="activeSection === 'documents'"
           class="animate-content-fade"
         >
-          <app-document-center></app-document-center>
+          <app-document-center
+            *ngIf="activeProject"
+            [projectId]="activeProject.id ?? 0"
+          ></app-document-center>
         </section>
 
-        <!-- Communication Section -->
+        <!-- Notifications Section -->
         <section
-          *ngIf="activeSection === 'communication'"
+          *ngIf="activeSection === 'notifications'"
           class="animate-content-fade"
         >
-          <app-communication-hub></app-communication-hub>
+          <app-notifications-tab></app-notifications-tab>
         </section>
 
-        <!-- Tabs Navigation & Content-->
-        <section>
-          <!-- Main Tabs Section -->
-          <section
-            *ngIf="activeSection === 'tabs'"
-            class="animate-content-fade"
-          >
-            <nav
-              class="flex overflow-x-auto scrollbar-custom border-b border-gray-200 pb-3"
-              aria-label="Dashboard Navigation Tabs"
-            >
-              <button
-                *ngFor="let tab of tabs; let i = index"
-                (click)="activeTab = i"
-                class="relative py-3 px-6 font-medium text-gray-500 transition-colors duration-300 hover:text-blue-500 focus:outline-none"
-                [class.text-blue-600]="activeTab === i"
-                [attr.aria-current]="activeTab === i ? 'page' : 'false'"
-              >
-                {{ tab.label }}
-                <span
-                  *ngIf="activeTab === i"
-                  class="absolute inset-x-0 bottom-0 h-1 bg-blue-600 rounded-t"
-                ></span>
-              </button>
-            </nav>
-
-            <div class="space-y-6">
-              <!-- Original Tabs Content -->
-              <div
-                class="mt-6 p-6 bg-white shadow rounded-lg transition-all duration-300 hover:shadow-md"
-              >
-                <!-- Overview Tab Content -->
-                <div
-                  class="animate-content-fade"
-                  [class.hidden]="activeTab !== 0"
-                >
-                  <app-overview-tab></app-overview-tab>
-                </div>
-                <!-- Offers Tab Content -->
-                <div
-                  class="animate-content-fade"
-                  [class.hidden]="activeTab !== 5"
-                >
-                  <app-offers [offers]="offers"></app-offers>
-                </div>
-                <!-- Projects Tab Content -->
-                <div
-                  class="animate-content-fade"
-                  [class.hidden]="activeTab !== 1"
-                >
-                  <app-projects-tab></app-projects-tab>
-                </div>
-                <!-- Messages Tab Content -->
-                <div
-                  class="animate-content-fade"
-                  [class.hidden]="activeTab !== 2"
-                >
-                  <app-messages-tab></app-messages-tab>
-                </div>
-                <!-- Notifications Tab Content -->
-                <div
-                  class="animate-content-fade"
-                  [class.hidden]="activeTab !== 3"
-                >
-                  <app-notifications-tab></app-notifications-tab>
-                </div>
-                <!-- Calendar Tab Content -->
-                <div
-                  class="animate-content-fade"
-                  [class.hidden]="activeTab !== 4"
-                >
-                  <app-calendar-tab></app-calendar-tab>
-                </div>
-              </div>
-            </div>
-          </section>
+        <!-- Manage Section -->
+        <section 
+          *ngIf="activeSection === 'manage'" 
+          class="animate-content-fade"
+        >
+          <app-manage
+            *ngIf="activeProject"
+            [projectId]="activeProject.id ?? 0"
+            (projectDeleted)="handleProjectDeleted($event)"
+          ></app-manage>
         </section>
       </div>
     </main>

@@ -26,14 +26,6 @@ export class ProjectResolver {
         const isRejected = data.status.toLowerCase() === 'rejected';
         const isOwner = data.ownerId === currentUserId;
 
-        console.log('Resolver Check:', {
-          status: data.status,
-          currentUserId,
-          ownerId: data.ownerId,
-          isRejected,
-          isOwner,
-        });
-
         if (isRejected && !isOwner) {
           this.router.navigate(['/']);
           return EMPTY;

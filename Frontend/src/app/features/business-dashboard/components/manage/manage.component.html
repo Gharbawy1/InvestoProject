@@ -1,0 +1,398 @@
+<div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-gray-100/50">
+  <h2 class="text-xl font-semibold mb-4">Edit Your Project</h2>
+  <form [formGroup]="form" (ngSubmit)="openUpdateConfirm()" enctype="multipart/form-data">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <!-- Title -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Project Title</label>
+        <input
+          formControlName="projectTitle"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+          placeholder="Enter project title"
+        />
+        <div class="min-h-[20px]">
+          <p
+            *ngIf="form.get('projectTitle')?.invalid && (form.get('projectTitle')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
+            * Project title is required
+          </p>
+        </div>
+      </div>
+
+      <!-- Subtitle -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Subtitle</label>
+        <input
+          formControlName="subtitle"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+          placeholder="Enter project subtitle"
+        />
+      </div>
+
+      <!-- Location -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Location</label>
+        <input
+          formControlName="projectLocation"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+          placeholder="Enter project location"
+        />
+      </div>
+
+      <!-- Funding Goal -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Funding Goal</label>
+        <input
+          type="number"
+          formControlName="fundingGoal"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+          placeholder="Enter funding goal"
+        />
+        <div class="min-h-[20px]">
+          <p
+            *ngIf="form.get('fundingGoal')?.invalid && (form.get('fundingGoal')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
+            * Funding goal is required
+          </p>
+        </div>
+      </div>
+
+      <!-- Exchange -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Funding Exchange</label>
+        <input
+          formControlName="fundingExchange"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+          placeholder="Enter funding exchange details"
+        />
+      </div>
+
+      <!-- Category -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Category</label>
+        <select
+          formControlName="categoryId" 
+          title="Select category"
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+        >
+          <option [ngValue]="null" disabled>Select a category…</option>
+          <option *ngFor="let cat of categories" [ngValue]="cat.id">
+            {{ cat.name }}
+          </option>
+        
+        </select>
+        <div class="min-h-[20px]">
+          <p
+            *ngIf="form.get('categoryId')?.invalid && (form.get('categoryId')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
+            * Category is required
+          </p>
+        </div>
+      </div>
+
+      <!-- Text fields -->
+      <div class="col-span-1 md:col-span-2 flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Project Vision</label>
+        <textarea 
+          title="Enter project vision"
+          formControlName="projectVision" 
+          rows="2" 
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+        ></textarea>
+      </div>
+
+      <div class="col-span-1 md:col-span-2 flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Project Story</label>
+        <textarea 
+          title="Enter project story"
+          formControlName="projectStory" 
+          rows="3" 
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+        ></textarea>
+      </div>
+
+      <div class="col-span-1 md:col-span-2 flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Current Vision</label>
+        <textarea 
+          title="Enter current vision"
+          formControlName="currentVision" 
+          rows="2" 
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+        ></textarea>
+      </div>
+
+      <div class="col-span-1 md:col-span-2 flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Goals</label>
+        <textarea 
+          title="Enter goals"
+          formControlName="goals" 
+          rows="2" 
+          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
+        ></textarea>
+      </div>
+
+      <!-- Business Image -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Business Image</label>
+        <div
+          class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors hover:border-gray-400"
+        >
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event, 'projectImage')"
+            hidden
+            #businessImageInput
+          />
+          <button
+            type="button"
+            class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
+            (click)="businessImageInput.click()"
+          >
+            Upload Business image
+          </button>
+          <div class="min-h-[20px]">
+            <div *ngIf="form.get('projectImage')?.errors && (formSubmitted || form.get('projectImage')?.touched)" class="text-red-500 text-sm mt-1">
+              <div *ngIf="form.get('projectImage')?.hasError('fileType')">
+                * Only image files are allowed (JPEG, PNG, etc.)
+              </div>
+              <div *ngIf="form.get('projectImage')?.hasError('fileSize')">
+                * File is too large (max 5 MB)
+              </div>
+            </div>
+          </div>
+          <p class="text-sm text-gray-500 mt-2" *ngIf="!form.get('projectImage')?.value">
+            Recommended size: 1200x800px (JPEG or PNG)
+          </p>
+          <div class="text-sm text-green-600 mt-2" *ngIf="form.get('projectImage')?.value">
+            {{ form.get('projectImage')?.value.name }} uploaded
+          </div>
+        </div>
+      </div>
+
+      <!-- Articles of Association -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Articles of Association</label>
+        <div
+          class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors hover:border-gray-400"
+        >
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event, 'articlesOfAssociation')"
+            hidden
+            #assertionImageInput
+            required
+          />
+          <button
+            type="button"
+            class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
+            (click)="assertionImageInput.click()"
+          >
+            Upload Articles of association
+          </button>
+          <div class="min-h-[20px]">
+            <div *ngIf="form.get('articlesOfAssociation')?.errors && (formSubmitted || form.get('articlesOfAssociation')?.touched)" class="text-red-500 text-sm mt-1">
+              <div *ngIf="form.get('articlesOfAssociation')?.hasError('fileType')">
+                * Only image files are allowed (JPEG, PNG, etc.)
+              </div>
+              <div *ngIf="form.get('articlesOfAssociation')?.hasError('fileSize')">
+                * File is too large (max 5 MB)
+              </div>
+            </div>
+          </div>
+          <p
+            class="text-sm text-gray-500 mt-2"
+            *ngIf="!form.get('articlesOfAssociation')?.value"
+          >
+            Recommended size: 1200x800px (JPEG or PNG)
+          </p>
+          <div
+            class="text-sm text-green-600 mt-2"
+            *ngIf="form.get('articlesOfAssociation')?.value"
+          >
+            {{ form.get('articlesOfAssociation')?.value.name }} uploaded
+          </div>
+        </div>
+      </div>
+
+      <!-- Commercial Registry Certificate -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium"
+          >Commercial Registry Certificate</label
+        >
+        <div
+          class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors hover:border-gray-400"
+        >
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event, 'commercialRegistryCertificate')"
+            hidden
+            #comercialImageInput
+          />
+          <button
+            type="button"
+            class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
+            (click)="comercialImageInput.click()"
+          >
+            Upload Commercial Registry Certificate
+          </button>
+          <div class="min-h-[20px]">
+            <div *ngIf="form.get('commercialRegistryCertificate')?.errors && (formSubmitted || form.get('commercialRegistryCertificate')?.touched)" class="text-red-500 text-sm mt-1">
+              <div *ngIf="form.get('commercialRegistryCertificate')?.hasError('fileType')">
+                * Only image files are allowed (JPEG, PNG, etc.)
+              </div>
+              <div *ngIf="form.get('commercialRegistryCertificate')?.hasError('fileSize')">
+                * File is too large (max 5 MB)
+              </div>
+            </div>
+          </div>
+          <p
+            class="text-sm text-gray-500 mt-2"
+            *ngIf="!form.get('commercialRegistryCertificate')?.value"
+          >
+            Recommended size: 1200x800px (JPEG or PNG)
+          </p>
+          <div
+            class="text-sm text-green-600 mt-2"
+            *ngIf="form.get('commercialRegistryCertificate')?.value"
+          >
+            {{ form.get('commercialRegistryCertificate')?.value.name }} uploaded
+          </div>
+        </div>
+      </div>
+
+      <!-- Tax Card -->
+      <div class="flex flex-col gap-0.5 form-group">
+        <label class="text-sm font-medium">Tax Card</label>
+        <div
+          class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors hover:border-gray-400"
+        >
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event, 'taxCard')"
+            hidden
+            #taxCardInput
+          />
+          <button
+            type="button"
+            class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
+            (click)="taxCardInput.click()"
+          >
+            Upload Tax Card
+          </button>
+          <div class="min-h-[20px]">
+            <div *ngIf="form.get('taxCard')?.errors && (formSubmitted || form.get('taxCard')?.touched)" class="text-red-500 text-sm mt-1">
+              <div *ngIf="form.get('taxCard')?.hasError('fileType')">
+                * Only image files are allowed (JPEG, PNG, etc.)
+              </div>
+              <div *ngIf="form.get('taxCard')?.hasError('fileSize')">
+                * File is too large (max 5 MB)
+              </div>
+            </div>
+          </div>
+          <p class="text-sm text-gray-500 mt-2" *ngIf="!form.get('taxCard')?.value">
+            Recommended size: 1200x800px (JPEG or PNG)
+          </p>
+          <div class="text-sm text-green-600 mt-2" *ngIf="form.get('taxCard')?.value">
+            {{ form.get('taxCard')?.value.name }} uploaded
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-end space-x-3 mt-6">
+      <button
+        type="button"
+        (click)="onReset()"
+        class="px-4 py-2 border rounded hover:bg-gray-100"
+      >
+        Reset
+      </button>
+  
+      <button
+        type="button"
+        (click)="openDeleteConfirm()"
+        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+      >
+        Delete Project
+      </button>
+  
+      <button
+        type="submit"
+        [disabled]="loading"
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      >
+        {{ loading ? 'Saving…' : 'Save Changes' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<div
+  *ngIf="showUpdateModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg">
+    <h3 class="text-lg font-semibold mb-4">Confirm Update</h3>
+    <p class="mb-6">
+      Are you sure you want to update
+      "<strong>{{ project.projectTitle }}</strong>"?
+    </p>
+    <div class="flex justify-end space-x-3">
+      <button
+        type="button"
+        (click)="cancelUpdate()"
+        class="px-4 py-2 border rounded hover:bg-gray-100"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        (click)="confirmUpdate()"
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      >
+        Confirm Update
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="showDeleteModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg">
+    <h3 class="text-lg font-semibold mb-4">Confirm Delete</h3>
+    <p class="mb-6">
+      Are you sure you want to delete
+      "<strong>{{ project.projectTitle }}</strong>"?
+    </p>
+    <div class="flex justify-end space-x-3">
+      <button
+        type="button"
+        (click)="cancelDelete()"
+        class="px-4 py-2 border rounded hover:bg-gray-100"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        (click)="confirmDelete()"
+        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
