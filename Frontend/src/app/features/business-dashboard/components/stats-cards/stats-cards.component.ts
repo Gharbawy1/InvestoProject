@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { MatIconModule } from '@angular/material/icon';
+import { DashboardBusiness } from '../../interfaces/IDashboardBusiness';
+import { OfferService } from '../../../project/services/offer/offer.service';
+import { IOfferProfile } from '../../../project/interfaces/IOfferProfile';
 
 // Define the structure for a trend indicator.
 interface Trend {
@@ -19,13 +23,91 @@ interface Stat {
 
 @Component({
   selector: 'app-stats-cards',
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './stats-cards.component.html',
   styleUrls: ['./stats-cards.component.css'],
 })
 export class StatsCardsComponent implements OnInit {
+  @Input() project: DashboardBusiness | null = null;
+
+  investmentRanges: { range: string; percentage: number }[] = [];
+
+  constructor(private offerService: OfferService) {}
+  
+  ngOnInit() {
+    // if project is already set at init
+    this.loadRanges();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // whenever `project` changes, recompute
+    if (changes['project'] && !changes['project'].firstChange) {
+      this.loadRanges();
+    }
+  }
+
+  private loadRanges() {
+    if (!this.project?.id) {
+      this.investmentRanges = [];
+      return;
+    }
+
+    this.offerService
+      .getOfferforProject(this.project.id)
+      .subscribe((offers: IOfferProfile[]) => {
+        // 1) filter only Accepted
+        const accepted = offers.filter(o => o.status === 'Accepted');
+
+        // 2) extract amounts
+        const amounts = accepted.map(o => o.offerAmount);
+
+        // 3) bucket them
+        this.investmentRanges = this.computeBuckets(amounts);
+      });
+  }
+
+  private computeBuckets(amounts: number[]) {
+    const total = amounts.length;
+    const buckets = [
+      { label: '0 – 10 000 LE',    min: 0,     max: 10000,  count: 0 },
+      { label: '10 001 – 50 000 LE',min: 10001, max: 50000,  count: 0 },
+      { label: '50 001+ LE',        min: 50001, max: Infinity, count: 0 },
+    ];
+
+    amounts.forEach(a => {
+      const b = buckets.find(b => a >= b.min && a <= b.max);
+      if (b) b.count++;
+    });
+
+    return buckets.map(b => ({
+      range: b.label,
+      percentage: total ? Math.round((b.count / total) * 100) : 0
+    }));
+  }
+
+  getFundingPercentage(): number {
+    if (!this.project) return 0;
+    
+    if (this.project.fundingGoal <= 0) return 0;
+    
+    const percentage = (this.project.raisedFund / this.project.fundingGoal) * 100;
+    return Math.min(percentage, 100);
+  }
+
+  getAverageInvestment(): number {
+    if (!this.project || this.project.investorsCount === 0) return 0;
+    return this.project.raisedFund / this.project.investorsCount;
+  }
+
+  getProjectPhase(): string {
+    const progress = this.getFundingPercentage();
+    if (progress < 25) return 'Initial Funding Stage';
+    if (progress < 75) return 'Growth Phase';
+    return 'Final Funding Push';
+  }
+
   // Flags for loading and error states.
-  isLoading = true;
+  /*isLoading = true;
   error = false;
   // Array used for rendering loading skeleton cards.
   skeletonStats: any[] = Array(8).fill({});
@@ -154,11 +236,7 @@ export class StatsCardsComponent implements OnInit {
     },
   ];
 
-  /**
-   * loadStats
-   * Simulates an API call to load statistics. Sets loading state accordingly.
-   * In a production environment, replace this with a real API call.
-   */
+
   async loadStats() {
     try {
       this.isLoading = true;
@@ -173,12 +251,7 @@ export class StatsCardsComponent implements OnInit {
     }
   }
 
-  /**
-   * ngOnInit
-   * Angular lifecycle hook that initializes the component.
-   * Calls loadStats to simulate fetching data.
-   */
   ngOnInit(): void {
     this.loadStats();
-  }
+  }*/
 }

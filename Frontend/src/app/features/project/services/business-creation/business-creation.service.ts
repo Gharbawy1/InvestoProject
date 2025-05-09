@@ -14,25 +14,21 @@ export class BusinessCreationService {
 
   constructor(private http: HttpClient) {}
 
-  /** Upper‑case the first letter of the key */
+  /** Convert camelCase to PascalCase */
   private toPascalCase(key: string): string {
-    // Split camelCase into words and capitalize each word
-    return key
-      .replace(/([a-z])([A-Z])/g, '$1 $2') // Split camelCase into separate words
-      .split(' ') // Split into array of words
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(''); // Join words without spaces
+    return key.replace(/(^\w|-\w)/g, (match) => 
+      match.toUpperCase().replace('-', '')
+    );
   }
 
-  /** Build a FormData by remapping each property to PascalCase */
   private buildFormData(biz: IBusiness): FormData {
     const fd = new FormData();
     Object.entries(biz).forEach(([key, val]) => {
-      const apiKey = this.toPascalCase(key);
+      const pascalKey = this.toPascalCase(key);
       if (val instanceof File) {
-        fd.append(apiKey, val, val.name);
+        fd.append(pascalKey, val, val.name);
       } else {
-        fd.append(apiKey, String(val));
+        fd.append(pascalKey, String(val));
       }
     });
     return fd;
@@ -44,9 +40,10 @@ export class BusinessCreationService {
    */
   createProject(biz: IBusiness): Observable<any> {
     const payload = this.buildFormData(biz);
+    console.log('▶️ [createProject] calling:', this.apiUrl);
     return this.http.post<any>(this.apiUrl, payload);
   }
-
+  
   getProjectsForCurrentUser(): Observable<ObjectApiResponse<IBusiness>> {
     return this.http.get<ObjectApiResponse<IBusiness>>(this.currentUserProject);
   }

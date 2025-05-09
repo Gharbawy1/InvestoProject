@@ -1,38 +1,36 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, inject, Inject, Input } from '@angular/core';
 import { IOfferProfile } from '../../../project/interfaces/IOfferProfile';
 import { CommonModule } from '@angular/common';
 import { OfferService } from '../../../project/services/offer/offer.service';
+import { OfferApprovalCardComponent } from './offer-approval-card/offer-approval-card.component';
+import { ActivatedRoute } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-offers',
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule, OfferApprovalCardComponent],
   templateUrl: './offers.component.html',
   styleUrl: './offers.component.css',
 })
 export class OffersComponent {
-  @Input() offers: IOfferProfile[] = [];
-  offerService: OfferService = Inject(OfferService);
-  acceptOffer(offerId: number): void {
-    this.offerService.changeOfferStatus(offerId, 'Accepted').subscribe({
-      next: () => {
-        const offer = this.offers.find((o) => o.offerId === offerId);
-        if (offer && offer.status === 'Pending') {
-          offer.status = 'Accepted';
-        }
-      },
-      error: (err) => console.log(err),
-    });
-  }
+  private route = inject(ActivatedRoute);
+  private offerService = inject(OfferService);
+  offers: IOfferProfile[] = [];
+  isLoading = true;
+  error: string | null = null;
+  projectId!: number;
 
-  rejectOffer(offerId: number): void {
-    this.offerService.changeOfferStatus(offerId, 'Rejected').subscribe({
-      next: () => {
-        const offer = this.offers.find((o) => o.offerId === offerId);
-        if (offer && offer.status === 'Pending') {
-          offer.status = 'Rejected';
-        }
+  ngOnInit(): void {
+    this.projectId = Number(localStorage.getItem('projectId') || sessionStorage.getItem('projectId'));
+    this.offerService.getOfferforProject(this.projectId).subscribe({
+      next: (res) => {
+        this.offers = res;
+        this.isLoading = false;
       },
-      error: (err) => console.log(err),
+      error: () => {
+        this.error = 'Failed to load offers.';
+        this.isLoading = false;
+      },
     });
   }
 }

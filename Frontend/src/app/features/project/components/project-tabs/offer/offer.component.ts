@@ -216,7 +216,7 @@ export class OfferComponent implements OnInit {
 
   private validateAmount(): boolean {
     const amount = this.offer.offerAmount;
-    return typeof amount === 'number' && amount >= 10000 && amount <= 100000000;
+    return typeof amount === 'number';
   }
 
   private validateRequiredFields(): boolean {
