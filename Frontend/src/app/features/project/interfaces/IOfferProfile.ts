@@ -6,4 +6,5 @@ export interface IOfferProfile extends IOffer {
   expirationDate: string;
   status: 'Pending' | 'Accepted' | 'Rejected';
   investor: IInvestor;
+  categoryId: number;
 }

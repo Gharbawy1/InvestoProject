@@ -7,6 +7,8 @@ import { AuthService } from '../../../../core/services/auth/auth.service';
 import { NavigationService } from '../../../../core/services/navigation/navigation.service';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 import { EyePasswordComponent } from '../../../../shared/componentes/eye-password/eye-password.component';
+import { GoogleAuthService } from '../../../../core/services/googleSignIn/google-signin.service';
+import { Router } from '@angular/router';
 
 /**
  * Component for handling user login functionality.
@@ -48,7 +50,9 @@ export class LoginFormComponent implements OnInit {
    */
   constructor(
     private authService: AuthService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private googleAuthService: GoogleAuthService,
+    private router: Router
   ) {}
 
   /**
@@ -96,6 +100,31 @@ export class LoginFormComponent implements OnInit {
           this.loginError = true;
         },
       });
+  }
+
+  loginWithGoogle() {
+    debugger;
+    this.googleAuthService.initializeGoogleSignIn((response: any) => {
+      debugger;
+      if (response.credential) {
+        const IdToken = response.credential;
+        const LoginFormDate = new FormData();
+        LoginFormDate.append('IdToken', IdToken);
+        LoginFormDate.append('Role', 'User');
+        this.authService.handleGoogleLogin(LoginFormDate).subscribe({
+          next: (response) => {
+            debugger;
+            console.log(response);
+            this.authService.createCurrentUser(response, true);
+            this.router.navigate(['/Home']);
+          },
+          error: (error) => {
+            debugger;
+            console.error('Error occurred:', error);
+          },
+        });
+      }
+    });
   }
 
   /**

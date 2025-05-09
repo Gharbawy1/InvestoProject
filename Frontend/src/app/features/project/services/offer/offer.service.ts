@@ -86,17 +86,4 @@ export class OfferService {
         })
       );
   }
-
-  /*getAllOffers(): Observable<IOffer[]> {
-    return this.http.get<IOffer[]>(this.apiUrl);
-  }
-
-
-  updateOffer(id: number, offer: Partial<IOffer>): Observable<IOffer> {
-    return this.http.patch<IOffer>(`${this.apiUrl}/${id}`, offer);
-  }
-
-  deleteOffer(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
-  }*/
 }

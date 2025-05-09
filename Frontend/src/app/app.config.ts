@@ -15,9 +15,13 @@ import {
   withEventReplay,
 } from '@angular/platform-browser';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  provideAnimations,
+} from '@angular/platform-browser/animations';
 import { loadingInterceptor } from './core/interceptors/loading/loading.interceptor';
 import { authInterceptor } from './core/interceptors/auth/auth.interceptor';
+import { provideToastr, ToastrModule } from 'ngx-toastr';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,12 +30,9 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([
-        authInterceptor,
-        loadingInterceptor, 
-      ])
+      withInterceptors([authInterceptor, loadingInterceptor])
     ),
-
-    importProvidersFrom([BrowserAnimationsModule]),
+    provideAnimations(),
+    provideToastr(),
   ],
 };

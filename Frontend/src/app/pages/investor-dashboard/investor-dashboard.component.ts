@@ -6,14 +6,19 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardSubtitle, MatCardModule } from '@angular/material/card';
-import { InvestmentService } from '../../features/investor-dashboard/services/investment/investment-service.service';
-import { WatchlistService } from '../../features/investor-dashboard/services/watchlist/watchlist.service';
-import { OpportunitiesService } from '../../features/investor-dashboard/services/opportunities/opportunities.service';
 import { Iinvestment } from '../../features/investor-dashboard/interfaces/iinvestment';
 import { DashboardCardComponent } from '../../features/investor-dashboard/components/dashboard-card/dashboard-card.component';
 import { DashboardTabComponent } from '../../features/investor-dashboard/components/dashboard-tab/dashboard-tab.component';
 import { ListItemComponent } from '../../features/investor-dashboard/components/list-item/list-item.component';
 import { ButtonComponent } from '../../shared/componentes/button/button.component';
+import { OffersComponent } from '../../features/investor-dashboard/components/offers/offers.component';
+import { OfferService } from '../../features/investor-dashboard/services/offers/offer.service';
+import { IOfferProfile } from '../../features/project/interfaces/IOfferProfile';
+import { AuthService } from '../../core/services/auth/auth.service';
+import { InvestmentsComponent } from '../../features/investor-dashboard/components/investments/investments.component';
+import { IRecomended } from '../../features/investor-dashboard/interfaces/recommended';
+import { forkJoin, map } from 'rxjs';
+import { RecommendedComponent } from '../../features/investor-dashboard/components/recommended/recommended.component';
 
 @Component({
   selector: 'investor-dashboard',
@@ -30,45 +35,86 @@ import { ButtonComponent } from '../../shared/componentes/button/button.componen
     DashboardTabComponent,
     MatCardSubtitle,
     ButtonComponent,
-    ListItemComponent,
     ButtonComponent,
+    OffersComponent,
+    InvestmentsComponent,
+    RecommendedComponent,
   ],
   templateUrl: './investor-dashboard.component.html',
   styleUrls: ['./investor-dashboard.component.css'],
 })
 export class InvestorDashboardComponent implements OnInit {
-  private investmentService = inject(InvestmentService);
-  private watchlistService = inject(WatchlistService);
-  private opportunitiesService = inject(OpportunitiesService);
-
+  private authService = inject(AuthService);
+  private offersService = inject(OfferService);
   userName = 'John Doe';
   totalInvested = 125000;
   activeInvestments = 5;
   portfolioGrowth = 12.4;
 
-  investments: Iinvestment[] = [];
-  wishlist: Iinvestment[] = [];
-  opportunities: Iinvestment[] = [];
+  investments: IOfferProfile[] = [];
+  offers: IOfferProfile[] = [];
+  recomended: IRecomended[] = [];
+  categories: number[] = [];
 
   ngOnInit(): void {
-    const investorId = '1';
+    const investorId = this.authService.getUserId();
 
-    this.investmentService.getInvestmentsByInvestorId(investorId).subscribe({
-      next: (data) => (this.investments = data),
+    // get all offers
+    this.offersService.getOffersForCurrentUser().subscribe({
+      next: (data) => {
+        this.offers = data.data;
+
+        // After fetching offers, process categories
+        this.getCategories();
+      },
+      error: (err) => console.error('Error fetching offers:', err),
+    });
+
+    // get accepted offers
+    this.offersService.getAcceptedOffers(investorId ?? '').subscribe({
+      next: (data) => {
+        this.investments = data.data;
+        this.totalInvested = this.sumOfAmounts();
+      },
       error: (err) => console.error('Error fetching investments:', err),
-    });
-
-    this.watchlistService.getWatchlistByInvestorId(investorId).subscribe({
-      next: (data) => (this.wishlist = data),
-      error: (err) => console.error('Error fetching watchlist:', err),
-    });
-
-    this.opportunitiesService.getAvailableOpportunities().subscribe({
-      next: (data) => (this.opportunities = data),
-      error: (err) => console.error('Error fetching opportunities:', err),
     });
   }
 
+  getCategories() {
+    // Use a Set to ensure no duplicate categories
+    const uniqueCategories = new Set<number>();
+
+    this.offers.forEach((offer) => {
+      if (offer.status === 'Accepted') {
+        uniqueCategories.add(offer.categoryId);
+      }
+    });
+
+    // Fetch recommended projects based on unique categories
+    const categoryRequests = Array.from(uniqueCategories).map((categoryId) =>
+      this.offersService.getProjectByCategory(categoryId).pipe(
+        map((data) => data.data) // Extract data directly from response
+      )
+    );
+
+    // Combine all category requests
+    forkJoin(categoryRequests).subscribe({
+      next: (responses) => {
+        this.recomended = responses
+          .flat()
+          .filter((project) => project.status === 'Accepted');
+      },
+      error: (err) =>
+        console.error('Error fetching recommended projects:', err),
+    });
+  }
+
+  sumOfAmounts() {
+    return this.investments.reduce(
+      (total, investment) => total + investment.offerAmount,
+      0
+    );
+  }
   getStatusClass(status: string): string {
     switch (status) {
       case 'active':

@@ -1,0 +1,62 @@
+<div
+  *ngFor="let investment of investments"
+  class="p-6 border rounded-lg mb-6 shadow-sm hover:shadow-lg transition-shadow"
+>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+    <!-- Status -->
+    <div>
+      <strong>Status:</strong>
+      <span
+        [ngClass]="{
+          'text-green-600': investment.status === 'Accepted',
+          'text-yellow-600': investment.status === 'Pending',
+          'text-red-600': investment.status === 'Rejected'
+        }"
+        class="font-medium"
+      >
+        {{ investment.status }}
+      </span>
+    </div>
+
+    <!-- Amount -->
+    <div>
+      <strong>Amount:</strong> ${{ investment.offerAmount | number : "1.0-0" }}
+    </div>
+
+    <!-- Investment Type -->
+    <div><strong>Investment Type:</strong> {{ investment.investmentType }}</div>
+
+    <!-- Equity Percentage -->
+    <div *ngIf="investment.investmentType === 'Equity'">
+      <strong>Equity %:</strong> {{ investment.equityPercentage }}%
+    </div>
+
+    <!-- Profit Share Percentage -->
+    <div *ngIf="investment.investmentType === 'ProfitShare'">
+      <strong>Profit Share %:</strong> {{ investment.profitShare }}%
+    </div>
+
+    <!-- investment Terms -->
+    <div><strong>investment Terms:</strong> {{ investment.offerTerms }}</div>
+
+    <!-- investment Date -->
+    <div>
+      <strong>investment Date:</strong>
+      {{ investment.offerDate | date : "medium" }}
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="mt-4 flex space-x-4">
+    <!-- Pay Now Button -->
+
+    <!-- View Business Button -->
+    <button-component
+      [variant]="'outline'"
+      [routerLink]="['/ProjectDetails', investment.projectId, 'overview']"
+      class="btn btn-outline-primary"
+    >
+      View Business
+    </button-component>
+  </div>
+</div>

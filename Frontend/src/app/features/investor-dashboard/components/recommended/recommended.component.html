@@ -1,0 +1,61 @@
+<div
+  *ngFor="let recommeded of recommends"
+  class="p-6 border rounded-lg mb-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col sm:flex-row items-start gap-6"
+>
+  <!-- المحتوى النصي -->
+  <div class="flex-1 text-sm space-y-4">
+    <!-- Owner, Raised Fund, Investors Count -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div><strong>Owner:</strong> {{ recommeded.ownerName }}</div>
+      <div>
+        <strong>Amount Raised:</strong> ${{
+          recommeded.raisedFund | number : "1.0-0"
+        }}
+      </div>
+      <div>
+        <strong>Investors Count:</strong> {{ recommeded.investorsCount }}
+      </div>
+    </div>
+
+    <!-- Category -->
+    <div><strong>Category:</strong> {{ recommeded.categoryName }}</div>
+
+    <!-- Title, Location, Goal -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div><strong>Project Title:</strong> {{ recommeded.projectTitle }}</div>
+      <div><strong>Location:</strong> {{ recommeded.projectLocation }}</div>
+      <div>
+        <strong>Funding Goal:</strong> ${{
+          recommeded.fundingGoal | number : "1.0-0"
+        }}
+      </div>
+    </div>
+
+    <!-- Vision & Goals -->
+    <div>
+      <div><strong>Project Vision:</strong> {{ recommeded.projectVision }}</div>
+      <div><strong>Current Vision:</strong> {{ recommeded.currentVision }}</div>
+      <div><strong>Goals:</strong> {{ recommeded.goals }}</div>
+    </div>
+
+    <!-- Button -->
+    <div class="mt-2">
+      <button-component
+        [variant]="'outline'"
+        [routerLink]="['/ProjectDetails', recommeded.id, 'overview']"
+        class="btn btn-outline-primary"
+      >
+        View Business
+      </button-component>
+    </div>
+  </div>
+
+  <!-- الصورة على اليمين -->
+  <div class="w-32 h-32 sm:w-40 sm:h-40 rounded overflow-hidden border shadow">
+    <img
+      [src]="recommeded.projectImageUrl"
+      alt="Project Image"
+      class="w-full h-full object-cover"
+    />
+  </div>
+</div>

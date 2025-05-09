@@ -1,11 +1,11 @@
 <div class="bg-gray-50 min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+    <div
+      class="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
+    >
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">
-          Welcome back, {{ userName }}
-        </h1>
+        <h1 class="text-2xl font-bold text-gray-900">Welcome back</h1>
         <p class="text-gray-600 mt-1">
           Here's what's happening with your investments today.
         </p>
@@ -18,129 +18,87 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <dashboard-card 
-        title="Total Invested" 
-        [value]="totalInvested" 
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <dashboard-card
+        title="Total Invested"
+        [value]="totalInvested"
         [description]="'Across ' + activeInvestments + ' active investments'"
-        [showCurrency]="true">
+        [showCurrency]="true"
+      >
       </dashboard-card>
 
-      <dashboard-card 
-        title="Portfolio Growth" 
-        [value]="'+' + portfolioGrowth + '%'" 
-        description="Year-to-date performance"
-        valueColor="text-green-600">
-      </dashboard-card>
-
-      <dashboard-card 
-        title="Next Payout" 
-        value="2,450" 
+      <dashboard-card
+        title="Next Payout"
+        value="2,450"
         description="Expected on June 15, 2023"
-        [showCurrency]="true">
+        [showCurrency]="true"
+      >
       </dashboard-card>
     </div>
 
     <!-- Tabs Section -->
-    <dashboard-tab [tabs]="[
-      {label: 'My Investments', content: investmentsContent},
-      {label: 'Recommended', content: opportunitiesContent},
-      {label: 'Watchlist', content: watchlistContent}
-    ]"></dashboard-tab>
+    <dashboard-tab
+      [tabs]="[
+        { label: 'My Investments', content: investmentsContent },
+        { label: 'Offers', content: offersContent },
+        { label: 'Recomended', content: recommendedContent }
+      ]"
+    ></dashboard-tab>
 
     <!-- Template for Investments Tab -->
     <ng-template #investmentsContent>
       <mat-card-subtitle>
         Monitor the progress of your current investments
       </mat-card-subtitle>
-        <ng-template [ngIf]="investments.length == 0" [ngIfElse]="investmentsList" >
-          <div class="text-center py-8">
-            <p class="text-gray-500">
-              You haven't made any investments yet.
-            </p>
-            <button-component variant="outline" routerLink="/">
-              Browse All Projects
-            </button-component>
-          </div>
-        </ng-template> 
-        <ng-template #investmentsList>
-          <div class="space-y-6 mt-5">
-            <div *ngFor="let investment of investments" 
-            class="border rounded-lg p-4 hover:shadow-md transition-shadow">
-            <list-item 
-            [projectName]="investment.projectName"
-            [date]="investment.date"
-            [amount]="investment.amount"
-            [status]="investment.status"
-            [progress]="investment.progress"
-            [returnRate]="investment.returnRate"
-            ></list-item>
-          </div>
+      <ng-template
+        [ngIf]="investments.length == 0"
+        [ngIfElse]="investmentsList"
+      >
+        <div class="text-center py-8">
+          <p class="text-gray-500">You haven't made any investments yet.</p>
+          <button-component variant="outline" routerLink="/">
+            Browse All Projects
+          </button-component>
         </div>
+      </ng-template>
+      <ng-template #investmentsList>
+        <app-investments [investments]="investments"></app-investments>
       </ng-template>
     </ng-template>
 
-    <!-- Template for Opportunities Tab -->
-    <ng-template #opportunitiesContent>
+    <!-- Tempalte for Offers Tab -->
+    <ng-template #offersContent>
       <mat-card-subtitle>
-        Projects that match your investment preferences
+        Monitor the progress of your current Offers
       </mat-card-subtitle>
-        <ng-template [ngIf]="opportunities.length == 0" [ngIfElse] ="opportunitiesList">
-          <div class="text-center py-8">
-            <p class="text-gray-500">
-              There are no opportunities at the moment
-            </p>
-            <button-component variant="outline" routerLink="/">
-              Browse All Projects
-            </button-component>
-          </div>
-        </ng-template> 
-        <ng-template #opportunitiesList>
-          <div class="space-y-6 mt-5">
-            <div *ngFor="let opportunitie of opportunities" 
-            class="border rounded-lg p-4 hover:shadow-md transition-shadow">
-            <list-item 
-            [projectName]="opportunitie.projectName"
-            [date]="opportunitie.date"
-            [amount]="opportunitie.amount"
-            [status]="opportunitie.status"
-            [progress]="opportunitie.progress"
-            [returnRate]="opportunitie.returnRate"
-            ></list-item>
-          </div>
+      <ng-template [ngIf]="offers.length == 0" [ngIfElse]="offersList">
+        <div class="text-center py-8">
+          <p class="text-gray-500">You haven't made any Offers yet.</p>
+          <button-component variant="outline" routerLink="/">
+            Browse All Projects
+          </button-component>
         </div>
+      </ng-template>
+      <ng-template #offersList>
+        <app-offers [offers]="offers"></app-offers>
       </ng-template>
     </ng-template>
 
-    <!-- Template for Watchlist Tab -->
-    <ng-template #watchlistContent>
+    <!-- Tempalte for Offers Tab -->
+    <ng-template #recommendedContent>
       <mat-card-subtitle>
-        Projects you're keeping an eye on
+        Monitor the progress of your current Offers
       </mat-card-subtitle>
-        <ng-template [ngIf]="wishlist.length == 0" [ngIfElse] ="wishList">
-          <div class="text-center py-8">
-            <p class="text-gray-500">
-              You haven't added any projects to your watchlist yet.
-            </p>
-            <button-component variant="outline" routerLink="/">
-              Browse Projects
-            </button-component>
-          </div>
-        </ng-template> 
-        <ng-template #wishList>
-          <div class="space-y-6 mt-5">
-            <div *ngFor="let wishlistItem of wishlist" 
-            class="border rounded-lg p-4 hover:shadow-md transition-shadow">
-            <list-item 
-            [projectName]="wishlistItem.projectName"
-            [date]="wishlistItem.date"
-            [amount]="wishlistItem.amount"
-            [status]="wishlistItem.status"
-            [progress]="wishlistItem.progress"
-            [returnRate]="wishlistItem.returnRate"
-            ></list-item>
-          </div>
+      <ng-template [ngIf]="recomended.length == 0" [ngIfElse]="recomendedList">
+        <div class="text-center py-8">
+          <p class="text-gray-500">There are no recommended projects yet.</p>
+          <button-component variant="outline" routerLink="/">
+            Browse All Projects
+          </button-component>
         </div>
+      </ng-template>
+      <ng-template #recomendedList>
+        <app-recommended [recommends]="recomended"></app-recommended>
       </ng-template>
     </ng-template>
   </div>

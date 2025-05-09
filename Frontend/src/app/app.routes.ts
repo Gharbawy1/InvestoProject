@@ -34,16 +34,7 @@ export const routes: Routes = [
             './pages/investor-dashboard/investor-dashboard.component'
           ).then((m) => m.InvestorDashboardComponent),
       },
-      {
-        path: 'AdminDashboard',
-        loadComponent: () =>
-          import('./pages/admin-dashboard/admin-dashboard.component').then(
-            (m) => m.AdminDashboardComponent
-          ),
-        resolve: {
-          projects: adminResolver,
-        },
-      },
+
       {
         path: 'BusinessCreation',
         loadComponent: () =>
@@ -57,7 +48,7 @@ export const routes: Routes = [
           import(
             './features/project/components/payment-page/payment-page.component'
           ).then((m) => m.PaymentPageComponent),
-      }
+      },
     ],
   },
   {
@@ -69,6 +60,22 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/auth-model/auth-model.component').then(
             (m) => m.AuthModelComponent
+          ),
+      },
+      {
+        path: 'error',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./shared/componentes/error/error.component').then(
+            (m) => m.ErrorComponent
+          ),
+      },
+      {
+        path: 'success',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./shared/componentes/success/success.component').then(
+            (m) => m.SuccessComponent
           ),
       },
     ],
@@ -97,8 +104,7 @@ export const routes: Routes = [
   {
     path: 'UpgradeRole',
     loadChildren: () =>
-      import('./features/upgrade-role/routes')
-        .then(m => m.upgradeRoutes)
+      import('./features/upgrade-role/routes').then((m) => m.upgradeRoutes),
   },
   {
     path: 'profile',
@@ -112,6 +118,23 @@ export const routes: Routes = [
   {
     path: 'error',
     component: ErrorPageComponent,
+  },
+  {
+    path: 'OfferPay',
+    loadComponent: () =>
+      import(
+        './features/investor-dashboard/components/offers/offers.component'
+      ).then((m) => m.OffersComponent),
+  },
+  {
+    path: 'AdminDashboard',
+    loadComponent: () =>
+      import('./pages/admin-dashboard/admin-dashboard.component').then(
+        (m) => m.AdminDashboardComponent
+      ),
+    resolve: {
+      projects: adminResolver,
+    },
   },
   {
     path: '**',

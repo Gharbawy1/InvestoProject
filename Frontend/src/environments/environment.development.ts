@@ -47,6 +47,7 @@ export const environment = {
     getOfferByProjectId: (id: number) => `/Offer/get-offers-byId/${id}`,
     BusinessOwnerAnswer: (id: number) => `/Offer/${id}/respond`,
     getAllForCurrentUser: `/Offer/offers/current-user`,
+    getAcceptedOffers: (id: string) => `/Offer/investor/${id}/accepted_Offers`,
   },
 
   project: {
@@ -65,4 +66,12 @@ export const environment = {
     getDocuments: `/Project/GetDocuments`,
   },
 
+  document: {
+    getAll: '/Document',
+    getByUser: '/Document/get-documents-by-user',
+  },
+
+  payment: {
+    createCheckoutSession: '/Stripe/create-checkout-session',
+  },
 };
