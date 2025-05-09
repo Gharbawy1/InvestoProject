@@ -27,6 +27,7 @@ export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   userName: string = '';
   userRole: string = '';
+  profilePictureURL: string = '';
   notifications: INotification | null = null;
   unreadCount = 0;
   @Output() loginClick = new EventEmitter<void>();
@@ -36,9 +37,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router
-  ) // private notificationService: NotificationService
-  {}
+    private router: Router // private notificationService: NotificationService
+  ) {}
   ngOnInit(): void {
     // this.notificationService.notifications$.subscribe((notifs) => {
     //   this.notifications = notifs;
@@ -48,10 +48,10 @@ export class HeaderComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(([isLoggedIn, user]) => {
         this.isLoggedIn = isLoggedIn;
-
         if (isLoggedIn && user) {
           this.userName = user.firstName || 'User';
           this.userRole = user.role || '';
+          this.profilePictureURL = user.profilePictureURL || '';
         } else {
           this.userName = '';
           this.userRole = '';

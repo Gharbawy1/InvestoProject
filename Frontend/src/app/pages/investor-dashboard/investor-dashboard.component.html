@@ -41,7 +41,7 @@
       [tabs]="[
         { label: 'My Investments', content: investmentsContent },
         { label: 'Offers', content: offersContent },
-        { label: 'Recomended', content: recommendedContent }
+        { label: 'Recommended', content: recommendedContent }
       ]"
     ></dashboard-tab>
 
@@ -66,7 +66,7 @@
       </ng-template>
     </ng-template>
 
-    <!-- Tempalte for Offers Tab -->
+    <!-- Template for Offers Tab -->
     <ng-template #offersContent>
       <mat-card-subtitle>
         Monitor the progress of your current Offers
@@ -84,12 +84,15 @@
       </ng-template>
     </ng-template>
 
-    <!-- Tempalte for Offers Tab -->
+    <!-- Template for Recommended Tab -->
     <ng-template #recommendedContent>
       <mat-card-subtitle>
         Monitor the progress of your current Offers
       </mat-card-subtitle>
-      <ng-template [ngIf]="recomended.length == 0" [ngIfElse]="recomendedList">
+      <ng-template
+        [ngIf]="recommended.length == 0"
+        [ngIfElse]="recommendedList"
+      >
         <div class="text-center py-8">
           <p class="text-gray-500">There are no recommended projects yet.</p>
           <button-component variant="outline" routerLink="/">
@@ -97,8 +100,8 @@
           </button-component>
         </div>
       </ng-template>
-      <ng-template #recomendedList>
-        <app-recommended [recommends]="recomended"></app-recommended>
+      <ng-template #recommendedList>
+        <app-recommended [recommends]="recommended"></app-recommended>
       </ng-template>
     </ng-template>
   </div>

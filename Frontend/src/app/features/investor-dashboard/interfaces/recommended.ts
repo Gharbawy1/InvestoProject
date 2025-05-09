@@ -1,6 +1,6 @@
 import { IBusiness } from '../../project/interfaces/IBusiness';
 
-export interface IRecomended
+export interface IRecommended
   extends Omit<
     IBusiness,
     | 'projectImage'
