@@ -8,7 +8,9 @@ namespace Investo.Entities.DTO.Notification
 {
     public class NotificationDto
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
+        public string ReceiverId { get; set; }
+        public string IssuerId { get; set; }
         public string Message { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsRead { get; set; }

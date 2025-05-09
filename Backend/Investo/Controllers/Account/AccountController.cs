@@ -1,5 +1,6 @@
 ﻿using Investo.DataAccess.Services.EmailVerification;
 using Investo.DataAccess.Services.Image_Loading;
+using Investo.DataAccess.Services.Notifications;
 using Investo.DataAccess.Services.OAuth;
 using Investo.DataAccess.Services.Token;
 using Investo.Entities.DTO.Account;
@@ -9,6 +10,7 @@ using Investo.Entities.DTO.Account.InvestorDto;
 using Investo.Entities.DTO.Account.Profile;
 using Investo.Entities.DTO.Account.UserDto;
 using Investo.Entities.DTO.Account.UsersProfile;
+using Investo.Entities.DTO.Notification;
 using Investo.Entities.DTO.oAuth;
 using Investo.Entities.IRepository;
 using Investo.Entities.Models;
@@ -18,6 +20,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Security.Claims;
 using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -34,6 +37,7 @@ namespace Investo.Presentation.Controllers.Account
         private readonly IImageLoadService _imageLoadService;
         private readonly IAuthGoogleService _authGoogleService;
         private readonly IEmailVerificationService _emailverificationService;
+        private readonly INotificationsService _notificationsService;
 
 
         public AccountController(UserManager<ApplicationUser> userManager,
@@ -43,7 +47,9 @@ namespace Investo.Presentation.Controllers.Account
             IConfiguration configuration,
             IImageLoadService imageLoadService,
             IAuthGoogleService authGoogleService,
-            IEmailVerificationService emailServiceRepository)
+            IEmailVerificationService emailServiceRepository,
+            INotificationRepository notificationRepository,
+            INotificationsService notificationsService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
@@ -52,7 +58,7 @@ namespace Investo.Presentation.Controllers.Account
             _imageLoadService = imageLoadService;
             _authGoogleService = authGoogleService;
             _emailverificationService = emailServiceRepository;
-            
+            _notificationsService = notificationsService;
         }
 
         [HttpPost("register-User")]
@@ -899,6 +905,72 @@ namespace Investo.Presentation.Controllers.Account
                 return StatusCode((int)HttpStatusCode.InternalServerError, errorMessages);
             }
         }
+
+        [HttpGet("notifications")]
+        [Authorize]
+        public async Task<ActionResult<ValidationResult<List<NotificationDto>>>> GetUserNotifications()
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized(new ValidationResult<List<NotificationDto>>
+                    {
+                        IsValid = false,
+                        ErrorMessage = "المستخدم غير مصرح له بالوصول"
+                    });
+                }
+
+                // get all notifications of a specific user 
+                var notifications = await _notificationsService.GetUserNotificationsAsync(userId);
+
+                return Ok(new ValidationResult<List<NotificationDto>>
+                {
+                    IsValid = true,
+                    Data = notifications
+                });
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                return StatusCode(500, new ValidationResult<List<NotificationDto>>
+                {
+                    IsValid = false,
+                    ErrorMessage = $"خطأ أثناء جلب الإشعارات: {errorDetails}"
+                });
+            }
+        }
+
+        [HttpPut("mark-notification-as-read/{NotificationId}")]
+        [Authorize]
+        public async Task<ActionResult<ValidationResult<NotificationDto>>> MarkNotificationAsRead(int NotificationId)
+        {
+            try
+            {
+                 await _notificationsService.MarkNotificationsAsReadAsync(NotificationId);
+                var notification = await _notificationsService.GetNotificationsByIdAsync(NotificationId);
+
+
+                return Ok(new ValidationResult<NotificationDto>
+                {
+                    IsValid = true,
+                    Data = notification
+                });
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = ex.InnerException?.Message ?? ex.Message;
+                return StatusCode(500, new ValidationResult<List<NotificationDto>>
+                {
+                    IsValid = false,
+                    ErrorMessage = $"خطأ أثناء جلب الإشعارات: {errorDetails}"
+                });
+            }
+        }
+
+
     }
 
 }

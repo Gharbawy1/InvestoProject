@@ -193,6 +193,9 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("OfferAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -621,7 +624,7 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Investo.Entities.Models.PersonInfo", "PersonInfo", b1 =>
+                    b.OwnsOne("Investo.Entities.Models.BusinessOwner.PersonInfo#Investo.Entities.Models.PersonInfo", "PersonInfo", b1 =>
                         {
                             b1.Property<string>("BusinessOwnerId")
                                 .HasColumnType("nvarchar(450)");
@@ -656,7 +659,7 @@ namespace Investo.DataAccess.Migrations.CoreEntites
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Investo.Entities.Models.PersonInfo", "PersonInfo", b1 =>
+                    b.OwnsOne("Investo.Entities.Models.Investor.PersonInfo#Investo.Entities.Models.PersonInfo", "PersonInfo", b1 =>
                         {
                             b1.Property<string>("InvestorId")
                                 .HasColumnType("nvarchar(450)");

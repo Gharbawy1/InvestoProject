@@ -28,7 +28,7 @@ namespace Investo.Presentation.Controllers
         }
 
         [HttpPost("create-checkout-session")]
-        [Authorize]
+        [Authorize(Roles = "Investor")]
         public async Task<ActionResult<ValidationResult<string>>> CreateCheckoutSession([FromBody] CheckoutRequestDto request)
         {
             try
@@ -112,5 +112,42 @@ namespace Investo.Presentation.Controllers
                 });
             }
         }
+
+        [HttpPost("pay/{offerId}")]
+        [Authorize]
+        public async Task<ActionResult<ValidationResult<string>>> Pay([FromRoute] int offerId)
+        {
+            try
+            {
+                var offer = await _offerRepository.GetById(offerId);
+                if (offer == null)
+                {
+                    return NotFound(new ValidationResult<string>
+                    {
+                        IsValid = false,
+                        ErrorMessage = "العرض مش موجود"
+                    });
+                }
+
+                offer.IsPaid = true;
+                await _offerRepository.UpdateOfferAsync(offer);
+
+                return Ok(new ValidationResult<string>
+                {
+                    IsValid = true,
+                    Data = "تم الدفع بنجاح",
+                    ErrorMessage = null
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ValidationResult<string>
+                {
+                    IsValid = false,
+                    ErrorMessage = $"خطأ أثناء تحديث الدفع: {ex.Message}"
+                });
+            }
+        }
+
     }
 }

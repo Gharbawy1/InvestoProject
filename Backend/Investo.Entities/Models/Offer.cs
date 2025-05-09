@@ -36,6 +36,7 @@ namespace Investo.Entities.Models
         public OfferStatus Status { get; set; } = OfferStatus.Pending;
         public DateTime OfferDate { get; set; } = DateTime.UtcNow;
 
+        public bool IsPaid { get; set; } = false;
         public DateTime ExpirationDate { get; set; } 
 
         // ========== NOTES & TRACKING ==========

@@ -23,6 +23,7 @@ namespace Investo.Entities.DTO.Offer
         public byte CategoryId { get; set; }
         public int ProjectId { get; set; }
 
+        public bool IsPaid { get; set; }
         public string InvestorId { get; set; }
 
         public InvestorBasicInfoDto Investor { get; set; }

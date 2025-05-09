@@ -74,7 +74,8 @@ namespace Investo
             builder.Services.AddScoped<IInvestorService, InvestorService>();
 
             builder.Services.AddScoped<INotificationRepository,NotificationRepository>();
-            builder.Services.AddScoped<NotificationService>();
+            builder.Services.AddScoped<INotificationsService, NotificationService>();
+
 
             builder.Services.AddDataProtection()
                 .PersistKeysToDbContext<CoreEntitiesDbContext>() // <-- هنا السحر

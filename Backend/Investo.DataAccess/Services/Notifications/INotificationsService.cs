@@ -13,6 +13,8 @@ namespace Investo.DataAccess.Services.Notifications
         Task SendOfferNotificationAsync(ReadOfferDto offerDto);
         Task SendOfferResponseNotificationAsync(int offerId, string action);
         Task<List<NotificationDto>> GetUserNotificationsAsync(string userId);
+        Task MarkNotificationsAsReadAsync(int notificationId);
+        Task<NotificationDto> GetNotificationsByIdAsync(int notificationId);    
     }
 
 }

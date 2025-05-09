@@ -18,9 +18,9 @@ namespace Investo.Presentation.Controllers
     {
         private readonly IOfferService _offerService;
         private readonly IProjectService _projectService;
-        private readonly NotificationService _notifcationService;
+        private readonly INotificationsService _notifcationService;
 
-        public OfferController(IOfferService offerService, IProjectService projectService, NotificationService notifcationService)
+        public OfferController(IOfferService offerService, IProjectService projectService, INotificationsService notifcationService)
         {
             _offerService = offerService;
             _projectService = projectService;

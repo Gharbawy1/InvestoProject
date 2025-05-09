@@ -5,18 +5,21 @@ using Investo.Entities.DTO.Notification;
 using Investo.Entities.DTO.Offer;
 using Investo.Entities.IRepository;
 using Investo.Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Investo.DataAccess.Services.Notifications
 {
-    public class NotificationService
+    public class NotificationService : INotificationsService
     {
         private readonly IProjectRepository _projectRepository;
         private readonly IOfferRepository _offerRepository;
@@ -119,6 +122,44 @@ namespace Investo.DataAccess.Services.Notifications
             // إرسال الـ notification عبر SignalR
             await _notificationHubContext.Clients.User(notification.RecieverId)
                 .SendAsync("ReceiveNotification", notification);
+        }
+        public async Task<List<NotificationDto>> GetUserNotificationsAsync(string userId)
+        {
+            var notifications = await _notificationRepository.GetNotificationsByUserIdAsync(userId);
+
+            return notifications.Select(n => new NotificationDto
+            {
+                Id = n.Id,
+                ReceiverId = n.RecieverId,
+                IssuerId = n.IssuerId,
+                Message = n.Message,
+                CreatedAt = n.CreatedAt,
+                IsRead = n.IsRead,
+                Payload = n.Payload
+            }).ToList();
+
+        }
+        public async Task MarkNotificationsAsReadAsync(int notificationId)
+        {
+            await _notificationRepository.MarkNotificationsAsReadAsync(notificationId);
+        }
+        public async Task<NotificationDto> GetNotificationsByIdAsync(int notificationId)
+        {
+            var FoundNotification = await _notificationRepository.GetNotificationsByIdAsync(notificationId);
+
+            if (FoundNotification == null) return null;
+
+            return new NotificationDto
+            {
+                Id = FoundNotification.Id,
+                IssuerId = FoundNotification.IssuerId,
+                ReceiverId = FoundNotification.RecieverId,
+                Message = FoundNotification.Message,
+                CreatedAt = FoundNotification.CreatedAt,
+                IsRead = FoundNotification.IsRead,
+                Payload = FoundNotification.Payload
+            };
+
         }
     }
 }
