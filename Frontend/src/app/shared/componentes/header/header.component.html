@@ -189,7 +189,11 @@
             </button>
             <button
               mat-menu-item
-              *ngIf="userRole === 'Investor' || userRole === 'BusinessOwner'"
+              *ngIf="
+                userRole === 'Investor' ||
+                userRole === 'BusinessOwner' ||
+                userRole === 'Admin'
+              "
               (click)="goToDashboard()"
             >
               <mat-icon>dashboard</mat-icon>

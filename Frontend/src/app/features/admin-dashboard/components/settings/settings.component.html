@@ -1,0 +1,82 @@
+<div class="p-6 space-y-10 max-w-4xl mx-auto bg-gray-50 min-h-screen">
+  <!-- Categories Table -->
+  <div class="space-y-4">
+    <h2 class="text-2xl font-semibold text-gray-700">Categories</h2>
+    <table class="w-full border border-gray-300 rounded bg-white">
+      <thead class="bg-gray-200 text-gray-700">
+        <tr>
+          <th class="text-left p-3">#</th>
+          <th class="text-left p-3">Category Name</th>
+          <th class="text-left p-3">Actions</th>
+        </tr>
+      </thead>
+      <!-- <tbody>
+        <tr
+          class="border-t border-gray-200 hover:bg-gray-100"
+          *ngFor="let category of categories; let i = index"
+        >
+          <td hidden>{{ category.id }}</td>
+          <td class="p-3 text-gray-600">{{ i + 1 }}</td>
+          <td class="p-3 text-gray-700">{{ category.name }}</td>
+          <td class="p-3 space-x-2">
+            <button
+              class="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500"
+            >
+              Update
+            </button>
+            <button
+              class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody> -->
+    </table>
+  </div>
+  <!-- Add Category Section -->
+  <div class="space-y-4 border border-gray-300 p-4 rounded-xl shadow bg-white">
+    <h2 class="text-xl font-semibold text-gray-700">Add Category</h2>
+    <input
+      type="text"
+      placeholder="Enter category name"
+      class="w-full p-2 border border-gray-300 rounded bg-gray-100 text-gray-700"
+    />
+    <button class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-800">
+      Add Category
+    </button>
+  </div>
+
+  <!-- Roles Table -->
+  <div class="space-y-4">
+    <h2 class="text-2xl font-semibold text-gray-700">Roles</h2>
+    <table class="w-full border border-gray-300 rounded bg-white">
+      <thead class="bg-gray-200 text-gray-700">
+        <tr>
+          <th class="text-left p-3">#</th>
+          <th class="text-left p-3">Role Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Example row -->
+        <tr class="border-t border-gray-200 hover:bg-gray-100">
+          <td class="p-3 text-gray-600">1</td>
+          <td class="p-3 text-gray-700">Investor</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add Role Section -->
+  <div class="space-y-4 border border-gray-300 p-4 rounded-xl shadow bg-white">
+    <h2 class="text-xl font-semibold text-gray-700">Add Role</h2>
+    <input
+      type="text"
+      placeholder="Enter role name"
+      class="w-full p-2 border border-gray-300 rounded bg-gray-100 text-gray-700"
+    />
+    <button class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-800">
+      Add Role
+    </button>
+  </div>
+</div>

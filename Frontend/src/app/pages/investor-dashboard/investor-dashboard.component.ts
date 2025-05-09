@@ -72,6 +72,8 @@ export class InvestorDashboardComponent implements OnInit {
     // get accepted offers
     this.offersService.getAcceptedOffers(investorId ?? '').subscribe({
       next: (data) => {
+        console.log(data.data);
+        debugger;
         data.data.forEach((offer) => {
           if (offer.isPaid) {
             this.investments = [...this.investments, offer];

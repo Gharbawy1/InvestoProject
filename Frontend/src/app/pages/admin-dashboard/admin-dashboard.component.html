@@ -1,18 +1,18 @@
 <div class="min-h-screen bg-gray-50 flex flex-col pt-15">
   <div class="flex flex-1 overflow-hidden">
     <!-- Desktop Sidebar -->
-    <aside class="hidden lg:block w-64 bg-white border-r border-gray-200 shadow-sm overflow-y-auto">
+    <aside
+      class="hidden lg:block w-64 bg-white border-r border-gray-200 shadow-sm overflow-y-auto"
+    >
       <nav class="p-4 space-y-1">
-        <button 
+        <button
           *ngFor="let tab of tabs"
           (click)="setActiveTab(tab)"
           [class.text-blue-600]="activeTab() === tab"
           [class.bg-gray-100]="activeTab() === tab"
           class="w-full text-left px-4 py-2.5 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium"
         >
-          <mat-icon class="w-5 h-5 mr-2 align-middle">
-
-          </mat-icon>
+          <mat-icon class="w-5 h-5 mr-2 align-middle"> </mat-icon>
           {{ tab | titlecase }}
         </button>
       </nav>
@@ -24,28 +24,34 @@
       <nav class="lg:hidden relative p-4 pb-0">
         <div class="flex overflow-x-auto scrollbar-custom pb-3">
           <div class="flex flex-nowrap space-x-2">
-            <button 
+            <button
               *ngFor="let tab of tabs"
               (click)="setActiveTab(tab)"
               [class.text-blue-600]="activeTab() === tab"
               [class.bg-blue-50]="activeTab() === tab"
-              class="flex-shrink-0 px-4 py-2.5 rounded-full text-sm font-medium 
-                    text-gray-600 hover:bg-gray-100 transition-colors border"
+              class="flex-shrink-0 px-4 py-2.5 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors border"
             >
               {{ tab | titlecase }}
             </button>
           </div>
         </div>
-        <div class="absolute top-0 right-0 w-8 h-full bg-gradient-to-l from-gray-50"></div>
+        <div
+          class="absolute top-0 right-0 w-8 h-full bg-gradient-to-l from-gray-50"
+        ></div>
       </nav>
 
       <!-- Content Sections -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div class="bg-white rounded-xl shadow-sm p-6">
           <!-- Projects Tab -->
-          <section *ngIf="activeTab() === 'projects'" class="animate-content-fade">
+          <section
+            *ngIf="activeTab() === 'projects'"
+            class="animate-content-fade"
+          >
             <div class="mb-6">
-              <h2 class="text-2xl font-bold text-gray-900">Project Approvals</h2>
+              <h2 class="text-2xl font-bold text-gray-900">
+                Project Approvals
+              </h2>
               <p class="text-gray-500 mt-1">
                 Review and manage projects submitted by business owners.
               </p>
@@ -61,23 +67,120 @@
                 Manage user accounts, roles, and permissions.
               </p>
             </div>
-            <div class="bg-gray-50 rounded-lg p-8 text-center border-2 border-dashed">
-              <mat-icon class="text-4xl text-gray-400 mb-4">engineering</mat-icon>
-              <p class="text-gray-500 font-medium">User management coming soon</p>
+            <div
+              class="bg-gray-50 rounded-lg p-8 text-center border-2 border-dashed"
+            >
+              <mat-icon class="text-4xl text-gray-400 mb-4"
+                >engineering</mat-icon
+              >
+              <p class="text-gray-500 font-medium">
+                User management coming soon
+              </p>
             </div>
           </section>
 
           <!-- Settings Tab -->
-          <section *ngIf="activeTab() === 'settings'" class="animate-content-fade">
+          <section
+            *ngIf="activeTab() === 'settings'"
+            class="animate-content-fade"
+          >
             <div class="mb-6">
-              <h2 class="text-2xl font-bold text-gray-900">Platform Settings</h2>
+              <h2 class="text-2xl font-bold text-gray-900">
+                Platform Settings
+              </h2>
               <p class="text-gray-500 mt-1">
                 Configure platform-wide settings and preferences.
               </p>
             </div>
-            <div class="bg-gray-50 rounded-lg p-8 text-center border-2 border-dashed">
-              <mat-icon class="text-4xl text-gray-400 mb-4">settings_suggest</mat-icon>
-              <p class="text-gray-500 font-medium">Settings panel under construction</p>
+            <div
+              class="p-6 space-y-10 max-w-4xl mx-auto bg-gray-50 min-h-screen"
+            >
+              <!-- Categories Table -->
+              <div class="space-y-4">
+                <h2 class="text-2xl font-semibold text-gray-700">Categories</h2>
+                <table class="w-full border border-gray-300 rounded bg-white">
+                  <thead class="bg-gray-200 text-gray-700">
+                    <tr>
+                      <th class="text-left p-3">#</th>
+                      <th class="text-left p-3">Category Name</th>
+                      <th class="text-left p-3">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Example row -->
+                    <tr
+                      class="border-t border-gray-200 hover:bg-gray-100"
+                      *ngFor="let category of categories; let i = index"
+                    >
+                      <td hidden>{{ category.id }}</td>
+                      <td class="p-3 text-gray-600">{{ i + 1 }}</td>
+                      <td class="p-3 text-gray-700">{{ category.name }}</td>
+                      <td class="p-3 space-x-2">
+                        <button
+                          class="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500"
+                          (click)="startEditing(category)"
+                        >
+                          Update
+                        </button>
+                        <button
+                          class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                          (click)="deleteCategory(category.id)"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- Add Category Section -->
+              <div
+                class="space-y-4 border border-gray-300 p-4 rounded-xl shadow bg-white"
+              >
+                <h2 class="text-xl font-semibold text-gray-700">
+                  Add Category
+                </h2>
+                <input
+                  type="text"
+                  placeholder="Enter category name"
+                  class="w-full p-2 border border-gray-300 rounded bg-gray-100 text-gray-700"
+                  [(ngModel)]="newCategory"
+                />
+                <button
+                  class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-800"
+                  (click)="addCategory(newCategory)"
+                >
+                  Add Category
+                </button>
+              </div>
+
+              <!-- Edit Category Section -->
+              <div
+                class="space-y-4 border border-gray-300 p-4 rounded-xl shadow bg-white"
+                *ngIf="editingCategoryId !== ''"
+              >
+                <h2 class="text-xl font-semibold text-gray-700">
+                  Edit Category
+                </h2>
+                <input
+                  type="text"
+                  placeholder="Enter category name"
+                  class="w-full p-2 border border-gray-300 rounded bg-gray-100 text-gray-700"
+                  [(ngModel)]="updatedCategoryName"
+                />
+                <button
+                  class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-800"
+                  (click)="submitUpdate(editingCategoryId)"
+                >
+                  Edit Category
+                </button>
+                <button
+                  class="bg-red-500 text-white px-4 py-2 mx-4 rounded hover:bg-red-600"
+                  (click)="cancelEditing()"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </section>
         </div>

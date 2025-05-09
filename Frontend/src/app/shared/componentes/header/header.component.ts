@@ -74,6 +74,9 @@ export class HeaderComponent implements OnInit {
       case 'User':
         this.router.navigate(['/UpgradeRole']);
         break;
+      case 'Admin':
+        this.router.navigate(['/AdminDashboard']);
+        break;
       default:
         this.router.navigate(['/']);
         break;

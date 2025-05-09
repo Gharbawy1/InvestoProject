@@ -36,9 +36,9 @@ export const environment = {
   category: {
     getAll: '/Category',
     create: '/Category',
-    getById: (id: string) => `/Category/${id}`,
-    updateById: (id: string) => `/Category/${id}`,
-    deleteById: (id: string) => `/Category/${id}`,
+    getById: (id: number) => `/Category/${id}`,
+    updateById: (id: number) => `/Category/${id}`,
+    deleteById: (id: number) => `/Category/${id}`,
   },
 
   offer: {
