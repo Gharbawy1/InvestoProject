@@ -68,6 +68,27 @@ export const routes: Routes = [
         },
       },
       {
+        path: '',
+        component: AppLayoutComponent,
+        canActivate: [userGuard],
+        children: [
+          {
+            path: 'UpgradeRole',
+            loadChildren: () =>
+              import('./features/upgrade-role/routes').then(
+                (m) => m.upgradeRoutes
+              ),
+          },
+          {
+            path: 'UserProfile',
+            loadComponent: () =>
+              import('./pages/user-profile/user-profile.component').then(
+                (m) => m.UserProfileComponent
+              ),
+          },
+        ],
+      },
+      {
         path: 'error',
         loadComponent: () =>
           import('./shared/componentes/error/error.component').then(
@@ -113,25 +134,6 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/project/routes').then(
             (m) => m.PROJECT_DETAILS_ROUTES
-          ),
-      },
-    ],
-  },
-  {
-    path: '',
-    component: AppLayoutComponent,
-    canActivate: [userGuard],
-    children: [
-      {
-        path: 'UpgradeRole',
-        loadChildren: () =>
-          import('./features/upgrade-role/routes').then((m) => m.upgradeRoutes),
-      },
-      {
-        path: 'UserProfile',
-        loadComponent: () =>
-          import('./pages/user-profile/user-profile.component').then(
-            (m) => m.UserProfileComponent
           ),
       },
     ],
