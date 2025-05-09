@@ -70,18 +70,12 @@
           placeholder="Enter amount"
         />
       </div>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-1 gap-2">
         <button
           class="text-sm font-medium p-2 border border-gray-200 rounded-lg hover:border-blue-400 hover:text-blue-600 transition-colors"
-          (click)="setInvestmentAmount(10000)"
+          (click)="setInvestmentAmount(fundingGoal - raisedFunds)"
         >
-          Min: 10K
-        </button>
-        <button
-          class="text-sm font-medium p-2 border border-gray-200 rounded-lg hover:border-blue-400 hover:text-blue-600 transition-colors"
-          (click)="setInvestmentAmount(100000)"
-        >
-          Suggested: 100K
+          Maximum: {{ fundingGoal - raisedFunds | number }}
         </button>
       </div>
     </div>
@@ -134,7 +128,7 @@
         type="button"
         (click)="onInvest()"
         [disabled]="!canInvest || isLoading"
-        class="w-full flex items-center justify-center gap-2 text-white bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-medium transition-all disabled:bg-gray-300 disabled:cursor-not-allowed"
+        class="w-full flex items-center justify-center gap-2 text-white bg-gray-900 hover:bg-gray-800 py-3 rounded-lg font-medium transition-all disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
         <span *ngIf="!isLoading">Invest Now</span>
         <span *ngIf="isLoading" class="flex items-center gap-2">
@@ -182,8 +176,10 @@
             >account_balance_wallet</mat-icon
           >
           <div>
-            <p class="text-gray-500">Minimum</p>
-            <p class="font-medium text-gray-900">10,000 LE</p>
+            <p class="text-gray-500">Maximun</p>
+            <p class="font-medium text-gray-900">
+              {{ fundingGoal - raisedFunds | number }} LE
+            </p>
           </div>
         </div>
         <div class="flex items-center gap-3">

@@ -101,20 +101,6 @@ export const routes: Routes = [
             (m) => m.UserProfileComponent
           ),
       },
-      {
-        path: 'error',
-        loadComponent: () =>
-          import('./shared/componentes/error/error.component').then(
-            (m) => m.ErrorComponent
-          ),
-      },
-      {
-        path: 'success',
-        loadComponent: () =>
-          import('./shared/componentes/success/success.component').then(
-            (m) => m.SuccessComponent
-          ),
-      },
     ],
   },
   {
@@ -126,6 +112,22 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/auth-model/auth-model.component').then(
             (m) => m.AuthModelComponent
+          ),
+      },
+      {
+        path: 'error',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./shared/componentes/error/error.component').then(
+            (m) => m.ErrorComponent
+          ),
+      },
+      {
+        path: 'success',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./shared/componentes/success/success.component').then(
+            (m) => m.SuccessComponent
           ),
       },
     ],

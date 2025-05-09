@@ -60,9 +60,9 @@
   <div class="mt-4 flex space-x-4">
     <!-- Pay Now Button -->
     <button-component
-      *ngIf="offer.status === 'Accepted'"
+      *ngIf="offer.status === 'Accepted' && !offer.isPaid"
       [variant]="'default'"
-      (click)="payNow(offer.projectId, offer.offerId)"
+      (click)="payNow(offer.projectId!, offer.offerId!)"
       class="btn btn-success"
     >
       Pay Now

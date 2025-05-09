@@ -7,4 +7,5 @@ export interface IOfferProfile extends IOffer {
   status: 'Pending' | 'Accepted' | 'Rejected';
   investor: IInvestor;
   categoryId: number;
+  isPaid: boolean;
 }

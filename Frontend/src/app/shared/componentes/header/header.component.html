@@ -75,7 +75,15 @@
                 <div
                   class="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden"
                 >
+                  <img
+                    *ngIf="profilePictureURL"
+                    [src]="profilePictureURL"
+                    alt="Profile Picture"
+                    class="w-full h-full object-cover"
+                  />
+
                   <mat-icon
+                    *ngIf="!profilePictureURL"
                     class="text-gray-600 group-hover:text-primary-600 transition duration-200"
                   >
                     account_circle
@@ -96,6 +104,10 @@
             </button>
           </div>
           <mat-menu #userMenu="matMenu">
+            <button mat-menu-item routerLink="/profile">
+              <mat-icon>person</mat-icon>
+              <span>Profile</span>
+            </button>
             <button
               mat-menu-item
               *ngIf="userRole === 'User'"
@@ -242,7 +254,11 @@
                 <div
                   class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden"
                 >
-                  <mat-icon class="text-gray-600">account_circle</mat-icon>
+                  <img
+                    [src]="profilePictureURL"
+                    alt="Profile Picture"
+                    class="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <div class="font-medium">{{ userName }}</div>

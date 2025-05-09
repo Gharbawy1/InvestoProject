@@ -41,6 +41,8 @@ export class OfferComponent implements OnInit {
   blockMessage = '';
   navigationPath: string[] = ['/InvestorDashboard'];
   navigationButtonText = 'Go Back';
+  fundingGoal = 0;
+  raisedFund = 0;
 
   constructor(
     public router: Router,
@@ -90,6 +92,8 @@ export class OfferComponent implements OnInit {
       .subscribe({
         next: (p) => {
           const projectIdNum = Number(p.id);
+          this.fundingGoal = p.fundingGoal;
+          this.raisedFund = p.raisedFund;
           if (isNaN(projectIdNum)) {
             this.errorMessage = 'Invalid project ID';
             return;
@@ -122,20 +126,6 @@ export class OfferComponent implements OnInit {
       .pipe(take(1))
       .subscribe({
         next: (offers) => {
-          console.log('→ offers array:', offers);
-          console.log('→ projectId:', projectId, 'investorId:', investorId);
-          console.log(
-            '→ offer.projectId values:',
-            offers.map((o) => o.projectId),
-            'offer.investorId values:',
-            offers.map((o) => o.investorId)
-          );
-          console.log(
-            '→ hasExisting?',
-            offers.some(
-              (o) => o.projectId === projectId && o.investorId === investorId
-            )
-          );
           const hasExisting = offers.some(
             (o) => o.projectId === projectId && o.investorId === investorId
           );
@@ -216,7 +206,8 @@ export class OfferComponent implements OnInit {
 
   private validateAmount(): boolean {
     const amount = this.offer.offerAmount;
-    return typeof amount === 'number';
+    const maxAmount = this.fundingGoal - this.raisedFund;
+    return typeof amount === 'number' && amount > 0 && amount <= maxAmount;
   }
 
   private validateRequiredFields(): boolean {

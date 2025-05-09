@@ -72,7 +72,11 @@ export class InvestorDashboardComponent implements OnInit {
     // get accepted offers
     this.offersService.getAcceptedOffers(investorId ?? '').subscribe({
       next: (data) => {
-        this.investments = data.data;
+        data.data.forEach((offer) => {
+          if (offer.isPaid) {
+            this.investments = [...this.investments, offer];
+          }
+        });
         this.totalInvested = this.sumOfAmounts();
         this.activeInvestments = this.investments.length;
       },

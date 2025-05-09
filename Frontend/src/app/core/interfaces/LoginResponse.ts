@@ -4,5 +4,5 @@ export interface LoginResponse {
   firstName: string;
   lastName: string;
   roles: string[];
-  profilePicture: string;
+  profilePictureURL: string;
 }

@@ -55,7 +55,7 @@ export class AuthService {
       firstName: response.firstName,
       lastName: response.lastName,
       role: response.roles[0] || 'User',
-      profilePictureURL: response.profilePicture,
+      profilePictureURL: response.profilePictureURL,
     };
   }
 
@@ -110,6 +110,7 @@ export class AuthService {
         id: response.userId,
         firstName: response.userName,
         role: response.roles[0],
+        profilePictureURL: response.profilePicture,
       };
       console.log(user);
       debugger;

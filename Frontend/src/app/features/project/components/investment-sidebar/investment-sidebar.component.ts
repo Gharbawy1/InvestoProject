@@ -30,14 +30,14 @@ import { Subscription } from 'rxjs';
   templateUrl: './investment-sidebar.component.html',
   styleUrls: ['./investment-sidebar.component.css'],
 })
-export class InvestmentSidebarComponent implements OnDestroy, OnChanges {
+export class InvestmentSidebarComponent implements OnDestroy {
   @Input() fundingGoal = 0;
   @Input() raisedFunds = 0;
   @Input() numOfInvestors = 0;
 
   @Output() discussionClicked = new EventEmitter<void>();
 
-  private readonly MIN_INVESTMENT = 10000;
+  private readonly MIN_INVESTMENT = 1;
   private readonly PLATFORM_FEE_RATE = 0.05;
   private readonly PROCESSING_FEE_RATE = 0.03;
   private readonly PROCESSING_FLAT_FEE = 0.2;
@@ -48,16 +48,6 @@ export class InvestmentSidebarComponent implements OnDestroy, OnChanges {
   isInvestor = false;
   private userSub: Subscription = Subscription.EMPTY;
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['raisedFunds'] || changes['fundingGoal']) {
-      console.log(
-        'Sidebar Inputs:',
-        'raisedFunds=', this.raisedFunds,
-        'fundingGoal=', this.fundingGoal,
-        '→ progress=', this.progressPercentage
-      );
-    }
-  }
   constructor(
     public router: Router,
     private route: ActivatedRoute,

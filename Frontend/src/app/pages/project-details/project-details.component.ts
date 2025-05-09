@@ -119,13 +119,13 @@ export class ProjectDetailsComponent implements OnInit {
         this.errorMessage = 'Owner information not available';
         return;
       }
-  
+
       const encodedId = SafeEncoder.encode(id);
       this.router.navigate(['/profile', encodedId]);
     } catch (error) {
       console.error('Navigation failed:', error);
       this.errorMessage = 'Could not navigate to profile. Please try again.';
-      setTimeout(() => this.errorMessage = undefined, 5000);
+      setTimeout(() => (this.errorMessage = undefined), 5000);
     }
   }
 
@@ -201,8 +201,7 @@ export class ProjectDetailsComponent implements OnInit {
     return this.project?.investorsCount || 0;
   }
 
-  /** project team */
-  get projectTeam(): string[] {
-    return ['John Doe', 'Jane Smith', 'Alice Johnson'];
+  openImageModal(imageUrl: string) {
+    window.open(imageUrl, '_blank');
   }
 }
