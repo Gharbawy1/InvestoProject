@@ -56,7 +56,7 @@
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Business Name*</label>
             <input
-              formControlName="projectTitle"
+              formControlName="ProjectTitle"
               type="text"
               placeholder="Acme Corporation"
               [appAutoFocus]="true"
@@ -65,22 +65,22 @@
             <div class="min-h-[20px]">
               <div
                 *ngIf="
-                  businessForm.get('projectTitle')?.invalid &&
-                  (businessForm.get('projectTitle')?.touched || formSubmitted)
+                  businessForm.get('ProjectTitle')?.invalid &&
+                  (businessForm.get('ProjectTitle')?.touched || formSubmitted)
                 "
                 class="animate-slide-in error-message text-red-500 text-sm"
                 aria-live="polite"
               >
                 <div
-                  *ngIf="businessForm.get('projectTitle')?.errors?.['required']"
+                  *ngIf="businessForm.get('ProjectTitle')?.errors?.['required']"
                 >
                   * Business name is required
                 </div>
                 <div
-                  *ngIf="businessForm.get('projectTitle')?.errors?.['minlength']"
+                  *ngIf="businessForm.get('ProjectTitle')?.errors?.['minlength']"
                 >
                   * Minimum 5 characters required (current:
-                  {{ businessForm.get("projectTitle")?.value?.length || 0 }})
+                  {{ businessForm.get("ProjectTitle")?.value?.length || 0 }})
                 </div>
               </div>
             </div>
@@ -90,7 +90,7 @@
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Tagline*</label>
             <input
-              formControlName="subtitle"
+              formControlName="Subtitle"
               type="text"
               placeholder="Short business summary"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
@@ -98,20 +98,20 @@
             <div class="min-h-[20px]">
               <div
                 *ngIf="
-                  businessForm.get('subtitle')?.invalid &&
-                  (businessForm.get('subtitle')?.touched || formSubmitted)
+                  businessForm.get('Subtitle')?.invalid &&
+                  (businessForm.get('Subtitle')?.touched || formSubmitted)
                 "
                 class="animate-slide-in error-message text-red-500 text-sm"
                 aria-live="polite"
               >
-                <div *ngIf="businessForm.get('subtitle')?.errors?.['required']">
+                <div *ngIf="businessForm.get('Subtitle')?.errors?.['required']">
                   * Tagline is required
                 </div>
                 <div
-                  *ngIf="businessForm.get('subtitle')?.errors?.['maxlength']"
+                  *ngIf="businessForm.get('Subtitle')?.errors?.['maxlength']"
                 >
                   * Maximum 150 characters ({{
-                    businessForm.get("subtitle")?.value?.length || 0
+                    businessForm.get("Subtitle")?.value?.length || 0
                   }}/150)
                 </div>
               </div>
@@ -122,7 +122,7 @@
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Location*</label>
             <input
-              formControlName="projectLocation"
+              formControlName="ProjectLocation"
               type="text"
               placeholder="City, Governorate"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
@@ -130,8 +130,8 @@
             <div class="min-h-[20px]">
               <div
                 *ngIf="
-                  businessForm.get('projectLocation')?.invalid &&
-                  (businessForm.get('projectLocation')?.touched ||
+                  businessForm.get('ProjectLocation')?.invalid &&
+                  (businessForm.get('ProjectLocation')?.touched ||
                     formSubmitted)
                 "
                 class="animate-slide-in error-message text-red-500 text-sm"
@@ -146,7 +146,7 @@
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Funding Goal (LE)*</label>
             <input
-              formControlName="fundingGoal"
+              formControlName="FundingGoal"
               type="number"
               placeholder="50000"
               min="10000"
@@ -155,18 +155,18 @@
             <div class="min-h-[20px]">
               <div
                 *ngIf="
-                  businessForm.get('fundingGoal')?.invalid &&
-                  (businessForm.get('fundingGoal')?.touched || formSubmitted)
+                  businessForm.get('FundingGoal')?.invalid &&
+                  (businessForm.get('FundingGoal')?.touched || formSubmitted)
                 "
                 class="animate-slide-in error-message text-red-500 text-sm"
                 aria-live="polite"
               >
                 <div
-                  *ngIf="businessForm.get('fundingGoal')?.errors?.['required']"
+                  *ngIf="businessForm.get('FundingGoal')?.errors?.['required']"
                 >
                   * Funding goal is required
                 </div>
-                <div *ngIf="businessForm.get('fundingGoal')?.errors?.['min']">
+                <div *ngIf="businessForm.get('FundingGoal')?.errors?.['min']">
                   * Minimum 10000 LE required
                 </div>
               </div>
@@ -183,7 +183,7 @@
               {{ errorMessage }}
             </div>
             <select
-              formControlName="categoryId"
+              formControlName="CategoryId"
               title="Select a category"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
             >
@@ -195,8 +195,8 @@
             <div class="min-h-[20px]">
               <div
                 *ngIf="
-                  businessForm.get('categoryId')?.invalid &&
-                  (businessForm.get('categoryId')?.touched || formSubmitted)
+                  businessForm.get('CategoryId')?.invalid &&
+                  (businessForm.get('CategoryId')?.touched || formSubmitted)
                 "
                 class="animate-slide-in error-message text-red-500 text-sm"
                 aria-live="polite"
@@ -219,8 +219,6 @@
               (change)="onImageSelected($event)"
               hidden
               #businessImageInput
-              hidden
-              required
             />
             <button
               type="button"
@@ -230,14 +228,16 @@
               Upload Business image
             </button>
             <div class="min-h-[20px]">
-              <div
-                *ngIf="
-                  businessForm.get('projectImage')?.invalid &&
-                  (businessForm.get('projectImage')?.touched || formSubmitted)
-                "
-                class="text-red-500 text-sm mt-1"
-              >
-                * Please upload a business image
+              <div *ngIf="businessForm.get('ProjectImage')?.errors && (formSubmitted || businessForm.get('ProjectImage')?.touched)" class="text-red-500 text-sm mt-1">
+                <div *ngIf="businessForm.get('ProjectImage')?.hasError('required')">
+                  * Business image is required
+                </div>
+                <div *ngIf="businessForm.get('ProjectImage')?.hasError('fileType')">
+                  * Only image files are allowed (JPEG, PNG, etc.)
+                </div>
+                <div *ngIf="businessForm.get('ProjectImage')?.hasError('fileSize')">
+                  * File is too large (max 5 MB)
+                </div>
               </div>
             </div>
             <p class="text-sm text-gray-500 mt-2" *ngIf="!businessImageFile">
@@ -261,7 +261,6 @@
               (change)="onAssertionSelected($event)"
               hidden
               #assertionImageInput
-              hidden
               required
             />
             <button
@@ -272,28 +271,29 @@
               Upload Articles of assosiation
             </button>
             <div class="min-h-[20px]">
-              <div
-                *ngIf="
-                  businessForm.get('articlesOfAssociation')?.invalid &&
-                  (businessForm.get('articlesOfAssociation')?.touched ||
-                    formSubmitted)
-                "
-                class="text-red-500 text-sm mt-1"
-              >
-                * Please upload a Articles of assosiation
+              <div *ngIf="businessForm.get('ArticlesOfAssociation')?.errors && (formSubmitted || businessForm.get('ArticlesOfAssociation')?.touched)" class="text-red-500 text-sm mt-1">
+                <div *ngIf="businessForm.get('ArticlesOfAssociation')?.hasError('required')">
+                  * Articles of association is required
+                </div>
+                <div *ngIf="businessForm.get('ArticlesOfAssociation')?.hasError('fileType')">
+                  * Only image files are allowed (JPEG, PNG, etc.)
+                </div>
+                <div *ngIf="businessForm.get('ArticlesOfAssociation')?.hasError('fileSize')">
+                  * File is too large (max 5 MB)
+                </div>
               </div>
             </div>
             <p
               class="text-sm text-gray-500 mt-2"
-              *ngIf="!articalOfAssociationFile"
+              *ngIf="!articlesOfAssociationFile"
             >
               Recommended size: 1200x800px (JPEG or PNG)
             </p>
             <div
               class="text-sm text-green-600 mt-2"
-              *ngIf="articalOfAssociationFile"
+              *ngIf="articlesOfAssociationFile"
             >
-              {{ articalOfAssociationFile.name }} uploaded
+              {{ articlesOfAssociationFile.name }} uploaded
             </div>
           </div>
         </div>
@@ -312,8 +312,6 @@
               (change)="onComercialSelected($event)"
               hidden
               #comercialImageInput
-              hidden
-              required
             />
             <button
               type="button"
@@ -323,28 +321,29 @@
               Upload Commercial Registry Certificate
             </button>
             <div class="min-h-[20px]">
-              <div
-                *ngIf="
-                  businessForm.get('commercialRegistryCertificate')?.invalid &&
-                  (businessForm.get('commercialRegistryCertificate')?.touched ||
-                    formSubmitted)
-                "
-                class="text-red-500 text-sm mt-1"
-              >
-                * Please upload a Commercial Registry Certificate
+              <div *ngIf="businessForm.get('CommercialRegistryCertificate')?.errors && (formSubmitted || businessForm.get('CommercialRegistryCertificate')?.touched)" class="text-red-500 text-sm mt-1">
+                <div *ngIf="businessForm.get('CommercialRegistryCertificate')?.hasError('required')">
+                  * Commercial Registry Certificate is required
+                </div>
+                <div *ngIf="businessForm.get('CommercialRegistryCertificate')?.hasError('fileType')">
+                  * Only image files are allowed (JPEG, PNG, etc.)
+                </div>
+                <div *ngIf="businessForm.get('CommercialRegistryCertificate')?.hasError('fileSize')">
+                  * File is too large (max 5 MB)
+                </div>
               </div>
             </div>
             <p
               class="text-sm text-gray-500 mt-2"
-              *ngIf="!commercialRegistrationFile"
+              *ngIf="!commercialRegistryFile"
             >
               Recommended size: 1200x800px (JPEG or PNG)
             </p>
             <div
               class="text-sm text-green-600 mt-2"
-              *ngIf="commercialRegistrationFile"
+              *ngIf="commercialRegistryFile"
             >
-              {{ commercialRegistrationFile.name }} uploaded
+              {{ commercialRegistryFile.name }} uploaded
             </div>
           </div>
         </div>
@@ -361,8 +360,6 @@
               (change)="onTaxCardSelected($event)"
               hidden
               #taxCardInput
-              hidden
-              required
             />
             <button
               type="button"
@@ -372,14 +369,16 @@
               Upload Tax Card
             </button>
             <div class="min-h-[20px]">
-              <div
-                *ngIf="
-                  businessForm.get('taxCard')?.invalid &&
-                  (businessForm.get('taxCard')?.touched || formSubmitted)
-                "
-                class="text-red-500 text-sm mt-1"
-              >
-                * Please upload a business image
+              <div *ngIf="businessForm.get('TextCard')?.errors && (formSubmitted || businessForm.get('TextCard')?.touched)" class="text-red-500 text-sm mt-1">
+                <div *ngIf="businessForm.get('TextCard')?.hasError('required')">
+                  * Tax Card is required
+                </div>
+                <div *ngIf="businessForm.get('TextCard')?.hasError('fileType')">
+                  * Only image files are allowed (JPEG, PNG, etc.)
+                </div>
+                <div *ngIf="businessForm.get('TextCard')?.hasError('fileSize')">
+                  * File is too large (max 5 MB)
+                </div>
               </div>
             </div>
             <p class="text-sm text-gray-500 mt-2" *ngIf="!taxCardFile">
@@ -397,7 +396,7 @@
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Funding Terms*</label>
             <textarea
-              formControlName="fundingExchange"
+              formControlName="FundingExchange"
               type="text"
               placeholder="Describe funding terms (e.g., '15% Equity')"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale min-h-[120px]"
@@ -405,8 +404,8 @@
             <div class="min-h-[20px]">
               <div
                 *ngIf="
-                  businessForm.get('fundingExchange')?.invalid &&
-                  (businessForm.get('fundingExchange')?.touched ||
+                  businessForm.get('FundingExchange')?.invalid &&
+                  (businessForm.get('FundingExchange')?.touched ||
                     formSubmitted)
                 "
                 class="animate-slide-in error-message text-red-500 text-sm"
@@ -421,26 +420,26 @@
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Business Vision*</label>
             <textarea
-              formControlName="projectVision"
+              formControlName="ProjectVision"
               placeholder="Describe your long-term business vision..."
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale min-h-[120px]"
             ></textarea>
             <div class="min-h-[20px]">
               <div
                 *ngIf="
-                  businessForm.get('projectVision')?.invalid &&
-                  (businessForm.get('projectVision')?.touched || formSubmitted)
+                  businessForm.get('ProjectVision')?.invalid &&
+                  (businessForm.get('ProjectVision')?.touched || formSubmitted)
                 "
                 class="animate-slide-in error-message text-red-500 text-sm"
                 aria-live="polite"
               >
                 <div
-                  *ngIf="businessForm.get('projectVision')?.errors?.['required']"
+                  *ngIf="businessForm.get('ProjectVision')?.errors?.['required']"
                 >
                   * Vision statement is required
                 </div>
                 <div
-                  *ngIf="businessForm.get('projectVision')?.errors?.['minlength']"
+                  *ngIf="businessForm.get('ProjectVision')?.errors?.['minlength']"
                 >
                   * Minimum 100 characters (current: {{ visionLength || 0 }})
                 </div>
@@ -452,26 +451,26 @@
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Business Story*</label>
             <textarea
-              formControlName="projectStory"
+              formControlName="ProjectStory"
               placeholder="Share your business story and journey..."
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale min-h-[120px]"
             ></textarea>
             <div class="min-h-[20px]">
               <div
                 *ngIf="
-                  businessForm.get('projectStory')?.invalid &&
-                  (businessForm.get('projectStory')?.touched || formSubmitted)
+                  businessForm.get('ProjectStory')?.invalid &&
+                  (businessForm.get('ProjectStory')?.touched || formSubmitted)
                 "
                 class="animate-slide-in error-message text-red-500 text-sm"
                 aria-live="polite"
               >
                 <div
-                  *ngIf="businessForm.get('projectStory')?.errors?.['required']"
+                  *ngIf="businessForm.get('ProjectStory')?.errors?.['required']"
                 >
                   * Business story is required
                 </div>
                 <div
-                  *ngIf="businessForm.get('projectStory')?.errors?.['minlength']"
+                  *ngIf="businessForm.get('ProjectStory')?.errors?.['minlength']"
                 >
                   * Minimum 200 characters (current: {{ storyLength || 0 }})
                 </div>
@@ -483,15 +482,15 @@
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Current Status*</label>
             <textarea
-              formControlName="currentVision"
+              formControlName="CurrentVision"
               placeholder="Describe the current status of your business..."
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale min-h-[120px]"
             ></textarea>
             <div class="min-h-[20px]">
               <div
                 *ngIf="
-                  businessForm.get('currentVision')?.invalid &&
-                  (businessForm.get('currentVision')?.touched || formSubmitted)
+                  businessForm.get('CurrentVision')?.invalid &&
+                  (businessForm.get('CurrentVision')?.touched || formSubmitted)
                 "
                 class="animate-slide-in error-message text-red-500 text-sm"
                 aria-live="polite"
@@ -505,15 +504,15 @@
           <div class="flex flex-col gap-0.5 form-group">
             <label class="text-sm font-medium">Business Goals*</label>
             <textarea
-              formControlName="goals"
+              formControlName="Goals"
               placeholder="Outline your business goals..."
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale min-h-[120px]"
             ></textarea>
             <div class="min-h-[20px]">
               <div
                 *ngIf="
-                  businessForm.get('goals')?.invalid &&
-                  (businessForm.get('goals')?.touched || formSubmitted)
+                  businessForm.get('Goals')?.invalid &&
+                  (businessForm.get('Goals')?.touched || formSubmitted)
                 "
                 class="animate-slide-in error-message text-red-500 text-sm"
                 aria-live="polite"

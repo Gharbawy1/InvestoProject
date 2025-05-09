@@ -26,16 +26,22 @@
           <mat-icon class="text-blue-500">{{ getFileIcon(doc.type) }}</mat-icon>
           <div>
             <p class="font-medium text-gray-900">{{ doc.title }}</p>
-            <p class="text-sm text-gray-500">{{ doc.type | uppercase }} File</p>
+            <div class="flex items-center gap-2 text-sm">
+              <span class="px-2 py-1 bg-gray-100 rounded-md text-gray-600">
+                {{ doc.type === 'file' ? 'DOCUMENT' : (doc.type | uppercase) }}
+              </span>
+            </div>
           </div>
         </div>
         
         <div class="flex items-center gap-2">
-          <button mat-icon-button class="text-gray-600 hover:bg-gray-100" (click)="previewDocument(doc)">
+          <button 
+            mat-icon-button 
+            class="text-gray-600 hover:bg-gray-100" 
+            (click)="previewDocument(doc)"
+            aria-label="Preview document"
+          >
             <mat-icon>visibility</mat-icon>
-          </button>
-          <button mat-icon-button class="text-gray-600 hover:bg-gray-100" (click)="downloadDocument(doc)">
-            <mat-icon>download</mat-icon>
           </button>
         </div>
       </div>

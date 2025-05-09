@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { environment } from '../../../../../environments/environment.development';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { IOffer } from '../../interfaces/ioffer';
@@ -16,7 +16,6 @@ import { IOfferProfile } from '../../interfaces/IOfferProfile';
 export class OfferService {
   private createOfferUrl: string = `${environment.baseApi}${environment.offer.create}`;
   private getOffersUrl: string = `${environment.baseApi}${environment.offer.getAllForCurrentUser}`;
-  private getOffersByProjectId: string = `${environment.baseApi}${environment.offer.getOfferByProjectId}`;
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
@@ -49,15 +48,43 @@ export class OfferService {
     );
   }
 
-  getOfferByProjectId(id: number): Observable<IOfferProfile[]> {
-    return this.http.get<IOfferProfile[]>(`${this.getOffersByProjectId}/${id}`);
+  getOfferforProject(projectId: number): Observable<IOfferProfile[]> {
+    const path = environment.offer.getOfferByProjectId(projectId);
+    const url = `${environment.baseApi}${path}`;
+    return this.http
+      .get<ArrayApiResponse<IOfferProfile>>(url)
+      .pipe(
+        map(resp => {
+          if (!resp.isValid) {
+            throw new Error(resp.errorMessage || 'Failed to load offers by project');
+          }
+          return resp.data;
+        })
+      );
   }
-
-  changeOfferStatus(offerId: number, status: string): Observable<any> {
-    return this.http.post(
-      `${environment.baseApi}${environment.offer.BusinessOwnerAnswer(offerId)}`,
-      { status }
-    );
+  
+  changeOfferStatus(offerId: number, status: 'Accepted' | 'Rejected'): Observable<IOfferProfile> {
+    const url = `${environment.baseApi}${environment.offer.BusinessOwnerAnswer(offerId)}`;
+  
+    // Build the query string
+    const params = new HttpParams().set('status', status);
+  
+    return this.http
+      // send `null` as the body
+      .post<ObjectApiResponse<IOfferProfile>>(url, null, { params, observe: 'response' })
+      .pipe(
+        tap(fullResp => console.log('✔️ 200 OK, body:', fullResp.body)),
+        map(resp => {
+          if (!resp.body!.isValid) {
+            throw new Error(resp.body!.errorMessage || 'Failed to change offer status');
+          }
+          return resp.body!.data;
+        }),
+        catchError((err: HttpErrorResponse) => {
+          console.error(`❌ ${err.status} Error`, err.error);
+          return throwError(() => err);
+        })
+      );
   }
 
   /*getAllOffers(): Observable<IOffer[]> {

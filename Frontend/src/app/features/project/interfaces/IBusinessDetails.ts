@@ -7,6 +7,6 @@ export interface IBusinessDetails
   categoryName: string;
   ownerId: string;
   ownerName: string;
-  raisedFunds: number;
+  raisedFund: number;
   investorsCount: number;
 }

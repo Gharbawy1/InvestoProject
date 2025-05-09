@@ -50,10 +50,14 @@ export class InvestmentSidebarComponent implements OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['raisedFunds'] || changes['fundingGoal']) {
-      console.log('Progress updated:', this.progressPercentage);
+      console.log(
+        'Sidebar Inputs:',
+        'raisedFunds=', this.raisedFunds,
+        'fundingGoal=', this.fundingGoal,
+        '→ progress=', this.progressPercentage
+      );
     }
   }
-
   constructor(
     public router: Router,
     private route: ActivatedRoute,

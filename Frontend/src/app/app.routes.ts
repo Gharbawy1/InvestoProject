@@ -5,10 +5,10 @@ import { AuthLayoutComponent } from './pages/layoutes/auth-layout/auth-layout.co
 import { adminResolver } from './features/admin-dashboard/resolvers/admin.resolver';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
+import { BusinessOwnerGuard } from './features/business-dashboard/guards/business-owner.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'Home', pathMatch: 'full' },
-  // Protected Routes
   {
     path: '',
     component: AppLayoutComponent,
@@ -25,6 +25,7 @@ export const routes: Routes = [
           import(
             './pages/business-dashboard/business-dashboard.component'
           ).then((m) => m.BusinessDashboardComponent),
+        canActivate: [BusinessOwnerGuard],
       },
       {
         path: 'InvestorDashboard',
@@ -56,11 +57,7 @@ export const routes: Routes = [
           import(
             './features/project/components/payment-page/payment-page.component'
           ).then((m) => m.PaymentPageComponent),
-      },
-      {
-        path: 'error',
-        component: ErrorPageComponent,
-      },
+      }
     ],
   },
   {
@@ -98,20 +95,18 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'BusinessCreation',
-    loadComponent: () =>
-      import('./pages/business-creation/business-creation.component').then(
-        (m) => m.BusinessCreationComponent
-      ),
-  },
-  {
     path: 'UpgradeRole',
     loadChildren: () =>
       import('./features/upgrade-role/routes')
         .then(m => m.upgradeRoutes)
   },
   {
-    path: 'UserProfile',
+    path: 'profile',
+    loadComponent: () => import('./pages/user-profile/user-profile.component').then(m => m.UserProfileComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'profile/:id',
     loadComponent: () => import('./pages/user-profile/user-profile.component').then(m => m.UserProfileComponent)
   },
   {

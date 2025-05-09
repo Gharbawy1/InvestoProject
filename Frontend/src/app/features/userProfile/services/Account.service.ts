@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
-import { UserProfile } from '../interfaces/UserProfile';
+import { invesorUserProfile, UserProfile } from '../interfaces/UserProfile';
 import { UpdateProfileDto } from '../interfaces/UpdateProfile';
 
 @Injectable({
@@ -12,21 +12,26 @@ export class AccountService {
   private getProfileData = `${environment.baseApi}${environment.account.getCurrentProfile}`;
   private updateProfileData = `${environment.baseApi}${environment.account.updateProfile}`;
   private uploadProfilePictureUrl = `${environment.baseApi}${environment.account.uploadProfilePicture}`;
+  private profileByIdUrl = `${environment.baseApi}/Account/profile`;
 
   constructor(private http: HttpClient) {}
 
   /**
    * Fetches the currently authenticated user's full profile
    */
-   getProfile(): Observable<UserProfile> {
-    return this.http.get<UserProfile>(this.getProfileData);
+   getProfile(): Observable<invesorUserProfile> {
+    return this.http.get<invesorUserProfile>(this.getProfileData);
+  }
+
+  getProfileWithID(id: string): Observable<invesorUserProfile> {
+    return this.http.get<invesorUserProfile>(`${this.profileByIdUrl}/${id}`);
   }
 
   /**
    * Updates the user's profile fields
    */
-  updateProfile(data: UpdateProfileDto): Observable<UserProfile> {
-    return this.http.put<UserProfile>(this.updateProfileData, data);
+  updateProfile(data: UpdateProfileDto): Observable<invesorUserProfile> {
+    return this.http.put<invesorUserProfile>(this.updateProfileData, data);
   }
 
   /**
