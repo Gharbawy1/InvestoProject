@@ -56,7 +56,6 @@ export class ProjectMasterComponent implements OnInit {
     const search = filters.searchTerm.toLowerCase();
     const category =
       filters.categoryName === 'All Projects' ? null : filters.categoryName;
-
     this.filteredProjects = this.allProjects
       .filter((project) => {
         const matchesSearch = project.projectTitle

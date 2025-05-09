@@ -4,7 +4,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { IOfferProfile } from '../../../project/interfaces/IOfferProfile';
 import { environment } from '../../../../../environments/environment.development';
 import { ArrayApiResponse } from '../../../../core/interfaces/ApiResponse';
-import { IRecomended } from '../../interfaces/recommended';
+import { IRecommended } from '../../interfaces/recommended';
 
 @Injectable({
   providedIn: 'root',
@@ -32,11 +32,11 @@ export class OfferService {
 
   getProjectByCategory(
     categoryId: number
-  ): Observable<ArrayApiResponse<IRecomended>> {
+  ): Observable<ArrayApiResponse<IRecommended>> {
     const url = `${
       environment.baseApi
     }${environment.project.getProjectsByCategory(categoryId)}`;
-    return this.http.get<ArrayApiResponse<IRecomended>>(url).pipe(
+    return this.http.get<ArrayApiResponse<IRecommended>>(url).pipe(
       catchError((error) => {
         console.error('Error fetching data:', error);
         return throwError(() => new Error('Failed to fetch data'));

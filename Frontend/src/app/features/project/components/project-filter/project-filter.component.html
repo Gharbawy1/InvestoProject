@@ -3,7 +3,8 @@
   <div class="flex flex-col md:flex-row justify-between items-center gap-4">
     <!-- Search Bar -->
     <div class="relative w-full md:w-96">
-      <input-component
+      <input
+        class="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition-colors"
         placeholder="Search by name..."
         [(ngModel)]="searchTerm"
         (ngModelChange)="onSearchChange($event)"

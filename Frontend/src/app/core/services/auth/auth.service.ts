@@ -41,7 +41,7 @@ export class AuthService {
   ) {
     // Seed the current user from storage on service initialization
     if (isPlatformBrowser(this.platformId)) {
-      this.initializeAuth();
+      // this.initializeAuth();
       const storedUser = this.getStoredUser();
       if (storedUser) {
         this.userSubject.next(storedUser);
@@ -266,26 +266,26 @@ export class AuthService {
    * Initializes third-party authentication services (Facebook and Google).
    * This method should be called during application initialization.
    */
-  initializeAuth() {
-    // Initialize Facebook authentication.
-    this.fbAuthService.initializeFacebook().catch((error) => {
-      console.error('Error initializing Facebook SDK:', error);
-    });
+  // initializeAuth() {
+  //   // Initialize Facebook authentication.
+  //   this.fbAuthService.initializeFacebook().catch((error) => {
+  //     console.error('Error initializing Facebook SDK:', error);
+  //   });
 
-    // Initialize Google authentication.
-    // The callback 'handleGoogleLogin' will handle the response after Google sign-in.
-    // this.googleAuthService.initializeGoogleSignIn(
-    //   this.handleGoogleLogin.bind(this)
-    // );
-  }
+  // Initialize Google authentication.
+  // The callback 'handleGoogleLogin' will handle the response after Google sign-in.
+  // this.googleAuthService.initializeGoogleSignIn(
+  //   this.handleGoogleLogin.bind(this)
+  // );
+  // }
 
   /**
    * Initiates the Facebook login process.
    * @returns A Promise that resolves with the Facebook user information upon a successful login.
    */
-  loginWithFacebook() {
-    return this.fbAuthService.fbLogin();
-  }
+  // loginWithFacebook() {
+  //   return this.fbAuthService.fbLogin();
+  // }
 
   /**
    * Initiates the Google login process.
@@ -299,15 +299,15 @@ export class AuthService {
    * @param response - Google callback containing auth code.
    */
   handleGoogleLogin(data: FormData): Observable<any> {
-    debugger;
-    for (const [key, value] of data.entries()) {
-      console.log(`${key}:`, value);
-      if (value instanceof FormData) {
-        for (const [key1, value1] of value.entries()) {
-          console.log(`${key1}:`, value1);
-        }
-      }
-    }
+    // debugger;
+    // for (const [key, value] of data.entries()) {
+    //   console.log(`${key}:`, value);
+    //   if (value instanceof FormData) {
+    //     for (const [key1, value1] of value.entries()) {
+    //       console.log(`${key1}:`, value1);
+    //     }
+    //   }
+    // }
     return this.http
       .post<LoginResponse>(
         `${environment.baseApi}${environment.account.googleLogin}`,

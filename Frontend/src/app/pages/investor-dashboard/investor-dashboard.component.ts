@@ -16,7 +16,7 @@ import { OfferService } from '../../features/investor-dashboard/services/offers/
 import { IOfferProfile } from '../../features/project/interfaces/IOfferProfile';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { InvestmentsComponent } from '../../features/investor-dashboard/components/investments/investments.component';
-import { IRecomended } from '../../features/investor-dashboard/interfaces/recommended';
+import { IRecommended } from '../../features/investor-dashboard/interfaces/recommended';
 import { forkJoin, map } from 'rxjs';
 import { RecommendedComponent } from '../../features/investor-dashboard/components/recommended/recommended.component';
 
@@ -46,14 +46,13 @@ import { RecommendedComponent } from '../../features/investor-dashboard/componen
 export class InvestorDashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private offersService = inject(OfferService);
-  userName = 'John Doe';
-  totalInvested = 125000;
+  totalInvested = 0;
   activeInvestments = 5;
   portfolioGrowth = 12.4;
 
   investments: IOfferProfile[] = [];
   offers: IOfferProfile[] = [];
-  recomended: IRecomended[] = [];
+  recommended: IRecommended[] = [];
   categories: number[] = [];
 
   ngOnInit(): void {
@@ -75,6 +74,7 @@ export class InvestorDashboardComponent implements OnInit {
       next: (data) => {
         this.investments = data.data;
         this.totalInvested = this.sumOfAmounts();
+        this.activeInvestments = this.investments.length;
       },
       error: (err) => console.error('Error fetching investments:', err),
     });
@@ -100,7 +100,7 @@ export class InvestorDashboardComponent implements OnInit {
     // Combine all category requests
     forkJoin(categoryRequests).subscribe({
       next: (responses) => {
-        this.recomended = responses
+        this.recommended = responses
           .flat()
           .filter((project) => project.status === 'Accepted');
       },

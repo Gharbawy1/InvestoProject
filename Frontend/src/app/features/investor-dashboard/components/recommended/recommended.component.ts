@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { IRecomended } from '../../interfaces/recommended';
+import { IRecommended } from '../../interfaces/recommended';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../../../../shared/componentes/button/button.component';
 import { RouterLink } from '@angular/router';
@@ -11,5 +11,5 @@ import { RouterLink } from '@angular/router';
   styleUrl: './recommended.component.css',
 })
 export class RecommendedComponent {
-  @Input() recommends: IRecomended[] = [];
+  @Input() recommends: IRecommended[] = [];
 }

@@ -2,13 +2,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../../../shared/componentes/button/button.component';
-import { InputComponent } from '../../../../shared/componentes/input/input.component';
 import { ICategory } from '../../interfaces/icategory';
 
 @Component({
   selector: 'app-project-filter',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, InputComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent],
   templateUrl: './project-filter.component.html',
   styleUrl: './project-filter.component.css',
 })
