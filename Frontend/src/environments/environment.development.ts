@@ -30,6 +30,7 @@ export const environment = {
     updateProfile: '/Account/update-profile',
     getCurrentProfile: '/Account/profile',
     googleLogin: '/Account/google-login',
+    getProfileByID: (id: string) => `/Account/profile/${id}`,
   },
 
   category: {
@@ -53,15 +54,16 @@ export const environment = {
     getAll: '/Project',
     create: '/Project',
     getById: (id: string) => `/Project/${id}`,
-    updateById: (id: string) => `/Project/${id}`,
-    deleteById: (id: string) => `/Project/${id}`,
+    updateById: `/Project`,
+    deleteById: `/Project`,
     getProjectsByCategory: (categoryId: number) =>
       `/Project/get-projects-by-category/${categoryId}`,
     reviewProject: (projectId: number) => `/Project/review/${projectId}`,
     updateReviewStatus: '/Project/review/status',
     getStatusByOwner: (ownerId: string) => `/Project/status/owner/${ownerId}`,
     getProjectsbyStatus: `/Project/GetProjectRequestsByStatus/`,
-    getProjectForCurrentUser: `/Project/get-project-for-currentUser`,
+    getProjectForCurrentUser: '/Project/get-project-for-currentUser',
+    getDocuments: `/Project/GetDocuments`,
   },
 
   document: {

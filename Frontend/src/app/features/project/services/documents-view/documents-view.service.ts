@@ -1,25 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { IDocument } from '../../interfaces/IDocument';
+import { map, Observable } from 'rxjs';
+import { BusinessDocuments } from '../../interfaces/BusinessDocuments';
 import { environment } from '../../../../../environments/environment.development';
+import { ObjectApiResponse } from '../../../../core/interfaces/ApiResponse';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DocumentViewService {
-  private getAllDocUrl = `${environment.baseApi}${environment.document.getAll}`;
-  private getDocsByUserUrl = `${environment.baseApi}${environment.document.getByUser}`;
-
+  private getDocumentsUrl = `${environment.baseApi}${environment.project.getDocuments}`
   constructor(private http: HttpClient) {}
 
-  getDocuments(): Observable<IDocument[]> {
-    return this.http.get<IDocument[]>(this.getAllDocUrl);
-  }
-
-  /** Fetch only documents belonging to a specific user/owner */
-  getDocumentsByUser(userId: string): Observable<IDocument[]> {
-    const params = new HttpParams().set('userId', userId);
-    return this.http.get<IDocument[]>(this.getDocsByUserUrl, { params });
+  getDocuments(projectId: number): Observable<BusinessDocuments> {
+    return this.http.get<{ 
+      data: BusinessDocuments, 
+      isValid: boolean, 
+      errorMessage?: string 
+    }>(`${this.getDocumentsUrl}/${projectId}`).pipe(
+      map(resp => {
+        if (!resp.isValid) {
+          throw new Error(resp.errorMessage || 'Failed to load documents');
+        }
+        return resp.data;
+      })
+    );
   }
 }

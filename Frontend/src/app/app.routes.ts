@@ -3,6 +3,7 @@ import { AppLayoutComponent } from './pages/layoutes/app-layout/app-layout.compo
 import { ErrorPageComponent } from './pages/error-page/error-page.component';
 import { AuthLayoutComponent } from './pages/layoutes/auth-layout/auth-layout.component';
 import { adminResolver } from './features/admin-dashboard/resolvers/admin.resolver';
+
 import { authGuard } from './core/guards/auth/auth.guard';
 import { guestGuard } from './core/guards/guest/guest.guard';
 import { businessGuard } from './core/guards/business/business.guard';
@@ -12,7 +13,6 @@ import { adminGuard } from './core/guards/admin/admin.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'Home', pathMatch: 'full' },
-  // Protected Routes
   {
     path: '',
     component: AppLayoutComponent,
@@ -31,7 +31,6 @@ export const routes: Routes = [
             './pages/business-dashboard/business-dashboard.component'
           ).then((m) => m.BusinessDashboardComponent),
       },
-
       {
         path: 'BusinessCreation',
         canActivate: [businessGuard],
@@ -87,6 +86,20 @@ export const routes: Routes = [
               ),
           },
         ],
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./pages/user-profile/user-profile.component').then(
+            (m) => m.UserProfileComponent
+          ),
+      },
+      {
+        path: 'profile/:id',
+        loadComponent: () =>
+          import('./pages/user-profile/user-profile.component').then(
+            (m) => m.UserProfileComponent
+          ),
       },
       {
         path: 'error',
