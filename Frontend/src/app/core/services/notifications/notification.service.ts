@@ -1,7 +1,17 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { ToastrService } from 'ngx-toastr';
-import { INotification } from '../../interfaces/notification';
+import {
+  INotification,
+  INotificationResponse,
+} from '../../interfaces/notification';
+import { environment } from '../../../../environments/environment.development';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import {
+  ArrayApiResponse,
+  ObjectApiResponse,
+} from '../../interfaces/ApiResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +19,7 @@ import { INotification } from '../../interfaces/notification';
 export class NotificationService {
   private hubConnection!: signalR.HubConnection;
 
-  constructor(private toastr: ToastrService) {}
+  constructor(private toastr: ToastrService, private http: HttpClient) {}
 
   startConnection(): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -46,6 +56,21 @@ export class NotificationService {
     } catch (e) {
       console.warn('فشل في قراءة payload:', e);
     }
+  }
+
+  getNotifications(): Observable<ArrayApiResponse<INotificationResponse>> {
+    return this.http.get<ArrayApiResponse<INotificationResponse>>(
+      `${environment.baseApi}${environment.notification.getAll}`
+    );
+  }
+
+  markNotificationAsRead(
+    id: number
+  ): Observable<ObjectApiResponse<INotificationResponse>> {
+    return this.http.put<ObjectApiResponse<INotificationResponse>>(
+      `${environment.baseApi}${environment.notification.markAsRead(id)}`,
+      {}
+    );
   }
 
   stopConnection(): void {

@@ -66,6 +66,11 @@ export const environment = {
     getDocuments: `/Project/GetDocuments`,
   },
 
+  notification: {
+    getAll: '/Account/notifications',
+    markAsRead: (id: number) => `/Account/mark-notification-as-read/${id}`,
+  },
+
   document: {
     getAll: '/Document',
     getByUser: '/Document/get-documents-by-user',

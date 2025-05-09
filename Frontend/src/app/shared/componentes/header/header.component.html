@@ -66,11 +66,83 @@
       </nav>
 
       <!-- Search, Auth Buttons, User Menu (Desktop) -->
-      <div class="hidden md:flex items-center space-x-4">
+      <div class="hidden md:flex items-center space-x-6">
         <ng-container *ngIf="isLoggedIn; else loggedOut">
+          <div class="relative">
+            <!-- Notification Icon -->
+            <button
+              class="relative text-gray-600 hover:text-primary-600 transition"
+              mat-icon-button
+              matTooltip="Notifications"
+              (click)="toggleNotifications()"
+            >
+              <mat-icon>notifications</mat-icon>
+              <span
+                *ngIf="unreadCount > 0"
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1"
+              >
+                {{ unreadCount }}
+              </span>
+            </button>
+
+            <!-- Dropdown -->
+            <div
+              class="absolute right-0 mt-2 w-100 max-h-120 overflow-y-auto bg-white shadow-xl rounded-xl p-4 z-50 border border-gray-200"
+              [ngClass]="{
+                block: showNotifications,
+                hidden: !showNotifications
+              }"
+              style="scrollbar-width: thin"
+            >
+              <h3
+                class="text-lg font-semibold text-gray-800 mb-3 border-b pb-2"
+              >
+                Notifications
+              </h3>
+
+              <ng-container
+                *ngIf="notifications.length > 0; else noNotifications"
+              >
+                <div
+                  *ngFor="let notification of notifications; let last = last"
+                  class="p-3 rounded-lg transition duration-200 hover:bg-gray-50"
+                  [ngClass]="{
+                    'bg-gray-100': !notification.isRead,
+                    'bg-white': notification.isRead
+                  }"
+                >
+                  <p class="text-sm text-gray-800 leading-relaxed">
+                    {{ notification.message }}
+                  </p>
+                  <div class="text-xs text-gray-500 flex justify-between mt-2">
+                    <span>{{ notification.createdAt | date : "short" }}</span>
+                    <button
+                      *ngIf="!notification.isRead"
+                      class="text-primary-600 hover:underline font-medium"
+                      (click)="markAsRead(notification.id)"
+                    >
+                      Mark as Read
+                    </button>
+                  </div>
+                  <div
+                    *ngIf="!last"
+                    class="mt-3 border-t border-gray-100"
+                  ></div>
+                </div>
+              </ng-container>
+
+              <!-- Empty State -->
+              <ng-template #noNotifications>
+                <p class="text-sm text-gray-500 text-center py-6">
+                  No notifications currently.
+                </p>
+              </ng-template>
+            </div>
+          </div>
+
+          <!-- User Avatar and Menu -->
           <div class="relative" [matMenuTriggerFor]="userMenu">
             <button mat-button class="flex items-center gap-2 group">
-              <!-- Avatar + Name wrapper -->
               <div class="flex items-center gap-2">
                 <div
                   class="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden"
@@ -81,7 +153,6 @@
                     alt="Profile Picture"
                     class="w-full h-full object-cover"
                   />
-
                   <mat-icon
                     *ngIf="!profilePictureURL"
                     class="text-gray-600 group-hover:text-primary-600 transition duration-200"
@@ -95,7 +166,6 @@
                   {{ userName }}
                 </span>
               </div>
-              <!-- Chevron Icon -->
               <mat-icon
                 class="scale-90 text-gray-500 group-hover:text-primary-600 transition duration-200"
               >
@@ -103,6 +173,7 @@
               </mat-icon>
             </button>
           </div>
+
           <mat-menu #userMenu="matMenu">
             <button mat-menu-item routerLink="/profile">
               <mat-icon>person</mat-icon>
@@ -116,7 +187,6 @@
               <mat-icon class="text-green-600">upgrade</mat-icon>
               <span class="text-green-600">Upgrade Account</span>
             </button>
-
             <button
               mat-menu-item
               *ngIf="userRole === 'Investor' || userRole === 'BusinessOwner'"
@@ -132,6 +202,7 @@
           </mat-menu>
         </ng-container>
 
+        <!-- Not Logged In -->
         <ng-template #loggedOut>
           <div class="flex items-center gap-4">
             <button

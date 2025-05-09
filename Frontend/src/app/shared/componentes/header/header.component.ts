@@ -6,8 +6,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { combineLatest, Subject, takeUntil } from 'rxjs';
-import { INotification } from '../../../core/interfaces/notification';
-// import { NotificationService } from '../../../core/services/notifications/notification.service';
+import {
+  INotification,
+  INotificationResponse,
+} from '../../../core/interfaces/notification';
+import { NotificationService } from '../../../core/services/notifications/notification.service';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -28,7 +31,7 @@ export class HeaderComponent implements OnInit {
   userName: string = '';
   userRole: string = '';
   profilePictureURL: string = '';
-  notifications: INotification | null = null;
+  notifications: INotificationResponse[] = [];
   unreadCount = 0;
   @Output() loginClick = new EventEmitter<void>();
   @Output() registerClick = new EventEmitter<void>();
@@ -37,12 +40,13 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router // private notificationService: NotificationService
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
   ngOnInit(): void {
-    // this.notificationService.notifications$.subscribe((notifs) => {
-    //   this.notifications = notifs;
-    // });
+    this.notificationService.getNotifications().subscribe((notifs) => {
+      this.notifications = notifs.data;
+    });
 
     combineLatest([this.authService.isLoggedIn$, this.authService.user$])
       .pipe(takeUntil(this.destroy$))
@@ -75,9 +79,24 @@ export class HeaderComponent implements OnInit {
         break;
     }
   }
-
+  markAsRead(id: number) {
+    this.notificationService.markNotificationAsRead(id).subscribe((res) => {
+      this.notifications = this.notifications.map((notification) => {
+        if (notification.id === id) {
+          notification.isRead = true;
+        }
+        return notification;
+      });
+    });
+  }
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  showNotifications = false;
+
+  toggleNotifications() {
+    this.showNotifications = !this.showNotifications;
   }
 
   onLogout() {
