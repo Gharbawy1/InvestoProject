@@ -106,7 +106,7 @@ export class AuthService {
       this.storeToken(response.token, rememberMe);
       const user = {
         id: response.userId,
-        firstName: response.userName,
+        firstName: response.firstName,
         role: response.roles[0],
         profilePictureURL: response.profilePicture,
       };

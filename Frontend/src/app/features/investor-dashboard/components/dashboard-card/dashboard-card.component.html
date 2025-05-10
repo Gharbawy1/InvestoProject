@@ -6,8 +6,11 @@
   </mat-card-header>
   <mat-card-content>
     <div class="text-2xl font-bold" [class]="valueColor">
-      <ng-container *ngIf="showCurrency">$</ng-container>
+      <ng-container *ngIf="showCurrency">EGP</ng-container>
       {{ value }}
+    </div>
+    <div class="text-2xl font-bold" [class]="valueColor" *ngIf="AcceptedOffers">
+      {{ AcceptedOffers }}
     </div>
     <p class="text-xs text-gray-500 mt-1">
       {{ description }}
