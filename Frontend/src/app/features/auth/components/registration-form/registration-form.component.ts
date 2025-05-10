@@ -127,7 +127,6 @@ export class RegistrationFormComponent {
         formData.append('IdToken', this.googleRegister.IdToken.toString());
         formData.append('Role', this.googleRegister.Role);
 
-        // تأكد من تحويل كل قيمة إلى string إذا لم تكن ملف
         for (const [key, value] of this.businessFormData.entries()) {
           const fullKey = `BusinessOwnerData.${this.toPascalCase(key)}`;
           formData.append(
