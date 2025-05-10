@@ -6,8 +6,7 @@ import { DiscussionComponent } from './components/project-tabs/discussion/discus
 import { TeamMembersComponent } from './components/project-tabs/team-members/team-members.component';
 import { UpdatesComponent } from './components/project-tabs/updates/updates.component';
 import { DocumentsComponent } from './components/project-tabs/documents/documents.component';
-import { PaymentPageComponent } from './components/payment-page/payment-page.component';
-import { OfferComponent } from './components/project-tabs/offer/offer.component'
+import { OfferComponent } from './components/project-tabs/offer/offer.component';
 import { OverviewComponent } from './components/project-tabs/overview/overview.component';
 import { ProjectResolver } from './resolver/project.resolver';
 
@@ -26,7 +25,6 @@ export const PROJECT_DETAILS_ROUTES: Routes = [
       { path: 'updates', component: UpdatesComponent },
       { path: 'documents', component: DocumentsComponent },
       { path: 'offer', component: OfferComponent },
-      { path: 'payment-page', component: PaymentPageComponent },
     ],
   },
 ];

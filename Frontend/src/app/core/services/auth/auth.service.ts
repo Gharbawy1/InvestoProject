@@ -26,7 +26,7 @@ export class AuthService {
   // BehaviorSubject holding current user; initialized from storage if exists
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
-
+  isBrowser: boolean;
   /**
    * Observable stream of the current authenticated user (or null if not logged in)
    */
@@ -34,17 +34,20 @@ export class AuthService {
   user$ = this.userSubject.asObservable();
 
   constructor(
-    private http: HttpClient,
-    private router: Router,
-    @Inject(PLATFORM_ID) private platformId: object,
-    private fbAuthService: FacebookAuthService // private googleAuthService: GoogleAuthService
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private http: HttpClient
   ) {
     // Seed the current user from storage on service initialization
-    if (isPlatformBrowser(this.platformId)) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+    if (this.isBrowser) {
       // this.initializeAuth();
       const storedUser = this.getStoredUser();
       if (storedUser) {
         this.userSubject.next(storedUser);
+      }
+
+      if (this.hasToken()) {
+        this.isLoggedInSubject.next(true);
       }
     }
   }
@@ -83,7 +86,7 @@ export class AuthService {
       )
       .pipe(
         tap((response) => {
-          if (isPlatformBrowser(this.platformId)) {
+          if (this.isBrowser) {
             // Store JWT token
             this.storeToken(response.token, rememberMe);
             const user = this.createUserFromAuthResponse(response);
@@ -102,8 +105,7 @@ export class AuthService {
   }
 
   createCurrentUser(response: any, rememberMe: any) {
-    debugger;
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.isBrowser) {
       // Store JWT token
       this.storeToken(response.token, rememberMe);
       const user = {
@@ -112,12 +114,9 @@ export class AuthService {
         role: response.roles[0],
         profilePictureURL: response.profilePicture,
       };
-      console.log(user);
-      debugger;
       // Store serialized user object
       this.storeUserData('currentUser', user, rememberMe);
       // Emit new user value to all subscribers
-      // this.userSubject.next(user);
       this.isLoggedInSubject.next(true);
     }
   }
@@ -141,7 +140,7 @@ export class AuthService {
    *  @returns An Observable that emits an object containing the validity status and user role.
    */
   checkAuthStatus(): Observable<{ valid: boolean; user: { role: string } }> {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!this.isBrowser) {
       return throwError(() => new Error('Not in browser environment'));
     }
 
@@ -172,7 +171,7 @@ export class AuthService {
    * Logs out the user: clears storage, resets subject, and redirects to login.
    */
   logout(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.isBrowser) {
       // Remove token & user data from both storages
       localStorage.removeItem('token');
       sessionStorage.removeItem('token');
@@ -204,7 +203,7 @@ export class AuthService {
    * @returns parsed user object or null.
    */
   private getStoredUser(): UserDetails | null {
-    if (!isPlatformBrowser(this.platformId)) return null;
+    if (!this.isBrowser) return null;
     const raw =
       localStorage.getItem('currentUser') ||
       sessionStorage.getItem('currentUser');
@@ -216,14 +215,13 @@ export class AuthService {
    * @returns The token string if available; otherwise, null.
    */
   getToken(): string | null {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.isBrowser) {
       return localStorage.getItem('token') || sessionStorage.getItem('token');
     }
     return null;
   }
 
   hasToken(): boolean {
-    if (!isPlatformBrowser(this.platformId)) return false;
     return !!this.getToken();
   }
 

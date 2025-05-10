@@ -47,14 +47,6 @@ export const routes: Routes = [
           ).then((m) => m.InvestorDashboardComponent),
       },
       {
-        path: 'Payment',
-        canActivate: [investorGuard],
-        loadComponent: () =>
-          import(
-            './features/project/components/payment-page/payment-page.component'
-          ).then((m) => m.PaymentPageComponent),
-      },
-      {
         path: 'AdminDashboard',
         canActivate: [adminGuard],
         loadComponent: () =>
