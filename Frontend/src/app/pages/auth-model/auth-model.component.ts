@@ -32,8 +32,7 @@ export class AuthModelComponent implements AfterViewInit {
 
   constructor(
     // PLATFORM_ID is injected to determine if code is running in a browser.
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private authService: AuthService
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   /**
@@ -45,43 +44,12 @@ export class AuthModelComponent implements AfterViewInit {
     this.activeTab = tab;
   }
 
-  /**
-   * Lifecycle hook that is called after the component's view has been fully initialized.
-   * Here, we initialize third-party authentication services (Facebook and Google)
-   * only if the code is running in a browser.
-   */
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Initialize third-party authentication services.
-      // this.authService.initializeAuth();
       // Set a short delay to ensure that external authentication buttons are fully initialized.
       setTimeout(() => {
         this.isButtonReady = true;
       }, 1000);
     }
   }
-
-  /**
-   * Triggers the Google sign-in process by calling the AuthService.
-   */
-  // loginWithGoogle() {
-  //   this.authService.loginWithGoogle();
-  // }
-
-  /**
-   * Triggers the Facebook sign-in process.
-   * On a successful login, it logs the user info and displays a welcome message.
-   * If an error occurs, it logs the error.
-   */
-  // loginWithFacebook() {
-  //   this.authService.loginWithFacebook().then(
-  //     (userInfo) => {
-  //       console.log('User Info:', userInfo);
-  //       alert(`Welcome ${userInfo.name}`);
-  //     },
-  //     (error) => {
-  //       console.error('Facebook Login Error:', error);
-  //     }
-  //   );
-  // }
 }

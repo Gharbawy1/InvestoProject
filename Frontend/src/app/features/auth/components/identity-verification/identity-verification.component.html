@@ -17,6 +17,7 @@
         <input
           id="nationalID"
           formControlName="NationalID"
+          maxlength="14"
           type="text"
           placeholder="Enter your national ID"
           class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:border-gray-900 focus:ring-gray-900 transition-input input-scale"
@@ -29,7 +30,21 @@
           >
             * National ID is required
           </p>
+          <p
+            *ngIf="verificationForm.get('NationalID')?.errors?.['pattern'] && (verificationForm.get('NationalID')?.touched || formSubmitted)"
+            class="text-red-500 text-sm animate-slide-in error-message"
+            aria-live="polite"
+          >
+            * Please enter a valid national ID
+          </p>
         </div>
+        <p
+          *ngIf="verificationForm.get('NationalID')?.errors?.['minlength'] && (formSubmitted)"
+          class="text-red-500 text-sm animate-slide-in error-message"
+          aria-live="polite"
+        >
+          * National ID must be 14 digits
+        </p>
       </div>
 
       <!-- Upload Status Message -->

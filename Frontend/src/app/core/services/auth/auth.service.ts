@@ -2,14 +2,10 @@ import { Injectable, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
-import { FacebookAuthService } from '../FacebookSignIn/facebook-auth.service';
-import { GoogleAuthService } from '../googleSignIn/google-signin.service';
 import { environment } from '../../../../environments/environment.development';
-import { Router } from '@angular/router';
 import { tap, catchError } from 'rxjs/operators';
 import { LoginResponse } from '../../interfaces/LoginResponse';
 import { UserDetails } from '../../interfaces/UserDetails';
-import { GoogleRegister } from '../../../features/auth/interfaces/IGoogleReg';
 
 // Define the shape of the authentication response from the server.
 
@@ -294,28 +290,40 @@ export class AuthService {
   //   return this.googleAuthService.triggerGoogleLogin();
   // }
 
+  private toPascalKeyPath(key: string): string {
+    return key
+      .split('.') // يفصل على حسب الـ dot
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join('.');
+  }
+
   /**
    * Callback for Google sign-in: exchanges code for AuthResponse, stores token & user.
    * @param response - Google callback containing auth code.
    */
   handleGoogleLogin(data: FormData): Observable<any> {
-    // debugger;
-    // for (const [key, value] of data.entries()) {
-    //   console.log(`${key}:`, value);
-    //   if (value instanceof FormData) {
-    //     for (const [key1, value1] of value.entries()) {
-    //       console.log(`${key1}:`, value1);
-    //     }
-    //   }
-    // }
+    for (const [key, value] of data.entries()) {
+      console.log(`${key}:`, value);
+      if (value instanceof FormData) {
+        for (const [key1, value1] of value.entries()) {
+          console.log(`${key1}:`, value1);
+        }
+      }
+    }
+    debugger;
     return this.http
       .post<LoginResponse>(
         `${environment.baseApi}${environment.account.googleLogin}`,
         data
       )
       .pipe(
+        tap((response) => {
+          console.log(response);
+          debugger;
+        }),
         catchError((error) => {
           console.error('Error logging in with Google:', error);
+          debugger;
           return throwError(() => error);
         })
       );
