@@ -1,4 +1,4 @@
-<div class="space-y-8">
+<div class="space-y-8 ">
   <!-- Hero Section -->
   <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
     <div class="flex flex-col md:flex-row gap-8">
@@ -32,7 +32,7 @@
           </div>
           <div>
             <dt class="text-sm text-gray-500">Equity Offered</dt>
-            <dd class="font-medium">{{ project?.fundingExchange }}</dd>
+            <dd class="font-medium text-gray-700 break-words whitespace-pre-line">{{ project?.fundingExchange }}</dd>
           </div>
         </div>
       </div>
@@ -88,22 +88,22 @@
   <div class="space-y-6">
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
       <h3 class="text-xl font-semibold mb-3">Our Vision</h3>
-      <p class="text-gray-700 whitespace-pre-line">{{ project?.projectVision }}</p>
+      <p class="text-gray-700 break-words whitespace-pre-line">{{ project?.projectVision }}</p>
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
       <h3 class="text-xl font-semibold mb-3">Project Story</h3>
-      <p class="text-gray-700 whitespace-pre-line">{{ project?.projectStory }}</p>
+      <p class="text-gray-700 break-words whitespace-pre-line">{{ project?.projectStory }}</p>
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
       <h3 class="text-xl font-semibold mb-3">Current Progress</h3>
-      <p class="text-gray-700 whitespace-pre-line">{{ project?.currentVision }}</p>
+      <p class="text-gray-700 break-words whitespace-pre-line">{{ project?.currentVision }}</p>
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
       <h3 class="text-xl font-semibold mb-3">Future Goals</h3>
-      <pre class="text-gray-700 whitespace-pre-wrap font-sans">{{ project?.goals }}</pre>
+      <pre class="text-gray-700 break-words whitespace-pre-wrap font-sans">{{ project?.goals }}</pre>
     </div>
   </div>
 </div>

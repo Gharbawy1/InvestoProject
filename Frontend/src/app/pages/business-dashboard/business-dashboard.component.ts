@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatsCardsComponent } from '../../features/business-dashboard/components/stats-cards/stats-cards.component';
-import { NotificationsTabComponent } from '../../features/business-dashboard/components/notifications-tab/notifications-tab.component';
 import { DocumentCenterComponent } from '../../features/business-dashboard/components/document-center/document-center.component';
 import { OffersComponent } from '../../features/business-dashboard/components/offers/offers.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,7 +17,6 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
     OverviewComponent,
     StatsCardsComponent,
-    NotificationsTabComponent,
     DocumentCenterComponent,
     OffersComponent,
     ManageComponent,
@@ -40,7 +38,6 @@ export class BusinessDashboardComponent implements OnInit {
     { id: 'stats', label: 'Statistics' },
     { id: 'offers', label: 'Offers' },
     { id: 'documents', label: 'Documents' },
-    { id: 'notifications', label: 'Notifications' },
     { id: 'manage', label: 'Manage' },
   ];
 

@@ -23,8 +23,10 @@ export class BusinessForCurrentService {
     return this.http.put<ObjectApiResponse<DashboardBusiness>>(`${this.updateProject}/${id}`, data);
   }
 
-  deleteProjectById(id: number): Observable<ObjectApiResponse<DashboardBusiness>> {
-    return this.http.delete<ObjectApiResponse<DashboardBusiness>>(`${this.deleteProject}/${id}`);
+  deleteProjectById(id: number) {
+    return this.http.delete(`${this.deleteProject}/${id}`,
+      { responseType: 'text' }
+    );
   }
 
 }

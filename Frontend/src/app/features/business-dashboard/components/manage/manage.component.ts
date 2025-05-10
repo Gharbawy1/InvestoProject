@@ -194,10 +194,7 @@ export class ManageComponent implements OnInit, OnChanges {
         }
         this.showNotification('Project updated successfully', 'success');
         
-        this.router.navigate(['/BusinessDashboard'], {
-          replaceUrl: true,
-          queryParams: { refresh: Date.now() }
-        });
+        window.location.href = `/BusinessDashboard?refresh=${Date.now()}`;
       },
       error: (err) => {
         this.showNotification('Update request failed', 'error');
@@ -235,10 +232,7 @@ export class ManageComponent implements OnInit, OnChanges {
     this.service.deleteProjectById(this.projectId).subscribe({
       next: () => {
         this.projectDeleted.emit(this.projectId);
-        this.router.navigate(['/'], {
-          replaceUrl: true,
-          queryParams: { refresh: Date.now() }
-        });
+        window.location.href = `/BusinessDashboard?refresh=${Date.now()}`;
       },
       error: (err) => {
         console.error('Delete failed:', err);
