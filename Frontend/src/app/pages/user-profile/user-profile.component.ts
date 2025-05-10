@@ -34,7 +34,7 @@ export class UserProfileComponent implements OnInit {
     { key: 'firstName', label: 'First Name' },
     { key: 'lastName', label: 'Last Name' },
     { key: 'birthDate', label: 'Birth Date', type: 'date' },
-    { key: 'bio', label: 'Bio' },
+    { key: 'bio', label: 'Bio', public: true },
     { key: 'phoneNumber', label: 'Phone Number' },
     { key: 'address', label: 'Address' },
     { key: 'riskTolerance', label: 'Risk Tolerance', public: true },
@@ -62,7 +62,7 @@ export class UserProfileComponent implements OnInit {
     'Last Name', 
     'Birth Date', 
     'Phone Number', 
-    'Address'
+    'Address',
   ];
   investmentLabels = [
     'Risk Tolerance', 
@@ -147,11 +147,14 @@ export class UserProfileComponent implements OnInit {
     const currentUserId = this.auth.getUserId();
     this.isCurrentUser = this.profile.id === currentUserId;
   }
-
+  
   private prepareDisplayData() {
     const personalKeys = ['userName', 'email', 'firstName', 'lastName', 'birthDate', 'phoneNumber', 'address'];
     const fields = this.displayFields.filter(f => 
-      personalKeys.includes(f.key) || this.isCurrentUser || f.public
+      personalKeys.includes(f.key) || 
+      this.isCurrentUser || 
+      f.public || 
+      f.key === 'bio' 
     ).filter(f => this.profile[f.key as keyof invesorUserProfile] != null);
 
     this.displayData = fields.map(f => ({
@@ -172,6 +175,10 @@ export class UserProfileComponent implements OnInit {
     if (field.type === 'currency') {
       return value ? Number(value).toString() : '—';
     }
+
+      if (field.key === 'bio') {
+        return value?.toString()?.trim() || 'No bio available';
+      }
     
     return value?.toString() ?? '—';
   }
@@ -244,7 +251,9 @@ export class UserProfileComponent implements OnInit {
   }
 
   get personalData() {
-    return this.displayData.filter(d => this.personalLabels.includes(d.label));
+    return this.displayData.filter(d => 
+      this.personalLabels.includes(d.label) && d.label !== 'Bio'
+    );
   }
 
   get investmentData() {
