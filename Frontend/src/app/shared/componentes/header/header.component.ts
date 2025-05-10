@@ -1,5 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+  PLATFORM_ID,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,12 +49,15 @@ export class HeaderComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object,
     private notificationService: NotificationService
   ) {}
   ngOnInit(): void {
-    this.notificationService.getNotifications().subscribe((notifs) => {
-      this.notifications = notifs.data;
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.notificationService.getNotifications().subscribe((notifs) => {
+        this.notifications = notifs.data;
+      });
+    }
 
     combineLatest([this.authService.isLoggedIn$, this.authService.user$])
       .pipe(takeUntil(this.destroy$))

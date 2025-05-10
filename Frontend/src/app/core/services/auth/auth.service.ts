@@ -216,13 +216,14 @@ export class AuthService {
    * @returns The token string if available; otherwise, null.
    */
   getToken(): string | null {
-    if (typeof window !== 'undefined' && localStorage) {
+    if (isPlatformBrowser(this.platformId)) {
       return localStorage.getItem('token') || sessionStorage.getItem('token');
     }
     return null;
   }
 
   hasToken(): boolean {
+    if (!isPlatformBrowser(this.platformId)) return false;
     return !!this.getToken();
   }
 

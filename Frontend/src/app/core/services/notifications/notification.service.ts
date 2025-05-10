@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { ToastrService } from 'ngx-toastr';
 import {
@@ -12,30 +12,40 @@ import {
   ArrayApiResponse,
   ObjectApiResponse,
 } from '../../interfaces/ApiResponse';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
   private hubConnection!: signalR.HubConnection;
+  private isBrowser: boolean;
 
-  constructor(private toastr: ToastrService, private http: HttpClient) {}
+  constructor(
+    private toastr: ToastrService,
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   startConnection(): void {
+    if (!this.isBrowser) return;
+
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token') || '';
+
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl('https://investo.runasp.net/notificationHub', {
-        accessTokenFactory: () =>
-          localStorage.getItem('token') ||
-          sessionStorage.getItem('token') ||
-          '',
+        accessTokenFactory: () => token,
       })
       .withAutomaticReconnect()
       .build();
 
     this.hubConnection
       .start()
-      .then(() => console.log('SignalR connected'))
-      .catch((err) => console.error('SignalR error:', err));
+      .then(() => console.log('✅ SignalR connected'))
+      .catch((err) => console.error('❌ SignalR connection error:', err));
 
     this.hubConnection.on(
       'ReceiveNotification',
@@ -46,15 +56,18 @@ export class NotificationService {
   }
 
   private showNotification(notification: INotification): void {
+    if (!this.isBrowser) return;
+
     this.toastr.info(notification.message, 'Notification');
-    console.log('الإشعار:', notification.message);
+    console.log('📢 الإشعار:', notification.message);
+
     try {
       const payload = notification.payload
         ? JSON.parse(notification.payload)
         : null;
-      console.log('تفاصيل الإشعار:', payload);
+      console.log('🧾 تفاصيل الإشعار:', payload);
     } catch (e) {
-      console.warn('فشل في قراءة payload:', e);
+      console.warn('⚠️ فشل في قراءة payload:', e);
     }
   }
 
@@ -74,7 +87,7 @@ export class NotificationService {
   }
 
   stopConnection(): void {
-    if (this.hubConnection) {
+    if (this.isBrowser && this.hubConnection) {
       this.hubConnection.stop();
     }
   }

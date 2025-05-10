@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { AppLayoutComponent } from './pages/layoutes/app-layout/app-layout.component';
-import { ErrorPageComponent } from './pages/error-page/error-page.component';
 import { AuthLayoutComponent } from './pages/layoutes/auth-layout/auth-layout.component';
 import { adminResolver } from './features/admin-dashboard/resolvers/admin.resolver';
 
@@ -155,7 +154,10 @@ export const routes: Routes = [
   },
   {
     path: 'error',
-    component: ErrorPageComponent,
+    loadComponent: () =>
+      import('./pages/error-page/error-page.component').then(
+        (m) => m.ErrorPageComponent
+      ),
   },
   {
     path: '**',
