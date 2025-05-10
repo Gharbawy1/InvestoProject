@@ -70,7 +70,15 @@ export class IdentityVerificationComponent implements OnInit {
     const baseControls = {
       NationalIDImageFrontURL: [null, fileValidators],
       NationalIDImageBackURL: [null, fileValidators],
-      NationalID: ['', Validators.required],
+      NationalID: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(14),
+          Validators.maxLength(14),
+          Validators.pattern(/^\d+$/),
+        ],
+      ],
     };
 
     this.verificationForm = this.fb.group({
