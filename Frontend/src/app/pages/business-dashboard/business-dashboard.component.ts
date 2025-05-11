@@ -57,19 +57,14 @@ export class BusinessDashboardComponent implements OnInit {
   loadProjects() {
     this.BusinessForCurrentService.getProjectsForCurrentUser().subscribe({
       next: (resp) => {
-        if (resp.data.status === 'Accepted') {
-          const data = resp.data;
-          if (data) {
-            if (data.id !== undefined && data.id !== null) {
-              localStorage.setItem('projectId', data.id.toString());
-            }
-            this.activeProject = data;
-            this.canCreateProject = false;
-          } else {
-            this.activeProject = null;
-            this.canCreateProject = true;
-          }
-        } else if (resp.data.status === 'Pending') {
+        const project = resp.data;
+        const status = project?.status;
+
+        if (status === 'Accepted') {
+          this.activeProject = project;
+          localStorage.setItem('projectId', project.id?.toString() || '');
+          this.canCreateProject = false;
+        } else if (status === 'Pending') {
           this.activeProject = null;
           this.canCreateProject = false;
         } else {
