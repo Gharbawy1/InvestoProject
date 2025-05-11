@@ -141,7 +141,7 @@ export class RegistrationFormComponent {
         });
       } else {
         this.registerService.registerBusiness(this.businessFormData).subscribe({
-          next: () => this.router.navigate(['/Home']),
+          next: () => window.location.reload(),
           error: (error) => console.error('Error occurred:', error),
         });
       }
