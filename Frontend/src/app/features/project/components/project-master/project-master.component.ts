@@ -35,8 +35,10 @@ export class ProjectMasterComponent implements OnInit {
 
   ngOnInit(): void {
     this.projectCardService.getProjects().subscribe((response) => {
-      this.allProjects = response.data;
-      this.filteredProjects = [...response.data];
+      this.allProjects = response.data.filter(
+        (project) => project.status === 'Accepted'
+      );
+      this.filteredProjects = [...this.allProjects];
     });
     this.categoriesService.getCategories().subscribe({
       next: (response) => {
