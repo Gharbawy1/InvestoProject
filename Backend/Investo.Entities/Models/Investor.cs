@@ -11,8 +11,8 @@ namespace Investo.Entities.Models
     {
         [MaxLength(250)]
         public string RiskTolerance { get; set; }
-        public string InvestmentGoals { get; set; } //
-        public PersonInfo PersonInfo { get; set; }
+        public string InvestmentGoals { get; set; } 
+        public PersonInfo PersonInfo { get; set; } = new PersonInfo();
         public decimal MinInvestmentAmount { get; set; }
         public decimal MaxInvestmentAmount { get; set; }
 

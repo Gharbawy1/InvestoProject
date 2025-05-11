@@ -11,7 +11,9 @@ namespace Investo.Entities.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime BirthDate { get; set; }
         public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
         public string? ProfilePictureURL { get; set; }
         [MaxLength(300)]
@@ -19,13 +21,4 @@ namespace Investo.Entities.Models
         public string? Address { get; set; }
         
     }
-
-    // In Idenetity User 
-    //public enum Role
-    //{
-    //    user,
-    //    BusinessOwner,
-    //    Investor,
-    //    admin
-    //}
 }

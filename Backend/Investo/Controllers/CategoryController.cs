@@ -1,5 +1,7 @@
-﻿using Investo.DataAccess.Services.Interfaces;
+﻿using AutoMapper;
+using Investo.DataAccess.Services.Interfaces;
 using Investo.Entities.DTO.Category;
+using Investo.Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,46 +12,86 @@ namespace Investo.Presentation.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly IMapper _mapper;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, IMapper mapper)
         {
             _categoryService = categoryService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var categories = await _categoryService.GetAllCategories();
-            return Ok(categories);
+            var result = await _categoryService.GetAllCategoriesAsync();
+            if (!result.IsValid)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(byte id)
         {
-            var category = await _categoryService.GetCategoryById(id);
-            if (category == null) return NotFound($"Category With {id} Not found");
-            return Ok(category);
+            var result = await _categoryService.GetCategoryByIdAsync(id);
+            if (!result.IsValid)
+            {
+                return NotFound(result);
+            }
+            return Ok(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
         {
-            await _categoryService.CreateCategory(dto);
-            return StatusCode(201);
+            var result = await _categoryService.GetCategoryByNameAsync(dto.Name);
+            if (result.IsValid)
+            {
+                var validationResult = new ValidationResult<CategoryDTO>(null, false, $"Category with name {dto.Name} is already taken");
+                return BadRequest(validationResult);
+            }
+
+            var createResult = await _categoryService.CreateCategoryAsync(dto);
+
+            if (!createResult.IsValid)
+            {
+                return BadRequest(createResult);
+            }
+
+            return StatusCode(201, createResult);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(byte id, [FromBody] UpdateCategoryDTO dto)
+        public async Task<IActionResult> Update(byte id, [FromBody] UpdateCategoryDto dto)
         {
-            await _categoryService.UpdateCategory(id, dto);
-            return NoContent();
+            var result = await _categoryService.GetCategoryByNameAsync(dto.Name);
+            if (result.IsValid)
+            {
+                var validationResult = new ValidationResult<CategoryDTO>(null, false, $"Category with name {dto.Name} is already taken");
+                return BadRequest(validationResult);
+            }
+
+            var updateResult = await _categoryService.UpdateCategory(id, dto);
+
+            if (!updateResult.IsValid)
+            {   
+                return BadRequest(updateResult);
+            }
+
+            return Ok(updateResult);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(byte id)
         {
-            await _categoryService.DeleteCategory(id);
-            return NoContent();
+            var result = await _categoryService.DeleteCategory(id);
+            if (!result.IsValid)
+            {
+                return NotFound(result);
+            }
+
+            return Ok(new ValidationResult<object>(null, true, "Category deleted successfully"));
         }
     }
 }
