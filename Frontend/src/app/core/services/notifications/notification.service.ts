@@ -49,14 +49,19 @@ export class NotificationService {
 
     this.hubConnection.on(
       'ReceiveNotification',
-      (notification: INotification) => {
+      (notification: INotificationResponse) => {
         this.showNotification(notification);
       }
     );
   }
 
-  private showNotification(notification: INotification): void {
-    if (!this.isBrowser) return;
+  private showNotification(notification: INotificationResponse): void {
+    if (!this.isBrowser || !notification) return;
+
+    const storedUser = localStorage.getItem('user'); // أو استخدم authService
+    const userId = storedUser ? JSON.parse(storedUser).id : null;
+
+    if (notification.receiverId !== userId) return; // ✅ فلترة المستهدف
 
     this.toastr.info(notification.message, 'Notification');
     console.log('📢 الإشعار:', notification.message);

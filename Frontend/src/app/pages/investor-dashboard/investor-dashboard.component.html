@@ -28,10 +28,9 @@
       </dashboard-card>
 
       <dashboard-card
-        title="Next Payout"
-        value="2,450"
-        description="Expected on June 15, 2023"
-        [showCurrency]="true"
+        title="Accepted Offers"
+        [AcceptedOffers]="AcceptedOffers"
+        [description]="'You have ' + AcceptedOffers + ' accepted offers'"
       >
       </dashboard-card>
     </div>

@@ -1,16 +1,41 @@
-<div *ngIf="!activeProject && canCreateProject" class="flex-1 flex items-center justify-center pr-20 pl-20 p-60">
+<div
+  *ngIf="!activeProject && canCreateProject"
+  class="flex-1 flex items-center justify-center pr-20 pl-20 p-60"
+>
   <div class="text-center max-w-md">
     <mat-icon class="text-6xl text-gray-400 mb-4">business</mat-icon>
     <h2 class="text-2xl font-semibold text-gray-900 mb-2">No Project Found</h2>
     <p class="text-gray-600 mb-6">
-      You haven't created a business project yet. Start your journey by creating a new project 
-      to attract investors and manage your business growth.
+      You haven't created a business project yet. Start your journey by creating
+      a new project to attract investors and manage your business growth.
     </p>
-    <button 
+    <button
       (click)="onNewProject()"
       class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
     >
       Create New Project
+    </button>
+  </div>
+</div>
+
+<div
+  *ngIf="!activeProject && !canCreateProject"
+  class="flex-1 flex items-center justify-center pr-20 pl-20 p-60"
+>
+  <div class="text-center max-w-md">
+    <mat-icon class="text-6xl text-gray-400 mb-4">business</mat-icon>
+    <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+      Your business is under review
+    </h2>
+    <p class="text-gray-600 mb-6">
+      Your business is under review by the admin. Please wait for the admin to
+      approve your business.
+    </p>
+    <button
+      routerLink="/Home"
+      class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
+    >
+      Go to Home Page
     </button>
   </div>
 </div>
@@ -60,21 +85,23 @@
       <!-- Dynamic Content Sections -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Overview Section -->
-        <section *ngIf="activeSection === 'overview'" class="animate-content-fade">
-          <app-overview
-            [project]="activeProject"
-          ></app-overview>
+        <section
+          *ngIf="activeSection === 'overview'"
+          class="animate-content-fade"
+        >
+          <app-overview [project]="activeProject"></app-overview>
         </section>
 
         <!-- Stats Section -->
         <section *ngIf="activeSection === 'stats'" class="animate-content-fade">
-          <app-stats-cards
-            [project]="activeProject"
-          ></app-stats-cards>
+          <app-stats-cards [project]="activeProject"></app-stats-cards>
         </section>
 
         <!-- Offers Section -->
-        <section *ngIf="activeSection === 'offers'" class="animate-content-fade">
+        <section
+          *ngIf="activeSection === 'offers'"
+          class="animate-content-fade"
+        >
           <app-offers></app-offers>
         </section>
 
@@ -90,8 +117,8 @@
         </section>
 
         <!-- Manage Section -->
-        <section 
-          *ngIf="activeSection === 'manage'" 
+        <section
+          *ngIf="activeSection === 'manage'"
           class="animate-content-fade"
         >
           <app-manage

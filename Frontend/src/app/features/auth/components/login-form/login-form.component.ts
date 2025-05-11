@@ -111,19 +111,11 @@ export class LoginFormComponent implements OnInit {
         const LoginFormDate = new FormData();
         LoginFormDate.append('IdToken', IdToken);
         LoginFormDate.append('Role', 'User');
-        console.log('Received ID Token:', IdToken);
-        debugger;
         this.authService.handleGoogleLogin(LoginFormDate).subscribe({
           next: (response) => {
-            console.log(response);
-            debugger;
-            this.authService.createCurrentUser(response, true);
             this.router.navigate(['/Home']);
           },
-          error: (error) => {
-            console.error('Error occurred:', error);
-            debugger;
-          },
+          error: (error) => {},
         });
       }
     });

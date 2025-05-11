@@ -7,4 +7,5 @@ export interface IProjectCard {
   raisedFunds: number;
   categoryName: string;
   owner: string;
+  status: 'Pending' | 'Accepted' | 'Rejected';
 }

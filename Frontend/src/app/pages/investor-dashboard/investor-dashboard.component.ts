@@ -54,7 +54,7 @@ export class InvestorDashboardComponent implements OnInit {
   offers: IOfferProfile[] = [];
   recommended: IRecommended[] = [];
   categories: number[] = [];
-
+  AcceptedOffers: number = 0;
   ngOnInit(): void {
     const investorId = this.authService.getUserId();
 
@@ -72,13 +72,12 @@ export class InvestorDashboardComponent implements OnInit {
     // get accepted offers
     this.offersService.getAcceptedOffers(investorId ?? '').subscribe({
       next: (data) => {
-        console.log(data.data);
-        debugger;
         data.data.forEach((offer) => {
           if (offer.isPaid) {
             this.investments = [...this.investments, offer];
           }
         });
+        this.AcceptedOffers = this.investments.length;
         this.totalInvested = this.sumOfAmounts();
         this.activeInvestments = this.investments.length;
       },

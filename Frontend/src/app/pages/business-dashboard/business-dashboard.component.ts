@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { StatsCardsComponent } from '../../features/business-dashboard/components/stats-cards/stats-cards.component';
 import { DocumentCenterComponent } from '../../features/business-dashboard/components/document-center/document-center.component';
 import { OffersComponent } from '../../features/business-dashboard/components/offers/offers.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BusinessForCurrentService } from '../../features/business-dashboard/services/business-for-current.service';
 import { DashboardBusiness } from '../../features/business-dashboard/interfaces/IDashboardBusiness';
 import { OverviewComponent } from '../../features/business-dashboard/components/overview/overview.component';
@@ -20,6 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
     DocumentCenterComponent,
     OffersComponent,
     ManageComponent,
+    RouterModule,
   ],
   templateUrl: './business-dashboard.component.html',
   styleUrls: ['./business-dashboard.component.css'],
@@ -48,15 +49,15 @@ export class BusinessDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       this.loadProjects();
     });
   }
 
   loadProjects() {
-    this.BusinessForCurrentService.getProjectsForCurrentUser()
-      .subscribe({
-        next: resp => {
+    this.BusinessForCurrentService.getProjectsForCurrentUser().subscribe({
+      next: (resp) => {
+        if (resp.data.status === 'Accepted') {
           const data = resp.data;
           if (data) {
             if (data.id !== undefined && data.id !== null) {
@@ -68,13 +69,20 @@ export class BusinessDashboardComponent implements OnInit {
             this.activeProject = null;
             this.canCreateProject = true;
           }
-        },
-        error: err => {
-          console.error('Failed to load projects', err);
+        } else if (resp.data.status === 'Pending') {
+          this.activeProject = null;
+          this.canCreateProject = false;
+        } else {
           this.activeProject = null;
           this.canCreateProject = true;
         }
-      });
+      },
+      error: (err) => {
+        console.error('Failed to load projects', err);
+        this.activeProject = null;
+        this.canCreateProject = true;
+      },
+    });
   }
 
   onNewProject(): void {
@@ -87,7 +95,7 @@ export class BusinessDashboardComponent implements OnInit {
   handleProjectDeleted(_deletedId: number) {
     this.activeProject = null;
     this.canCreateProject = true;
-  
-    this.loadProjects();  
+
+    this.loadProjects();
   }
 }

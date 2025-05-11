@@ -104,15 +104,19 @@ export class AuthService {
     if (this.isBrowser) {
       // Store JWT token
       this.storeToken(response.token, rememberMe);
+
       const user = {
         id: response.userId,
-        firstName: response.userName,
+        firstName: response.firstName,
+        lastName: response.lastName,
         role: response.roles[0],
         profilePictureURL: response.profilePicture,
       };
+
       // Store serialized user object
       this.storeUserData('currentUser', user, rememberMe);
-      // Emit new user value to all subscribers
+
+      this.userSubject.next(user);
       this.isLoggedInSubject.next(true);
     }
   }
@@ -318,8 +322,7 @@ export class AuthService {
       )
       .pipe(
         tap((response) => {
-          console.log(response);
-          debugger;
+          this.createCurrentUser(response, true);
         }),
         catchError((error) => {
           console.error('Error logging in with Google:', error);

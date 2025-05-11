@@ -11,6 +11,7 @@ import { ProjectContextService } from '../../../services/project-context/project
 import { IBusinessDetails } from '../../../interfaces/IBusinessDetails';
 import { filter, take, takeUntil, timeout } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-offer',
@@ -27,6 +28,7 @@ export class OfferComponent implements OnInit {
     offerTerms: '',
     projectId: 0,
     investorId: '',
+    status: 'Pending',
   };
 
   private destroy$ = new Subject<void>();
@@ -48,7 +50,8 @@ export class OfferComponent implements OnInit {
     public router: Router,
     private authService: AuthService,
     private offerSvc: OfferService,
-    private projectCtx: ProjectContextService
+    private projectCtx: ProjectContextService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -126,11 +129,16 @@ export class OfferComponent implements OnInit {
       .pipe(take(1))
       .subscribe({
         next: (offers) => {
-          const hasExisting = offers.some(
+          // Filter by project and investor
+          const existingOffers = offers.filter(
             (o) => o.projectId === projectId && o.investorId === investorId
           );
 
-          if (hasExisting) {
+          const hasPendingOrAccepted = existingOffers.some(
+            (o) => o.status === 'Pending' || o.status === 'Accepted'
+          );
+
+          if (hasPendingOrAccepted) {
             this.blockAccess({
               message: 'You have already submitted an offer for this project.',
               path: ['/InvestorDashboard'],
@@ -169,9 +177,15 @@ export class OfferComponent implements OnInit {
     }
 
     this.isLoading = true;
+    console.log(this.offer);
+    debugger;
     this.offerSvc.createOffer(this.offer as IOffer).subscribe({
       next: () => this.handleSuccess(),
-      error: (err) => this.handleError(err),
+      error: (err) => {
+        console.error('Offer submission failed:', err);
+        debugger;
+        this.handleError(err);
+      },
     });
   }
 
@@ -179,7 +193,7 @@ export class OfferComponent implements OnInit {
     this.isLoading = false;
     this.successMessage =
       'Offer sent to bussiness owner successfully and waiting for approval!';
-    alert(this.successMessage);
+    this.toastr.success(this.successMessage);
   }
 
   private handleError(error: any) {
