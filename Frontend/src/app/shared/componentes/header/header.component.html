@@ -253,14 +253,17 @@
           </button>
         </div>
 
-        <nav class="flex flex-col space-y-6">
+        <!-- Mobile Navigation -->
+        <nav class="flex-1 space-y-6">
           <a
             routerLink="/projects"
-            class="text-gray-700 hover:text-primary transition-colors text-lg"
+            class="block text-gray-700 hover:text-primary transition-colors text-lg"
             (click)="toggleMenu()"
           >
             Browse Projects
           </a>
+
+          <!-- For Investors Section -->
           <div class="space-y-4">
             <div class="font-medium text-gray-900">For Investors</div>
             <div class="pl-4 space-y-3">
@@ -287,6 +290,8 @@
               </a>
             </div>
           </div>
+
+          <!-- For Businesses Section -->
           <div class="space-y-4">
             <div class="font-medium text-gray-900">For Businesses</div>
             <div class="pl-4 space-y-3">
@@ -313,17 +318,37 @@
               </a>
             </div>
           </div>
+
           <a
             routerLink="/about"
-            class="text-gray-700 hover:text-primary transition-colors text-lg"
+            class="block text-gray-700 hover:text-primary transition-colors text-lg"
             (click)="toggleMenu()"
           >
             About Us
           </a>
         </nav>
 
+        <!-- Mobile Auth Section -->
         <div class="mt-auto pt-6 border-t border-gray-200">
           <ng-container *ngIf="isLoggedIn; else mobileLoggedOut">
+            <!-- Notifications -->
+            <div class="mb-6">
+              <button
+                class="flex items-center text-gray-700 hover:text-primary transition-colors"
+                (click)="toggleNotifications()"
+              >
+                <mat-icon class="mr-2">notifications</mat-icon>
+                <span>Notifications</span>
+                <span
+                  *ngIf="unreadCount > 0"
+                  class="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5"
+                >
+                  {{ unreadCount }}
+                </span>
+              </button>
+            </div>
+
+            <!-- User Profile -->
             <div class="space-y-4">
               <div class="flex items-center space-x-3">
                 <div
@@ -346,6 +371,8 @@
                   </a>
                 </div>
               </div>
+
+              <!-- User Actions -->
               <div class="space-y-3">
                 <a
                   *ngIf="userRole === 'User'"
@@ -357,9 +384,8 @@
                 </a>
                 <a
                   *ngIf="userRole !== 'User'"
-                  (click)="goToDashboard()"
+                  (click)="goToDashboard(); toggleMenu()"
                   class="block text-gray-700 hover:text-primary transition-colors"
-                  (click)="toggleMenu()"
                 >
                   Dashboard
                 </a>
@@ -386,13 +412,17 @@
               <button
                 mat-raised-button
                 color="primary"
+                routerLink="/auth"
                 (click)="loginClick.emit(); toggleMenu()"
+                class="w-full"
               >
                 Log In
               </button>
               <button
                 mat-stroked-button
+                routerLink="/auth"
                 (click)="registerClick.emit(); toggleMenu()"
+                class="w-full"
               >
                 Register
               </button>

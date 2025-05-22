@@ -93,7 +93,7 @@ export class RegistrationFormComponent {
         this.authService.handleGoogleLogin(formData).subscribe({
           next: (response) => {
             this.authService.createCurrentUser(response, true);
-            this.router.navigate(['/Home']);
+            window.location.reload();
           },
           error: (error) => {
             console.error('Error occurred:', error);
@@ -101,7 +101,7 @@ export class RegistrationFormComponent {
         });
       } else {
         this.registerService.registerGuest(this.data as IGuest).subscribe({
-          next: () => this.router.navigate(['/Home']),
+          next: () => window.location.reload(),
           error: (error) => {
             console.error('Error occurred:', error);
           },
