@@ -1,98 +1,191 @@
-<footer class="footer bg-gray-900 text-white pt-16 pb-8 px-4 md:px-8 lg:px-12 w-full">
-    <div class="max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-            <!-- Company Info -->
-            <div class="lg:col-span-2">
-                <h2 class="text-2xl font-bold mb-4">{{ companyName }}</h2>
-                <p class="text-gray-400 mb-6 max-w-md">{{ companyDescription }}</p>
-
-                <!-- Social Media Links -->
-                <div class="flex space-x-4 mb-6">
-                    <a *ngIf="socialLinks?.facebook" [href]="socialLinks.facebook" target="_blank"
-                        rel="noopener noreferrer"
-                        class="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors">
-                        <fa-icon [icon]="faFacebook"></fa-icon>
-                    </a>
-                    <a *ngIf="socialLinks?.twitter" [href]="socialLinks.twitter" target="_blank"
-                        rel="noopener noreferrer"
-                        class="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors">
-                        <fa-icon [icon]="faTwitter"></fa-icon>
-                    </a>
-                    <a *ngIf="socialLinks?.instagram" [href]="socialLinks.instagram" target="_blank"
-                        rel="noopener noreferrer"
-                        class="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors">
-                        <fa-icon [icon]="faInstagram"></fa-icon>
-                    </a>
-                    <a *ngIf="socialLinks?.linkedin" [href]="socialLinks.linkedin" target="_blank"
-                        rel="noopener noreferrer"
-                        class="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors">
-                        <fa-icon [icon]="faLinkedin"></fa-icon>
-                    </a>
-                </div>
-
-                <!-- Contact Information -->
-                <div class="space-y-2">
-                    <div class="flex items-center">
-                        <fa-icon [icon]="faEnvelope"></fa-icon>
-                        <a [href]="'mailto:' + contactEmail" class="text-gray-400 hover:text-white transition-colors px-2">
-                            {{ contactEmail }}
-                        </a>
-                    </div>
-                    <div class="flex items-center">
-                        <fa-icon [icon]="faPhone"></fa-icon>
-                        <a class="text-gray-400 hover:text-white transition-colors px-2">
-                            {{ contactPhone }}
-                        </a>
-                    </div>
-                    <div class="flex items-start">
-                        <fa-icon [icon]="faMapMarker"></fa-icon>
-                        <span class="text-gray-400 px-2">{{ contactAddress }}</span>
-                    </div>
-                </div>
+<footer id="contact" class="bg-secondary text-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Contact Form Section -->
+    @if(!isLoggedIn){
+    <div class="mb-16 animate-slide-up">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">
+          <span
+            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400"
+            >Get In Touch</span
+          >
+        </h2>
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+          Ready to start your investment journey? Contact us today to learn more
+          about InvestGo.
+        </p>
+      </div>
+      <div class="max-w-2xl mx-auto">
+        <form id="contact-form" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="name" class="block text-gray-300 mb-1">Name *</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                class="w-full px-3 py-3 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors duration-200"
+                placeholder="Your full name"
+              />
             </div>
-
-            <!-- Navigation Links -->
-            <div *ngFor="let section of navigationLinks">
-                <h3 class="text-lg font-semibold mb-4">{{ section.title }}</h3>
-                <ul class="space-y-2">
-                    <li *ngFor="let link of section.links">
-                        <a [href]="link.href" class="text-gray-400 hover:text-white transition-colors">
-                            {{ link.label }}
-                        </a>
-                        
-                    </li>
-                </ul>
+            <div>
+              <label for="email" class="block text-gray-300 mb-1"
+                >Email *</label
+              >
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                class="w-full px-3 py-3 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors duration-200"
+                placeholder="your@email.com"
+              />
             </div>
-        </div>
+          </div>
 
-        <!-- Newsletter Signup -->
-        <div class="border-t border-gray-800 pt-8 pb-6">
-            <div class="max-w-md mx-auto lg:mx-0">
-                <h3 class="text-lg font-semibold mb-3">Subscribe to our newsletter</h3>
-                <p class="text-gray-400 mb-4">
-                    Stay updated with the latest investment opportunities and platform news.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="email" placeholder="Your email address"
-                        class="bg-gray-800 border-gray-700 text-white p-2 rounded-md w-full">
-                    <button
-                        class="bg-primary hover:bg-primary/90 text-white font-semibold px-4 py-2 rounded-md">Subscribe</button>
-                </div>
-            </div>
-        </div>
+          <div>
+            <label for="role" class="block text-gray-300 mb-1">I am a *</label>
+            <select
+              id="role"
+              name="role"
+              required
+              class="w-full px-3 py-3 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors duration-200"
+            >
+              <option value="">Select your role</option>
+              <option value="investor">Investor</option>
+              <option value="startup">Startup Founder</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
 
-        <!-- Copyright and Legal -->
-        <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p class="text-gray-500 text-sm mb-4 md:mb-0">
-                © 2025 InvestGo. All rights reserved.
-            </p>
-            <div class="flex space-x-6">
-                <a href="/privacy-policy" class="text-gray-500 hover:text-white text-sm transition-colors">Privacy
-                    Policy</a>
-                <a href="/terms-of-service" class="text-gray-500 hover:text-white text-sm transition-colors">Terms of
-                    Service</a>
-                <a href="/cookies" class="text-gray-500 hover:text-white text-sm transition-colors">Cookies</a>
-            </div>
-        </div>
+          <div>
+            <label for="message" class="block text-gray-300 mb-1"
+              >Message *</label
+            >
+            <textarea
+              id="message"
+              name="message"
+              required
+              rows="4"
+              class="w-full px-3 py-3 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors duration-200"
+              placeholder="Tell us about your project or investment interests..."
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 font-semibold text-lg py-3 rounded-md transition-all duration-200 flex items-center justify-center"
+          >
+            <span>Send Message</span>
+            <mat-icon class="w-5 h-5 ml-2">send</mat-icon>
+          </button>
+        </form>
+      </div>
     </div>
+    }
+
+    <!-- Footer Info -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+      <div class="md:col-span-2">
+        <h3 class="text-3xl font-bold mb-6 flex items-center">InvestGo</h3>
+        <p class="text-gray-300 mb-6 max-w-md">
+          Connecting visionaries with capital to build the future of innovation.
+          Join our platform and be part of the next generation of successful
+          investments.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="text-xl font-semibold mb-6">Quick Links</h4>
+        <ul class="space-y-3">
+          <li>
+            <button
+              (click)="scrollToSection('about')"
+              class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center"
+            >
+              <mat-icon class="w-4 h-4 mr-2">chevron_right</mat-icon>
+              About
+            </button>
+          </li>
+          <li>
+            <button
+              (click)="scrollToSection('how-it-works')"
+              class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center"
+            >
+              <mat-icon class="w-4 h-4 mr-2">chevron_right</mat-icon>
+              How It Works
+            </button>
+          </li>
+          <li>
+            <button
+              (click)="scrollToSection('features')"
+              class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center"
+            >
+              <mat-icon class="w-4 h-4 mr-2">chevron_right</mat-icon>
+              Features
+            </button>
+          </li>
+          <li>
+            <button
+              (click)="scrollToSection('team')"
+              class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center"
+            >
+              <mat-icon class="w-4 h-4 mr-2">chevron_right</mat-icon>
+              Team
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-xl font-semibold mb-6">Contact Info</h4>
+        <ul class="space-y-3">
+          <li class="flex items-center">
+            <mat-icon class="w-4 h-4 mr-3 text-blue-400">email</mat-icon>
+            <a href="mailto:investgo58@gmail.com" class="text-gray-300"
+              >investgo58&#64;gmail.com</a
+            >
+          </li>
+          <li class="flex items-center">
+            <mat-icon class="w-4 h-4 mr-3 text-blue-400">phone</mat-icon>
+            <span class="text-gray-300">+1 (555) 123-4567</span>
+          </li>
+          <li class="flex items-start">
+            <mat-icon class="w-4 h-4 mr-3 mt-1 text-blue-400"
+              >location_on</mat-icon
+            >
+            <span class="text-gray-300"
+              >123 Innovation Drive<br />Tech Valley, CA 94000</span
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-600 pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-300 mb-4 md:mb-0">
+          © 2025 InvestGo. All rights reserved.
+        </p>
+        <div class="flex space-x-6">
+          <a
+            href="#"
+            class="text-gray-300 hover:text-white transition-colors duration-200"
+            >Privacy Policy</a
+          >
+          <a
+            href="#"
+            class="text-gray-300 hover:text-white transition-colors duration-200"
+            >Terms of Service</a
+          >
+          <a
+            href="#"
+            class="text-gray-300 hover:text-white transition-colors duration-200"
+            >Cookie Policy</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>
