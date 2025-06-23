@@ -1,59 +1,830 @@
-<div class="relative h-screen max-h-[800px] min-h-[600px] bg-white overflow-hidden">
-    <!-- Background Image with Parallax Effect -->
-    <div class="absolute inset-0 z-0 overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center bg-no-repeat transform scale-110 hover:scale-100 transition-transform duration-1000 ease-out">
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/30"></div>
-    </div>
+<!-- Hero Section -->
+<div class="hero-container">
+  <div
+    class="hero-background"
+    [ngStyle]="{ 'background-image': 'url(' + backgroundImage + ')' }"
+  >
+    <div class="hero-overlay"></div>
 
-    <!-- Content Container -->
-    <div class="relative z-10 h-full w-full px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
-        <div class="max-w-4xl mx-auto text-center space-y-8">
-            <!-- Animated Title -->
-            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight animate-fade-in-up">
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-light"></span>
-                <br class="md:hidden">
-                InvestGo
-            </h1>
+    <!-- Floating elements -->
+    <div class="floating-element element-1"></div>
+    <div class="floating-element element-2"></div>
+    <div class="floating-element element-3"></div>
+  </div>
 
-            <!-- Subtitle with Typing Animation Effect -->
-            <p class="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto opacity-0 animate-typing">
-                {{ subtitle }}
-            </p>
+  <div class="hero-content">
+    <h1 class="hero-heading">
+      <span class="text-white">{{ title }}</span>
+    </h1>
 
-            <!-- CTA Buttons with Hover Effects -->
-            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-12 animate-fade-in-up delay-300">
-                <button
-                    class="relative bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 group overflow-hidden"
-                    (click)="onInvestorSignup.emit()">
-                    <span class="relative z-10 flex items-center justify-center">
-                        Start Investing
-                        <span class="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
-                    </span>
-                    <span
-                        class="absolute inset-0 bg-gradient-to-r from-primary to-primary-light opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                </button>
+    <p class="hero-subtitle">
+      {{ subtitle }}
+    </p>
 
-                <button
-                    class="relative bg-transparent border-2 border-white text-white hover:text-gray-900 font-semibold px-8 py-4 rounded-lg transition-all duration-300 hover:bg-white/90 hover:shadow-lg group overflow-hidden"
-                    (click)="onBusinessSignup.emit()">
-                    <span class="relative z-10">List Your Business</span>
-                    <span
-                        class="absolute inset-0 bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scrolling Indicator -->
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="size-8 text-white">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    <div class="hero-actions">
+      <button class="hero-btn primary" routerLink="/auth">
+        Start Investing
+        <svg
+          class="btn-icon"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
         </svg>
-    </div>
+      </button>
 
+      <button class="hero-btn secondary" routerLink="/auth">
+        List Your Business
+      </button>
+    </div>
+  </div>
 </div>
 
-<project-master></project-master>
+<!-- Scrolling Indicator -->
+<div
+  class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce"
+  (click)="scrollToSection('about')"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="size-8 text-white"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+    />
+  </svg>
+</div>
+
+<!-- How It Works Section -->
+<section id="how-it-works" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 animate-slide-up">
+      <h2 class="text-4xl md:text-5xl font-bold text-primary mb-6">
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600"
+          >How It Works</span
+        >
+      </h2>
+      <p class="text-xl text-accent max-w-3xl mx-auto">
+        Simple steps to connect entrepreneurs with the right investors
+      </p>
+    </div>
+
+    <!-- For Startups -->
+    <div class="mb-20">
+      <h3
+        class="text-3xl font-bold text-primary text-center mb-12 animate-slide-up"
+      >
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600"
+          >For Startups</span
+        >
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center group animate-slide-up">
+          <div
+            class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+          >
+            <mat-icon class="w-8 h-8 text-blue-600">person_add</mat-icon>
+          </div>
+          <h4 class="text-xl font-semibold text-primary mb-4">
+            1. Create Profile
+          </h4>
+          <p class="text-accent">
+            Build your startup profile with detailed information about your
+            business, team, and vision.
+          </p>
+        </div>
+        <div class="text-center group animate-slide-up">
+          <div
+            class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+          >
+            <mat-icon class="w-8 h-8 text-purple-600">search</mat-icon>
+          </div>
+          <h4 class="text-xl font-semibold text-primary mb-4">
+            2. Get Matched
+          </h4>
+          <p class="text-accent">
+            Our AI algorithm connects you with investors who match your industry
+            and funding needs.
+          </p>
+        </div>
+        <div class="text-center group animate-slide-up">
+          <div
+            class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+          >
+            <mat-icon class="w-8 h-8 text-indigo-600">handshake</mat-icon>
+          </div>
+          <h4 class="text-xl font-semibold text-primary mb-4">
+            3. Connect & Pitch
+          </h4>
+          <p class="text-accent">
+            Present your idea directly to interested investors through our
+            secure platform.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Investors -->
+    <div>
+      <h3
+        class="text-3xl font-bold text-primary text-center mb-12 animate-slide-up"
+      >
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600"
+          >For Investors</span
+        >
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center group animate-slide-up">
+          <div
+            class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+          >
+            <mat-icon class="w-8 h-8 text-blue-600">settings</mat-icon>
+          </div>
+          <h4 class="text-xl font-semibold text-primary mb-4">
+            1. Set Preferences
+          </h4>
+          <p class="text-accent">
+            Define your investment criteria including industry focus, stage, and
+            ticket size.
+          </p>
+        </div>
+        <div class="text-center group animate-slide-up">
+          <div
+            class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+          >
+            <mat-icon class="w-8 h-8 text-purple-600">visibility</mat-icon>
+          </div>
+          <h4 class="text-xl font-semibold text-primary mb-4">
+            2. Discover Startups
+          </h4>
+          <p class="text-accent">
+            Browse curated startup profiles that match your investment thesis
+            and interests.
+          </p>
+        </div>
+        <div class="text-center group animate-slide-up">
+          <div
+            class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+          >
+            <mat-icon class="w-8 h-8 text-indigo-600">trending_up</mat-icon>
+          </div>
+          <h4 class="text-xl font-semibold text-primary mb-4">
+            3. Invest & Track
+          </h4>
+          <p class="text-accent">
+            Make informed investment decisions and track your portfolio
+            performance.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-20 bg-light-gray">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 animate-slide-up">
+      <h2 class="text-4xl md:text-5xl font-bold text-primary mb-6">
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600"
+          >Platform Features</span
+        >
+      </h2>
+      <p class="text-xl text-accent max-w-3xl mx-auto">
+        Advanced tools designed to streamline the investment process
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+      <div
+        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-200 feature-card"
+      >
+        <div class="flex items-center mb-6">
+          <div
+            class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg w-12 h-12 flex items-center justify-center mr-4"
+          >
+            <mat-icon class="w-6 h-6 text-blue-600">psychology</mat-icon>
+          </div>
+          <h3 class="text-2xl font-bold text-primary">
+            Smart Matching Algorithm
+          </h3>
+        </div>
+        <p class="text-accent text-lg leading-relaxed">
+          Our AI-powered matching system analyzes multiple factors to create
+          optimal connections between startups and investors, increasing the
+          likelihood of successful partnerships.
+        </p>
+      </div>
+      <div
+        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-200 feature-card"
+      >
+        <div class="flex items-center mb-6">
+          <div
+            class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg w-12 h-12 flex items-center justify-center mr-4"
+          >
+            <mat-icon class="w-6 h-6 text-purple-600">verified</mat-icon>
+          </div>
+          <h3 class="text-2xl font-bold text-primary">Verified Profiles</h3>
+        </div>
+        <p class="text-accent text-lg leading-relaxed">
+          All users undergo thorough verification processes including identity
+          confirmation and background checks to ensure credibility and
+          authenticity.
+        </p>
+      </div>
+      <div
+        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-200 feature-card"
+      >
+        <div class="flex items-center mb-6">
+          <div
+            class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg w-12 h-12 flex items-center justify-center mr-4"
+          >
+            <mat-icon class="w-6 h-6 text-indigo-600">chat</mat-icon>
+          </div>
+          <h3 class="text-2xl font-bold text-primary">
+            Transparent Communication
+          </h3>
+        </div>
+        <p class="text-accent text-lg leading-relaxed">
+          Built-in messaging, document sharing, and video conferencing tools
+          facilitate clear, documented communication throughout the deal
+          process.
+        </p>
+      </div>
+      <div
+        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-200 feature-card"
+      >
+        <div class="flex items-center mb-6">
+          <div
+            class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg w-12 h-12 flex items-center justify-center mr-4"
+          >
+            <mat-icon class="w-6 h-6 text-blue-600">analytics</mat-icon>
+          </div>
+          <h3 class="text-2xl font-bold text-primary">Investment Analytics</h3>
+        </div>
+        <p class="text-accent text-lg leading-relaxed">
+          Comprehensive analytics and reporting tools help investors monitor
+          portfolio performance and startups track their funding progress.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section
+  id="about"
+  class="py-20 bg-gradient-to-r from-blue-900 to-purple-900 text-white"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="animate-slide-up">
+        <div class="relative">
+          <img
+            src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1926&h=1445"
+            alt="Business professionals discussing investment opportunities"
+            class="rounded-2xl shadow-2xl w-full"
+          />
+        </div>
+      </div>
+
+      <!-- Content Block moved to right -->
+      <div class="animate-slide-up">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">
+          Empowering
+          <span
+            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-300"
+            >Investment</span
+          >
+          with Purpose
+        </h2>
+        <p class="text-xl text-blue-100 mb-8 leading-relaxed">
+          At InvestGo, we go beyond connecting startups and investors. We're
+          building a culture driven by purpose, diversity, and impact —
+          fostering trust and growth across every deal.
+        </p>
+
+        <!-- Values -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+          <div class="flex items-start space-x-4">
+            <div class="text-2xl text-blue-300">
+              <i class="fas fa-users"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-lg text-white">Create Community</h4>
+              <p class="text-sm text-blue-100">
+                We foster inclusion and collaboration across global startup
+                ecosystems.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4">
+            <div class="text-2xl text-purple-300">
+              <i class="fas fa-globe"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-lg text-white">Embrace Diversity</h4>
+              <p class="text-sm text-blue-100">
+                We welcome different voices and ideas to fuel innovation and
+                equity.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4">
+            <div class="text-2xl text-indigo-300">
+              <i class="fas fa-bullseye"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-lg text-white">Drive Impact</h4>
+              <p class="text-sm text-blue-100">
+                We focus on results that move our mission forward for everyone.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4">
+            <div class="text-2xl text-green-300">
+              <i class="fas fa-handshake-angle"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-lg text-white">Bring Others Along</h4>
+              <p class="text-sm text-blue-100">
+                We grow together by learning, sharing, and lifting others along
+                the journey.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="flex flex-wrap gap-6">
+          <div
+            class="text-center bg-white/10 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/20"
+          >
+            <div class="text-3xl font-bold text-white">500+</div>
+            <div class="text-sm text-blue-100">Startups</div>
+          </div>
+          <div
+            class="text-center bg-white/10 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/20"
+          >
+            <div class="text-3xl font-bold text-white">200+</div>
+            <div class="text-sm text-blue-100">Investors</div>
+          </div>
+          <div
+            class="text-center bg-white/10 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/20"
+          >
+            <div class="text-3xl font-bold text-white">85%</div>
+            <div class="text-sm text-blue-100">Success Rate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 animate-slide-up">
+      <h2 class="text-4xl md:text-5xl font-bold text-primary mb-6">
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600"
+          >Success Stories</span
+        >
+      </h2>
+      <p class="text-xl text-accent max-w-3xl mx-auto">
+        Hear from entrepreneurs and investors who found success through InvestGo
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div
+        class="bg-light-gray rounded-2xl p-8 testimonial-card hover:shadow-lg transition-all duration-200"
+      >
+        <div class="flex items-center mb-4">
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold mr-4"
+          >
+            S
+          </div>
+          <div>
+            <h4 class="font-semibold text-primary">Sarah Chen</h4>
+            <p class="text-sm text-accent">CEO, TechFlow Solutions</p>
+          </div>
+        </div>
+        <p class="text-accent italic mb-4">
+          "InvestGo connected us with the perfect investor who understood our
+          vision. We secured $2M in Series A funding within 3 months of joining
+          the platform."
+        </p>
+        <div class="flex text-yellow-400">
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+        </div>
+      </div>
+      <div
+        class="bg-light-gray rounded-2xl p-8 testimonial-card hover:shadow-lg transition-all duration-200"
+      >
+        <div class="flex items-center mb-4">
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold mr-4"
+          >
+            M
+          </div>
+          <div>
+            <h4 class="font-semibold text-primary">Michael Rodriguez</h4>
+            <p class="text-sm text-accent">Angel Investor</p>
+          </div>
+        </div>
+        <p class="text-accent italic mb-4">
+          "The quality of startups on InvestGo is exceptional. I've made 8
+          investments through the platform, with 3 already showing 5x returns.
+          The matching algorithm is incredibly accurate."
+        </p>
+        <div class="flex text-yellow-400">
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+        </div>
+      </div>
+      <div
+        class="bg-light-gray rounded-2xl p-8 testimonial-card hover:shadow-lg transition-all duration-200"
+      >
+        <div class="flex items-center mb-4">
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold mr-4"
+          >
+            A
+          </div>
+          <div>
+            <h4 class="font-semibold text-primary">Ahmed Hassan</h4>
+            <p class="text-sm text-accent">Founder, GreenTech Innovations</p>
+          </div>
+        </div>
+        <p class="text-accent italic mb-4">
+          "The transparent process and smart matching made fundraising so much
+          easier than traditional methods. We found investors who truly believed
+          in our mission and long-term vision."
+        </p>
+        <div class="flex text-yellow-400">
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+          <mat-icon class="w-4 h-4">star</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team Section -->
+<section id="team" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 animate-slide-up">
+      <h2 class="text-4xl md:text-5xl font-bold text-primary mb-6">
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600"
+          >Meet Our Team</span
+        >
+      </h2>
+      <p class="text-xl text-accent max-w-3xl mx-auto">
+        The passionate professionals behind InvestGo's success
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div
+        class="text-center group team-member p-6 rounded-xl hover:bg-light-gray transition-all duration-200"
+      >
+        <div
+          class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-32 h-32 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+        >
+          <span class="text-4xl font-bold text-primary">AE</span>
+        </div>
+        <h3 class="text-xl font-bold text-primary mb-2">Ahmed El-Gharbawy</h3>
+        <p class="text-accent mb-3">Backend Developer</p>
+        <p class="text-sm text-accent">
+          Specializes in scalable architecture and database optimization with 8+
+          years experience in fintech platforms.
+        </p>
+        <div class="flex justify-center space-x-3 mt-4">
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/ahmed-elghrabawy/"
+            class="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+          >
+            <mat-icon class="w-5 h-5">linkedin</mat-icon>
+          </a>
+        </div>
+      </div>
+      <div
+        class="text-center group team-member p-6 rounded-xl hover:bg-light-gray transition-all duration-200"
+      >
+        <div
+          class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-32 h-32 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+        >
+          <span class="text-4xl font-bold text-primary">AY</span>
+        </div>
+        <h3 class="text-xl font-bold text-primary mb-2">Ahmed Youssef</h3>
+        <p class="text-accent mb-3">Backend Developer</p>
+        <p class="text-sm text-accent">
+          Expert in API development and security implementation with a focus on
+          financial data protection.
+        </p>
+        <div class="flex justify-center space-x-3 mt-4">
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/ahmed-m-youssif-170838290/"
+            class="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+          >
+            <mat-icon class="w-5 h-5">linkedin</mat-icon>
+          </a>
+        </div>
+      </div>
+      <div
+        class="text-center group team-member p-6 rounded-xl hover:bg-light-gray transition-all duration-200"
+      >
+        <div
+          class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-32 h-32 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+        >
+          <span class="text-4xl font-bold text-primary">DS</span>
+        </div>
+        <h3 class="text-xl font-bold text-primary mb-2">Donia Shaaban</h3>
+        <p class="text-accent mb-3">Backend Developer</p>
+        <p class="text-sm text-accent">
+          Focuses on data analytics and matching algorithms with a PhD in
+          Machine Learning applications.
+        </p>
+        <div class="flex justify-center space-x-3 mt-4">
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/donia-shaban-349370301/"
+            class="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+          >
+            <mat-icon class="w-5 h-5">linkedin</mat-icon>
+          </a>
+        </div>
+      </div>
+      <div
+        class="text-center group team-member p-6 rounded-xl hover:bg-light-gray transition-all duration-200"
+      >
+        <div
+          class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-32 h-32 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+        >
+          <span class="text-4xl font-bold text-primary">ZM</span>
+        </div>
+        <h3 class="text-xl font-bold text-primary mb-2">Ziad Mohamed</h3>
+        <p class="text-accent mb-3">Frontend Developer</p>
+        <p class="text-sm text-accent">
+          Creates intuitive user experiences and responsive designs with a focus
+          on accessibility and performance.
+        </p>
+        <div class="flex justify-center space-x-3 mt-4">
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/ziadmohammed60600/"
+            class="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+          >
+            <mat-icon class="w-5 h-5">linkedin</mat-icon>
+          </a>
+        </div>
+      </div>
+      <div
+        class="text-center group team-member p-6 rounded-xl hover:bg-light-gray transition-all duration-200"
+      >
+        <div
+          class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-32 h-32 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+        >
+          <span class="text-4xl font-bold text-primary">MW</span>
+        </div>
+        <h3 class="text-xl font-bold text-primary mb-2">Mahmoud Waleed</h3>
+        <p class="text-accent mb-3">Frontend Developer</p>
+        <p class="text-sm text-accent">
+          Bridges frontend and backend development seamlessly with expertise in
+          real-time data applications.
+        </p>
+        <div class="flex justify-center space-x-3 mt-4">
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/mahmoud0waleed/"
+            class="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+          >
+            <mat-icon class="w-5 h-5">linkedin</mat-icon>
+          </a>
+        </div>
+      </div>
+      <div
+        class="text-center group team-member p-6 rounded-xl hover:bg-light-gray transition-all duration-200"
+      >
+        <div
+          class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-full w-32 h-32 flex items-center justify-center mx-auto mb-6 group-hover:from-blue-100 group-hover:to-purple-100 transition-colors duration-200"
+        >
+          <span class="text-4xl font-bold text-primary">AA</span>
+        </div>
+        <h3 class="text-xl font-bold text-primary mb-2">Ahmed Ali</h3>
+        <p class="text-accent mb-3">Frontend Developer</p>
+        <p class="text-sm text-accent">
+          Drives product strategy and user experience optimization with a
+          background in venture capital.
+        </p>
+        <div class="flex justify-center space-x-3 mt-4">
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/ahmed-mohamed-ali-997170254/"
+            class="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+          >
+            <mat-icon class="w-5 h-5">linkedin</mat-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="py-20 bg-gradient-to-r from-blue-900 to-purple-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="animate-slide-up">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">
+          Ready to Transform Your
+          <span
+            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-300"
+            >Investment Journey</span
+          >?
+        </h2>
+        <p class="text-xl text-blue-100 mb-8 leading-relaxed">
+          Join thousands of entrepreneurs and investors who are already using
+          InvestGo to build the future. Start your journey today with our
+          comprehensive platform.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            routerLink="/auth"
+            class="btn-primary bg-white text-primary hover:bg-gray-100 font-semibold text-lg px-8 py-4 rounded-md transition-colors duration-200"
+          >
+            Get Started Free
+          </button>
+        </div>
+      </div>
+      <div class="animate-slide-up">
+        <div class="relative">
+          <img
+            src="https://images.unsplash.com/photo-1556745757-8d76bdb6984b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&h=1382"
+            alt="Professional business handshake representing successful partnerships"
+            class="rounded-2xl shadow-2xl w-full"
+          />
+          <div
+            class="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-lg hidden md:block"
+          >
+            <div class="text-3xl font-bold text-primary">24/7</div>
+            <div class="text-sm text-accent">Support Available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-20 bg-light-gray">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 animate-slide-up">
+      <h2 class="text-4xl md:text-5xl font-bold text-primary mb-6">
+        Frequently Asked
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600"
+          >Questions</span
+        >
+      </h2>
+      <p class="text-xl text-accent">
+        Everything you need to know about InvestGo
+      </p>
+    </div>
+
+    <div class="animate-slide-up">
+      <div class="accordion-item">
+        <button class="accordion-trigger" (click)="toggleAccordion(0)">
+          <span>How does the matching algorithm work?</span>
+          <mat-icon
+            class="w-5 h-5 transition-transform duration-200"
+            id="chevron-0"
+            >keyboard_arrow_down</mat-icon
+          >
+        </button>
+        <div class="accordion-content" id="content-0">
+          <p class="text-accent text-base leading-relaxed">
+            Our proprietary AI algorithm analyzes multiple factors including
+            industry focus, funding stage, investment size, geographic
+            preferences, past investment patterns, and compatibility metrics to
+            create optimal matches between startups and investors. The system
+            learns from each successful connection to improve future
+            recommendations.
+          </p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" (click)="toggleAccordion(1)">
+          <span>What are the fees for using InvestGo?</span>
+          <mat-icon
+            class="w-5 h-5 transition-transform duration-200"
+            id="chevron-1"
+            >keyboard_arrow_down</mat-icon
+          >
+        </button>
+        <div class="accordion-content" id="content-1">
+          <p class="text-accent text-base leading-relaxed">
+            InvestGo operates on a success-based model. Startups pay a small
+            percentage (typically 3-5%) only when they successfully close
+            funding through the platform. Investors can use the platform for
+            free to discover and evaluate opportunities. We also offer premium
+            membership tiers with additional features for both startups and
+            investors.
+          </p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" (click)="toggleAccordion(2)">
+          <span>How are profiles verified?</span>
+          <mat-icon
+            class="w-5 h-5 transition-transform duration-200"
+            id="chevron-2"
+            >keyboard_arrow_down</mat-icon
+          >
+        </button>
+        <div class="accordion-content" id="content-2">
+          <p class="text-accent text-base leading-relaxed">
+            We conduct thorough background checks including identity
+            verification, business registration confirmation, financial
+            statements review, and reference checks to ensure all users are
+            legitimate and qualified. Startups undergo additional due diligence
+            including pitch deck review and founder background checks.
+          </p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" (click)="toggleAccordion(3)">
+          <span>Is my information secure?</span>
+          <mat-icon
+            class="w-5 h-5 transition-transform duration-200"
+            id="chevron-3"
+            >keyboard_arrow_down</mat-icon
+          >
+        </button>
+        <div class="accordion-content" id="content-3">
+          <p class="text-accent text-base leading-relaxed">
+            Yes, we use bank-level encryption (256-bit SSL) and implement
+            rigorous security measures to protect all user data. Sensitive
+            information is only shared with matched parties upon mutual consent
+            and through secure channels. Our platform is regularly audited for
+            security compliance.
+          </p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" (click)="toggleAccordion(4)">
+          <span>What types of startups can join?</span>
+          <mat-icon
+            class="w-5 h-5 transition-transform duration-200"
+            id="chevron-4"
+            >keyboard_arrow_down</mat-icon
+          >
+        </button>
+        <div class="accordion-content" id="content-4">
+          <p class="text-accent text-base leading-relaxed">
+            We welcome startups from all industries and stages, from early-stage
+            ideas to growth-stage companies seeking Series A and beyond. Our
+            platform serves diverse funding needs from $50K to $50M+. Whether
+            you're in tech, healthcare, clean energy, or consumer products, if
+            you have an innovative idea and a solid team, we can help connect
+            you with the right investors.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
